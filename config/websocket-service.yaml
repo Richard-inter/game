@@ -1,0 +1,23 @@
+# WebSocket Service Configuration
+
+service:
+  name: "websocket-service"
+  host: "0.0.0.0"
+  port: 8081
+  path: "/ws"
+  read_buffer_size: 1024
+  write_buffer_size: 1024
+
+websocket:
+  host: "0.0.0.0"
+  port: 8081
+  path: "/ws"
+  read_buffer_size: 1024
+  write_buffer_size: 1024
+  check_origin: true  # Set to false for development
+
+# Import shared configurations
+shared:
+  redis: "shared.yaml"
+  logging: "shared.yaml"
+  tracing: "shared.yaml"

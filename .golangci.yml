@@ -1,0 +1,237 @@
+# This configuration file is not a recommendation.
+#
+# We intentionally use a limited set of linters.
+# This configuration file is used with different version of golangci-lint to avoid regressions:
+# the linters can change between version,
+# their configuration may be not be compatible or their reports can be different,
+# and this can break some of our tests.
+# Also, some linters are not relevant for the project (e.g. linters related to SQL).
+#
+# We have specific constraints, so we use a specific configuration.
+#
+# See the file `.golangci.reference.yml` to have a list of all available configuration options.
+# Source: https://github.com/golangci/golangci-lint/blob/30c7cf23f52ba23c4317b619362b59b7b0b65d3e/.golangci.yml
+
+version: "2"
+
+linters:
+  default: none
+  # This list of linters is not a recommendation (same thing for all this configuration file).
+  # We intentionally use a limited set of linters.
+  # See the comment on top of this file.
+  enable:
+    - bodyclose
+    - copyloopvar
+    - depguard
+    - dogsled
+    - dupl
+    - errcheck
+    - errorlint
+    - funlen
+    - gocheckcompilerdirectives
+    - goconst
+    - gocritic
+    - gocyclo
+    - godox
+    - mnd
+    - goprintffuncname
+    - gosec
+    - govet
+    - intrange
+    - ineffassign
+    - lll
+    - misspell
+    - nakedret
+    - noctx
+    - nolintlint
+    - revive
+    # - staticcheck
+    - testifylint
+    - unconvert
+    - unparam
+    - unused
+    - whitespace
+
+  settings:
+    depguard:
+      rules:
+        logger:
+          deny:
+            # logging is allowed only by logger package,
+            - pkg: "github.com/sirupsen/logrus"
+              desc: logging is allowed only by logger package.
+            - pkg: "github.com/pkg/errors"
+              desc: Should be replaced by standard lib errors package.
+            - pkg: "github.com/instana/testify"
+              desc: It's a fork of github.com/stretchr/testify.
+          files:
+            # logrus is allowed to use only in logger package.
+            - "!**/pkg/logger/**.go"
+    dupl:
+      threshold: 100
+    funlen:
+      lines: -1 # the number of lines (code + empty lines) is not a right metric and leads to code without empty line or one-liner.
+      statements: 50
+    goconst:
+      min-len: 2
+      min-occurrences: 3
+    gocritic:
+      enabled-tags:
+        - diagnostic
+        - experimental
+        - opinionated
+        - performance
+        - style
+      disabled-checks:
+        - dupImport # https://github.com/go-critic/go-critic/issues/845
+        - ifElseChain
+        - octalLiteral
+        - whyNoLint
+    gocyclo:
+      min-complexity: 15
+    godox:
+      keywords:
+        - FIXME
+    mnd:
+      # don't include the "operation" and "assign"
+      checks:
+        - argument
+        - case
+        - condition
+        - return
+      ignored-numbers:
+        - '0'
+        - '1'
+        - '2'
+        - '3'
+      ignored-functions:
+        - strings.SplitN
+    govet:
+      settings:
+        printf:
+          funcs:
+            - (github.com/1nterdigital/game/pkg/logger.GetLogger).Infof
+            - (github.com/1nterdigital/game/pkg/logger.GetLogger).Warnf
+            - (github.com/1nterdigital/game/pkg/logger.GetLogger).Errorf
+            - (github.com/1nterdigital/game/pkg/logger.GetLogger).Fatalf
+      enable:
+        - nilness
+        - shadow
+    errorlint:
+      asserts: false
+    lll:
+      line-length: 140
+    misspell:
+      locale: US
+      ignore-rules:
+        - "importas" # linter name
+    nolintlint:
+      allow-unused: false # report any unused nolint directives
+      require-explanation: true # require an explanation for nolint directives
+      require-specific: true # require nolint directives to be specific about which linter is being skipped
+    revive:
+      rules:
+        - name: indent-error-flow
+        - name: unexported-return
+          disabled: true
+        - name: unused-parameter
+        - name: unused-receiver
+
+  exclusions:
+    presets:
+      - comments
+      - std-error-handling
+      - common-false-positives
+      - legacy
+    paths:
+      - test/testdata_etc # test files
+      - internal/go # extracted from Go code
+      - internal/x # extracted from x/tools code
+      - docs/.*   # related to swagger
+      - ".*_test.go" # file test
+    rules:
+      - path: (.+)_test\.go
+        linters:
+          - dupl
+          - mnd
+          - lll
+
+      # Based on existing code, the modifications should be limited to make maintenance easier.
+      - path: pkg/protocol/.*\.go
+        linters: [gocritic]
+        text: "rangeValCopy: each iteration copies 160 bytes \\(consider pointers or indexing\\)"
+
+      # Protocol buffer generated files should not be linted
+      - path: pkg/protocol/.*\.pb\.go
+        linters:
+          - dupl
+          - goconst
+          - funlen
+          - gocyclo
+          - mnd
+          - lll
+
+      # FlatBuffer generated files should not be linted
+      - path: pkg/protocol/.*_generated\.go
+        linters:
+          - dupl
+          - goconst
+          - funlen
+          - gocyclo
+          - mnd
+          - lll
+
+      # Database model methods (CRUD operations) follow similar structures across entities
+      # These are intentional duplicates reflecting consistent database access patterns
+      - path: internal/repository/.*\.go
+        linters:
+          - dupl
+
+      # Service layer methods follow a uniform pattern for business logic
+      # These are intentional duplicates to maintain consistent business logic structure across services
+      - path: internal/service/.*\.go
+        linters:
+          - dupl
+
+      # Handler layer functions follow a uniform pattern for request binding, validation, and response handling
+      # These are intentional structural similarities across endpoints to maintain consistency
+      - path: internal/transport/http/handler/.*\.go
+        linters:
+          - dupl
+
+      # Transport layer servers follow similar initialization patterns
+      # These are intentional duplicates for consistent transport service setup
+      - path: internal/transport/.*\.go
+        linters:
+          - dupl
+
+      # Command entrypoints share the same initialization pattern
+      # These are intentional duplicates for consistent service setup across modules
+      - path: cmd/.*\.go
+        linters:
+          - dupl
+
+      # Configuration loading functions share similar patterns
+      - path: internal/config/.*\.go
+        linters:
+          - dupl
+
+formatters:
+  enable:
+    # - gofmt
+    - goimports
+  settings:
+    # gofmt:
+    #   rewrite-rules:
+    #     - pattern: 'interface{}'
+    #       replacement: 'any'
+    goimports:
+      local-prefixes:
+        - github.com/1nterdigital/game
+  exclusions:
+    paths:
+      - test/testdata_etc # test files
+      - internal/go # extracted from Go code
+      - internal/x # extracted from x/tools code
+      - pkg/protocol/.*\.pb\.go # generated protobuf files
+      - pkg/protocol/.*_generated\.go # generated flatbuffer files

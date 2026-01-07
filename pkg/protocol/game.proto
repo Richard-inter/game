@@ -1,0 +1,143 @@
+syntax = "proto3";
+
+package game;
+
+option go_package = "github.com/1nterdigital/game/pkg/protocol";
+
+// Player information
+message Player {
+  string id = 1;
+  string username = 2;
+  string email = 3;
+  int32 score = 4;
+  int64 created_at = 5;
+  int64 updated_at = 6;
+}
+
+// Game information
+message Game {
+  string id = 1;
+  string name = 2;
+  string description = 3;
+  string status = 4; // "active", "inactive", "maintenance"
+  int32 max_players = 5;
+  int32 current_players = 6;
+  int64 created_at = 7;
+  int64 updated_at = 8;
+}
+
+// Game action
+message GameAction {
+  string player_id = 1;
+  string game_id = 2;
+  string action_type = 3; // "join", "leave", "move", "chat"
+  bytes action_data = 4;
+  int64 timestamp = 5;
+}
+
+// Game message for real-time communication
+message GameMessage {
+  string message_type = 1; // "player_joined", "player_left", "game_update", "chat"
+  string game_id = 2;
+  string player_id = 3;
+  bytes data = 4;
+  int64 timestamp = 5;
+}
+
+// Request/Response structures
+message CreateGameRequest {
+  string name = 1;
+  string description = 2;
+  int32 max_players = 3;
+}
+
+message CreateGameResponse {
+  bool success = 1;
+  Game game = 2;
+  string error = 3;
+}
+
+message JoinGameRequest {
+  string game_id = 1;
+  string player_id = 2;
+}
+
+message JoinGameResponse {
+  bool success = 1;
+  Game game = 2;
+  string error = 3;
+}
+
+message ListGamesRequest {
+  int32 page = 1;
+  int32 limit = 2;
+  string status = 3;
+}
+
+message ListGamesResponse {
+  bool success = 1;
+  repeated Game games = 2;
+  int32 total = 3;
+  int32 page = 4;
+  int32 limit = 5;
+  string error = 6;
+}
+
+message GetGameRequest {
+  string id = 1;
+}
+
+message GetGameResponse {
+  bool success = 1;
+  Game game = 2;
+  string error = 3;
+}
+
+message CreatePlayerRequest {
+  string username = 1;
+  string email = 2;
+}
+
+message CreatePlayerResponse {
+  bool success = 1;
+  Player player = 2;
+  string error = 3;
+}
+
+message GetPlayerRequest {
+  string id = 1;
+}
+
+message GetPlayerResponse {
+  bool success = 1;
+  Player player = 2;
+  string error = 3;
+}
+
+message ListPlayersRequest {
+  int32 page = 1;
+  int32 limit = 2;
+}
+
+message ListPlayersResponse {
+  bool success = 1;
+  repeated Player players = 2;
+  int32 total = 3;
+  int32 page = 4;
+  int32 limit = 5;
+  string error = 6;
+}
+
+// Service definitions
+service GameService {
+  rpc CreateGame(CreateGameRequest) returns (CreateGameResponse);
+  rpc GetGame(GetGameRequest) returns (GetGameResponse);
+  rpc ListGames(ListGamesRequest) returns (ListGamesResponse);
+  rpc JoinGame(JoinGameRequest) returns (JoinGameResponse);
+}
+
+service PlayerService {
+  rpc CreatePlayer(CreatePlayerRequest) returns (CreatePlayerResponse);
+  rpc GetPlayer(GetPlayerRequest) returns (GetPlayerResponse);
+  rpc ListPlayers(ListPlayersRequest) returns (ListPlayersResponse);
+}

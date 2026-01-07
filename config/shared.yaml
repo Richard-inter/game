@@ -1,0 +1,29 @@
+# Shared configuration for all services
+
+database:
+  host: "localhost"
+  port: 3306
+  user: "root"
+  password: ""
+  name: "game"
+  charset: "utf8mb4"
+
+redis:
+  host: "localhost"
+  port: 6379
+  password: ""
+  db: 0
+
+logging:
+  level: "info"  # debug, info, warn, error
+  format: "json"  # json, text
+  output: "stdout"  # stdout, file
+
+jwt:
+  secret: "your-secret-key-change-in-production"
+  expiration_time: 86400  # 24 hours
+
+tracing:
+  enabled: false
+  service_name: "game-microservices"
+  jaeger_url: "http://localhost:14268/api/traces"

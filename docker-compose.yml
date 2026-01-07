@@ -1,0 +1,196 @@
+version: '3.8'
+
+services:
+  # Game Service (gRPC)
+  game-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "9090:9090"
+    environment:
+      - GIN_MODE=release
+      - GAME_GAME_SERVICE_PORT=9090
+      - GAME_DATABASE_HOST=mysql
+      - GAME_DATABASE_PORT=3306
+      - GAME_DATABASE_USER=root
+      - GAME_DATABASE_PASSWORD=rootpassword
+      - GAME_DATABASE_NAME=game
+      - GAME_REDIS_HOST=redis
+      - GAME_REDIS_PORT=6379
+    volumes:
+      - ./config/game-service.yaml:/app/config/game-service.yaml:ro
+      - ./config/shared.yaml:/app/config/shared.yaml:ro
+    depends_on:
+      - mysql
+      - redis
+    networks:
+      - game-network
+    restart: unless-stopped
+    command: ["./game-service"]
+
+  # API Service (HTTP)
+  api-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - GIN_MODE=release
+      - GAME_API_SERVICE_PORT=8080
+      - GAME_DATABASE_HOST=mysql
+      - GAME_DATABASE_PORT=3306
+      - GAME_DATABASE_USER=root
+      - GAME_DATABASE_PASSWORD=rootpassword
+      - GAME_DATABASE_NAME=game
+      - GAME_REDIS_HOST=redis
+      - GAME_REDIS_PORT=6379
+    volumes:
+      - ./config/api-service.yaml:/app/config/api-service.yaml:ro
+      - ./config/shared.yaml:/app/config/shared.yaml:ro
+    depends_on:
+      - mysql
+      - redis
+    networks:
+      - game-network
+    restart: unless-stopped
+    command: ["./api-service"]
+
+  # WebSocket Service
+  websocket-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8081:8081"
+    environment:
+      - GIN_MODE=release
+      - GAME_WEBSOCKET_SERVICE_PORT=8081
+      - GAME_REDIS_HOST=redis
+      - GAME_REDIS_PORT=6379
+    volumes:
+      - ./config/websocket-service.yaml:/app/config/websocket-service.yaml:ro
+      - ./config/shared.yaml:/app/config/shared.yaml:ro
+    depends_on:
+      - redis
+    networks:
+      - game-network
+    restart: unless-stopped
+    command: ["./websocket-service"]
+
+  # TCP Service
+  tcp-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8082:8082"
+    environment:
+      - GIN_MODE=release
+      - GAME_TCP_SERVICE_PORT=8082
+    volumes:
+      - ./config/tcp-service.yaml:/app/config/tcp-service.yaml:ro
+      - ./config/shared.yaml:/app/config/shared.yaml:ro
+    networks:
+      - game-network
+    restart: unless-stopped
+    command: ["./tcp-service"]
+
+  # MySQL Database
+  mysql:
+    image: mysql:8.0
+    environment:
+      - MYSQL_ROOT_PASSWORD=rootpassword
+      - MYSQL_DATABASE=game
+      - MYSQL_USER=gameuser
+      - MYSQL_PASSWORD=gamepass
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./data/mysql/init:/docker-entrypoint-initdb.d
+    networks:
+      - game-network
+    restart: unless-stopped
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - game-network
+    restart: unless-stopped
+
+  # Nginx Load Balancer (optional)
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./deployments/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./deployments/nginx/ssl:/etc/nginx/ssl
+    depends_on:
+      - game-server
+    networks:
+      - game-network
+    restart: unless-stopped
+
+  # Jaeger for distributed tracing
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    ports:
+      - "16686:16686"  # Jaeger UI
+      - "14268:14268"  # HTTP collector
+      - "14250:14250"  # gRPC collector
+    environment:
+      - COLLECTOR_OTLP_ENABLED=true
+    networks:
+      - game-network
+    restart: unless-stopped
+
+  # Prometheus for metrics
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - "9091:9090"
+    volumes:
+      - ./deployments/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+    networks:
+      - game-network
+    restart: unless-stopped
+
+  # Grafana for visualization
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./deployments/grafana/dashboards:/etc/grafana/provisioning/dashboards
+      - ./deployments/grafana/datasources:/etc/grafana/provisioning/datasources
+    networks:
+      - game-network
+    restart: unless-stopped
+
+volumes:
+  mysql_data:
+  redis_data:
+  prometheus_data:
+  grafana_data:
+
+networks:
+  game-network:
+    driver: bridge

@@ -1,0 +1,21 @@
+# TCP Service Configuration
+
+service:
+  name: "tcp-service"
+  host: "0.0.0.0"
+  port: 8082
+  keep_alive: true
+  read_timeout: 30
+  write_timeout: 30
+
+tcp:
+  host: "0.0.0.0"
+  port: 8082
+  keep_alive: true
+  read_timeout: 30
+  write_timeout: 30
+
+# Import shared configurations
+shared:
+  logging: "shared.yaml"
+  tracing: "shared.yaml"
