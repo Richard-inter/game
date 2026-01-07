@@ -24,13 +24,13 @@ type Config struct {
 
 func NewClient(cfg *Config) (*Client, error) {
 	// Connect to player service
-	playerConn, err := grpc.Dial(cfg.PlayerServiceAddr, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	playerConn, err := grpc.NewClient(cfg.PlayerServiceAddr, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		return nil, err
 	}
 
 	// Connect to clawmachine service
-	clawmachineConn, err := grpc.Dial(cfg.ClawMachineServiceAddr, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	clawmachineConn, err := grpc.NewClient(cfg.ClawMachineServiceAddr, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		playerConn.Close()
 		return nil, err
@@ -48,9 +48,6 @@ func (c *Client) Close() error {
 }
 
 func (c *Client) GetPlayerInfo(ctx context.Context, playerID int64) (*playerpb.GetPlayerInfoResp, error) {
-	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
-	defer cancel()
-
 	req := &playerpb.GetPlayerInfoReq{
 		PlayerID: playerID,
 	}

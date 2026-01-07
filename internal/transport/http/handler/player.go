@@ -81,10 +81,10 @@ func DeletePlayer(logger *logrus.Logger) gin.HandlerFunc {
 	}
 }
 
-func HandleTest(logger *logrus.Logger, grpcClient *grpc.Client) gin.HandlerFunc {
+func HandleGetPlayerInfo(logger *logrus.Logger, grpcClient *grpc.Client) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// Call the gRPC service using the client
-		resp, err := grpcClient.GetPlayerInfo(c.Request.Context(), 123)
+		resp, err := grpcClient.GetPlayerInfo(c, 123)
 		if err != nil {
 			logger.WithError(err).Error("Failed to call gRPC service")
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to call gRPC service"})

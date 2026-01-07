@@ -132,6 +132,6 @@ func (s *Server) setupRoutes() {
 			players.DELETE("/:id", handler.DeletePlayer(s.logger))
 		}
 
-		v1.GET("/test", handler.HandleTest(s.logger, s.grpcClient))
+		v1.GET("/test", handler.HandleGetPlayerInfo(s.logger, s.grpcClient))
 	}
 }
