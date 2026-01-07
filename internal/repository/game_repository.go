@@ -1,7 +1,7 @@
 package repository
 
 import (
-	"github.com/1nterdigital/game/internal/domain"
+	"github.com/Richard-inter/game/internal/domain"
 	"gorm.io/gorm"
 )
 

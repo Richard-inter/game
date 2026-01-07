@@ -110,10 +110,10 @@ linters:
       settings:
         printf:
           funcs:
-            - (github.com/1nterdigital/game/pkg/logger.GetLogger).Infof
-            - (github.com/1nterdigital/game/pkg/logger.GetLogger).Warnf
-            - (github.com/1nterdigital/game/pkg/logger.GetLogger).Errorf
-            - (github.com/1nterdigital/game/pkg/logger.GetLogger).Fatalf
+            - (github.com/Richard-inter/game/pkg/logger.GetLogger).Infof
+            - (github.com/Richard-inter/game/pkg/logger.GetLogger).Warnf
+            - (github.com/Richard-inter/game/pkg/logger.GetLogger).Errorf
+            - (github.com/Richard-inter/game/pkg/logger.GetLogger).Fatalf
       enable:
         - nilness
         - shadow
@@ -227,7 +227,7 @@ formatters:
     #       replacement: 'any'
     goimports:
       local-prefixes:
-        - github.com/1nterdigital/game
+        - github.com/Richard-inter/game
   exclusions:
     paths:
       - test/testdata_etc # test files

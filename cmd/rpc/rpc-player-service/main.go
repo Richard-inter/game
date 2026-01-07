@@ -13,10 +13,8 @@ import (
 	"google.golang.org/grpc/reflection"
 
 	"github.com/Richard-inter/game/internal/config"
-	c "github.com/Richard-inter/game/internal/service/rpc/clawMachine"
 	p "github.com/Richard-inter/game/internal/service/rpc/player"
 	"github.com/Richard-inter/game/pkg/logger"
-	clawMachine "github.com/Richard-inter/game/pkg/protocol/clawMachine"
 	player "github.com/Richard-inter/game/pkg/protocol/player"
 )
 
@@ -36,16 +34,15 @@ func main() {
 	log := logger.GetLogger()
 
 	log.WithFields(logrus.Fields{
-		"version":    Version,
-		"build_time": BuildTime,
-		"go_version": GoVersion,
-		"service":    "game-service",
-	}).Info("Starting Game Service")
+		"version":   Version,
+		"buildTime": BuildTime,
+		"goVersion": GoVersion,
+	}).Info("Starting Player Service")
 
 	// Load service-specific configuration
 	configFile := os.Getenv("CONFIG_PATH")
 	if configFile == "" {
-		configFile = "config/game-service.yaml" // fallback
+		configFile = "config/rpc-player-service.yaml" // fallback
 	}
 
 	cfg, err := config.LoadServiceConfigFromPath(configFile)
@@ -55,26 +52,23 @@ func main() {
 
 	// Initialize gRPC server
 	lc := net.ListenConfig{}
-	lis, err := lc.Listen(context.Background(), "tcp", cfg.GetServiceAddr())
+	lis, err := lc.Listen(context.Background(), "tcp", cfg.GetGRPCAddr())
 	if err != nil {
 		log.WithError(err).Fatal("Failed to listen")
 	}
 
 	s := grpc.NewServer()
 
-	// Initialize services (placeholder implementations)
-	gameService := c.NewClawMachineGRPCService()
+	// Initialize and register player service
 	playerService := p.NewPlayerGRPCService()
-
-	// Register services
-	clawMachine.RegisterClawMachineServiceServer(s, gameService)
 	player.RegisterPlayerServiceServer(s, playerService)
+
 	// Enable reflection for development
 	reflection.Register(s)
 
 	log.WithFields(logrus.Fields{
 		"address": lis.Addr().String(),
-	}).Info("Game Service gRPC server starting")
+	}).Info("Player gRPC server starting")
 
 	// Start server in a goroutine
 	go func() {
@@ -88,20 +82,23 @@ func main() {
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
 	<-quit
 
-	log.Info("Shutting down Game Service...")
+	log.Info("Shutting down Player service...")
 
 	// Graceful shutdown
-	stopped := make(chan struct{})
+	ctx, cancel := context.WithTimeout(context.Background(), shutdownTimeout)
+	defer cancel()
+
+	done := make(chan struct{})
 	go func() {
 		s.GracefulStop()
-		close(stopped)
+		close(done)
 	}()
 
 	select {
-	case <-stopped:
-		log.Info("Game Service stopped gracefully")
-	case <-time.After(shutdownTimeout):
-		log.Warn("Game Service shutdown timeout, forcing stop")
+	case <-done:
+		log.Info("Player service stopped gracefully")
+	case <-ctx.Done():
+		log.Info("Player service shutdown timeout")
 		s.Stop()
 	}
 }

@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package player;
+
+option go_package = "github.com/Richard-inter/game/pkg/protocol/player";
+
+message Player{
+    int64 playerID = 1;
+    string userName = 2;
+}
+
+message GetPlayerInfoReq{
+    int64 playerID = 1;
+}
+
+message GetPlayerInfoResp{
+    Player player = 1;
+}
+
+service PlayerService{
+    rpc GetPlayerInfo(GetPlayerInfoReq) returns (GetPlayerInfoResp);
+}

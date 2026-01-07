@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/1nterdigital/game/internal/config"
+	"github.com/Richard-inter/game/internal/config"
 	"github.com/gorilla/websocket"
 	"github.com/sirupsen/logrus"
 )

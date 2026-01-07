@@ -11,6 +11,22 @@ grpc:
   port: 9090
   reflection: true
 
+# RPC Services Configuration
+rpc_services:
+  claw_machine:
+    enabled: true
+    service_package: "clawMachine"
+    service_name: "ClawMachineService"
+    import_path: "github.com/Richard-inter/game/pkg/protocol/clawMachine"
+    implementation_path: "github.com/Richard-inter/game/internal/service/rpc/clawMachine"
+  
+  player:
+    enabled: true
+    service_package: "player"
+    service_name: "PlayerService"
+    import_path: "github.com/Richard-inter/game/pkg/protocol/player"
+    implementation_path: "github.com/Richard-inter/game/internal/service/rpc/player"
+
 # Import shared configurations
 shared:
   database: "shared.yaml"

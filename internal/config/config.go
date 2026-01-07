@@ -19,16 +19,30 @@ const (
 	defaultJWTExpiration = 86400 // 24 hours
 )
 
+type RPCServiceConfig struct {
+	Enabled            bool   `mapstructure:"enabled"`
+	ServicePackage     string `mapstructure:"service_package"`
+	ServiceName        string `mapstructure:"service_name"`
+	ImportPath         string `mapstructure:"import_path"`
+	ImplementationPath string `mapstructure:"implementation_path"`
+}
+
+type RPCServicesConfig struct {
+	ClawMachine RPCServiceConfig `mapstructure:"claw_machine"`
+	Player      RPCServiceConfig `mapstructure:"player"`
+}
+
 type Config struct {
-	Server    ServerConfig    `mapstructure:"server"`
-	Database  DatabaseConfig  `mapstructure:"database"`
-	Redis     RedisConfig     `mapstructure:"redis"`
-	GRPC      GRPCConfig      `mapstructure:"grpc"`
-	WebSocket WebSocketConfig `mapstructure:"websocket"`
-	TCP       TCPConfig       `mapstructure:"tcp"`
-	JWT       JWTConfig       `mapstructure:"jwt"`
-	Logging   LoggingConfig   `mapstructure:"logging"`
-	Tracing   TracingConfig   `mapstructure:"tracing"`
+	Server      ServerConfig      `mapstructure:"server"`
+	Database    DatabaseConfig    `mapstructure:"database"`
+	Redis       RedisConfig       `mapstructure:"redis"`
+	GRPC        GRPCConfig        `mapstructure:"grpc"`
+	RPCServices RPCServicesConfig `mapstructure:"rpc_services"`
+	WebSocket   WebSocketConfig   `mapstructure:"websocket"`
+	TCP         TCPConfig         `mapstructure:"tcp"`
+	JWT         JWTConfig         `mapstructure:"jwt"`
+	Logging     LoggingConfig     `mapstructure:"logging"`
+	Tracing     TracingConfig     `mapstructure:"tracing"`
 }
 
 type ServerConfig struct {

@@ -1,4 +1,4 @@
-module github.com/1nterdigital/game
+module github.com/Richard-inter/game
 
 go 1.21
 

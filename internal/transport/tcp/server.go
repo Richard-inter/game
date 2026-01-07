@@ -7,7 +7,7 @@ import (
 	"net"
 	"time"
 
-	"github.com/1nterdigital/game/internal/config"
+	"github.com/Richard-inter/game/internal/config"
 	"github.com/sirupsen/logrus"
 )
 

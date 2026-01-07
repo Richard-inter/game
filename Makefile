@@ -20,6 +20,8 @@ build:
 	go build $(LDFLAGS) -o bin/api-service ./cmd/api-service
 	go build $(LDFLAGS) -o bin/websocket-service ./cmd/websocket-service
 	go build $(LDFLAGS) -o bin/tcp-service ./cmd/tcp-service
+	go build $(LDFLAGS) -o bin/rpc-clawmachine-service ./cmd/rpc/rpc-clawmachine-service
+	go build $(LDFLAGS) -o bin/rpc-player-service ./cmd/rpc/rpc-player-service
 
 # Build individual services
 build-game:
@@ -38,6 +40,14 @@ build-tcp:
 	@echo "Building TCP service..."
 	go build $(LDFLAGS) -o bin/tcp-service ./cmd/tcp-service
 
+build-clawmachine:
+	@echo "Building RPC ClawMachine service..."
+	go build $(LDFLAGS) -o bin/rpc-clawmachine-service ./cmd/rpc/rpc-clawmachine-service
+
+build-player:
+	@echo "Building RPC Player service..."
+	go build $(LDFLAGS) -o bin/rpc-player-service ./cmd/rpc/rpc-player-service
+
 # Run individual services
 run-game:
 	@echo "Running game service..."
@@ -54,6 +64,14 @@ run-websocket:
 run-tcp:
 	@echo "Running TCP service..."
 	go run $(LDFLAGS) ./cmd/tcp-service
+
+run-clawmachine:
+	@echo "Running RPC ClawMachine service..."
+	go run $(LDFLAGS) ./cmd/rpc/rpc-clawmachine-service
+
+run-player:
+	@echo "Running RPC Player service..."
+	go run $(LDFLAGS) ./cmd/rpc/rpc-player-service
 
 # Run the application (all services)
 run:
@@ -89,7 +107,10 @@ generate:
 # Generate protobuf files
 proto:
 	@echo "Generating protobuf files..."
-	protoc --go_out=. --go-grpc_out=. pkg/protocol/*.proto
+	find pkg/protocol -name "*.proto" | xargs protoc \
+		-I pkg/protocol \
+		--go_out=paths=source_relative:pkg/protocol \
+		--go-grpc_out=paths=source_relative:pkg/protocol
 
 # Generate flatbuffer files
 flatbuffers:
@@ -102,32 +123,28 @@ docker-build:
 	docker build -t game-services:latest .
 
 docker-build-dev:
-	@echo "Building development Docker images..."
+	@echo "Building development Docker image..."
 	docker build -f Dockerfile.dev -t game-services:dev .
 
-docker-up-infra:
-	@echo "Starting infrastructure services (MySQL, Redis)..."
-	docker-compose -f docker-compose.infrastructure.yml up -d
-
-docker-down-infra:
-	@echo "Stopping infrastructure services..."
-	docker-compose -f docker-compose.infrastructure.yml down
-
-docker-up-observability:
-	@echo "Starting observability stack (Jaeger, Prometheus, Grafana)..."
-	docker-compose -f docker-compose.infrastructure.yml --profile observability up -d
-
-docker-up-all:
-	@echo "Starting all services with Docker..."
+docker-up:
+	@echo "Starting all services..."
 	docker-compose up -d
 
-docker-up-dev:
-	@echo "Starting microservices in Docker with hot reload..."
-	docker-compose -f docker-compose.infrastructure.yml -f docker-compose.dev.yml --profile docker-dev up -d
+docker-up-infra:
+	@echo "Starting infrastructure only..."
+	docker-compose -f docker-compose.mysql.yml up -d
 
 docker-down:
-	@echo "Stopping all Docker services..."
+	@echo "Stopping all services..."
 	docker-compose down
+
+docker-down-infra:
+	@echo "Stopping infrastructure only..."
+	docker-compose -f docker-compose.mysql.yml down
+
+docker-logs:
+	@echo "Showing logs..."
+	docker-compose logs -f
 
 docker-logs-infra:
 	@echo "Showing infrastructure logs..."
@@ -181,7 +198,7 @@ dev:
 # Initialize project
 init:
 	@echo "Initializing project..."
-	go mod init github.com/1nterdigital/game
+	go mod init github.com/Richard-inter/game
 	go mod tidy
 	mkdir -p bin cmd internal pkg config data docs deployments scripts
 

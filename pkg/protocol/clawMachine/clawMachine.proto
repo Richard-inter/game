@@ -1,0 +1,43 @@
+syntax = "proto3";
+
+package clawMachine;
+
+option go_package = "github.com/Richard-inter/game/pkg/protocol/clawMachine";
+
+import "player/player.proto";
+
+message ClawPlayer {
+    player.Player basePlayer = 1;
+
+    // game specific attributes
+    int64 coin = 2;
+    int64 diamond = 3;
+}
+
+message StartClawGameReq {
+    int64 playerID = 1;
+    int64 machineID = 2;
+}
+
+message ClawResult {
+    int64 itemID = 1;
+    bool catched = 2;
+}
+
+message StartClawGameResp {
+    int64 gameID = 1;
+    repeated ClawResult results = 2;
+}
+
+message GetClawPlayerInfoReq {
+    int64 playerID = 1;
+}
+
+message GetClawPlayerInfoResp {
+    ClawPlayer player = 1;
+}
+
+service ClawMachineService {
+    rpc StartClawGame (StartClawGameReq) returns (StartClawGameResp);
+    rpc GetClawPlayerInfo (GetClawPlayerInfoReq) returns (GetClawPlayerInfoResp);
+}

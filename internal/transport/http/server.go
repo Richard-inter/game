@@ -6,8 +6,8 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/1nterdigital/game/internal/config"
-	"github.com/1nterdigital/game/internal/transport/http/handler"
+	"github.com/Richard-inter/game/internal/config"
+	"github.com/Richard-inter/game/internal/transport/http/handler"
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 )
