@@ -1,6 +1,9 @@
 package service
 
 import (
+	"context"
+	"fmt"
+
 	"github.com/Richard-inter/game/pkg/protocol/player"
 )
 
@@ -12,4 +15,10 @@ type PlayerGRPCService struct {
 // NewPlayerGRPCService creates a new PlayerGRPCService
 func NewPlayerGRPCService() *PlayerGRPCService {
 	return &PlayerGRPCService{}
+}
+
+func (s *PlayerGRPCService) GetPlayerInfo(ctx context.Context, req *player.GetPlayerInfoReq) (*player.GetPlayerInfoResp, error) {
+	// Implementation goes here
+	fmt.Println("masuk rpc")
+	return &player.GetPlayerInfoResp{}, nil
 }

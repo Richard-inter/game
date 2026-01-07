@@ -3,6 +3,7 @@ package handler
 import (
 	"net/http"
 
+	"github.com/Richard-inter/game/internal/transport/grpc"
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 )
@@ -77,5 +78,23 @@ func DeletePlayer(logger *logrus.Logger) gin.HandlerFunc {
 
 		logger.WithField("player_id", id).Info("Delete player requested")
 		c.JSON(http.StatusNoContent, gin.H{"message": "Player deleted successfully"})
+	}
+}
+
+func HandleTest(logger *logrus.Logger, grpcClient *grpc.Client) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		// Call the gRPC service using the client
+		resp, err := grpcClient.GetPlayerInfo(c.Request.Context(), 123)
+		if err != nil {
+			logger.WithError(err).Error("Failed to call gRPC service")
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to call gRPC service"})
+			return
+		}
+
+		logger.Info("Successfully called gRPC player service")
+		c.JSON(http.StatusOK, gin.H{
+			"message":  "Successfully connected to gRPC service",
+			"response": resp,
+		})
 	}
 }

@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/Richard-inter/game/internal/config"
+	"github.com/Richard-inter/game/internal/transport/grpc"
 	"github.com/Richard-inter/game/internal/transport/http/handler"
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
@@ -17,16 +18,18 @@ const (
 )
 
 type Server struct {
-	config *config.Config
-	logger *logrus.Logger
-	server *http.Server
-	engine *gin.Engine
+	config     *config.ServiceConfig
+	logger     *logrus.Logger
+	server     *http.Server
+	engine     *gin.Engine
+	grpcClient *grpc.Client
 }
 
-func NewServer(cfg *config.Config, logger *logrus.Logger) *Server {
+func NewServer(cfg *config.ServiceConfig, logger *logrus.Logger, grpcClient *grpc.Client) *Server {
 	return &Server{
-		config: cfg,
-		logger: logger,
+		config:     cfg,
+		logger:     logger,
+		grpcClient: grpcClient,
 	}
 }
 
@@ -42,10 +45,10 @@ func (s *Server) Start() error {
 
 	// Create HTTP server
 	s.server = &http.Server{
-		Addr:         fmt.Sprintf("%s:%d", s.config.Server.Host, s.config.Server.Port),
+		Addr:         fmt.Sprintf("%s:%d", s.config.Service.Host, s.config.Service.Port),
 		Handler:      s.engine,
-		ReadTimeout:  time.Duration(s.config.Server.ReadTimeout) * time.Second,
-		WriteTimeout: time.Duration(s.config.Server.WriteTimeout) * time.Second,
+		ReadTimeout:  time.Duration(s.config.Service.ReadTimeout) * time.Second,
+		WriteTimeout: time.Duration(s.config.Service.WriteTimeout) * time.Second,
 	}
 
 	s.logger.WithFields(logrus.Fields{
@@ -128,5 +131,7 @@ func (s *Server) setupRoutes() {
 			players.PUT("/:id", handler.UpdatePlayer(s.logger))
 			players.DELETE("/:id", handler.DeletePlayer(s.logger))
 		}
+
+		v1.GET("/test", handler.HandleTest(s.logger, s.grpcClient))
 	}
 }
