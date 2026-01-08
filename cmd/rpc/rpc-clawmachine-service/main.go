@@ -13,6 +13,8 @@ import (
 	"google.golang.org/grpc/reflection"
 
 	"github.com/Richard-inter/game/internal/config"
+	"github.com/Richard-inter/game/internal/db"
+	"github.com/Richard-inter/game/internal/repository"
 	c "github.com/Richard-inter/game/internal/service/rpc/clawMachine"
 	"github.com/Richard-inter/game/pkg/logger"
 	clawMachine "github.com/Richard-inter/game/pkg/protocol/clawMachine"
@@ -50,6 +52,12 @@ func main() {
 		log.WithError(err).Fatal("Failed to load configuration")
 	}
 
+	// Initialize database
+	database, err := db.InitClawmachineDB(cfg)
+	if err != nil {
+		log.WithError(err).Fatal("Failed to initialize database")
+	}
+
 	// Initialize gRPC server
 	lc := net.ListenConfig{}
 	lis, err := lc.Listen(context.Background(), "tcp", cfg.GetGRPCAddr())
@@ -60,7 +68,8 @@ func main() {
 	s := grpc.NewServer()
 
 	// Initialize and register claw machine service
-	clawMachineService := c.NewClawMachineGRPCService()
+	clawMachineRepo := repository.NewClawMachineRepository(database)
+	clawMachineService := c.NewClawMachineGRPCService(clawMachineRepo)
 	clawMachine.RegisterClawMachineServiceServer(s, clawMachineService)
 
 	// Enable reflection for development

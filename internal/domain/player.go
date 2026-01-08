@@ -4,3 +4,7 @@ type Player struct {
 	ID       int64  `json:"id" gorm:"primaryKey"`
 	UserName string `json:"username" gorm:"unique;not null"`
 }
+
+func (Player) TableName() string {
+	return "player"
+}

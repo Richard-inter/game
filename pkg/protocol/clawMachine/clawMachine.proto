@@ -6,12 +6,40 @@ option go_package = "github.com/Richard-inter/game/pkg/protocol/clawMachine";
 
 import "player/player.proto";
 
+message Item {
+    int64 itemID = 1;
+    string name = 2;
+    string rarity = 3;
+    int64 weight = 4;
+}
+
+message ClawMachine {
+    int64 machineID = 1;
+    string name = 2;
+    repeated Item items = 3;
+    int64 price = 4;
+}   
+
 message ClawPlayer {
     player.Player basePlayer = 1;
 
     // game specific attributes
     int64 coin = 2;
     int64 diamond = 3;
+}
+
+message Items {
+    int64 itemID =1;
+}
+
+message CreateClawMachineReq {
+    string name = 1;
+    repeated Items items = 2;
+    int64 price = 3;
+}
+
+message CreateClawMachineResp {
+    ClawMachine machine = 1;
 }
 
 message StartClawGameReq {
@@ -37,7 +65,36 @@ message GetClawPlayerInfoResp {
     ClawPlayer player = 1;
 }
 
+message GetClawMachineInfoReq {
+    int64 machineID = 1;
+}
+
+message GetClawMachineInfoResp {
+    ClawMachine machine = 1;
+}
+
+message CreateItemReq {
+    string name = 1;
+    string rarity = 2;
+    int64 weight = 3;
+}
+
+message CreateClawItemsReq {
+    repeated CreateItemReq clawItems = 1;
+}
+
+message CreateClawItemsResp {
+    repeated Item clawItems = 2;
+}
+
 service ClawMachineService {
+    rpc CreateClawMachine (CreateClawMachineReq) returns (CreateClawMachineResp);
+    rpc GetClawMachineInfo (GetClawMachineInfoReq) returns (GetClawMachineInfoResp);
+
     rpc StartClawGame (StartClawGameReq) returns (StartClawGameResp);
+
+
     rpc GetClawPlayerInfo (GetClawPlayerInfoReq) returns (GetClawPlayerInfoResp);
+
+    rpc CreateClawItems (CreateClawItemsReq) returns (CreateClawItemsResp);
 }

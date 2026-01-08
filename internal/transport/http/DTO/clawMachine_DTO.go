@@ -1,0 +1,25 @@
+package dto
+
+// CreateClawMachineRequest represents the HTTP request for creating a claw machine
+type CreateClawMachineRequest struct {
+	Name  string                         `json:"name" binding:"required"`
+	Price int64                          `json:"price" binding:"required"`
+	Items []CreateClawMachineItemRequest `json:"items"`
+}
+
+// CreateClawMachineItemRequest represents an item in the claw machine creation request
+type CreateClawMachineItemRequest struct {
+	ItemID int64 `json:"itemID" binding:"required"`
+}
+
+// CreateClawItemsRequest represents the HTTP request for creating claw items
+type CreateClawItemsRequest struct {
+	ClawItems []CreateClawItemRequest `json:"clawItems" binding:"required"`
+}
+
+// CreateClawItemRequest represents the HTTP request for creating a single claw item
+type CreateClawItemRequest struct {
+	Name   string `json:"name" binding:"required"`
+	Rarity string `json:"rarity" binding:"required"`
+	Weight int64  `json:"weight" binding:"required"`
+}

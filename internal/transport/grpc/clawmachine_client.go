@@ -3,7 +3,6 @@ package grpc
 import (
 	"context"
 	"fmt"
-	"time"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
@@ -28,27 +27,24 @@ func NewClawMachineClient(address string) (*ClawMachineClient, error) {
 	}, nil
 }
 
-func (c *ClawMachineClient) GetClawPlayerInfo(ctx context.Context, playerID int64) (*clawmachinepb.GetClawPlayerInfoResp, error) {
-	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
-	defer cancel()
-
-	req := &clawmachinepb.GetClawPlayerInfoReq{
-		PlayerID: playerID,
-	}
-
+func (c *ClawMachineClient) GetClawPlayerInfo(ctx context.Context, req *clawmachinepb.GetClawPlayerInfoReq) (*clawmachinepb.GetClawPlayerInfoResp, error) {
 	return c.client.GetClawPlayerInfo(ctx, req)
 }
 
-func (c *ClawMachineClient) StartClawGame(ctx context.Context, machineID int64, playerID int64) (*clawmachinepb.StartClawGameResp, error) {
-	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
-	defer cancel()
-
-	req := &clawmachinepb.StartClawGameReq{
-		MachineID: machineID,
-		PlayerID:  playerID,
-	}
-
+func (c *ClawMachineClient) StartClawGame(ctx context.Context, req *clawmachinepb.StartClawGameReq) (*clawmachinepb.StartClawGameResp, error) {
 	return c.client.StartClawGame(ctx, req)
+}
+
+func (c *ClawMachineClient) GetClawMachineInfo(ctx context.Context, req *clawmachinepb.GetClawMachineInfoReq) (*clawmachinepb.GetClawMachineInfoResp, error) {
+	return c.client.GetClawMachineInfo(ctx, req)
+}
+
+func (c *ClawMachineClient) CreateClawMachine(ctx context.Context, req *clawmachinepb.CreateClawMachineReq) (*clawmachinepb.CreateClawMachineResp, error) {
+	return c.client.CreateClawMachine(ctx, req)
+}
+
+func (c *ClawMachineClient) CreateClawItems(ctx context.Context, req *clawmachinepb.CreateClawItemsReq) (*clawmachinepb.CreateClawItemsResp, error) {
+	return c.client.CreateClawItems(ctx, req)
 }
 
 func (c *ClawMachineClient) Close() error {

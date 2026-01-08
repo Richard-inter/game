@@ -8,6 +8,7 @@ import (
 	"github.com/sirupsen/logrus"
 
 	"github.com/Richard-inter/game/internal/transport/grpc"
+	dto "github.com/Richard-inter/game/internal/transport/http/DTO"
 	"github.com/Richard-inter/game/pkg/common"
 	player "github.com/Richard-inter/game/pkg/protocol/player"
 )
@@ -33,21 +34,26 @@ func NewPlayerHandler(
 }
 
 func (h *PlayerHandler) HandleCreatePlayer(c *gin.Context) {
-	var grpcReq player.CreatePlayerReq
-	if err := c.ShouldBindJSON(&grpcReq); err != nil {
+	var req dto.CreatePlayerRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
 		h.logger.WithError(err).Error("Invalid request body")
 		common.SendError(c, http.StatusBadRequest, "Username is required")
 		return
 	}
 
-	resp, err := h.playerClient.CreatePlayer(c, &grpcReq)
+	// Convert DTO to gRPC request
+	grpcReq := &player.CreatePlayerReq{
+		UserName: req.UserName,
+	}
+
+	resp, err := h.playerClient.CreatePlayer(c, grpcReq)
 	if err != nil {
 		h.logger.WithError(err).Error("Failed to create player")
 		common.SendError(c, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	h.logger.WithField("username", grpcReq.UserName).Info("Successfully created player")
+	h.logger.WithField("username", req.UserName).Info("Successfully created player")
 	common.SendCreated(c, resp.Player)
 }
 

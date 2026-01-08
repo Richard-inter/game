@@ -7,22 +7,25 @@ import (
 	"time"
 
 	"github.com/Richard-inter/game/internal/config"
+	"github.com/Richard-inter/game/internal/transport/grpc"
 	"github.com/gorilla/websocket"
 	"github.com/sirupsen/logrus"
 )
 
 type Server struct {
-	config   *config.Config
-	logger   *logrus.Logger
-	server   *http.Server
-	upgrader websocket.Upgrader
-	clients  map[*websocket.Conn]bool
+	config      *config.Config
+	logger      *logrus.Logger
+	server      *http.Server
+	grpcManager *grpc.ClientManager
+	upgrader    websocket.Upgrader
+	clients     map[*websocket.Conn]bool
 }
 
-func NewServer(cfg *config.Config, logger *logrus.Logger) *Server {
+func NewServer(cfg *config.Config, logger *logrus.Logger, grpcManager *grpc.ClientManager) *Server {
 	return &Server{
-		config: cfg,
-		logger: logger,
+		config:      cfg,
+		logger:      logger,
+		grpcManager: grpcManager,
 		upgrader: websocket.Upgrader{
 			ReadBufferSize:  cfg.WebSocket.ReadBufferSize,
 			WriteBufferSize: cfg.WebSocket.WriteBufferSize,
@@ -35,9 +38,25 @@ func NewServer(cfg *config.Config, logger *logrus.Logger) *Server {
 }
 
 func (s *Server) Start() error {
+	// Create WebSocket handler
+	wsHandler, err := NewWebSocketHandler(s.logger, s.grpcManager)
+	if err != nil {
+		return fmt.Errorf("failed to create WebSocket handler: %w", err)
+	}
+
 	// Create HTTP server for WebSocket
 	mux := http.NewServeMux()
-	mux.HandleFunc(s.config.WebSocket.Path, s.handleWebSocket)
+	mux.HandleFunc(s.config.WebSocket.Path, func(w http.ResponseWriter, r *http.Request) {
+		// Upgrade HTTP connection to WebSocket
+		conn, err := s.upgrader.Upgrade(w, r, nil)
+		if err != nil {
+			s.logger.WithError(err).Error("Failed to upgrade WebSocket connection")
+			return
+		}
+
+		// Handle connection using the handler
+		wsHandler.HandleConnection(conn)
+	})
 
 	s.server = &http.Server{
 		Addr:         fmt.Sprintf("%s:%d", s.config.WebSocket.Host, s.config.WebSocket.Port),
@@ -72,49 +91,6 @@ func (s *Server) Shutdown(ctx context.Context) error {
 	}
 
 	return s.server.Shutdown(ctx)
-}
-
-func (s *Server) handleWebSocket(w http.ResponseWriter, r *http.Request) {
-	// Upgrade HTTP connection to WebSocket
-	conn, err := s.upgrader.Upgrade(w, r, nil)
-	if err != nil {
-		s.logger.WithError(err).Error("Failed to upgrade WebSocket connection")
-		return
-	}
-	defer conn.Close()
-
-	// Add client to the list
-	s.clients[conn] = true
-	defer delete(s.clients, conn)
-
-	s.logger.WithFields(logrus.Fields{
-		"client_ip":  r.RemoteAddr,
-		"user_agent": r.UserAgent(),
-	}).Info("WebSocket client connected")
-
-	// Handle WebSocket messages
-	for {
-		messageType, message, err := conn.ReadMessage()
-		if err != nil {
-			if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway, websocket.CloseAbnormalClosure) {
-				s.logger.WithError(err).Error("WebSocket error")
-			}
-			break
-		}
-
-		s.logger.WithFields(logrus.Fields{
-			"message_type": messageType,
-			"message":      string(message),
-		}).Debug("Received WebSocket message")
-
-		// Echo message back (placeholder)
-		if err := conn.WriteMessage(messageType, message); err != nil {
-			s.logger.WithError(err).Error("Failed to send WebSocket message")
-			break
-		}
-	}
-
-	s.logger.WithField("client_ip", r.RemoteAddr).Info("WebSocket client disconnected")
 }
 
 // Broadcast message to all connected clients

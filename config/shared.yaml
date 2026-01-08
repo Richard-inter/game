@@ -12,10 +12,10 @@ player_database:
 # Clawmachine service database  
 clawmachine_database:
   host: "localhost"
-  port: 3310
-  user: "clawuser"
-  password: "clawpass"
-  name: "clawmachine"
+  port: 3309
+  user: "gameuser"
+  password: "gamepass"
+  name: "game"
   charset: "utf8mb4"
 
 redis:

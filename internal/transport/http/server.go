@@ -113,6 +113,11 @@ func (s *Server) setupRoutes() {
 		s.logger.WithError(err).Fatal("Failed to create player handler")
 	}
 
+	clawMachineHandler, err := handler.NewClawMachineHandler(s.logger, s.grpcClient)
+	if err != nil {
+		s.logger.WithError(err).Fatal("Failed to create claw machine handler")
+	}
+
 	// Health check
 	s.engine.GET("/health", handler.HealthCheck(s.logger))
 
@@ -123,6 +128,12 @@ func (s *Server) setupRoutes() {
 		{
 			player.POST("/create", playerHandler.HandleCreatePlayer)
 			player.GET("/info/:id", playerHandler.HandleGetPlayerInfo)
+		}
+
+		clawMachine := v1.Group("/clawMachine")
+		{
+			clawMachine.POST("/createClawMachine", clawMachineHandler.HandleCreateClawMachine)
+			clawMachine.POST("/createClawItems", clawMachineHandler.HandleCreateClawItems)
 		}
 	}
 }
