@@ -13,7 +13,7 @@ grpc:
 
 # Import shared configurations
 shared:
-  database: "shared.yaml"
+  clawmachine_database: "shared.yaml"
   redis: "shared.yaml"
   logging: "shared.yaml"
   jwt: "shared.yaml"

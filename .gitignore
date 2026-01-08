@@ -37,6 +37,8 @@ Thumbs.db
 bin/
 build/
 dist/
+__debug_bin*
+__debug_bin/
 
 # Configuration files with sensitive data
 config/local.yaml

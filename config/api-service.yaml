@@ -13,9 +13,16 @@ cors:
   allowed_methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
   allowed_headers: ["Origin", "Content-Type", "Content-Length", "Accept-Encoding", "X-CSRF-Token", "Authorization"]
 
+# Service Discovery Configuration
+discovery:
+  etcd:
+    endpoints: ["localhost:2379"]
+    timeout: "5s"
+  enabled: false
+
 # Import shared configurations
 shared:
-  database: "shared.yaml"
+  player_database: "shared.yaml"
   redis: "shared.yaml"
   logging: "shared.yaml"
   jwt: "shared.yaml"

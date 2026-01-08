@@ -10,17 +10,20 @@ import (
 )
 
 type ServiceConfig struct {
-	Service   ServiceDetails  `mapstructure:"service"`
-	Shared    SharedConfig    `mapstructure:"shared"`
-	Database  DatabaseConfig  `mapstructure:"database"`
-	Redis     RedisConfig     `mapstructure:"redis"`
-	GRPC      GRPCConfig      `mapstructure:"grpc"`
-	WebSocket WebSocketConfig `mapstructure:"websocket"`
-	TCP       TCPConfig       `mapstructure:"tcp"`
-	CORS      CORSConfig      `mapstructure:"cors"`
-	Logging   LoggingConfig   `mapstructure:"logging"`
-	JWT       JWTConfig       `mapstructure:"jwt"`
-	Tracing   TracingConfig   `mapstructure:"tracing"`
+	Service             ServiceDetails  `mapstructure:"service"`
+	Shared              SharedConfig    `mapstructure:"shared"`
+	Database            DatabaseConfig  `mapstructure:"database"`
+	PlayerDatabase      DatabaseConfig  `mapstructure:"player_database"`
+	ClawmachineDatabase DatabaseConfig  `mapstructure:"clawmachine_database"`
+	Redis               RedisConfig     `mapstructure:"redis"`
+	GRPC                GRPCConfig      `mapstructure:"grpc"`
+	WebSocket           WebSocketConfig `mapstructure:"websocket"`
+	TCP                 TCPConfig       `mapstructure:"tcp"`
+	CORS                CORSConfig      `mapstructure:"cors"`
+	Logging             LoggingConfig   `mapstructure:"logging"`
+	JWT                 JWTConfig       `mapstructure:"jwt"`
+	Tracing             TracingConfig   `mapstructure:"tracing"`
+	Discovery           DiscoveryConfig `mapstructure:"discovery"`
 }
 
 type ServiceDetails struct {
@@ -34,11 +37,13 @@ type ServiceDetails struct {
 }
 
 type SharedConfig struct {
-	Database string `mapstructure:"database"`
-	Redis    string `mapstructure:"redis"`
-	Logging  string `mapstructure:"logging"`
-	JWT      string `mapstructure:"jwt"`
-	Tracing  string `mapstructure:"tracing"`
+	Database            string `mapstructure:"database"`
+	PlayerDatabase      string `mapstructure:"player_database"`
+	ClawmachineDatabase string `mapstructure:"clawmachine_database"`
+	Redis               string `mapstructure:"redis"`
+	Logging             string `mapstructure:"logging"`
+	JWT                 string `mapstructure:"jwt"`
+	Tracing             string `mapstructure:"tracing"`
 }
 
 type CORSConfig struct {
@@ -83,6 +88,16 @@ func LoadServiceConfigFromPath(configFile string) (*ServiceConfig, error) {
 	// Load shared configs if specified
 	if config.Shared.Database != "" {
 		if err := loadSharedConfig(v, config.Shared.Database, "database"); err != nil {
+			return nil, err
+		}
+	}
+	if config.Shared.PlayerDatabase != "" {
+		if err := loadSharedConfig(v, config.Shared.PlayerDatabase, "player_database"); err != nil {
+			return nil, err
+		}
+	}
+	if config.Shared.ClawmachineDatabase != "" {
+		if err := loadSharedConfig(v, config.Shared.ClawmachineDatabase, "clawmachine_database"); err != nil {
 			return nil, err
 		}
 	}
@@ -131,7 +146,17 @@ func loadSharedConfig(v *viper.Viper, configFile, key string) error {
 	// Merge shared config into main config
 	sharedSettings := sharedV.AllSettings()
 	for k, val := range sharedSettings {
-		v.Set(fmt.Sprintf("%s.%s", key, k), val)
+		if k == key {
+			// If key matches section name, merge inner map directly
+			if innerMap, ok := val.(map[string]interface{}); ok {
+				for innerK, innerV := range innerMap {
+					v.Set(fmt.Sprintf("%s.%s", key, innerK), innerV)
+				}
+			}
+		} else {
+			// Otherwise, set it as is
+			v.Set(fmt.Sprintf("%s.%s", key, k), val)
+		}
 	}
 
 	return nil
@@ -161,4 +186,47 @@ func (c *ServiceConfig) GetTCPAddr() string {
 		return fmt.Sprintf("%s:%d", c.TCP.Host, c.TCP.Port)
 	}
 	return c.GetServiceAddr()
+}
+
+// GetDSN returns database connection string
+func (c *ServiceConfig) GetDSN() string {
+	return fmt.Sprintf("%s:%s@tcp(%s:%d)/%s",
+		c.Database.User,
+		c.Database.Password,
+		c.Database.Host,
+		c.Database.Port,
+		c.Database.Name,
+	)
+}
+
+// GetPlayerDSN returns player database connection string
+func (c *ServiceConfig) GetPlayerDSN() string {
+	return fmt.Sprintf("%s:%s@tcp(%s:%d)/%s",
+		c.PlayerDatabase.User,
+		c.PlayerDatabase.Password,
+		c.PlayerDatabase.Host,
+		c.PlayerDatabase.Port,
+		c.PlayerDatabase.Name,
+	)
+}
+
+// GetClawmachineDSN returns clawmachine database connection string
+func (c *ServiceConfig) GetClawmachineDSN() string {
+	return fmt.Sprintf("%s:%s@tcp(%s:%d)/%s",
+		c.ClawmachineDatabase.User,
+		c.ClawmachineDatabase.Password,
+		c.ClawmachineDatabase.Host,
+		c.ClawmachineDatabase.Port,
+		c.ClawmachineDatabase.Name,
+	)
+}
+
+type DiscoveryConfig struct {
+	Enabled bool       `mapstructure:"enabled"`
+	Etcd    EtcdConfig `mapstructure:"etcd"`
+}
+
+type EtcdConfig struct {
+	Endpoints []string `mapstructure:"endpoints"`
+	Timeout   string   `mapstructure:"timeout"`
 }

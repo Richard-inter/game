@@ -9,6 +9,14 @@ message Player{
     string userName = 2;
 }
 
+message CreatePlayerReq{
+    string userName = 1;
+}
+
+message CreatePlayerResp{
+    Player player = 1;
+}
+
 message GetPlayerInfoReq{
     int64 playerID = 1;
 }
@@ -18,5 +26,7 @@ message GetPlayerInfoResp{
 }
 
 service PlayerService{
+    rpc CreatePlayer(CreatePlayerReq) returns (CreatePlayerResp);
+    
     rpc GetPlayerInfo(GetPlayerInfoReq) returns (GetPlayerInfoResp);
 }

@@ -1,8 +1,9 @@
 package repository
 
 import (
-	"github.com/Richard-inter/game/internal/domain"
 	"gorm.io/gorm"
+
+	"github.com/Richard-inter/game/internal/domain"
 )
 
 type gameRepository struct {

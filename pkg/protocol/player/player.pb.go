@@ -73,6 +73,94 @@ func (x *Player) GetUserName() string {
 	return ""
 }
 
+type CreatePlayerReq struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	UserName      string                 `protobuf:"bytes,1,opt,name=userName,proto3" json:"userName,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CreatePlayerReq) Reset() {
+	*x = CreatePlayerReq{}
+	mi := &file_player_player_proto_msgTypes[1]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CreatePlayerReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreatePlayerReq) ProtoMessage() {}
+
+func (x *CreatePlayerReq) ProtoReflect() protoreflect.Message {
+	mi := &file_player_player_proto_msgTypes[1]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreatePlayerReq.ProtoReflect.Descriptor instead.
+func (*CreatePlayerReq) Descriptor() ([]byte, []int) {
+	return file_player_player_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *CreatePlayerReq) GetUserName() string {
+	if x != nil {
+		return x.UserName
+	}
+	return ""
+}
+
+type CreatePlayerResp struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Player        *Player                `protobuf:"bytes,1,opt,name=player,proto3" json:"player,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CreatePlayerResp) Reset() {
+	*x = CreatePlayerResp{}
+	mi := &file_player_player_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CreatePlayerResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreatePlayerResp) ProtoMessage() {}
+
+func (x *CreatePlayerResp) ProtoReflect() protoreflect.Message {
+	mi := &file_player_player_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreatePlayerResp.ProtoReflect.Descriptor instead.
+func (*CreatePlayerResp) Descriptor() ([]byte, []int) {
+	return file_player_player_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *CreatePlayerResp) GetPlayer() *Player {
+	if x != nil {
+		return x.Player
+	}
+	return nil
+}
+
 type GetPlayerInfoReq struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	PlayerID      int64                  `protobuf:"varint,1,opt,name=playerID,proto3" json:"playerID,omitempty"`
@@ -82,7 +170,7 @@ type GetPlayerInfoReq struct {
 
 func (x *GetPlayerInfoReq) Reset() {
 	*x = GetPlayerInfoReq{}
-	mi := &file_player_player_proto_msgTypes[1]
+	mi := &file_player_player_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -94,7 +182,7 @@ func (x *GetPlayerInfoReq) String() string {
 func (*GetPlayerInfoReq) ProtoMessage() {}
 
 func (x *GetPlayerInfoReq) ProtoReflect() protoreflect.Message {
-	mi := &file_player_player_proto_msgTypes[1]
+	mi := &file_player_player_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -107,7 +195,7 @@ func (x *GetPlayerInfoReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetPlayerInfoReq.ProtoReflect.Descriptor instead.
 func (*GetPlayerInfoReq) Descriptor() ([]byte, []int) {
-	return file_player_player_proto_rawDescGZIP(), []int{1}
+	return file_player_player_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *GetPlayerInfoReq) GetPlayerID() int64 {
@@ -126,7 +214,7 @@ type GetPlayerInfoResp struct {
 
 func (x *GetPlayerInfoResp) Reset() {
 	*x = GetPlayerInfoResp{}
-	mi := &file_player_player_proto_msgTypes[2]
+	mi := &file_player_player_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -138,7 +226,7 @@ func (x *GetPlayerInfoResp) String() string {
 func (*GetPlayerInfoResp) ProtoMessage() {}
 
 func (x *GetPlayerInfoResp) ProtoReflect() protoreflect.Message {
-	mi := &file_player_player_proto_msgTypes[2]
+	mi := &file_player_player_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -151,7 +239,7 @@ func (x *GetPlayerInfoResp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetPlayerInfoResp.ProtoReflect.Descriptor instead.
 func (*GetPlayerInfoResp) Descriptor() ([]byte, []int) {
-	return file_player_player_proto_rawDescGZIP(), []int{2}
+	return file_player_player_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *GetPlayerInfoResp) GetPlayer() *Player {
@@ -168,12 +256,17 @@ const file_player_player_proto_rawDesc = "" +
 	"\x13player/player.proto\x12\x06player\"@\n" +
 	"\x06Player\x12\x1a\n" +
 	"\bplayerID\x18\x01 \x01(\x03R\bplayerID\x12\x1a\n" +
-	"\buserName\x18\x02 \x01(\tR\buserName\".\n" +
+	"\buserName\x18\x02 \x01(\tR\buserName\"-\n" +
+	"\x0fCreatePlayerReq\x12\x1a\n" +
+	"\buserName\x18\x01 \x01(\tR\buserName\":\n" +
+	"\x10CreatePlayerResp\x12&\n" +
+	"\x06player\x18\x01 \x01(\v2\x0e.player.PlayerR\x06player\".\n" +
 	"\x10GetPlayerInfoReq\x12\x1a\n" +
 	"\bplayerID\x18\x01 \x01(\x03R\bplayerID\";\n" +
 	"\x11GetPlayerInfoResp\x12&\n" +
-	"\x06player\x18\x01 \x01(\v2\x0e.player.PlayerR\x06player2U\n" +
-	"\rPlayerService\x12D\n" +
+	"\x06player\x18\x01 \x01(\v2\x0e.player.PlayerR\x06player2\x98\x01\n" +
+	"\rPlayerService\x12A\n" +
+	"\fCreatePlayer\x12\x17.player.CreatePlayerReq\x1a\x18.player.CreatePlayerResp\x12D\n" +
 	"\rGetPlayerInfo\x12\x18.player.GetPlayerInfoReq\x1a\x19.player.GetPlayerInfoRespB3Z1github.com/Richard-inter/game/pkg/protocol/playerb\x06proto3"
 
 var (
@@ -188,21 +281,26 @@ func file_player_player_proto_rawDescGZIP() []byte {
 	return file_player_player_proto_rawDescData
 }
 
-var file_player_player_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
+var file_player_player_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
 var file_player_player_proto_goTypes = []any{
 	(*Player)(nil),            // 0: player.Player
-	(*GetPlayerInfoReq)(nil),  // 1: player.GetPlayerInfoReq
-	(*GetPlayerInfoResp)(nil), // 2: player.GetPlayerInfoResp
+	(*CreatePlayerReq)(nil),   // 1: player.CreatePlayerReq
+	(*CreatePlayerResp)(nil),  // 2: player.CreatePlayerResp
+	(*GetPlayerInfoReq)(nil),  // 3: player.GetPlayerInfoReq
+	(*GetPlayerInfoResp)(nil), // 4: player.GetPlayerInfoResp
 }
 var file_player_player_proto_depIdxs = []int32{
-	0, // 0: player.GetPlayerInfoResp.player:type_name -> player.Player
-	1, // 1: player.PlayerService.GetPlayerInfo:input_type -> player.GetPlayerInfoReq
-	2, // 2: player.PlayerService.GetPlayerInfo:output_type -> player.GetPlayerInfoResp
-	2, // [2:3] is the sub-list for method output_type
-	1, // [1:2] is the sub-list for method input_type
-	1, // [1:1] is the sub-list for extension type_name
-	1, // [1:1] is the sub-list for extension extendee
-	0, // [0:1] is the sub-list for field type_name
+	0, // 0: player.CreatePlayerResp.player:type_name -> player.Player
+	0, // 1: player.GetPlayerInfoResp.player:type_name -> player.Player
+	1, // 2: player.PlayerService.CreatePlayer:input_type -> player.CreatePlayerReq
+	3, // 3: player.PlayerService.GetPlayerInfo:input_type -> player.GetPlayerInfoReq
+	2, // 4: player.PlayerService.CreatePlayer:output_type -> player.CreatePlayerResp
+	4, // 5: player.PlayerService.GetPlayerInfo:output_type -> player.GetPlayerInfoResp
+	4, // [4:6] is the sub-list for method output_type
+	2, // [2:4] is the sub-list for method input_type
+	2, // [2:2] is the sub-list for extension type_name
+	2, // [2:2] is the sub-list for extension extendee
+	0, // [0:2] is the sub-list for field type_name
 }
 
 func init() { file_player_player_proto_init() }
@@ -216,7 +314,7 @@ func file_player_player_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_player_player_proto_rawDesc), len(file_player_player_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   3,
+			NumMessages:   5,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

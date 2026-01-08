@@ -1,23 +1,39 @@
 package repository
 
 import (
-	"github.com/Richard-inter/game/internal/domain"
+	"fmt"
+
 	"gorm.io/gorm"
+
+	"github.com/Richard-inter/game/internal/domain"
 )
 
 type playerRepository struct {
 	db *gorm.DB
 }
 
-func NewPlayerRepository(db *gorm.DB) domain.PlayerRepository {
+type PlayerRepository interface {
+	GetPlayerinfo(id int64) (*domain.Player, error)
+	CreatePlayer(player *domain.Player) (*domain.Player, error)
+}
+
+func NewPlayerRepository(db *gorm.DB) PlayerRepository {
 	return &playerRepository{db: db}
 }
 
-func (r *playerRepository) Create(player *domain.Player) error {
-	return r.db.Create(player).Error
+func validateUsernameUnique(db *gorm.DB, username string) error {
+	var count int64
+	err := db.Model(&domain.Player{}).Where("user_name = ?", username).Count(&count).Error
+	if err != nil {
+		return fmt.Errorf("failed to check username uniqueness: %w", err)
+	}
+	if count > 0 {
+		return fmt.Errorf("username '%s' already exists", username)
+	}
+	return nil
 }
 
-func (r *playerRepository) GetByID(id string) (*domain.Player, error) {
+func (r *playerRepository) GetPlayerinfo(id int64) (*domain.Player, error) {
 	var player domain.Player
 	err := r.db.Where("id = ?", id).First(&player).Error
 	if err != nil {
@@ -26,53 +42,14 @@ func (r *playerRepository) GetByID(id string) (*domain.Player, error) {
 	return &player, nil
 }
 
-func (r *playerRepository) GetByUsername(username string) (*domain.Player, error) {
-	var player domain.Player
-	err := r.db.Where("username = ?", username).First(&player).Error
-	if err != nil {
+func (r *playerRepository) CreatePlayer(player *domain.Player) (*domain.Player, error) {
+	if err := validateUsernameUnique(r.db, player.UserName); err != nil {
 		return nil, err
 	}
-	return &player, nil
-}
 
-func (r *playerRepository) GetByEmail(email string) (*domain.Player, error) {
-	var player domain.Player
-	err := r.db.Where("email = ?", email).First(&player).Error
+	err := r.db.Create(player).Error
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to create player: %w", err)
 	}
-	return &player, nil
-}
-
-func (r *playerRepository) Update(player *domain.Player) error {
-	return r.db.Save(player).Error
-}
-
-func (r *playerRepository) Delete(id string) error {
-	return r.db.Where("id = ?", id).Delete(&domain.Player{}).Error
-}
-
-func (r *playerRepository) List(page, limit int) ([]*domain.Player, int, error) {
-	var players []*domain.Player
-	var total int64
-
-	// Get total count
-	if err := r.db.Model(&domain.Player{}).Count(&total).Error; err != nil {
-		return nil, 0, err
-	}
-
-	// Get paginated results
-	offset := (page - 1) * limit
-	err := r.db.Offset(offset).Limit(limit).Find(&players).Error
-	if err != nil {
-		return nil, 0, err
-	}
-
-	return players, int(total), nil
-}
-
-func (r *playerRepository) UpdateScore(playerID string, score int) error {
-	return r.db.Model(&domain.Player{}).
-		Where("id = ?", playerID).
-		Update("score", score).Error
+	return player, nil
 }

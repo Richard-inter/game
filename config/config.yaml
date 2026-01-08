@@ -5,20 +5,6 @@ server:
   read_timeout: 30
   write_timeout: 30
 
-database:
-  host: "localhost"
-  port: 3306
-  user: "root"
-  password: ""
-  name: "game"
-  charset: "utf8mb4"
-
-redis:
-  host: "localhost"
-  port: 6379
-  password: ""
-  db: 0
-
 grpc:
   host: "0.0.0.0"
   port: 9090
@@ -36,17 +22,3 @@ tcp:
   keep_alive: true
   read_timeout: 30
   write_timeout: 30
-
-jwt:
-  secret: "your-secret-key-change-in-production"
-  expiration_time: 86400  # 24 hours
-
-logging:
-  level: "info"  # debug, info, warn, error
-  format: "json"  # json, text
-  output: "stdout"  # stdout, file
-
-tracing:
-  enabled: false
-  service_name: "game-server"
-  jaeger_url: "http://localhost:14268/api/traces"

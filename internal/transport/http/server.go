@@ -6,11 +6,12 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/gin-gonic/gin"
+	"github.com/sirupsen/logrus"
+
 	"github.com/Richard-inter/game/internal/config"
 	"github.com/Richard-inter/game/internal/transport/grpc"
 	"github.com/Richard-inter/game/internal/transport/http/handler"
-	"github.com/gin-gonic/gin"
-	"github.com/sirupsen/logrus"
 )
 
 const (
@@ -22,10 +23,10 @@ type Server struct {
 	logger     *logrus.Logger
 	server     *http.Server
 	engine     *gin.Engine
-	grpcClient *grpc.Client
+	grpcClient *grpc.ClientManager
 }
 
-func NewServer(cfg *config.ServiceConfig, logger *logrus.Logger, grpcClient *grpc.Client) *Server {
+func NewServer(cfg *config.ServiceConfig, logger *logrus.Logger, grpcClient *grpc.ClientManager) *Server {
 	return &Server{
 		config:     cfg,
 		logger:     logger,
@@ -106,32 +107,22 @@ func (s *Server) setupMiddleware() {
 }
 
 func (s *Server) setupRoutes() {
+	// Create player handler
+	playerHandler, err := handler.NewPlayerHandler(s.logger, s.grpcClient)
+	if err != nil {
+		s.logger.WithError(err).Fatal("Failed to create player handler")
+	}
+
 	// Health check
 	s.engine.GET("/health", handler.HealthCheck(s.logger))
 
 	// API version 1
 	v1 := s.engine.Group("/api/v1")
 	{
-		// Game routes
-		games := v1.Group("/games")
+		player := v1.Group("/player")
 		{
-			games.GET("", handler.ListGames(s.logger))
-			games.GET("/:id", handler.GetGame(s.logger))
-			games.POST("", handler.CreateGame(s.logger))
-			games.PUT("/:id", handler.UpdateGame(s.logger))
-			games.DELETE("/:id", handler.DeleteGame(s.logger))
+			player.POST("/create", playerHandler.HandleCreatePlayer)
+			player.GET("/info/:id", playerHandler.HandleGetPlayerInfo)
 		}
-
-		// Player routes
-		players := v1.Group("/players")
-		{
-			players.GET("", handler.ListPlayers(s.logger))
-			players.GET("/:id", handler.GetPlayer(s.logger))
-			players.POST("", handler.CreatePlayer(s.logger))
-			players.PUT("/:id", handler.UpdatePlayer(s.logger))
-			players.DELETE("/:id", handler.DeletePlayer(s.logger))
-		}
-
-		v1.GET("/test", handler.HandleGetPlayerInfo(s.logger, s.grpcClient))
 	}
 }

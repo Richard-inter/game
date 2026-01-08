@@ -13,6 +13,10 @@ import (
 	"google.golang.org/grpc/reflection"
 
 	"github.com/Richard-inter/game/internal/config"
+	"github.com/Richard-inter/game/internal/db"
+	"github.com/Richard-inter/game/internal/discovery"
+	"github.com/Richard-inter/game/internal/registry"
+	"github.com/Richard-inter/game/internal/repository"
 	p "github.com/Richard-inter/game/internal/service/rpc/player"
 	"github.com/Richard-inter/game/pkg/logger"
 	player "github.com/Richard-inter/game/pkg/protocol/player"
@@ -50,6 +54,12 @@ func main() {
 		log.WithError(err).Fatal("Failed to load configuration")
 	}
 
+	// Initialize database
+	database, err := db.InitPlayerDB(cfg)
+	if err != nil {
+		log.WithError(err).Fatal("Failed to initialize database")
+	}
+
 	// Initialize gRPC server
 	lc := net.ListenConfig{}
 	lis, err := lc.Listen(context.Background(), "tcp", cfg.GetGRPCAddr())
@@ -60,7 +70,8 @@ func main() {
 	s := grpc.NewServer()
 
 	// Initialize and register player service
-	playerService := p.NewPlayerGRPCService()
+	playerRepo := repository.NewPlayerRepository(database)
+	playerService := p.NewPlayerGRPCService(playerRepo)
 	player.RegisterPlayerServiceServer(s, playerService)
 
 	// Enable reflection for development
@@ -69,6 +80,21 @@ func main() {
 	log.WithFields(logrus.Fields{
 		"address": lis.Addr().String(),
 	}).Info("Player gRPC server starting")
+
+	// Register service with etcd
+	if cfg.Discovery.Enabled {
+		etcdDiscovery, err := discovery.NewEtcdDiscovery(cfg.Discovery.Etcd.Endpoints)
+		if err != nil {
+			log.WithError(err).Warn("Failed to connect to etcd, service discovery disabled")
+		} else {
+			serviceRegistry := registry.NewServiceRegistry(etcdDiscovery, log)
+			err = serviceRegistry.RegisterService("player-service", cfg.Service.Host, cfg.Service.Port)
+			if err != nil {
+				log.WithError(err).Error("Failed to register service with etcd")
+			}
+			defer etcdDiscovery.Close()
+		}
+	}
 
 	// Start server in a goroutine
 	go func() {

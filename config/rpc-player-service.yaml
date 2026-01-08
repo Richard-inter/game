@@ -11,9 +11,16 @@ grpc:
   port: 9094
   reflection: true
 
+discovery:
+  enabled: false
+  etcd:
+    endpoints:
+      - "localhost:2379"
+    timeout: "5s"
+
 # Import shared configurations
 shared:
-  database: "shared.yaml"
+  player_database: "shared.yaml"
   redis: "shared.yaml"
   logging: "shared.yaml"
   jwt: "shared.yaml"
