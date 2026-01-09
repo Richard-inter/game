@@ -127,6 +127,11 @@ func LoadServiceConfigFromPath(configFile string) (*ServiceConfig, error) {
 		return nil, fmt.Errorf("error unmarshaling final config: %w", err)
 	}
 
+	// Validate configuration
+	if err := validateServiceConfig(&config); err != nil {
+		return nil, fmt.Errorf("service configuration validation failed: %w", err)
+	}
+
 	return &config, nil
 }
 
@@ -230,3 +235,95 @@ type EtcdConfig struct {
 	Endpoints []string `mapstructure:"endpoints"`
 	Timeout   string   `mapstructure:"timeout"`
 }
+
+// validateServiceConfig validates the service configuration
+func validateServiceConfig(config *ServiceConfig) error {
+	// Validate service configuration
+	if config.Service.Port < 1024 || config.Service.Port > 65535 {
+		return fmt.Errorf("service port must be between 1024 and 65535")
+	}
+
+	if config.Service.Name == "" {
+		return fmt.Errorf("service name cannot be empty")
+	}
+
+	// Validate database configuration only if host is specified (service uses database)
+	if config.Database.Host != "" {
+		if config.Database.Port < 1 || config.Database.Port > 65535 {
+			return fmt.Errorf("database port must be between 1 and 65535")
+		}
+		if config.Database.User == "" {
+			return fmt.Errorf("database user cannot be empty")
+		}
+		if config.Database.Name == "" {
+			return fmt.Errorf("database name cannot be empty")
+		}
+	}
+
+	// Validate player database if configured
+	if config.PlayerDatabase.Host != "" {
+		if config.PlayerDatabase.Port < 1 || config.PlayerDatabase.Port > 65535 {
+			return fmt.Errorf("player database port must be between 1 and 65535")
+		}
+		if config.PlayerDatabase.User == "" {
+			return fmt.Errorf("player database user cannot be empty")
+		}
+		if config.PlayerDatabase.Name == "" {
+			return fmt.Errorf("player database name cannot be empty")
+		}
+	}
+
+	// Validate clawmachine database if configured
+	if config.ClawmachineDatabase.Host != "" {
+		if config.ClawmachineDatabase.Port < 1 || config.ClawmachineDatabase.Port > 65535 {
+			return fmt.Errorf("clawmachine database port must be between 1 and 65535")
+		}
+		if config.ClawmachineDatabase.User == "" {
+			return fmt.Errorf("clawmachine database user cannot be empty")
+		}
+		if config.ClawmachineDatabase.Name == "" {
+			return fmt.Errorf("clawmachine database name cannot be empty")
+		}
+	}
+
+	// Validate Redis configuration only if host is specified
+	if config.Redis.Host != "" {
+		if config.Redis.Port < 1 || config.Redis.Port > 65535 {
+			return fmt.Errorf("redis port must be between 1 and 65535")
+		}
+	}
+
+	// Validate gRPC configuration only if port is specified
+	if config.GRPC.Port != 0 && (config.GRPC.Port < 1024 || config.GRPC.Port > 65535) {
+		return fmt.Errorf("grpc port must be between 1024 and 65535")
+	}
+
+	// Validate WebSocket configuration only if port is specified
+	if config.WebSocket.Port != 0 && (config.WebSocket.Port < 1024 || config.WebSocket.Port > 65535) {
+		return fmt.Errorf("websocket port must be between 1024 and 65535")
+	}
+
+	if config.WebSocket.Port != 0 && (config.WebSocket.ReadBufferSize < 512 || config.WebSocket.ReadBufferSize > 65536) {
+		return fmt.Errorf("websocket read buffer size must be between 512 and 65536")
+	}
+
+	if config.WebSocket.Port != 0 && (config.WebSocket.WriteBufferSize < 512 || config.WebSocket.WriteBufferSize > 65536) {
+		return fmt.Errorf("websocket write buffer size must be between 512 and 65536")
+	}
+
+	// Validate TCP configuration only if port is specified
+	if config.TCP.Port != 0 && (config.TCP.Port < 1024 || config.TCP.Port > 65535) {
+		return fmt.Errorf("tcp port must be between 1024 and 65535")
+	}
+
+	// Validate JWT configuration only if secret is specified
+	if config.JWT.Secret != "" {
+		if config.JWT.ExpirationTime < 300 || config.JWT.ExpirationTime > 86400*30 {
+			return fmt.Errorf("jwt expiration time must be between 300 seconds and 30 days")
+		}
+	}
+
+	return nil
+}
+
+// ... (rest of the code remains the same)

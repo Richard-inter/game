@@ -6,17 +6,24 @@ import (
 	"github.com/spf13/viper"
 )
 
-// Default configuration constants
+// Configuration constants for validation
 const (
-	defaultServerPort    = 8080
-	defaultServerTimeout = 30
-	defaultDatabasePort  = 3306
-	defaultRedisPort     = 6379
-	defaultGRPCPort      = 9090
-	defaultWebSocketPort = 8081
-	defaultTCPPort       = 8082
-	defaultBufferSize    = 1024
-	defaultJWTExpiration = 86400 // 24 hours
+	minServerPort    = 1024
+	maxServerPort    = 65535
+	minDatabasePort  = 1
+	maxDatabasePort  = 65535
+	minRedisPort     = 1
+	maxRedisPort     = 65535
+	minGRPCPort      = 1
+	maxGRPCPort      = 65535
+	minWebSocketPort = 1
+	maxWebSocketPort = 65535
+	minTCPPort       = 1
+	maxTCPPort       = 65535
+	minBufferSize    = 512
+	maxBufferSize    = 65536
+	minJWTExpiration = 300        // 5 minutes
+	maxJWTExpiration = 86400 * 30 // 30 days
 )
 
 type RPCServiceConfig struct {
@@ -117,13 +124,10 @@ func LoadConfig() (*Config, error) {
 	viper.SetEnvPrefix("GAME")
 	viper.AutomaticEnv()
 
-	// Set default values
-	setDefaults()
-
 	// Read config file
 	if err := viper.ReadInConfig(); err != nil {
 		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
-			fmt.Println("Config file not found, using defaults and environment variables")
+			return nil, fmt.Errorf("config file not found and no defaults provided")
 		} else {
 			return nil, fmt.Errorf("error reading config file: %w", err)
 		}
@@ -134,62 +138,63 @@ func LoadConfig() (*Config, error) {
 		return nil, fmt.Errorf("error unmarshaling config: %w", err)
 	}
 
+	// Validate configuration
+	if err := validateConfig(&config); err != nil {
+		return nil, fmt.Errorf("configuration validation failed: %w", err)
+	}
+
 	return &config, nil
 }
 
-func setDefaults() {
-	// Server defaults
-	viper.SetDefault("server.host", "0.0.0.0")
-	viper.SetDefault("server.port", defaultServerPort)
-	viper.SetDefault("server.mode", "debug")
-	viper.SetDefault("server.read_timeout", defaultServerTimeout)
-	viper.SetDefault("server.write_timeout", defaultServerTimeout)
+func validateConfig(config *Config) error {
+	// Validate server configuration
+	if config.Server.Port < minServerPort || config.Server.Port > maxServerPort {
+		return fmt.Errorf("server port must be between %d and %d", minServerPort, maxServerPort)
+	}
 
-	// Database defaults
-	viper.SetDefault("database.host", "localhost")
-	viper.SetDefault("database.port", defaultDatabasePort)
-	viper.SetDefault("database.user", "root")
-	viper.SetDefault("database.password", "")
-	viper.SetDefault("database.name", "game")
-	viper.SetDefault("database.charset", "utf8mb4")
+	// Validate database configuration
+	if config.Database.Port < minDatabasePort || config.Database.Port > maxDatabasePort {
+		return fmt.Errorf("database port must be between %d and %d", minDatabasePort, maxDatabasePort)
+	}
 
-	// Redis defaults
-	viper.SetDefault("redis.host", "localhost")
-	viper.SetDefault("redis.port", defaultRedisPort)
-	viper.SetDefault("redis.password", "")
-	viper.SetDefault("redis.db", 0)
+	// Validate Redis configuration
+	if config.Redis.Port < minRedisPort || config.Redis.Port > maxRedisPort {
+		return fmt.Errorf("redis port must be between %d and %d", minRedisPort, maxRedisPort)
+	}
 
-	// gRPC defaults
-	viper.SetDefault("grpc.host", "0.0.0.0")
-	viper.SetDefault("grpc.port", defaultGRPCPort)
+	// Validate gRPC configuration
+	if config.GRPC.Port < minGRPCPort || config.GRPC.Port > maxGRPCPort {
+		return fmt.Errorf("grpc port must be between %d and %d", minGRPCPort, maxGRPCPort)
+	}
 
-	// WebSocket defaults
-	viper.SetDefault("websocket.host", "0.0.0.0")
-	viper.SetDefault("websocket.port", defaultWebSocketPort)
-	viper.SetDefault("websocket.path", "/ws")
-	viper.SetDefault("websocket.read_buffer_size", defaultBufferSize)
-	viper.SetDefault("websocket.write_buffer_size", defaultBufferSize)
+	// Validate WebSocket configuration
+	if config.WebSocket.Port < minWebSocketPort || config.WebSocket.Port > maxWebSocketPort {
+		return fmt.Errorf("websocket port must be between %d and %d", minWebSocketPort, maxWebSocketPort)
+	}
 
-	// TCP defaults
-	viper.SetDefault("tcp.host", "0.0.0.0")
-	viper.SetDefault("tcp.port", defaultTCPPort)
-	viper.SetDefault("tcp.keep_alive", true)
-	viper.SetDefault("tcp.read_timeout", defaultServerTimeout)
-	viper.SetDefault("tcp.write_timeout", defaultServerTimeout)
+	if config.WebSocket.ReadBufferSize < minBufferSize || config.WebSocket.ReadBufferSize > maxBufferSize {
+		return fmt.Errorf("websocket read buffer size must be between %d and %d", minBufferSize, maxBufferSize)
+	}
 
-	// JWT defaults
-	viper.SetDefault("jwt.secret", "your-secret-key")
-	viper.SetDefault("jwt.expiration_time", defaultJWTExpiration) // 24 hours
+	if config.WebSocket.WriteBufferSize < minBufferSize || config.WebSocket.WriteBufferSize > maxBufferSize {
+		return fmt.Errorf("websocket write buffer size must be between %d and %d", minBufferSize, maxBufferSize)
+	}
 
-	// Logging defaults
-	viper.SetDefault("logging.level", "info")
-	viper.SetDefault("logging.format", "json")
-	viper.SetDefault("logging.output", "stdout")
+	// Validate TCP configuration
+	if config.TCP.Port < minTCPPort || config.TCP.Port > maxTCPPort {
+		return fmt.Errorf("tcp port must be between %d and %d", minTCPPort, maxTCPPort)
+	}
 
-	// Tracing defaults
-	viper.SetDefault("tracing.enabled", false)
-	viper.SetDefault("tracing.service_name", "game-server")
-	viper.SetDefault("tracing.jaeger_url", "http://localhost:14268/api/traces")
+	// Validate JWT configuration
+	if config.JWT.ExpirationTime < minJWTExpiration || config.JWT.ExpirationTime > maxJWTExpiration {
+		return fmt.Errorf("jwt expiration time must be between %d and %d seconds", minJWTExpiration, maxJWTExpiration)
+	}
+
+	if config.JWT.Secret == "" {
+		return fmt.Errorf("jwt secret cannot be empty")
+	}
+
+	return nil
 }
 
 // GetDSN returns database connection string
