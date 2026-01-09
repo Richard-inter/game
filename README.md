@@ -272,14 +272,14 @@ The project includes unit tests for business logic and integration tests for API
 
 ## 📝 Logging
 
-Structured logging using logrus with configurable levels:
+Structured logging using zap with high-performance JSON output:
 - DEBUG
-- INFO
+- INFO  
 - WARN
 - ERROR
 - FATAL
 
-Logs include service name, version, and request correlation IDs.
+Logs include service name, version, request correlation IDs, and structured fields for better observability. The logger supports both structured logging with zap.SugaredLogger and typed logging with zap.Logger for optimal performance.
 
 ## 🤝 Contributing
 
