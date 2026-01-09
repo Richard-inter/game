@@ -104,9 +104,11 @@ func (h *ClawMachineHandler) HandleCreateClawItems(c *gin.Context) {
 	grpcReq := &clawMachine.CreateClawItemsReq{}
 	for _, item := range req.ClawItems {
 		grpcReq.ClawItems = append(grpcReq.ClawItems, &clawMachine.CreateItemReq{
-			Name:   item.Name,
-			Rarity: item.Rarity,
-			Weight: item.Weight,
+			Name:            item.Name,
+			Rarity:          item.Rarity,
+			SpawnPercentage: item.SpawnPercentage,
+			CatchPercentage: item.CatchPercentage,
+			MaxItemSpawned:  item.MaxItemSpawned,
 		})
 	}
 

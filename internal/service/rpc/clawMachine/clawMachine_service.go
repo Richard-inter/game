@@ -69,10 +69,12 @@ func (s *ClawMachineGRPCServices) GetClawMachineInfo(
 	items := make([]*pb.Item, 0, len(resp.Items))
 	for _, it := range resp.Items {
 		items = append(items, &pb.Item{
-			ItemID: it.Item.ID,
-			Name:   it.Item.Name,
-			Rarity: it.Item.Rarity,
-			Weight: it.Item.Weight,
+			ItemID:          it.Item.ID,
+			Name:            it.Item.Name,
+			Rarity:          it.Item.Rarity,
+			SpawnPercentage: it.Item.SpawnPercentage,
+			CatchPercentage: it.Item.CatchPercentage,
+			MaxItemSpawned:  it.Item.MaxItemSpawned,
 		})
 	}
 
@@ -112,10 +114,12 @@ func (s *ClawMachineGRPCServices) CreateClawMachine(ctx context.Context, req *pb
 	items := make([]*pb.Item, 0, len(created.Items))
 	for _, it := range created.Items {
 		items = append(items, &pb.Item{
-			ItemID: it.Item.ID,
-			Name:   it.Item.Name,
-			Rarity: it.Item.Rarity,
-			Weight: it.Item.Weight,
+			ItemID:          it.Item.ID,
+			Name:            it.Item.Name,
+			Rarity:          it.Item.Rarity,
+			SpawnPercentage: it.Item.SpawnPercentage,
+			CatchPercentage: it.Item.CatchPercentage,
+			MaxItemSpawned:  it.Item.MaxItemSpawned,
 		})
 	}
 
@@ -135,9 +139,11 @@ func (s *ClawMachineGRPCServices) CreateClawItems(ctx context.Context, req *pb.C
 	items := make([]domain.Item, 0, len(req.ClawItems))
 	for _, item := range req.ClawItems {
 		items = append(items, domain.Item{
-			Name:   item.Name,
-			Rarity: item.Rarity,
-			Weight: item.Weight,
+			Name:            item.Name,
+			Rarity:          item.Rarity,
+			SpawnPercentage: item.SpawnPercentage,
+			CatchPercentage: item.CatchPercentage,
+			MaxItemSpawned:  item.MaxItemSpawned,
 		})
 	}
 
@@ -148,10 +154,12 @@ func (s *ClawMachineGRPCServices) CreateClawItems(ctx context.Context, req *pb.C
 	createdItems := make([]*pb.Item, 0, len(*resp))
 	for _, it := range *resp {
 		createdItems = append(createdItems, &pb.Item{
-			ItemID: it.ID,
-			Name:   it.Name,
-			Rarity: it.Rarity,
-			Weight: it.Weight,
+			ItemID:          it.ID,
+			Name:            it.Name,
+			Rarity:          it.Rarity,
+			SpawnPercentage: it.SpawnPercentage,
+			CatchPercentage: it.CatchPercentage,
+			MaxItemSpawned:  it.MaxItemSpawned,
 		})
 	}
 

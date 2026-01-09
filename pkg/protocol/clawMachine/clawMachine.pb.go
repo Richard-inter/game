@@ -23,13 +23,15 @@ const (
 )
 
 type Item struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	ItemID        int64                  `protobuf:"varint,1,opt,name=itemID,proto3" json:"itemID,omitempty"`
-	Name          string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
-	Rarity        string                 `protobuf:"bytes,3,opt,name=rarity,proto3" json:"rarity,omitempty"`
-	Weight        int64                  `protobuf:"varint,4,opt,name=weight,proto3" json:"weight,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state           protoimpl.MessageState `protogen:"open.v1"`
+	ItemID          int64                  `protobuf:"varint,1,opt,name=itemID,proto3" json:"itemID,omitempty"`
+	Name            string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	Rarity          string                 `protobuf:"bytes,3,opt,name=rarity,proto3" json:"rarity,omitempty"`
+	SpawnPercentage int64                  `protobuf:"varint,4,opt,name=spawnPercentage,proto3" json:"spawnPercentage,omitempty"`
+	CatchPercentage int64                  `protobuf:"varint,5,opt,name=catchPercentage,proto3" json:"catchPercentage,omitempty"`
+	MaxItemSpawned  int64                  `protobuf:"varint,6,opt,name=maxItemSpawned,proto3" json:"maxItemSpawned,omitempty"`
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
 }
 
 func (x *Item) Reset() {
@@ -83,9 +85,23 @@ func (x *Item) GetRarity() string {
 	return ""
 }
 
-func (x *Item) GetWeight() int64 {
+func (x *Item) GetSpawnPercentage() int64 {
 	if x != nil {
-		return x.Weight
+		return x.SpawnPercentage
+	}
+	return 0
+}
+
+func (x *Item) GetCatchPercentage() int64 {
+	if x != nil {
+		return x.CatchPercentage
+	}
+	return 0
+}
+
+func (x *Item) GetMaxItemSpawned() int64 {
+	if x != nil {
+		return x.MaxItemSpawned
 	}
 	return 0
 }
@@ -716,12 +732,14 @@ func (x *GetClawMachineInfoResp) GetMachine() *ClawMachine {
 }
 
 type CreateItemReq struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Name          string                 `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	Rarity        string                 `protobuf:"bytes,2,opt,name=rarity,proto3" json:"rarity,omitempty"`
-	Weight        int64                  `protobuf:"varint,3,opt,name=weight,proto3" json:"weight,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state           protoimpl.MessageState `protogen:"open.v1"`
+	Name            string                 `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	Rarity          string                 `protobuf:"bytes,2,opt,name=rarity,proto3" json:"rarity,omitempty"`
+	SpawnPercentage int64                  `protobuf:"varint,3,opt,name=spawnPercentage,proto3" json:"spawnPercentage,omitempty"`
+	CatchPercentage int64                  `protobuf:"varint,4,opt,name=catchPercentage,proto3" json:"catchPercentage,omitempty"`
+	MaxItemSpawned  int64                  `protobuf:"varint,5,opt,name=maxItemSpawned,proto3" json:"maxItemSpawned,omitempty"`
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
 }
 
 func (x *CreateItemReq) Reset() {
@@ -768,9 +786,23 @@ func (x *CreateItemReq) GetRarity() string {
 	return ""
 }
 
-func (x *CreateItemReq) GetWeight() int64 {
+func (x *CreateItemReq) GetSpawnPercentage() int64 {
 	if x != nil {
-		return x.Weight
+		return x.SpawnPercentage
+	}
+	return 0
+}
+
+func (x *CreateItemReq) GetCatchPercentage() int64 {
+	if x != nil {
+		return x.CatchPercentage
+	}
+	return 0
+}
+
+func (x *CreateItemReq) GetMaxItemSpawned() int64 {
+	if x != nil {
+		return x.MaxItemSpawned
 	}
 	return 0
 }
@@ -955,12 +987,14 @@ var File_clawMachine_clawMachine_proto protoreflect.FileDescriptor
 
 const file_clawMachine_clawMachine_proto_rawDesc = "" +
 	"\n" +
-	"\x1dclawMachine/clawMachine.proto\x12\vclawMachine\x1a\x13player/player.proto\"b\n" +
+	"\x1dclawMachine/clawMachine.proto\x12\vclawMachine\x1a\x13player/player.proto\"\xc6\x01\n" +
 	"\x04Item\x12\x16\n" +
 	"\x06itemID\x18\x01 \x01(\x03R\x06itemID\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12\x16\n" +
-	"\x06rarity\x18\x03 \x01(\tR\x06rarity\x12\x16\n" +
-	"\x06weight\x18\x04 \x01(\x03R\x06weight\"\x98\x01\n" +
+	"\x06rarity\x18\x03 \x01(\tR\x06rarity\x12(\n" +
+	"\x0fspawnPercentage\x18\x04 \x01(\x03R\x0fspawnPercentage\x12(\n" +
+	"\x0fcatchPercentage\x18\x05 \x01(\x03R\x0fcatchPercentage\x12&\n" +
+	"\x0emaxItemSpawned\x18\x06 \x01(\x03R\x0emaxItemSpawned\"\x98\x01\n" +
 	"\vClawMachine\x12\x1c\n" +
 	"\tmachineID\x18\x01 \x01(\x03R\tmachineID\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12'\n" +
@@ -1000,11 +1034,13 @@ const file_clawMachine_clawMachine_proto_rawDesc = "" +
 	"\x15GetClawMachineInfoReq\x12\x1c\n" +
 	"\tmachineID\x18\x01 \x01(\x03R\tmachineID\"L\n" +
 	"\x16GetClawMachineInfoResp\x122\n" +
-	"\amachine\x18\x01 \x01(\v2\x18.clawMachine.ClawMachineR\amachine\"S\n" +
+	"\amachine\x18\x01 \x01(\v2\x18.clawMachine.ClawMachineR\amachine\"\xb7\x01\n" +
 	"\rCreateItemReq\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x16\n" +
-	"\x06rarity\x18\x02 \x01(\tR\x06rarity\x12\x16\n" +
-	"\x06weight\x18\x03 \x01(\x03R\x06weight\"N\n" +
+	"\x06rarity\x18\x02 \x01(\tR\x06rarity\x12(\n" +
+	"\x0fspawnPercentage\x18\x03 \x01(\x03R\x0fspawnPercentage\x12(\n" +
+	"\x0fcatchPercentage\x18\x04 \x01(\x03R\x0fcatchPercentage\x12&\n" +
+	"\x0emaxItemSpawned\x18\x05 \x01(\x03R\x0emaxItemSpawned\"N\n" +
 	"\x12CreateClawItemsReq\x128\n" +
 	"\tclawItems\x18\x01 \x03(\v2\x1a.clawMachine.CreateItemReqR\tclawItems\"F\n" +
 	"\x13CreateClawItemsResp\x12/\n" +

@@ -20,9 +20,11 @@ type CreateClawItemsRequest struct {
 
 // CreateClawItemRequest represents the HTTP request for creating a single claw item
 type CreateClawItemRequest struct {
-	Name   string `json:"name" binding:"required"`
-	Rarity string `json:"rarity" binding:"required"`
-	Weight int64  `json:"weight" binding:"required"`
+	Name            string `json:"name" binding:"required"`
+	Rarity          string `json:"rarity" binding:"required"`
+	SpawnPercentage int64  `json:"spawnPercentage" binding:"required"`
+	CatchPercentage int64  `json:"catchPercentage" binding:"required"`
+	MaxItemSpawned  int64  `json:"maxItemSpawned" binding:"required"`
 }
 
 type CreateClawPlayerRequest struct {
