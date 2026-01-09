@@ -43,8 +43,9 @@ func (h *ClawMachineHandler) HandleCreateClawMachine(c *gin.Context) {
 
 	// Convert DTO to gRPC request
 	grpcReq := &clawMachine.CreateClawMachineReq{
-		Name:  req.Name,
-		Price: req.Price,
+		Name:    req.Name,
+		Price:   req.Price,
+		MaxItem: req.MaxItem,
 	}
 
 	for _, item := range req.Items {

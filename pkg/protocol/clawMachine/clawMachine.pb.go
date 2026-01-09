@@ -96,6 +96,7 @@ type ClawMachine struct {
 	Name          string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
 	Items         []*Item                `protobuf:"bytes,3,rep,name=items,proto3" json:"items,omitempty"`
 	Price         int64                  `protobuf:"varint,4,opt,name=price,proto3" json:"price,omitempty"`
+	MaxItem       int32                  `protobuf:"varint,5,opt,name=maxItem,proto3" json:"maxItem,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -154,6 +155,13 @@ func (x *ClawMachine) GetItems() []*Item {
 func (x *ClawMachine) GetPrice() int64 {
 	if x != nil {
 		return x.Price
+	}
+	return 0
+}
+
+func (x *ClawMachine) GetMaxItem() int32 {
+	if x != nil {
+		return x.MaxItem
 	}
 	return 0
 }
@@ -268,6 +276,7 @@ type CreateClawMachineReq struct {
 	Name          string                 `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
 	Items         []*Items               `protobuf:"bytes,2,rep,name=items,proto3" json:"items,omitempty"`
 	Price         int64                  `protobuf:"varint,3,opt,name=price,proto3" json:"price,omitempty"`
+	MaxItem       int32                  `protobuf:"varint,4,opt,name=maxItem,proto3" json:"maxItem,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -319,6 +328,13 @@ func (x *CreateClawMachineReq) GetItems() []*Items {
 func (x *CreateClawMachineReq) GetPrice() int64 {
 	if x != nil {
 		return x.Price
+	}
+	return 0
+}
+
+func (x *CreateClawMachineReq) GetMaxItem() int32 {
+	if x != nil {
+		return x.MaxItem
 	}
 	return 0
 }
@@ -944,12 +960,13 @@ const file_clawMachine_clawMachine_proto_rawDesc = "" +
 	"\x06itemID\x18\x01 \x01(\x03R\x06itemID\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12\x16\n" +
 	"\x06rarity\x18\x03 \x01(\tR\x06rarity\x12\x16\n" +
-	"\x06weight\x18\x04 \x01(\x03R\x06weight\"~\n" +
+	"\x06weight\x18\x04 \x01(\x03R\x06weight\"\x98\x01\n" +
 	"\vClawMachine\x12\x1c\n" +
 	"\tmachineID\x18\x01 \x01(\x03R\tmachineID\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12'\n" +
 	"\x05items\x18\x03 \x03(\v2\x11.clawMachine.ItemR\x05items\x12\x14\n" +
-	"\x05price\x18\x04 \x01(\x03R\x05price\"j\n" +
+	"\x05price\x18\x04 \x01(\x03R\x05price\x12\x18\n" +
+	"\amaxItem\x18\x05 \x01(\x05R\amaxItem\"j\n" +
 	"\n" +
 	"ClawPlayer\x12.\n" +
 	"\n" +
@@ -958,11 +975,12 @@ const file_clawMachine_clawMachine_proto_rawDesc = "" +
 	"\x04coin\x18\x02 \x01(\x03R\x04coin\x12\x18\n" +
 	"\adiamond\x18\x03 \x01(\x03R\adiamond\"\x1f\n" +
 	"\x05Items\x12\x16\n" +
-	"\x06itemID\x18\x01 \x01(\x03R\x06itemID\"j\n" +
+	"\x06itemID\x18\x01 \x01(\x03R\x06itemID\"\x84\x01\n" +
 	"\x14CreateClawMachineReq\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12(\n" +
 	"\x05items\x18\x02 \x03(\v2\x12.clawMachine.ItemsR\x05items\x12\x14\n" +
-	"\x05price\x18\x03 \x01(\x03R\x05price\"K\n" +
+	"\x05price\x18\x03 \x01(\x03R\x05price\x12\x18\n" +
+	"\amaxItem\x18\x04 \x01(\x05R\amaxItem\"K\n" +
 	"\x15CreateClawMachineResp\x122\n" +
 	"\amachine\x18\x01 \x01(\v2\x18.clawMachine.ClawMachineR\amachine\"L\n" +
 	"\x10StartClawGameReq\x12\x1a\n" +

@@ -1,9 +1,10 @@
 package domain
 
 type ClawMachine struct {
-	ID    int64  `gorm:"column:id;primaryKey" json:"machineID"`
-	Name  string `gorm:"column:name" json:"name"`
-	Price int64  `gorm:"column:price" json:"price"`
+	ID      int64  `gorm:"column:id;primaryKey" json:"machineID"`
+	Name    string `gorm:"column:name" json:"name"`
+	Price   int64  `gorm:"column:price" json:"price"`
+	MaxItem int32  `gorm:"column:max_item" json:"maxItem"`
 
 	Items []ClawMachineItem `gorm:"foreignKey:ClawMachineID;constraint:OnDelete:CASCADE"`
 }

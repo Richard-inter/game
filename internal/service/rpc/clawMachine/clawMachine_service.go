@@ -81,6 +81,7 @@ func (s *ClawMachineGRPCServices) GetClawMachineInfo(
 			MachineID: resp.ID,
 			Name:      resp.Name,
 			Price:     resp.Price,
+			MaxItem:   resp.MaxItem,
 			Items:     items,
 		},
 	}, nil
@@ -89,9 +90,10 @@ func (s *ClawMachineGRPCServices) GetClawMachineInfo(
 func (s *ClawMachineGRPCServices) CreateClawMachine(ctx context.Context, req *pb.CreateClawMachineReq) (*pb.CreateClawMachineResp, error) {
 	// Create domain claw machine with items
 	c := &domain.ClawMachine{
-		Name:  req.Name,
-		Price: req.Price,
-		Items: make([]domain.ClawMachineItem, 0, len(req.Items)),
+		Name:    req.Name,
+		Price:   req.Price,
+		MaxItem: req.MaxItem,
+		Items:   make([]domain.ClawMachineItem, 0, len(req.Items)),
 	}
 
 	// Convert protobuf items to domain items
@@ -122,6 +124,7 @@ func (s *ClawMachineGRPCServices) CreateClawMachine(ctx context.Context, req *pb
 			MachineID: created.ID,
 			Name:      created.Name,
 			Price:     created.Price,
+			MaxItem:   created.MaxItem,
 			Items:     items,
 		},
 	}, nil

@@ -2,9 +2,10 @@ package dto
 
 // CreateClawMachineRequest represents the HTTP request for creating a claw machine
 type CreateClawMachineRequest struct {
-	Name  string                         `json:"name" binding:"required"`
-	Price int64                          `json:"price" binding:"required"`
-	Items []CreateClawMachineItemRequest `json:"items"`
+	Name    string                         `json:"name" binding:"required"`
+	Price   int64                          `json:"price" binding:"required"`
+	MaxItem int32                          `json:"maxItem" binding:"required"`
+	Items   []CreateClawMachineItemRequest `json:"items"`
 }
 
 // CreateClawMachineItemRequest represents an item in the claw machine creation request

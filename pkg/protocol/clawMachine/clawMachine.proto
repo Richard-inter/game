@@ -18,6 +18,7 @@ message ClawMachine {
     string name = 2;
     repeated Item items = 3;
     int64 price = 4;
+    int32 maxItem = 5;
 }   
 
 message ClawPlayer {
@@ -36,6 +37,7 @@ message CreateClawMachineReq {
     string name = 1;
     repeated Items items = 2;
     int64 price = 3;
+    int32 maxItem = 4;
 }
 
 message CreateClawMachineResp {
