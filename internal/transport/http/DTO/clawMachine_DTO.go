@@ -23,3 +23,10 @@ type CreateClawItemRequest struct {
 	Rarity string `json:"rarity" binding:"required"`
 	Weight int64  `json:"weight" binding:"required"`
 }
+
+type CreateClawPlayerRequest struct {
+	PlayerID int64  `json:"playerID" binding:"required"`
+	UserName string `json:"userName" binding:"required"`
+	Coin     int64  `json:"coin" binding:"required"`
+	Diamond  int64  `json:"diamond" binding:"required"`
+}

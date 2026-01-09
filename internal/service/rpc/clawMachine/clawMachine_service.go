@@ -6,6 +6,7 @@ import (
 	"github.com/Richard-inter/game/internal/domain"
 	"github.com/Richard-inter/game/internal/repository"
 	pb "github.com/Richard-inter/game/pkg/protocol/clawMachine"
+	"github.com/Richard-inter/game/pkg/protocol/player"
 )
 
 // ClawMachineGRPCService implements the ClawMachineService gRPC service
@@ -21,8 +22,31 @@ func NewClawMachineGRPCService(repo repository.ClawMachineRepository) *ClawMachi
 	}
 }
 
-func (s *ClawMachineGRPCServices) GetClawPlayerInfo(ctx context.Context, req *pb.GetClawPlayerInfoReq) (*pb.GetClawPlayerInfoResp, error) {
-	return &pb.GetClawPlayerInfoResp{}, nil
+func (s *ClawMachineGRPCServices) GetClawPlayerInfo(
+	ctx context.Context,
+	req *pb.GetClawPlayerInfoReq,
+) (*pb.GetClawPlayerInfoResp, error) {
+
+	// 1. Fetch domain model
+	domainPlayer, err := s.repo.GetClawPlayerInfo(req.PlayerID)
+	if err != nil {
+		return nil, err
+	}
+
+	// 2. Map domain → protobuf
+	clawPlayer := &pb.ClawPlayer{
+		BasePlayer: &player.Player{
+			PlayerID: domainPlayer.Player.ID,
+			UserName: domainPlayer.Player.UserName,
+		},
+		Coin:    domainPlayer.Coin,
+		Diamond: domainPlayer.Diamond,
+	}
+
+	// 3. Return response
+	return &pb.GetClawPlayerInfoResp{
+		Player: clawPlayer,
+	}, nil
 }
 
 func (s *ClawMachineGRPCServices) StartClawGame(ctx context.Context, req *pb.StartClawGameReq) (*pb.StartClawGameResp, error) {
@@ -37,7 +61,6 @@ func (s *ClawMachineGRPCServices) GetClawMachineInfo(
 	ctx context.Context,
 	req *pb.GetClawMachineInfoReq,
 ) (*pb.GetClawMachineInfoResp, error) {
-
 	resp, err := s.repo.GetClawMachineInfo(req.MachineID)
 	if err != nil {
 		return nil, err
@@ -102,7 +125,6 @@ func (s *ClawMachineGRPCServices) CreateClawMachine(ctx context.Context, req *pb
 			Items:     items,
 		},
 	}, nil
-
 }
 
 func (s *ClawMachineGRPCServices) CreateClawItems(ctx context.Context, req *pb.CreateClawItemsReq) (*pb.CreateClawItemsResp, error) {
@@ -132,5 +154,35 @@ func (s *ClawMachineGRPCServices) CreateClawItems(ctx context.Context, req *pb.C
 
 	return &pb.CreateClawItemsResp{
 		ClawItems: createdItems,
+	}, nil
+}
+
+func (s *ClawMachineGRPCServices) CreateClawPlayer(ctx context.Context, req *pb.CreateClawPlayerReq) (*pb.CreateClawPlayerResp, error) {
+	// Create domain claw player
+	cp := &domain.ClawPlayer{
+		Player: domain.Player{
+			ID:       req.Player.BasePlayer.PlayerID,
+			UserName: req.Player.BasePlayer.UserName,
+		},
+		Coin:    req.Player.Coin,
+		Diamond: req.Player.Diamond,
+	}
+
+	created, err := s.repo.CreateClawPlayer(cp)
+	if err != nil {
+		return nil, err
+	}
+
+	clawPlayer := &pb.ClawPlayer{
+		BasePlayer: &player.Player{
+			PlayerID: created.Player.ID,
+			UserName: created.Player.UserName,
+		},
+		Coin:    created.Coin,
+		Diamond: created.Diamond,
+	}
+
+	return &pb.CreateClawPlayerResp{
+		Player: clawPlayer,
 	}, nil
 }

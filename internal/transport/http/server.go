@@ -132,8 +132,16 @@ func (s *Server) setupRoutes() {
 
 		clawMachine := v1.Group("/clawMachine")
 		{
-			clawMachine.POST("/createClawMachine", clawMachineHandler.HandleCreateClawMachine)
+			// items
 			clawMachine.POST("/createClawItems", clawMachineHandler.HandleCreateClawItems)
+
+			// machine
+			clawMachine.POST("/createClawMachine", clawMachineHandler.HandleCreateClawMachine)
+			clawMachine.GET("/getClawMachineInfo/:machineID", clawMachineHandler.HandleGetClawMachineInfo)
+
+			// player
+			clawMachine.GET("/getClawPlayerInfo/:playerID", clawMachineHandler.HandleGetClawPlayerInfo)
+			clawMachine.POST("/createClawPlayer", clawMachineHandler.HandleCreatePlayer)
 		}
 	}
 }

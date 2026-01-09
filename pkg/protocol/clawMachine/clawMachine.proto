@@ -87,12 +87,21 @@ message CreateClawItemsResp {
     repeated Item clawItems = 2;
 }
 
+message CreateClawPlayerReq {
+    ClawPlayer player = 1;
+}
+
+message CreateClawPlayerResp {
+    ClawPlayer player = 2;
+}
+
 service ClawMachineService {
+    rpc CreateClawPlayer (CreateClawPlayerReq) returns (CreateClawPlayerResp);
+
     rpc CreateClawMachine (CreateClawMachineReq) returns (CreateClawMachineResp);
     rpc GetClawMachineInfo (GetClawMachineInfoReq) returns (GetClawMachineInfoResp);
 
     rpc StartClawGame (StartClawGameReq) returns (StartClawGameResp);
-
 
     rpc GetClawPlayerInfo (GetClawPlayerInfoReq) returns (GetClawPlayerInfoResp);
 

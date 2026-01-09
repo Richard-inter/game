@@ -11,14 +11,16 @@ type clawMachineRepository struct {
 }
 
 type ClawMachineRepository interface {
+	// player
 	CreateClawPlayer(clawPlayer *domain.ClawPlayer) (*domain.ClawPlayer, error)
 	GetClawPlayerInfo(playerID int64) (*domain.ClawPlayer, error)
 
+	// machine
 	CreateClawMachine(clawMachine *domain.ClawMachine) (*domain.ClawMachine, error)
 	UpdateClawMachineItems(clawMachineID int64, items []domain.ClawMachineItem) error
-
 	GetClawMachineInfo(machineID int64) (*domain.ClawMachine, error)
 
+	// items
 	CreateClawItems(items *[]domain.Item) (*[]domain.Item, error)
 }
 
@@ -46,9 +48,7 @@ func (r *clawMachineRepository) GetClawPlayerInfo(playerID int64) (*domain.ClawP
 func (r *clawMachineRepository) CreateClawMachine(
 	clawMachine *domain.ClawMachine,
 ) (*domain.ClawMachine, error) {
-
 	tx := r.db.Begin()
-
 	if err := tx.Omit("Items").Create(clawMachine).Error; err != nil {
 		tx.Rollback()
 		return nil, err

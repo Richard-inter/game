@@ -847,6 +847,94 @@ func (x *CreateClawItemsResp) GetClawItems() []*Item {
 	return nil
 }
 
+type CreateClawPlayerReq struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Player        *ClawPlayer            `protobuf:"bytes,1,opt,name=player,proto3" json:"player,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CreateClawPlayerReq) Reset() {
+	*x = CreateClawPlayerReq{}
+	mi := &file_clawMachine_clawMachine_proto_msgTypes[16]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CreateClawPlayerReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateClawPlayerReq) ProtoMessage() {}
+
+func (x *CreateClawPlayerReq) ProtoReflect() protoreflect.Message {
+	mi := &file_clawMachine_clawMachine_proto_msgTypes[16]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateClawPlayerReq.ProtoReflect.Descriptor instead.
+func (*CreateClawPlayerReq) Descriptor() ([]byte, []int) {
+	return file_clawMachine_clawMachine_proto_rawDescGZIP(), []int{16}
+}
+
+func (x *CreateClawPlayerReq) GetPlayer() *ClawPlayer {
+	if x != nil {
+		return x.Player
+	}
+	return nil
+}
+
+type CreateClawPlayerResp struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Player        *ClawPlayer            `protobuf:"bytes,2,opt,name=player,proto3" json:"player,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CreateClawPlayerResp) Reset() {
+	*x = CreateClawPlayerResp{}
+	mi := &file_clawMachine_clawMachine_proto_msgTypes[17]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CreateClawPlayerResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateClawPlayerResp) ProtoMessage() {}
+
+func (x *CreateClawPlayerResp) ProtoReflect() protoreflect.Message {
+	mi := &file_clawMachine_clawMachine_proto_msgTypes[17]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateClawPlayerResp.ProtoReflect.Descriptor instead.
+func (*CreateClawPlayerResp) Descriptor() ([]byte, []int) {
+	return file_clawMachine_clawMachine_proto_rawDescGZIP(), []int{17}
+}
+
+func (x *CreateClawPlayerResp) GetPlayer() *ClawPlayer {
+	if x != nil {
+		return x.Player
+	}
+	return nil
+}
+
 var File_clawMachine_clawMachine_proto protoreflect.FileDescriptor
 
 const file_clawMachine_clawMachine_proto_rawDesc = "" +
@@ -902,8 +990,13 @@ const file_clawMachine_clawMachine_proto_rawDesc = "" +
 	"\x12CreateClawItemsReq\x128\n" +
 	"\tclawItems\x18\x01 \x03(\v2\x1a.clawMachine.CreateItemReqR\tclawItems\"F\n" +
 	"\x13CreateClawItemsResp\x12/\n" +
-	"\tclawItems\x18\x02 \x03(\v2\x11.clawMachine.ItemR\tclawItems2\xd1\x03\n" +
-	"\x12ClawMachineService\x12Z\n" +
+	"\tclawItems\x18\x02 \x03(\v2\x11.clawMachine.ItemR\tclawItems\"F\n" +
+	"\x13CreateClawPlayerReq\x12/\n" +
+	"\x06player\x18\x01 \x01(\v2\x17.clawMachine.ClawPlayerR\x06player\"G\n" +
+	"\x14CreateClawPlayerResp\x12/\n" +
+	"\x06player\x18\x02 \x01(\v2\x17.clawMachine.ClawPlayerR\x06player2\xaa\x04\n" +
+	"\x12ClawMachineService\x12W\n" +
+	"\x10CreateClawPlayer\x12 .clawMachine.CreateClawPlayerReq\x1a!.clawMachine.CreateClawPlayerResp\x12Z\n" +
 	"\x11CreateClawMachine\x12!.clawMachine.CreateClawMachineReq\x1a\".clawMachine.CreateClawMachineResp\x12]\n" +
 	"\x12GetClawMachineInfo\x12\".clawMachine.GetClawMachineInfoReq\x1a#.clawMachine.GetClawMachineInfoResp\x12N\n" +
 	"\rStartClawGame\x12\x1d.clawMachine.StartClawGameReq\x1a\x1e.clawMachine.StartClawGameResp\x12Z\n" +
@@ -922,7 +1015,7 @@ func file_clawMachine_clawMachine_proto_rawDescGZIP() []byte {
 	return file_clawMachine_clawMachine_proto_rawDescData
 }
 
-var file_clawMachine_clawMachine_proto_msgTypes = make([]protoimpl.MessageInfo, 16)
+var file_clawMachine_clawMachine_proto_msgTypes = make([]protoimpl.MessageInfo, 18)
 var file_clawMachine_clawMachine_proto_goTypes = []any{
 	(*Item)(nil),                   // 0: clawMachine.Item
 	(*ClawMachine)(nil),            // 1: clawMachine.ClawMachine
@@ -940,11 +1033,13 @@ var file_clawMachine_clawMachine_proto_goTypes = []any{
 	(*CreateItemReq)(nil),          // 13: clawMachine.CreateItemReq
 	(*CreateClawItemsReq)(nil),     // 14: clawMachine.CreateClawItemsReq
 	(*CreateClawItemsResp)(nil),    // 15: clawMachine.CreateClawItemsResp
-	(*player.Player)(nil),          // 16: player.Player
+	(*CreateClawPlayerReq)(nil),    // 16: clawMachine.CreateClawPlayerReq
+	(*CreateClawPlayerResp)(nil),   // 17: clawMachine.CreateClawPlayerResp
+	(*player.Player)(nil),          // 18: player.Player
 }
 var file_clawMachine_clawMachine_proto_depIdxs = []int32{
 	0,  // 0: clawMachine.ClawMachine.items:type_name -> clawMachine.Item
-	16, // 1: clawMachine.ClawPlayer.basePlayer:type_name -> player.Player
+	18, // 1: clawMachine.ClawPlayer.basePlayer:type_name -> player.Player
 	3,  // 2: clawMachine.CreateClawMachineReq.items:type_name -> clawMachine.Items
 	1,  // 3: clawMachine.CreateClawMachineResp.machine:type_name -> clawMachine.ClawMachine
 	7,  // 4: clawMachine.StartClawGameResp.results:type_name -> clawMachine.ClawResult
@@ -952,21 +1047,25 @@ var file_clawMachine_clawMachine_proto_depIdxs = []int32{
 	1,  // 6: clawMachine.GetClawMachineInfoResp.machine:type_name -> clawMachine.ClawMachine
 	13, // 7: clawMachine.CreateClawItemsReq.clawItems:type_name -> clawMachine.CreateItemReq
 	0,  // 8: clawMachine.CreateClawItemsResp.clawItems:type_name -> clawMachine.Item
-	4,  // 9: clawMachine.ClawMachineService.CreateClawMachine:input_type -> clawMachine.CreateClawMachineReq
-	11, // 10: clawMachine.ClawMachineService.GetClawMachineInfo:input_type -> clawMachine.GetClawMachineInfoReq
-	6,  // 11: clawMachine.ClawMachineService.StartClawGame:input_type -> clawMachine.StartClawGameReq
-	9,  // 12: clawMachine.ClawMachineService.GetClawPlayerInfo:input_type -> clawMachine.GetClawPlayerInfoReq
-	14, // 13: clawMachine.ClawMachineService.CreateClawItems:input_type -> clawMachine.CreateClawItemsReq
-	5,  // 14: clawMachine.ClawMachineService.CreateClawMachine:output_type -> clawMachine.CreateClawMachineResp
-	12, // 15: clawMachine.ClawMachineService.GetClawMachineInfo:output_type -> clawMachine.GetClawMachineInfoResp
-	8,  // 16: clawMachine.ClawMachineService.StartClawGame:output_type -> clawMachine.StartClawGameResp
-	10, // 17: clawMachine.ClawMachineService.GetClawPlayerInfo:output_type -> clawMachine.GetClawPlayerInfoResp
-	15, // 18: clawMachine.ClawMachineService.CreateClawItems:output_type -> clawMachine.CreateClawItemsResp
-	14, // [14:19] is the sub-list for method output_type
-	9,  // [9:14] is the sub-list for method input_type
-	9,  // [9:9] is the sub-list for extension type_name
-	9,  // [9:9] is the sub-list for extension extendee
-	0,  // [0:9] is the sub-list for field type_name
+	2,  // 9: clawMachine.CreateClawPlayerReq.player:type_name -> clawMachine.ClawPlayer
+	2,  // 10: clawMachine.CreateClawPlayerResp.player:type_name -> clawMachine.ClawPlayer
+	16, // 11: clawMachine.ClawMachineService.CreateClawPlayer:input_type -> clawMachine.CreateClawPlayerReq
+	4,  // 12: clawMachine.ClawMachineService.CreateClawMachine:input_type -> clawMachine.CreateClawMachineReq
+	11, // 13: clawMachine.ClawMachineService.GetClawMachineInfo:input_type -> clawMachine.GetClawMachineInfoReq
+	6,  // 14: clawMachine.ClawMachineService.StartClawGame:input_type -> clawMachine.StartClawGameReq
+	9,  // 15: clawMachine.ClawMachineService.GetClawPlayerInfo:input_type -> clawMachine.GetClawPlayerInfoReq
+	14, // 16: clawMachine.ClawMachineService.CreateClawItems:input_type -> clawMachine.CreateClawItemsReq
+	17, // 17: clawMachine.ClawMachineService.CreateClawPlayer:output_type -> clawMachine.CreateClawPlayerResp
+	5,  // 18: clawMachine.ClawMachineService.CreateClawMachine:output_type -> clawMachine.CreateClawMachineResp
+	12, // 19: clawMachine.ClawMachineService.GetClawMachineInfo:output_type -> clawMachine.GetClawMachineInfoResp
+	8,  // 20: clawMachine.ClawMachineService.StartClawGame:output_type -> clawMachine.StartClawGameResp
+	10, // 21: clawMachine.ClawMachineService.GetClawPlayerInfo:output_type -> clawMachine.GetClawPlayerInfoResp
+	15, // 22: clawMachine.ClawMachineService.CreateClawItems:output_type -> clawMachine.CreateClawItemsResp
+	17, // [17:23] is the sub-list for method output_type
+	11, // [11:17] is the sub-list for method input_type
+	11, // [11:11] is the sub-list for extension type_name
+	11, // [11:11] is the sub-list for extension extendee
+	0,  // [0:11] is the sub-list for field type_name
 }
 
 func init() { file_clawMachine_clawMachine_proto_init() }
@@ -980,7 +1079,7 @@ func file_clawMachine_clawMachine_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_clawMachine_clawMachine_proto_rawDesc), len(file_clawMachine_clawMachine_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   16,
+			NumMessages:   18,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

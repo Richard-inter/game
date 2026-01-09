@@ -47,6 +47,10 @@ func (c *ClawMachineClient) CreateClawItems(ctx context.Context, req *clawmachin
 	return c.client.CreateClawItems(ctx, req)
 }
 
+func (c *ClawMachineClient) CreateClawPlayer(ctx context.Context, req *clawmachinepb.CreateClawPlayerReq) (*clawmachinepb.CreateClawPlayerResp, error) {
+	return c.client.CreateClawPlayer(ctx, req)
+}
+
 func (c *ClawMachineClient) Close() error {
 	return c.conn.Close()
 }

@@ -19,6 +19,7 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
+	ClawMachineService_CreateClawPlayer_FullMethodName   = "/clawMachine.ClawMachineService/CreateClawPlayer"
 	ClawMachineService_CreateClawMachine_FullMethodName  = "/clawMachine.ClawMachineService/CreateClawMachine"
 	ClawMachineService_GetClawMachineInfo_FullMethodName = "/clawMachine.ClawMachineService/GetClawMachineInfo"
 	ClawMachineService_StartClawGame_FullMethodName      = "/clawMachine.ClawMachineService/StartClawGame"
@@ -30,6 +31,7 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ClawMachineServiceClient interface {
+	CreateClawPlayer(ctx context.Context, in *CreateClawPlayerReq, opts ...grpc.CallOption) (*CreateClawPlayerResp, error)
 	CreateClawMachine(ctx context.Context, in *CreateClawMachineReq, opts ...grpc.CallOption) (*CreateClawMachineResp, error)
 	GetClawMachineInfo(ctx context.Context, in *GetClawMachineInfoReq, opts ...grpc.CallOption) (*GetClawMachineInfoResp, error)
 	StartClawGame(ctx context.Context, in *StartClawGameReq, opts ...grpc.CallOption) (*StartClawGameResp, error)
@@ -43,6 +45,16 @@ type clawMachineServiceClient struct {
 
 func NewClawMachineServiceClient(cc grpc.ClientConnInterface) ClawMachineServiceClient {
 	return &clawMachineServiceClient{cc}
+}
+
+func (c *clawMachineServiceClient) CreateClawPlayer(ctx context.Context, in *CreateClawPlayerReq, opts ...grpc.CallOption) (*CreateClawPlayerResp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CreateClawPlayerResp)
+	err := c.cc.Invoke(ctx, ClawMachineService_CreateClawPlayer_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (c *clawMachineServiceClient) CreateClawMachine(ctx context.Context, in *CreateClawMachineReq, opts ...grpc.CallOption) (*CreateClawMachineResp, error) {
@@ -99,6 +111,7 @@ func (c *clawMachineServiceClient) CreateClawItems(ctx context.Context, in *Crea
 // All implementations must embed UnimplementedClawMachineServiceServer
 // for forward compatibility.
 type ClawMachineServiceServer interface {
+	CreateClawPlayer(context.Context, *CreateClawPlayerReq) (*CreateClawPlayerResp, error)
 	CreateClawMachine(context.Context, *CreateClawMachineReq) (*CreateClawMachineResp, error)
 	GetClawMachineInfo(context.Context, *GetClawMachineInfoReq) (*GetClawMachineInfoResp, error)
 	StartClawGame(context.Context, *StartClawGameReq) (*StartClawGameResp, error)
@@ -114,6 +127,9 @@ type ClawMachineServiceServer interface {
 // pointer dereference when methods are called.
 type UnimplementedClawMachineServiceServer struct{}
 
+func (UnimplementedClawMachineServiceServer) CreateClawPlayer(context.Context, *CreateClawPlayerReq) (*CreateClawPlayerResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateClawPlayer not implemented")
+}
 func (UnimplementedClawMachineServiceServer) CreateClawMachine(context.Context, *CreateClawMachineReq) (*CreateClawMachineResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateClawMachine not implemented")
 }
@@ -148,6 +164,24 @@ func RegisterClawMachineServiceServer(s grpc.ServiceRegistrar, srv ClawMachineSe
 		t.testEmbeddedByValue()
 	}
 	s.RegisterService(&ClawMachineService_ServiceDesc, srv)
+}
+
+func _ClawMachineService_CreateClawPlayer_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateClawPlayerReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ClawMachineServiceServer).CreateClawPlayer(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ClawMachineService_CreateClawPlayer_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ClawMachineServiceServer).CreateClawPlayer(ctx, req.(*CreateClawPlayerReq))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _ClawMachineService_CreateClawMachine_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -247,6 +281,10 @@ var ClawMachineService_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "clawMachine.ClawMachineService",
 	HandlerType: (*ClawMachineServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "CreateClawPlayer",
+			Handler:    _ClawMachineService_CreateClawPlayer_Handler,
+		},
 		{
 			MethodName: "CreateClawMachine",
 			Handler:    _ClawMachineService_CreateClawMachine_Handler,
