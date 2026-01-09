@@ -9,19 +9,19 @@ import (
 	"github.com/Richard-inter/game/internal/config"
 	"github.com/Richard-inter/game/internal/transport/grpc"
 	"github.com/gorilla/websocket"
-	"github.com/sirupsen/logrus"
+	"go.uber.org/zap"
 )
 
 type Server struct {
 	config      *config.Config
-	logger      *logrus.Logger
+	logger      *zap.SugaredLogger
 	server      *http.Server
 	grpcManager *grpc.ClientManager
 	upgrader    websocket.Upgrader
 	clients     map[*websocket.Conn]bool
 }
 
-func NewServer(cfg *config.Config, logger *logrus.Logger, grpcManager *grpc.ClientManager) *Server {
+func NewServer(cfg *config.Config, logger *zap.SugaredLogger, grpcManager *grpc.ClientManager) *Server {
 	return &Server{
 		config:      cfg,
 		logger:      logger,
@@ -50,7 +50,7 @@ func (s *Server) Start() error {
 		// Upgrade HTTP connection to WebSocket
 		conn, err := s.upgrader.Upgrade(w, r, nil)
 		if err != nil {
-			s.logger.WithError(err).Error("Failed to upgrade WebSocket connection")
+			s.logger.Errorw("Failed to upgrade WebSocket connection", "error", err)
 			return
 		}
 
@@ -65,10 +65,7 @@ func (s *Server) Start() error {
 		WriteTimeout: 30 * time.Second,
 	}
 
-	s.logger.WithFields(logrus.Fields{
-		"address": s.server.Addr,
-		"path":    s.config.WebSocket.Path,
-	}).Info("Starting WebSocket server")
+	s.logger.Infow("Starting WebSocket server", "address", s.server.Addr, "path", s.config.WebSocket.Path)
 
 	if err := s.server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 		return fmt.Errorf("WebSocket server failed to start: %w", err)
@@ -82,7 +79,7 @@ func (s *Server) Shutdown(ctx context.Context) error {
 		return nil
 	}
 
-	s.logger.Info("Shutting down WebSocket server")
+	s.logger.Infow("Shutting down WebSocket server")
 
 	// Close all client connections
 	for client := range s.clients {
@@ -97,7 +94,7 @@ func (s *Server) Shutdown(ctx context.Context) error {
 func (s *Server) Broadcast(message []byte) {
 	for client := range s.clients {
 		if err := client.WriteMessage(websocket.TextMessage, message); err != nil {
-			s.logger.WithError(err).Error("Failed to broadcast message")
+			s.logger.Errorw("Failed to broadcast message", "error", err)
 			client.Close()
 			delete(s.clients, client)
 		}

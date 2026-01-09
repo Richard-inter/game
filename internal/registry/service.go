@@ -5,15 +5,15 @@ import (
 	"os"
 
 	"github.com/Richard-inter/game/internal/discovery"
-	"github.com/sirupsen/logrus"
+	"go.uber.org/zap"
 )
 
 type ServiceRegistry struct {
 	discovery discovery.ServiceDiscovery
-	logger    *logrus.Logger
+	logger    *zap.SugaredLogger
 }
 
-func NewServiceRegistry(discovery discovery.ServiceDiscovery, logger *logrus.Logger) *ServiceRegistry {
+func NewServiceRegistry(discovery discovery.ServiceDiscovery, logger *zap.SugaredLogger) *ServiceRegistry {
 	return &ServiceRegistry{
 		discovery: discovery,
 		logger:    logger,
@@ -23,25 +23,15 @@ func NewServiceRegistry(discovery discovery.ServiceDiscovery, logger *logrus.Log
 func (r *ServiceRegistry) RegisterService(serviceName, host string, port int) error {
 	address := fmt.Sprintf("%s:%d", host, port)
 
-	r.logger.WithFields(logrus.Fields{
-		"service": serviceName,
-		"address": address,
-	}).Info("Registering service with etcd")
+	r.logger.Infow("Registering service with etcd", "service", serviceName, "address", address)
 
 	err := r.discovery.RegisterService(serviceName, address)
 	if err != nil {
-		r.logger.WithFields(logrus.Fields{
-			"service": serviceName,
-			"address": address,
-			"error":   err,
-		}).Error("Failed to register service")
+		r.logger.Errorw("Failed to register service", "service", serviceName, "address", address, "error", err)
 		return fmt.Errorf("failed to register service %s: %w", serviceName, err)
 	}
 
-	r.logger.WithFields(logrus.Fields{
-		"service": serviceName,
-		"address": address,
-	}).Info("Successfully registered service")
+	r.logger.Infow("Successfully registered service", "service", serviceName, "address", address)
 
 	return nil
 }

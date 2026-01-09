@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/sirupsen/logrus"
+	"go.uber.org/zap"
 
 	"github.com/Richard-inter/game/internal/config"
 	"github.com/Richard-inter/game/internal/transport/grpc"
@@ -20,13 +20,13 @@ const (
 
 type Server struct {
 	config     *config.ServiceConfig
-	logger     *logrus.Logger
+	logger     *zap.SugaredLogger
 	server     *http.Server
 	engine     *gin.Engine
 	grpcClient *grpc.ClientManager
 }
 
-func NewServer(cfg *config.ServiceConfig, logger *logrus.Logger, grpcClient *grpc.ClientManager) *Server {
+func NewServer(cfg *config.ServiceConfig, logger *zap.SugaredLogger, grpcClient *grpc.ClientManager) *Server {
 	return &Server{
 		config:     cfg,
 		logger:     logger,
@@ -52,9 +52,7 @@ func (s *Server) Start() error {
 		WriteTimeout: time.Duration(s.config.Service.WriteTimeout) * time.Second,
 	}
 
-	s.logger.WithFields(logrus.Fields{
-		"address": s.server.Addr,
-	}).Info("Starting HTTP server")
+	s.logger.Infow("Starting HTTP server", "address", s.server.Addr)
 
 	if err := s.server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 		return fmt.Errorf("HTTP server failed to start: %w", err)
@@ -68,7 +66,7 @@ func (s *Server) Shutdown(ctx context.Context) error {
 		return nil
 	}
 
-	s.logger.Info("Shutting down HTTP server")
+	s.logger.Infow("Shutting down HTTP server")
 	return s.server.Shutdown(ctx)
 }
 
@@ -110,16 +108,16 @@ func (s *Server) setupRoutes() {
 	// Create player handler
 	playerHandler, err := handler.NewPlayerHandler(s.logger, s.grpcClient)
 	if err != nil {
-		s.logger.WithError(err).Fatal("Failed to create player handler")
+		s.logger.Fatalw("Failed to create player handler", "error", err)
 	}
 
 	clawMachineHandler, err := handler.NewClawMachineHandler(s.logger, s.grpcClient)
 	if err != nil {
-		s.logger.WithError(err).Fatal("Failed to create claw machine handler")
+		s.logger.Fatalw("Failed to create claw machine handler", "error", err)
 	}
 
 	// Health check
-	s.engine.GET("/health", handler.HealthCheck(s.logger))
+	s.engine.GET("/health", handler.HealthCheck(s.logger.Desugar()))
 
 	// API version 1
 	v1 := s.engine.Group("/api/v1")

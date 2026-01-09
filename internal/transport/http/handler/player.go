@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/sirupsen/logrus"
+	"go.uber.org/zap"
 
 	"github.com/Richard-inter/game/internal/transport/grpc"
 	dto "github.com/Richard-inter/game/internal/transport/http/DTO"
@@ -14,12 +14,12 @@ import (
 )
 
 type PlayerHandler struct {
-	logger       *logrus.Logger
+	logger       *zap.SugaredLogger
 	playerClient *grpc.PlayerClient
 }
 
 func NewPlayerHandler(
-	logger *logrus.Logger,
+	logger *zap.SugaredLogger,
 	grpcManager *grpc.ClientManager,
 ) (*PlayerHandler, error) {
 	playerClient, err := grpcManager.GetPlayerClient()
@@ -36,7 +36,7 @@ func NewPlayerHandler(
 func (h *PlayerHandler) HandleCreatePlayer(c *gin.Context) {
 	var req dto.CreatePlayerRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		h.logger.WithError(err).Error("Invalid request body")
+		h.logger.Errorw("Invalid request body", "error", err)
 		common.SendError(c, http.StatusBadRequest, "Username is required")
 		return
 	}
@@ -48,12 +48,12 @@ func (h *PlayerHandler) HandleCreatePlayer(c *gin.Context) {
 
 	resp, err := h.playerClient.CreatePlayer(c, grpcReq)
 	if err != nil {
-		h.logger.WithError(err).Error("Failed to create player")
+		h.logger.Errorw("Failed to create player", "error", err)
 		common.SendError(c, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	h.logger.WithField("username", req.UserName).Info("Successfully created player")
+	h.logger.Infow("Successfully created player", "username", req.UserName)
 	common.SendCreated(c, resp.Player)
 }
 
@@ -61,7 +61,7 @@ func (h *PlayerHandler) HandleGetPlayerInfo(c *gin.Context) {
 	playerIDStr := c.Param("id")
 	var playerID int64
 	if _, err := fmt.Sscanf(playerIDStr, "%d", &playerID); err != nil {
-		h.logger.WithError(err).Error("Invalid player ID")
+		h.logger.Errorw("Invalid player ID", "error", err)
 		common.SendError(c, http.StatusBadRequest, "Invalid player ID")
 		return
 	}
@@ -70,11 +70,11 @@ func (h *PlayerHandler) HandleGetPlayerInfo(c *gin.Context) {
 		PlayerID: playerID,
 	})
 	if err != nil {
-		h.logger.WithError(err).Error("Failed to get player info")
+		h.logger.Errorw("Failed to get player info", "error", err)
 		common.SendError(c, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	h.logger.WithField("player_id", playerID).Info("Successfully retrieved player info")
+	h.logger.Infow("Successfully retrieved player info", "player_id", playerID)
 	common.SendSuccessWithMessage(c, resp.Player, "Player info retrieved successfully")
 }

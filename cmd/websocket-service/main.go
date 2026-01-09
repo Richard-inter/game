@@ -12,7 +12,7 @@ import (
 	"github.com/Richard-inter/game/internal/config"
 	"github.com/Richard-inter/game/pkg/logger"
 	"github.com/gorilla/websocket"
-	"github.com/sirupsen/logrus"
+	"go.uber.org/zap"
 )
 
 const (
@@ -28,14 +28,14 @@ var (
 func main() {
 	// Initialize logger
 	logger.InitLogger()
-	log := logger.GetLogger()
+	log := logger.GetSugar()
 
-	log.WithFields(logrus.Fields{
-		"version":    Version,
-		"build_time": BuildTime,
-		"go_version": GoVersion,
-		"service":    "websocket-service",
-	}).Info("Starting WebSocket Service")
+	log.Infow("Starting WebSocket Service",
+		"version", Version,
+		"build_time", BuildTime,
+		"go_version", GoVersion,
+		"service", "websocket-service",
+	)
 
 	// Load service-specific configuration
 	configFile := os.Getenv("CONFIG_PATH")
@@ -45,7 +45,7 @@ func main() {
 
 	cfg, err := config.LoadServiceConfigFromPath(configFile)
 	if err != nil {
-		log.WithError(err).Fatal("Failed to load configuration")
+		log.Fatalw("Failed to load configuration", "error", err)
 	}
 
 	// WebSocket upgrader
@@ -79,13 +79,10 @@ func main() {
 
 	// Start server in a goroutine
 	go func() {
-		log.WithFields(logrus.Fields{
-			"address": server.Addr,
-			"path":    cfg.WebSocket.Path,
-		}).Info("WebSocket Service starting")
+		log.Infow("WebSocket Service starting", "address", server.Addr, "path", cfg.WebSocket.Path)
 
 		if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-			log.WithError(err).Fatal("Failed to start WebSocket service")
+			log.Fatalw("Failed to start WebSocket service", "error", err)
 		}
 	}()
 
@@ -94,54 +91,48 @@ func main() {
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
 	<-quit
 
-	log.Info("Shutting down WebSocket Service...")
+	log.Infow("Shutting down WebSocket Service...")
 
 	// Graceful shutdown
 	ctx, cancel := context.WithTimeout(context.Background(), shutdownTimeout)
 	defer cancel()
 
 	if err := server.Shutdown(ctx); err != nil {
-		log.WithError(err).Error("WebSocket service shutdown error")
+		log.Errorw("WebSocket service shutdown error", "error", err)
 	}
 
-	log.Info("WebSocket Service stopped")
+	log.Infow("WebSocket Service stopped")
 }
 
-func handleWebSocket(upgrader websocket.Upgrader, w http.ResponseWriter, r *http.Request, log *logrus.Logger) {
+func handleWebSocket(upgrader websocket.Upgrader, w http.ResponseWriter, r *http.Request, log *zap.SugaredLogger) {
 	// Upgrade HTTP connection to WebSocket
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
-		log.WithError(err).Error("Failed to upgrade WebSocket connection")
+		log.Errorw("Failed to upgrade WebSocket connection", "error", err)
 		return
 	}
 	defer conn.Close()
 
-	log.WithFields(logrus.Fields{
-		"client_ip":  r.RemoteAddr,
-		"user_agent": r.UserAgent(),
-	}).Info("WebSocket client connected")
+	log.Infow("WebSocket client connected", "client_ip", r.RemoteAddr, "user_agent", r.UserAgent())
 
 	// Handle WebSocket messages
 	for {
 		messageType, message, err := conn.ReadMessage()
 		if err != nil {
 			if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway, websocket.CloseAbnormalClosure) {
-				log.WithError(err).Error("WebSocket error")
+				log.Errorw("WebSocket error", "error", err)
 			}
 			break
 		}
 
-		log.WithFields(logrus.Fields{
-			"message_type": messageType,
-			"message":      string(message),
-		}).Debug("Received WebSocket message")
+		log.Debugw("Received WebSocket message", "message_type", messageType, "message", string(message))
 
 		// Echo message back (placeholder)
 		if err := conn.WriteMessage(messageType, message); err != nil {
-			log.WithError(err).Error("Failed to send WebSocket message")
+			log.Errorw("Failed to send WebSocket message", "error", err)
 			break
 		}
 	}
 
-	log.WithField("client_ip", r.RemoteAddr).Info("WebSocket client disconnected")
+	log.Infow("WebSocket client disconnected", "client_ip", r.RemoteAddr)
 }

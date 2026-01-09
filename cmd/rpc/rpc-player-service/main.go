@@ -8,7 +8,6 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 
@@ -35,13 +34,13 @@ var (
 func main() {
 	// Initialize logger
 	logger.InitLogger()
-	log := logger.GetLogger()
+	log := logger.GetSugar()
 
-	log.WithFields(logrus.Fields{
-		"version":   Version,
-		"buildTime": BuildTime,
-		"goVersion": GoVersion,
-	}).Info("Starting Player Service")
+	log.Infow("Starting Player Service",
+		"version", Version,
+		"buildTime", BuildTime,
+		"goVersion", GoVersion,
+	)
 
 	// Load service-specific configuration
 	configFile := os.Getenv("CONFIG_PATH")
@@ -51,20 +50,20 @@ func main() {
 
 	cfg, err := config.LoadServiceConfigFromPath(configFile)
 	if err != nil {
-		log.WithError(err).Fatal("Failed to load configuration")
+		log.Fatalw("Failed to load configuration", "error", err)
 	}
 
 	// Initialize database
 	database, err := db.InitPlayerDB(cfg)
 	if err != nil {
-		log.WithError(err).Fatal("Failed to initialize database")
+		log.Fatalw("Failed to initialize database", "error", err)
 	}
 
 	// Initialize gRPC server
 	lc := net.ListenConfig{}
 	lis, err := lc.Listen(context.Background(), "tcp", cfg.GetGRPCAddr())
 	if err != nil {
-		log.WithError(err).Fatal("Failed to listen")
+		log.Fatalw("Failed to listen", "error", err)
 	}
 
 	s := grpc.NewServer()
@@ -77,20 +76,18 @@ func main() {
 	// Enable reflection for development
 	reflection.Register(s)
 
-	log.WithFields(logrus.Fields{
-		"address": lis.Addr().String(),
-	}).Info("Player gRPC server starting")
+	log.Infow("Player gRPC server starting", "address", lis.Addr().String())
 
 	// Register service with etcd
 	if cfg.Discovery.Enabled {
 		etcdDiscovery, err := discovery.NewEtcdDiscovery(cfg.Discovery.Etcd.Endpoints)
 		if err != nil {
-			log.WithError(err).Warn("Failed to connect to etcd, service discovery disabled")
+			log.Warnw("Failed to connect to etcd, service discovery disabled", "error", err)
 		} else {
 			serviceRegistry := registry.NewServiceRegistry(etcdDiscovery, log)
 			err = serviceRegistry.RegisterService("player-service", cfg.Service.Host, cfg.Service.Port)
 			if err != nil {
-				log.WithError(err).Error("Failed to register service with etcd")
+				log.Errorw("Failed to register service with etcd", "error", err)
 			}
 			defer etcdDiscovery.Close()
 		}
@@ -99,7 +96,7 @@ func main() {
 	// Start server in a goroutine
 	go func() {
 		if err := s.Serve(lis); err != nil {
-			log.WithError(err).Fatal("Failed to serve")
+			log.Fatalw("Failed to serve", "error", err)
 		}
 	}()
 
@@ -108,7 +105,7 @@ func main() {
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
 	<-quit
 
-	log.Info("Shutting down Player service...")
+	log.Infow("Shutting down Player service...")
 
 	// Graceful shutdown
 	ctx, cancel := context.WithTimeout(context.Background(), shutdownTimeout)
@@ -122,9 +119,9 @@ func main() {
 
 	select {
 	case <-done:
-		log.Info("Player service stopped gracefully")
+		log.Infow("Player service stopped gracefully")
 	case <-ctx.Done():
-		log.Info("Player service shutdown timeout")
+		log.Infow("Player service shutdown timeout")
 		s.Stop()
 	}
 }

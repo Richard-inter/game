@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/Richard-inter/game/internal/config"
-	"github.com/sirupsen/logrus"
+	"go.uber.org/zap"
 )
 
 const (
@@ -17,7 +17,7 @@ const (
 
 type Server struct {
 	config     *config.Config
-	logger     *logrus.Logger
+	logger     *zap.SugaredLogger
 	listener   net.Listener
 	clients    map[net.Conn]bool
 	clientsCh  chan net.Conn
@@ -25,7 +25,7 @@ type Server struct {
 	messages   chan []byte
 }
 
-func NewServer(cfg *config.Config, logger *logrus.Logger) *Server {
+func NewServer(cfg *config.Config, logger *zap.SugaredLogger) *Server {
 	return &Server{
 		config:     cfg,
 		logger:     logger,
@@ -46,9 +46,7 @@ func (s *Server) Start() error {
 		return fmt.Errorf("failed to listen on TCP port: %w", err)
 	}
 
-	s.logger.WithFields(logrus.Fields{
-		"address": s.listener.Addr().String(),
-	}).Info("Starting TCP server")
+	s.logger.Infow("Starting TCP server", "address", s.listener.Addr().String())
 
 	// Start connection handler
 	go s.handleConnections()
@@ -61,7 +59,7 @@ func (s *Server) Start() error {
 		conn, err := s.listener.Accept()
 		if err != nil {
 			if netErr, ok := err.(net.Error); ok && netErr.Temporary() {
-				s.logger.WithError(err).Warn("Temporary TCP error, retrying...")
+				s.logger.Warnw("Temporary TCP error, retrying...", "error", err)
 				time.Sleep(connectionRetryDelay)
 				continue
 			}
@@ -77,11 +75,11 @@ func (s *Server) Shutdown(_ context.Context) error {
 		return nil
 	}
 
-	s.logger.Info("Shutting down TCP server")
+	s.logger.Infow("Shutting down TCP server")
 
 	// Close listener
 	if err := s.listener.Close(); err != nil {
-		s.logger.WithError(err).Error("Failed to close TCP listener")
+		s.logger.Errorw("Failed to close TCP listener", "error", err)
 	}
 
 	// Close all client connections
@@ -112,17 +110,17 @@ func (s *Server) handleClient(conn net.Conn) {
 	}()
 
 	clientAddr := conn.RemoteAddr().String()
-	s.logger.WithField("client", clientAddr).Info("TCP client connected")
+	s.logger.Infow("TCP client connected", "client", clientAddr)
 
 	// Set read/write timeouts
 	if s.config.TCP.ReadTimeout > 0 {
 		if err := conn.SetReadDeadline(time.Now().Add(time.Duration(s.config.TCP.ReadTimeout) * time.Second)); err != nil {
-			s.logger.WithError(err).Error("Failed to set read deadline")
+			s.logger.Errorw("Failed to set read deadline", "error", err)
 		}
 	}
 	if s.config.TCP.WriteTimeout > 0 {
 		if err := conn.SetWriteDeadline(time.Now().Add(time.Duration(s.config.TCP.WriteTimeout) * time.Second)); err != nil {
-			s.logger.WithError(err).Error("Failed to set write deadline")
+			s.logger.Errorw("Failed to set write deadline", "error", err)
 		}
 	}
 
@@ -130,14 +128,11 @@ func (s *Server) handleClient(conn net.Conn) {
 	for scanner.Scan() {
 		message := scanner.Bytes()
 
-		s.logger.WithFields(logrus.Fields{
-			"client":  clientAddr,
-			"message": string(message),
-		}).Debug("Received TCP message")
+		s.logger.Debugw("Received TCP message", "client", clientAddr, "message", string(message))
 
 		// Echo message back (placeholder)
 		if _, err := conn.Write(message); err != nil {
-			s.logger.WithError(err).Error("Failed to send TCP message")
+			s.logger.Errorw("Failed to send TCP message", "error", err)
 			break
 		}
 
@@ -148,17 +143,17 @@ func (s *Server) handleClient(conn net.Conn) {
 	}
 
 	if err := scanner.Err(); err != nil {
-		s.logger.WithError(err).WithField("client", clientAddr).Error("TCP client error")
+		s.logger.Errorw("TCP client error", "error", err, "client", clientAddr)
 	}
 
-	s.logger.WithField("client", clientAddr).Info("TCP client disconnected")
+	s.logger.Infow("TCP client disconnected", "client", clientAddr)
 }
 
 func (s *Server) broadcastMessages() {
 	for message := range s.messages {
 		for client := range s.clients {
 			if _, err := client.Write(message); err != nil {
-				s.logger.WithError(err).Error("Failed to broadcast TCP message")
+				s.logger.Errorw("Failed to broadcast TCP message", "error", err)
 				client.Close()
 				delete(s.clients, client)
 			}
@@ -171,6 +166,6 @@ func (s *Server) Broadcast(message []byte) {
 	select {
 	case s.messages <- message:
 	default:
-		s.logger.Warn("TCP broadcast channel is full")
+		s.logger.Warnw("TCP broadcast channel is full")
 	}
 }

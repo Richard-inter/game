@@ -8,7 +8,6 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 
@@ -33,13 +32,13 @@ var (
 func main() {
 	// Initialize logger
 	logger.InitLogger()
-	log := logger.GetLogger()
+	log := logger.GetSugar()
 
-	log.WithFields(logrus.Fields{
-		"version":   Version,
-		"buildTime": BuildTime,
-		"goVersion": GoVersion,
-	}).Info("Starting ClawMachine Service")
+	log.Infow("Starting ClawMachine Service",
+		"version", Version,
+		"buildTime", BuildTime,
+		"goVersion", GoVersion,
+	)
 
 	// Load service-specific configuration
 	configFile := os.Getenv("CONFIG_PATH")
@@ -49,20 +48,20 @@ func main() {
 
 	cfg, err := config.LoadServiceConfigFromPath(configFile)
 	if err != nil {
-		log.WithError(err).Fatal("Failed to load configuration")
+		log.Fatalw("Failed to load configuration", "error", err)
 	}
 
 	// Initialize database
 	database, err := db.InitClawmachineDB(cfg)
 	if err != nil {
-		log.WithError(err).Fatal("Failed to initialize database")
+		log.Fatalw("Failed to initialize database", "error", err)
 	}
 
 	// Initialize gRPC server
 	lc := net.ListenConfig{}
 	lis, err := lc.Listen(context.Background(), "tcp", cfg.GetGRPCAddr())
 	if err != nil {
-		log.WithError(err).Fatal("Failed to listen")
+		log.Fatalw("Failed to listen", "error", err)
 	}
 
 	s := grpc.NewServer()
@@ -75,14 +74,12 @@ func main() {
 	// Enable reflection for development
 	reflection.Register(s)
 
-	log.WithFields(logrus.Fields{
-		"address": lis.Addr().String(),
-	}).Info("ClawMachine gRPC server starting")
+	log.Infow("ClawMachine gRPC server starting", "address", lis.Addr().String())
 
 	// Start server in a goroutine
 	go func() {
 		if err := s.Serve(lis); err != nil {
-			log.WithError(err).Fatal("Failed to serve")
+			log.Fatalw("Failed to serve", "error", err)
 		}
 	}()
 
@@ -91,7 +88,7 @@ func main() {
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
 	<-quit
 
-	log.Info("Shutting down ClawMachine service...")
+	log.Infow("Shutting down ClawMachine service...")
 
 	// Graceful shutdown
 	ctx, cancel := context.WithTimeout(context.Background(), shutdownTimeout)
@@ -105,9 +102,9 @@ func main() {
 
 	select {
 	case <-done:
-		log.Info("ClawMachine service stopped gracefully")
+		log.Infow("ClawMachine service stopped gracefully")
 	case <-ctx.Done():
-		log.Info("ClawMachine service shutdown timeout")
+		log.Infow("ClawMachine service shutdown timeout")
 		s.Stop()
 	}
 }

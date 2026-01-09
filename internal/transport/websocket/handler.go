@@ -5,18 +5,18 @@ import (
 	"fmt"
 
 	"github.com/gorilla/websocket"
-	"github.com/sirupsen/logrus"
+	"go.uber.org/zap"
 
 	"github.com/Richard-inter/game/internal/transport/grpc"
 	player "github.com/Richard-inter/game/pkg/protocol/player"
 )
 
 type WebSocketHandler struct {
-	logger       *logrus.Logger
+	logger       *zap.SugaredLogger
 	playerClient *grpc.PlayerClient
 }
 
-func NewWebSocketHandler(logger *logrus.Logger, grpcManager *grpc.ClientManager) (*WebSocketHandler, error) {
+func NewWebSocketHandler(logger *zap.SugaredLogger, grpcManager *grpc.ClientManager) (*WebSocketHandler, error) {
 	playerClient, err := grpcManager.GetPlayerClient()
 	if err != nil {
 		return nil, err
@@ -31,36 +31,33 @@ func NewWebSocketHandler(logger *logrus.Logger, grpcManager *grpc.ClientManager)
 func (h *WebSocketHandler) HandleConnection(conn *websocket.Conn) {
 	defer conn.Close()
 
-	h.logger.Info("WebSocket client connected")
+	h.logger.Infow("WebSocket client connected")
 
 	for {
 		// Read message
 		messageType, message, err := conn.ReadMessage()
 		if err != nil {
 			if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway, websocket.CloseAbnormalClosure) {
-				h.logger.WithError(err).Error("WebSocket error")
+				h.logger.Errorw("WebSocket error", "error", err)
 			} else {
-				h.logger.WithError(err).Info("WebSocket connection closed")
+				h.logger.Infow("WebSocket connection closed", "error", err)
 			}
 			return
 		}
 
-		h.logger.WithFields(logrus.Fields{
-			"message_type": messageType,
-			"message":      string(message),
-		}).Debug("Received WebSocket message")
+		h.logger.Debugw("Received WebSocket message", "message_type", messageType, "message", string(message))
 
 		// Handle message
 		response, err := h.handleMessage(message)
 		if err != nil {
-			h.logger.WithError(err).Error("Error handling message")
+			h.logger.Errorw("Error handling message", "error", err)
 			h.sendError(conn, "Failed to process message")
 			continue
 		}
 
 		// Send response
 		if err := conn.WriteMessage(messageType, response); err != nil {
-			h.logger.WithError(err).Error("Error sending response")
+			h.logger.Errorw("Error sending response", "error", err)
 			return
 		}
 	}
@@ -69,7 +66,7 @@ func (h *WebSocketHandler) HandleConnection(conn *websocket.Conn) {
 func (h *WebSocketHandler) handleMessage(data []byte) ([]byte, error) {
 	// For now, just echo the message back
 	// TODO: Implement proper message parsing and handling
-	h.logger.Info("Processing WebSocket message")
+	h.logger.Infow("Processing WebSocket message")
 	return data, nil
 }
 
@@ -91,6 +88,6 @@ func (h *WebSocketHandler) sendError(conn *websocket.Conn, message string) {
 
 	err := conn.WriteMessage(websocket.TextMessage, response)
 	if err != nil {
-		h.logger.WithError(err).Error("Failed to send error message")
+		h.logger.Errorw("Failed to send error message", "error", err)
 	}
 }

@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/gin-gonic/gin"
-	"github.com/sirupsen/logrus"
+	"go.uber.org/zap"
 
 	"github.com/Richard-inter/game/internal/transport/grpc"
 	dto "github.com/Richard-inter/game/internal/transport/http/DTO"
@@ -14,12 +14,12 @@ import (
 )
 
 type ClawMachineHandler struct {
-	logger            *logrus.Logger
+	logger            *zap.SugaredLogger
 	clawMachineClient *grpc.ClawMachineClient
 }
 
 func NewClawMachineHandler(
-	logger *logrus.Logger,
+	logger *zap.SugaredLogger,
 	grpcManager *grpc.ClientManager,
 ) (*ClawMachineHandler, error) {
 	clawMachineClient, err := grpcManager.GetClawMachineClient()
@@ -36,7 +36,7 @@ func NewClawMachineHandler(
 func (h *ClawMachineHandler) HandleCreateClawMachine(c *gin.Context) {
 	var req dto.CreateClawMachineRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		h.logger.WithError(err).Error("Invalid request body")
+		h.logger.Errorw("Invalid request body", "error", err)
 		common.SendError(c, 400, "Invalid request body")
 		return
 	}
@@ -55,12 +55,12 @@ func (h *ClawMachineHandler) HandleCreateClawMachine(c *gin.Context) {
 
 	resp, err := h.clawMachineClient.CreateClawMachine(c, grpcReq)
 	if err != nil {
-		h.logger.WithError(err).Error("Failed to create claw machine")
+		h.logger.Errorw("Failed to create claw machine", "error", err)
 		common.SendError(c, 500, err.Error())
 		return
 	}
 
-	h.logger.WithField("machine_name", req.Name).Info("Successfully created claw machine")
+	h.logger.Infow("Successfully created claw machine", "machine_name", req.Name)
 	common.SendCreated(c, resp.Machine)
 }
 
@@ -69,7 +69,7 @@ func (h *ClawMachineHandler) HandleGetClawMachineInfo(c *gin.Context) {
 	var machineID int64
 	_, err := fmt.Sscan(machineIDParam, &machineID)
 	if err != nil {
-		h.logger.WithError(err).Error("Invalid machine ID")
+		h.logger.Errorw("Invalid machine ID", "error", err)
 		common.SendError(c, 400, "Invalid machine ID")
 		return
 	}
@@ -80,19 +80,19 @@ func (h *ClawMachineHandler) HandleGetClawMachineInfo(c *gin.Context) {
 
 	resp, err := h.clawMachineClient.GetClawMachineInfo(c, grpcReq)
 	if err != nil {
-		h.logger.WithError(err).Error("Failed to get claw machine info")
+		h.logger.Errorw("Failed to get claw machine info", "error", err)
 		common.SendError(c, 500, err.Error())
 		return
 	}
 
-	h.logger.WithField("machine_id", machineID).Info("Successfully retrieved claw machine info")
+	h.logger.Infow("Successfully retrieved claw machine info", "machine_id", machineID)
 	common.SendSuccess(c, resp.Machine)
 }
 
 func (h *ClawMachineHandler) HandleCreateClawItems(c *gin.Context) {
 	var req dto.CreateClawItemsRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		h.logger.WithError(err).Error("Invalid request body")
+		h.logger.Errorw("Invalid request body", "error", err)
 		common.SendError(c, 400, "Invalid request body")
 		return
 	}
@@ -111,12 +111,12 @@ func (h *ClawMachineHandler) HandleCreateClawItems(c *gin.Context) {
 
 	resp, err := h.clawMachineClient.CreateClawItems(c, grpcReq)
 	if err != nil {
-		h.logger.WithError(err).Error("Failed to create claw items")
+		h.logger.Errorw("Failed to create claw items", "error", err)
 		common.SendError(c, 500, err.Error())
 		return
 	}
 
-	h.logger.WithField("item_count", len(req.ClawItems)).Info("Successfully created claw items")
+	h.logger.Infow("Successfully created claw items", "item_count", len(req.ClawItems))
 	common.SendCreated(c, resp.ClawItems)
 }
 
@@ -125,7 +125,7 @@ func (h *ClawMachineHandler) HandleGetClawPlayerInfo(c *gin.Context) {
 	var playerID int64
 	_, err := fmt.Sscan(playerIDParam, &playerID)
 	if err != nil {
-		h.logger.WithError(err).Error("Invalid player ID")
+		h.logger.Errorw("Invalid player ID", "error", err)
 		common.SendError(c, 400, "Invalid player ID")
 		return
 	}
@@ -136,19 +136,19 @@ func (h *ClawMachineHandler) HandleGetClawPlayerInfo(c *gin.Context) {
 
 	resp, err := h.clawMachineClient.GetClawPlayerInfo(c, grpcReq)
 	if err != nil {
-		h.logger.WithError(err).Error("Failed to get claw player info")
+		h.logger.Errorw("Failed to get claw player info", "error", err)
 		common.SendError(c, 500, err.Error())
 		return
 	}
 
-	h.logger.WithField("player_id", playerID).Info("Successfully retrieved claw player info")
+	h.logger.Infow("Successfully retrieved claw player info", "player_id", playerID)
 	common.SendSuccess(c, resp.Player)
 }
 
 func (h *ClawMachineHandler) HandleCreatePlayer(c *gin.Context) {
 	var req dto.CreateClawPlayerRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		h.logger.WithError(err).Error("Invalid request body")
+		h.logger.Errorw("Invalid request body", "error", err)
 		common.SendError(c, 400, "Invalid request body")
 		return
 	}
@@ -167,11 +167,11 @@ func (h *ClawMachineHandler) HandleCreatePlayer(c *gin.Context) {
 
 	resp, err := h.clawMachineClient.CreateClawPlayer(c, grpcReq)
 	if err != nil {
-		h.logger.WithError(err).Error("Failed to create claw player")
+		h.logger.Errorw("Failed to create claw player", "error", err)
 		common.SendError(c, 500, err.Error())
 		return
 	}
 
-	h.logger.WithField("player_id", req.PlayerID).Info("Successfully created claw player")
+	h.logger.Infow("Successfully created claw player", "player_id", req.PlayerID)
 	common.SendCreated(c, resp.Player)
 }

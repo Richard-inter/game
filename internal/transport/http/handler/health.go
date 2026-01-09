@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/sirupsen/logrus"
+	"go.uber.org/zap"
 )
 
 type HealthResponse struct {
@@ -15,7 +15,7 @@ type HealthResponse struct {
 	Version   string    `json:"version"`
 }
 
-func HealthCheck(logger *logrus.Logger) gin.HandlerFunc {
+func HealthCheck(logger *zap.Logger) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		response := HealthResponse{
 			Status:    "healthy",
@@ -24,11 +24,11 @@ func HealthCheck(logger *logrus.Logger) gin.HandlerFunc {
 			Version:   "1.0.0",
 		}
 
-		logger.WithFields(logrus.Fields{
-			"status":    response.Status,
-			"service":   response.Service,
-			"client_ip": c.ClientIP(),
-		}).Info("Health check requested")
+		logger.Info("Health check requested",
+			zap.String("status", response.Status),
+			zap.String("service", response.Service),
+			zap.String("client_ip", c.ClientIP()),
+		)
 
 		c.JSON(http.StatusOK, response)
 	}
