@@ -18,6 +18,8 @@ type ClawMachineRepository interface {
 	GetClawPlayerInfo(playerID int64) (*domain.ClawPlayer, error)
 	AdjustPlayerCoin(playerID int64, amount int64, adjustmentType string) (*domain.ClawPlayer, error)
 	AdjustPlayerDiamond(playerID int64, amount int64, adjustmentType string) (*domain.ClawPlayer, error)
+	AddGameHistory(playerID int64, gameRecord *domain.ClawMachineGameRecord) (int64, error)
+	AddTouchedItemRecord(gameID int64, itemID int64, catched bool) error
 
 	// machine
 	CreateClawMachine(clawMachine *domain.ClawMachine) (*domain.ClawMachine, error)
@@ -91,6 +93,35 @@ func (r *clawMachineRepository) AdjustPlayerDiamond(playerID int64, amount int64
 	}
 
 	return &updatedPlayer, nil
+}
+
+func (r *clawMachineRepository) AddGameHistory(playerID int64, gameRecord *domain.ClawMachineGameRecord) (int64, error) {
+	err := r.db.Create(gameRecord).Error
+	if err != nil {
+		return 0, err
+	}
+
+	// Get the created record with the generated ID
+	var createdRecord domain.ClawMachineGameRecord
+	err = r.db.First(&createdRecord, gameRecord.ID).Error
+	if err != nil {
+		return 0, err
+	}
+
+	return createdRecord.ID, nil
+}
+
+func (r *clawMachineRepository) AddTouchedItemRecord(gameID int64, itemID int64, catched bool) error {
+	err := r.db.Model(&domain.ClawMachineGameRecord{}).
+		Where("id = ?", gameID).
+		Updates(map[string]any{
+			"touched_item_id": itemID,
+			"catched":         catched,
+		}).Error
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func (r *clawMachineRepository) CreateClawMachine(

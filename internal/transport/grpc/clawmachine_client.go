@@ -59,6 +59,10 @@ func (c *ClawMachineClient) AdjustPlayerDiamond(ctx context.Context, req *clawma
 	return c.client.AdjustPlayerDiamond(ctx, req)
 }
 
+func (c *ClawMachineClient) AddTouchedItemRecord(ctx context.Context, req *clawmachinepb.AddTouchedItemRecordReq) (*clawmachinepb.AddTouchedItemRecordResp, error) {
+	return c.client.AddTouchedItemRecord(ctx, req)
+}
+
 func (c *ClawMachineClient) Close() error {
 	return c.conn.Close()
 }

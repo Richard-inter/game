@@ -26,6 +26,16 @@ type ServiceConfig struct {
 	Discovery           DiscoveryConfig `mapstructure:"discovery"`
 }
 
+// GetRedisAddr returns the Redis address in host:port format
+func (c *ServiceConfig) GetRedisAddr() string {
+	return fmt.Sprintf("%s:%d", c.Redis.Host, c.Redis.Port)
+}
+
+// GetRedisPassword returns the Redis password
+func (c *ServiceConfig) GetRedisPassword() string {
+	return c.Redis.Password
+}
+
 type ServiceDetails struct {
 	Name         string `mapstructure:"name"`
 	Host         string `mapstructure:"host"`

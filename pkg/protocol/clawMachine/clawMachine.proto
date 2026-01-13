@@ -123,6 +123,18 @@ message AdjustPlayerDiamondResp{
     int64 adjustedAmount = 2;
 }
 
+message AddTouchedItemRecordReq{
+    int64 gameID = 1;
+    int64 itemID = 2;
+    optional bool catched = 3;
+}
+
+message AddTouchedItemRecordResp{
+    int64 gameID = 1;
+    int64 itemID = 2;
+    optional bool catched = 3;
+}
+
 service ClawMachineService {
     // player
     rpc CreateClawPlayer (CreateClawPlayerReq) returns (CreateClawPlayerResp);
@@ -136,6 +148,7 @@ service ClawMachineService {
 
     // game
     rpc StartClawGame (StartClawGameReq) returns (StartClawGameResp);
+    rpc AddTouchedItemRecord (AddTouchedItemRecordReq) returns (AddTouchedItemRecordResp);
 
     // items
     rpc CreateClawItems (CreateClawItemsReq) returns (CreateClawItemsResp);

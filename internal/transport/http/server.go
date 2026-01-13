@@ -145,6 +145,7 @@ func (s *Server) setupRoutes() {
 
 			// game
 			clawMachine.POST("/startClawGame", clawMachineHandler.HandleStartClawGame)
+			clawMachine.POST("/addTouchedItemRecord", clawMachineHandler.HandleAddTouchedItemRecord)
 		}
 	}
 }

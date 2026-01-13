@@ -51,3 +51,9 @@ type StartClawGameRequest struct {
 	MachineID int64 `json:"machineID" binding:"required"`
 	// TouchedItemID int64 `json:"touchedItemID" binding:"required"`
 }
+
+type AddTouchedItemRecordRequest struct {
+	GameID  int64 `json:"gameID" binding:"required"`
+	ItemID  int64 `json:"itemID" binding:"required"`
+	Catched *bool `json:"catched" binding:"required"`
+}

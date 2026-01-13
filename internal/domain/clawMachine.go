@@ -37,19 +37,7 @@ type ClawMachineGameRecord struct {
 	ClawMachineID int64 `gorm:"column:claw_machine_id" json:"clawMachineID"`
 	PlayerID      int64 `gorm:"column:player_id" json:"playerID"`
 	TouchedItemID int64 `gorm:"column:touched_item_id" json:"touchedItemID"`
-	Success       bool  `gorm:"column:success" json:"success"`
-
-	ItemRecords []ClawMachineItemGameRecord `gorm:"foreignKey:GameID"`
-}
-
-type ClawMachineItemGameRecord struct {
-	ID      int64 `gorm:"column:id;primaryKey" json:"id"`
-	GameID  int64 `gorm:"column:game_id" json:"gameID"`
-	ItemID  int64 `gorm:"column:item_id" json:"itemID"`
-	Success bool  `gorm:"column:success" json:"success"`
-
-	Game ClawMachineGameRecord `gorm:"foreignKey:GameID"`
-	Item Item                  `gorm:"foreignKey:ItemID"`
+	Catched       bool  `gorm:"column:catched" json:"catched"`
 }
 
 func (ClawMachine) TableName() string {
@@ -70,8 +58,4 @@ func (ClawPlayer) TableName() string {
 
 func (ClawMachineGameRecord) TableName() string {
 	return "claw_machine_game_record"
-}
-
-func (ClawMachineItemGameRecord) TableName() string {
-	return "claw_machine_item_game_record"
 }

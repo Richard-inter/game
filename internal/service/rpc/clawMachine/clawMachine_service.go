@@ -3,8 +3,8 @@ package clawmachine
 import (
 	"context"
 	"fmt"
-	"time"
 
+	"github.com/Richard-inter/game/internal/cache"
 	"github.com/Richard-inter/game/internal/domain"
 	"github.com/Richard-inter/game/internal/repository"
 	pb "github.com/Richard-inter/game/pkg/protocol/clawMachine"
@@ -14,13 +14,15 @@ import (
 // ClawMachineGRPCService implements the ClawMachineService gRPC service
 type ClawMachineGRPCServices struct {
 	pb.UnimplementedClawMachineServiceServer
-	repo repository.ClawMachineRepository
+	repo  repository.ClawMachineRepository
+	redis *cache.RedisClient
 }
 
 // NewClawMachineGRPCService creates a new ClawMachineGRPCService
-func NewClawMachineGRPCService(repo repository.ClawMachineRepository) *ClawMachineGRPCServices {
+func NewClawMachineGRPCService(repo repository.ClawMachineRepository, redis *cache.RedisClient) *ClawMachineGRPCServices {
 	return &ClawMachineGRPCServices{
-		repo: repo,
+		repo:  repo,
+		redis: redis,
 	}
 }
 
@@ -64,13 +66,22 @@ func (s *ClawMachineGRPCServices) StartClawGame(ctx context.Context, req *pb.Sta
 		return nil, fmt.Errorf("failed to pre-determine catch results: %w", err)
 	}
 
-	// 3. Charge player for playing the machine
+	// 3. Create game history record
+	gameID, err := s.repo.AddGameHistory(req.PlayerID, &domain.ClawMachineGameRecord{
+		PlayerID:      req.PlayerID,
+		ClawMachineID: req.MachineID,
+	})
+	if err != nil {
+		return nil, fmt.Errorf("failed to create game history: %w", err)
+	}
+
+	// 4. Charge player coin
 	err = s.PlayMachine(ctx, req.PlayerID, req.MachineID)
 	if err != nil {
 		return nil, fmt.Errorf("failed to charge player: %w", err)
 	}
 
-	// 4. Convert domain results to protobuf
+	// 5. Convert domain results to protobuf
 	protoResults := make([]*pb.ClawResult, 0, len(results))
 	for _, result := range results {
 		clawResult := &pb.ClawResult{
@@ -80,8 +91,12 @@ func (s *ClawMachineGRPCServices) StartClawGame(ctx context.Context, req *pb.Sta
 		protoResults = append(protoResults, clawResult)
 	}
 
-	// 5. Generate unique game ID
-	gameID := time.Now().UnixNano()
+	// 6. Store game results in Redis
+	err = s.redis.StoreGameResults(ctx, gameID, results)
+	if err != nil {
+		// Log error but don't fail the request
+		fmt.Printf("Warning: failed to store game results in Redis: %v\n", err)
+	}
 
 	return &pb.StartClawGameResp{
 		GameID:  gameID,
@@ -251,5 +266,46 @@ func (s *ClawMachineGRPCServices) AdjustPlayerDiamond(ctx context.Context, req *
 	return &pb.AdjustPlayerDiamondResp{
 		PlayerID:       updated.Player.ID,
 		AdjustedAmount: updated.Diamond,
+	}, nil
+}
+
+func (s *ClawMachineGRPCServices) AddTouchedItemRecord(ctx context.Context, req *pb.AddTouchedItemRecordReq) (*pb.AddTouchedItemRecordResp, error) {
+	var storedResults []CatchResult
+	err := s.redis.GetGameResults(ctx, req.GameID, &storedResults)
+	if err != nil {
+		return nil, fmt.Errorf("failed to load game results from Redis: %w", err)
+	}
+
+	var foundItem *CatchResult
+	for _, result := range storedResults {
+		if result.ItemID == req.ItemID {
+			foundItem = &result
+			break
+		}
+	}
+
+	if foundItem.Success != *req.Catched {
+		err := s.redis.DeleteGameResults(ctx, req.GameID)
+		if err != nil {
+			fmt.Printf("Warning: failed to delete game results from Redis: %v\n", err)
+		}
+		return nil, fmt.Errorf("catched value mismatch: expected %t, got %t", foundItem.Success, *req.Catched)
+	}
+
+	err = s.repo.AddTouchedItemRecord(req.GameID, req.ItemID, *req.Catched)
+	if err != nil {
+		return nil, fmt.Errorf("failed to update touched item record: %w", err)
+	}
+
+	err = s.redis.DeleteGameResults(ctx, req.GameID)
+	if err != nil {
+		// Log error but don't fail the request since validation passed
+		fmt.Printf("Warning: failed to delete game results from Redis: %v\n", err)
+	}
+
+	return &pb.AddTouchedItemRecordResp{
+		GameID:  req.GameID,
+		ItemID:  req.ItemID,
+		Catched: req.Catched,
 	}, nil
 }

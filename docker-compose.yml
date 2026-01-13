@@ -18,5 +18,19 @@ services:
       - mysql_data:/var/lib/mysql
     networks:
       - game-network
+  
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    container_name: redis.game
+    restart: always
+    ports:
+      - "6380:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - game-network
+
 volumes:
   mysql_data:
+  redis_data:

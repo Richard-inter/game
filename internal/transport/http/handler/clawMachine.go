@@ -251,3 +251,28 @@ func (h *ClawMachineHandler) HandleStartClawGame(c *gin.Context) {
 	h.logger.Infow("Successfully started claw game", "player_id", req.PlayerID, "machine_id", req.MachineID)
 	common.SendSuccess(c, resp)
 }
+
+func (h *ClawMachineHandler) HandleAddTouchedItemRecord(c *gin.Context) {
+	var req dto.AddTouchedItemRecordRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		h.logger.Errorw("Invalid request body", "error", err)
+		common.SendError(c, 400, "Invalid request body")
+		return
+	}
+
+	grpcReq := &clawMachine.AddTouchedItemRecordReq{
+		GameID:  req.GameID,
+		ItemID:  req.ItemID,
+		Catched: req.Catched,
+	}
+
+	resp, err := h.clawMachineClient.AddTouchedItemRecord(c, grpcReq)
+	if err != nil {
+		h.logger.Errorw("Failed to add touched item record", "error", err)
+		common.SendError(c, 500, err.Error())
+		return
+	}
+
+	h.logger.Infow("Successfully added touched item record", "game_id", req.GameID, "item_id", req.ItemID, "catched", req.Catched)
+	common.SendSuccess(c, resp)
+}

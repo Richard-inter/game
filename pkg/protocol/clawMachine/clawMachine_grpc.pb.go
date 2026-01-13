@@ -19,14 +19,15 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	ClawMachineService_CreateClawPlayer_FullMethodName    = "/clawMachine.ClawMachineService/CreateClawPlayer"
-	ClawMachineService_GetClawPlayerInfo_FullMethodName   = "/clawMachine.ClawMachineService/GetClawPlayerInfo"
-	ClawMachineService_AdjustPlayerCoin_FullMethodName    = "/clawMachine.ClawMachineService/AdjustPlayerCoin"
-	ClawMachineService_AdjustPlayerDiamond_FullMethodName = "/clawMachine.ClawMachineService/AdjustPlayerDiamond"
-	ClawMachineService_CreateClawMachine_FullMethodName   = "/clawMachine.ClawMachineService/CreateClawMachine"
-	ClawMachineService_GetClawMachineInfo_FullMethodName  = "/clawMachine.ClawMachineService/GetClawMachineInfo"
-	ClawMachineService_StartClawGame_FullMethodName       = "/clawMachine.ClawMachineService/StartClawGame"
-	ClawMachineService_CreateClawItems_FullMethodName     = "/clawMachine.ClawMachineService/CreateClawItems"
+	ClawMachineService_CreateClawPlayer_FullMethodName     = "/clawMachine.ClawMachineService/CreateClawPlayer"
+	ClawMachineService_GetClawPlayerInfo_FullMethodName    = "/clawMachine.ClawMachineService/GetClawPlayerInfo"
+	ClawMachineService_AdjustPlayerCoin_FullMethodName     = "/clawMachine.ClawMachineService/AdjustPlayerCoin"
+	ClawMachineService_AdjustPlayerDiamond_FullMethodName  = "/clawMachine.ClawMachineService/AdjustPlayerDiamond"
+	ClawMachineService_CreateClawMachine_FullMethodName    = "/clawMachine.ClawMachineService/CreateClawMachine"
+	ClawMachineService_GetClawMachineInfo_FullMethodName   = "/clawMachine.ClawMachineService/GetClawMachineInfo"
+	ClawMachineService_StartClawGame_FullMethodName        = "/clawMachine.ClawMachineService/StartClawGame"
+	ClawMachineService_AddTouchedItemRecord_FullMethodName = "/clawMachine.ClawMachineService/AddTouchedItemRecord"
+	ClawMachineService_CreateClawItems_FullMethodName      = "/clawMachine.ClawMachineService/CreateClawItems"
 )
 
 // ClawMachineServiceClient is the client API for ClawMachineService service.
@@ -43,6 +44,7 @@ type ClawMachineServiceClient interface {
 	GetClawMachineInfo(ctx context.Context, in *GetClawMachineInfoReq, opts ...grpc.CallOption) (*GetClawMachineInfoResp, error)
 	// game
 	StartClawGame(ctx context.Context, in *StartClawGameReq, opts ...grpc.CallOption) (*StartClawGameResp, error)
+	AddTouchedItemRecord(ctx context.Context, in *AddTouchedItemRecordReq, opts ...grpc.CallOption) (*AddTouchedItemRecordResp, error)
 	// items
 	CreateClawItems(ctx context.Context, in *CreateClawItemsReq, opts ...grpc.CallOption) (*CreateClawItemsResp, error)
 }
@@ -125,6 +127,16 @@ func (c *clawMachineServiceClient) StartClawGame(ctx context.Context, in *StartC
 	return out, nil
 }
 
+func (c *clawMachineServiceClient) AddTouchedItemRecord(ctx context.Context, in *AddTouchedItemRecordReq, opts ...grpc.CallOption) (*AddTouchedItemRecordResp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(AddTouchedItemRecordResp)
+	err := c.cc.Invoke(ctx, ClawMachineService_AddTouchedItemRecord_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *clawMachineServiceClient) CreateClawItems(ctx context.Context, in *CreateClawItemsReq, opts ...grpc.CallOption) (*CreateClawItemsResp, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(CreateClawItemsResp)
@@ -149,6 +161,7 @@ type ClawMachineServiceServer interface {
 	GetClawMachineInfo(context.Context, *GetClawMachineInfoReq) (*GetClawMachineInfoResp, error)
 	// game
 	StartClawGame(context.Context, *StartClawGameReq) (*StartClawGameResp, error)
+	AddTouchedItemRecord(context.Context, *AddTouchedItemRecordReq) (*AddTouchedItemRecordResp, error)
 	// items
 	CreateClawItems(context.Context, *CreateClawItemsReq) (*CreateClawItemsResp, error)
 	mustEmbedUnimplementedClawMachineServiceServer()
@@ -181,6 +194,9 @@ func (UnimplementedClawMachineServiceServer) GetClawMachineInfo(context.Context,
 }
 func (UnimplementedClawMachineServiceServer) StartClawGame(context.Context, *StartClawGameReq) (*StartClawGameResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method StartClawGame not implemented")
+}
+func (UnimplementedClawMachineServiceServer) AddTouchedItemRecord(context.Context, *AddTouchedItemRecordReq) (*AddTouchedItemRecordResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AddTouchedItemRecord not implemented")
 }
 func (UnimplementedClawMachineServiceServer) CreateClawItems(context.Context, *CreateClawItemsReq) (*CreateClawItemsResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateClawItems not implemented")
@@ -332,6 +348,24 @@ func _ClawMachineService_StartClawGame_Handler(srv interface{}, ctx context.Cont
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ClawMachineService_AddTouchedItemRecord_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AddTouchedItemRecordReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ClawMachineServiceServer).AddTouchedItemRecord(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ClawMachineService_AddTouchedItemRecord_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ClawMachineServiceServer).AddTouchedItemRecord(ctx, req.(*AddTouchedItemRecordReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _ClawMachineService_CreateClawItems_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(CreateClawItemsReq)
 	if err := dec(in); err != nil {
@@ -384,6 +418,10 @@ var ClawMachineService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "StartClawGame",
 			Handler:    _ClawMachineService_StartClawGame_Handler,
+		},
+		{
+			MethodName: "AddTouchedItemRecord",
+			Handler:    _ClawMachineService_AddTouchedItemRecord_Handler,
 		},
 		{
 			MethodName: "CreateClawItems",

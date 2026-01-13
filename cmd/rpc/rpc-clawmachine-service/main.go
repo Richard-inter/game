@@ -11,6 +11,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 
+	"github.com/Richard-inter/game/internal/cache"
 	"github.com/Richard-inter/game/internal/config"
 	"github.com/Richard-inter/game/internal/db"
 	"github.com/Richard-inter/game/internal/repository"
@@ -68,7 +69,11 @@ func main() {
 
 	// Initialize and register claw machine service
 	clawMachineRepo := repository.NewClawMachineRepository(database)
-	clawMachineService := c.NewClawMachineGRPCService(clawMachineRepo)
+
+	// Initialize Redis client
+	redisClient := cache.NewRedisClient(cfg.GetRedisAddr(), cfg.GetRedisPassword())
+
+	clawMachineService := c.NewClawMachineGRPCService(clawMachineRepo, redisClient)
 	clawMachine.RegisterClawMachineServiceServer(s, clawMachineService)
 
 	// Enable reflection for development
