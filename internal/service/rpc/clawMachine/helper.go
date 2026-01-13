@@ -149,11 +149,11 @@ func (s *ClawMachineGRPCServices) SpawnMachineItems(
 	return spawnedIDs, nil
 }
 
-// TODO
-func (s *ClawMachineGRPCServices) DetermineCatchItem(
+// PreDetermineCatchResults generates a list of pre-determined catch results for all items
+func (s *ClawMachineGRPCServices) PreDetermineCatchResults(
 	ctx context.Context,
 	machineID int64,
-) (*CatchResult, error) {
+) ([]*CatchResult, error) {
 	// Get machine info to access items and their catch percentages
 	clawMachine, err := s.repo.GetClawMachineInfo(machineID)
 	if err != nil {
@@ -164,41 +164,48 @@ func (s *ClawMachineGRPCServices) DetermineCatchItem(
 		return nil, fmt.Errorf("no items in machine to catch from")
 	}
 
-	// Create weighted selection based on actual catch percentages
-	weights := make([]int64, 0, len(clawMachine.Items))
-	totalWeight := int64(0)
+	results := make([]*CatchResult, 0, len(clawMachine.Items))
 
+	// Generate pre-determined result for each item in the machine
 	for _, item := range clawMachine.Items {
-		// Get catch percentage from machine items
 		catchWeight := item.Item.CatchPercentage
 		if catchWeight == 0 {
-			catchWeight = 50 // Default 50% if not set
+			return nil, fmt.Errorf("database error: item %s (ID: %d) has zero catch percentage", item.Item.Name, item.Item.ID)
 		}
 
-		weights = append(weights, catchWeight)
-		totalWeight += catchWeight
+		// Determine if catch is successful based on the item's catch percentage
+		catchSuccess := Roll(int(catchWeight))
+
+		results = append(results, &CatchResult{
+			ItemID:  item.ID,
+			Name:    item.Item.Name,
+			Success: catchSuccess,
+		})
 	}
 
-	// Weighted random selection
-	selection := rand.IntN(int(totalWeight))
-	currentWeight := int64(0)
+	return results, nil
+}
 
-	for idx, weight := range weights {
-		currentWeight += weight
-		if int64(selection) < currentWeight {
-			return &CatchResult{
-				ItemID:  clawMachine.Items[idx].ID,
-				Name:    clawMachine.Items[idx].Item.Name,
-				Success: true, // If selected for catch, it's successful
-			}, nil
-		}
+func (s *ClawMachineGRPCServices) PlayMachine(
+	ctx context.Context,
+	playerID int64,
+	machineID int64,
+) error {
+	clawMachine, err := s.repo.GetClawMachineInfo(machineID)
+	if err != nil {
+		return fmt.Errorf("failed to get machine info: %w", err)
 	}
 
-	// Fallback to last item
-	lastIndex := len(clawMachine.Items) - 1
-	return &CatchResult{
-		ItemID:  clawMachine.Items[lastIndex].ID,
-		Name:    clawMachine.Items[lastIndex].Item.Name,
-		Success: true,
-	}, nil
+	resp, err := s.repo.AdjustPlayerCoin(playerID, int64(clawMachine.Price), "minus")
+	if err != nil {
+		return fmt.Errorf("failed to adjust player coin: %w", err)
+	}
+
+	if resp.Coin < 0 {
+		// Revert adjustment
+		_, _ = s.repo.AdjustPlayerCoin(playerID, int64(clawMachine.Price), "add")
+		return fmt.Errorf("insufficient coins to play the claw machine")
+	}
+
+	return nil
 }

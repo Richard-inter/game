@@ -19,23 +19,31 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	ClawMachineService_CreateClawPlayer_FullMethodName   = "/clawMachine.ClawMachineService/CreateClawPlayer"
-	ClawMachineService_CreateClawMachine_FullMethodName  = "/clawMachine.ClawMachineService/CreateClawMachine"
-	ClawMachineService_GetClawMachineInfo_FullMethodName = "/clawMachine.ClawMachineService/GetClawMachineInfo"
-	ClawMachineService_StartClawGame_FullMethodName      = "/clawMachine.ClawMachineService/StartClawGame"
-	ClawMachineService_GetClawPlayerInfo_FullMethodName  = "/clawMachine.ClawMachineService/GetClawPlayerInfo"
-	ClawMachineService_CreateClawItems_FullMethodName    = "/clawMachine.ClawMachineService/CreateClawItems"
+	ClawMachineService_CreateClawPlayer_FullMethodName    = "/clawMachine.ClawMachineService/CreateClawPlayer"
+	ClawMachineService_GetClawPlayerInfo_FullMethodName   = "/clawMachine.ClawMachineService/GetClawPlayerInfo"
+	ClawMachineService_AdjustPlayerCoin_FullMethodName    = "/clawMachine.ClawMachineService/AdjustPlayerCoin"
+	ClawMachineService_AdjustPlayerDiamond_FullMethodName = "/clawMachine.ClawMachineService/AdjustPlayerDiamond"
+	ClawMachineService_CreateClawMachine_FullMethodName   = "/clawMachine.ClawMachineService/CreateClawMachine"
+	ClawMachineService_GetClawMachineInfo_FullMethodName  = "/clawMachine.ClawMachineService/GetClawMachineInfo"
+	ClawMachineService_StartClawGame_FullMethodName       = "/clawMachine.ClawMachineService/StartClawGame"
+	ClawMachineService_CreateClawItems_FullMethodName     = "/clawMachine.ClawMachineService/CreateClawItems"
 )
 
 // ClawMachineServiceClient is the client API for ClawMachineService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ClawMachineServiceClient interface {
+	// player
 	CreateClawPlayer(ctx context.Context, in *CreateClawPlayerReq, opts ...grpc.CallOption) (*CreateClawPlayerResp, error)
+	GetClawPlayerInfo(ctx context.Context, in *GetClawPlayerInfoReq, opts ...grpc.CallOption) (*GetClawPlayerInfoResp, error)
+	AdjustPlayerCoin(ctx context.Context, in *AdjustPlayerCoinReq, opts ...grpc.CallOption) (*AdjustPlayerCoinResp, error)
+	AdjustPlayerDiamond(ctx context.Context, in *AdjustPlayerDiamondReq, opts ...grpc.CallOption) (*AdjustPlayerDiamondResp, error)
+	// machine
 	CreateClawMachine(ctx context.Context, in *CreateClawMachineReq, opts ...grpc.CallOption) (*CreateClawMachineResp, error)
 	GetClawMachineInfo(ctx context.Context, in *GetClawMachineInfoReq, opts ...grpc.CallOption) (*GetClawMachineInfoResp, error)
+	// game
 	StartClawGame(ctx context.Context, in *StartClawGameReq, opts ...grpc.CallOption) (*StartClawGameResp, error)
-	GetClawPlayerInfo(ctx context.Context, in *GetClawPlayerInfoReq, opts ...grpc.CallOption) (*GetClawPlayerInfoResp, error)
+	// items
 	CreateClawItems(ctx context.Context, in *CreateClawItemsReq, opts ...grpc.CallOption) (*CreateClawItemsResp, error)
 }
 
@@ -51,6 +59,36 @@ func (c *clawMachineServiceClient) CreateClawPlayer(ctx context.Context, in *Cre
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(CreateClawPlayerResp)
 	err := c.cc.Invoke(ctx, ClawMachineService_CreateClawPlayer_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *clawMachineServiceClient) GetClawPlayerInfo(ctx context.Context, in *GetClawPlayerInfoReq, opts ...grpc.CallOption) (*GetClawPlayerInfoResp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetClawPlayerInfoResp)
+	err := c.cc.Invoke(ctx, ClawMachineService_GetClawPlayerInfo_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *clawMachineServiceClient) AdjustPlayerCoin(ctx context.Context, in *AdjustPlayerCoinReq, opts ...grpc.CallOption) (*AdjustPlayerCoinResp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(AdjustPlayerCoinResp)
+	err := c.cc.Invoke(ctx, ClawMachineService_AdjustPlayerCoin_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *clawMachineServiceClient) AdjustPlayerDiamond(ctx context.Context, in *AdjustPlayerDiamondReq, opts ...grpc.CallOption) (*AdjustPlayerDiamondResp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(AdjustPlayerDiamondResp)
+	err := c.cc.Invoke(ctx, ClawMachineService_AdjustPlayerDiamond_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -87,16 +125,6 @@ func (c *clawMachineServiceClient) StartClawGame(ctx context.Context, in *StartC
 	return out, nil
 }
 
-func (c *clawMachineServiceClient) GetClawPlayerInfo(ctx context.Context, in *GetClawPlayerInfoReq, opts ...grpc.CallOption) (*GetClawPlayerInfoResp, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(GetClawPlayerInfoResp)
-	err := c.cc.Invoke(ctx, ClawMachineService_GetClawPlayerInfo_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 func (c *clawMachineServiceClient) CreateClawItems(ctx context.Context, in *CreateClawItemsReq, opts ...grpc.CallOption) (*CreateClawItemsResp, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(CreateClawItemsResp)
@@ -111,11 +139,17 @@ func (c *clawMachineServiceClient) CreateClawItems(ctx context.Context, in *Crea
 // All implementations must embed UnimplementedClawMachineServiceServer
 // for forward compatibility.
 type ClawMachineServiceServer interface {
+	// player
 	CreateClawPlayer(context.Context, *CreateClawPlayerReq) (*CreateClawPlayerResp, error)
+	GetClawPlayerInfo(context.Context, *GetClawPlayerInfoReq) (*GetClawPlayerInfoResp, error)
+	AdjustPlayerCoin(context.Context, *AdjustPlayerCoinReq) (*AdjustPlayerCoinResp, error)
+	AdjustPlayerDiamond(context.Context, *AdjustPlayerDiamondReq) (*AdjustPlayerDiamondResp, error)
+	// machine
 	CreateClawMachine(context.Context, *CreateClawMachineReq) (*CreateClawMachineResp, error)
 	GetClawMachineInfo(context.Context, *GetClawMachineInfoReq) (*GetClawMachineInfoResp, error)
+	// game
 	StartClawGame(context.Context, *StartClawGameReq) (*StartClawGameResp, error)
-	GetClawPlayerInfo(context.Context, *GetClawPlayerInfoReq) (*GetClawPlayerInfoResp, error)
+	// items
 	CreateClawItems(context.Context, *CreateClawItemsReq) (*CreateClawItemsResp, error)
 	mustEmbedUnimplementedClawMachineServiceServer()
 }
@@ -130,6 +164,15 @@ type UnimplementedClawMachineServiceServer struct{}
 func (UnimplementedClawMachineServiceServer) CreateClawPlayer(context.Context, *CreateClawPlayerReq) (*CreateClawPlayerResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateClawPlayer not implemented")
 }
+func (UnimplementedClawMachineServiceServer) GetClawPlayerInfo(context.Context, *GetClawPlayerInfoReq) (*GetClawPlayerInfoResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetClawPlayerInfo not implemented")
+}
+func (UnimplementedClawMachineServiceServer) AdjustPlayerCoin(context.Context, *AdjustPlayerCoinReq) (*AdjustPlayerCoinResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AdjustPlayerCoin not implemented")
+}
+func (UnimplementedClawMachineServiceServer) AdjustPlayerDiamond(context.Context, *AdjustPlayerDiamondReq) (*AdjustPlayerDiamondResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AdjustPlayerDiamond not implemented")
+}
 func (UnimplementedClawMachineServiceServer) CreateClawMachine(context.Context, *CreateClawMachineReq) (*CreateClawMachineResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateClawMachine not implemented")
 }
@@ -138,9 +181,6 @@ func (UnimplementedClawMachineServiceServer) GetClawMachineInfo(context.Context,
 }
 func (UnimplementedClawMachineServiceServer) StartClawGame(context.Context, *StartClawGameReq) (*StartClawGameResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method StartClawGame not implemented")
-}
-func (UnimplementedClawMachineServiceServer) GetClawPlayerInfo(context.Context, *GetClawPlayerInfoReq) (*GetClawPlayerInfoResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetClawPlayerInfo not implemented")
 }
 func (UnimplementedClawMachineServiceServer) CreateClawItems(context.Context, *CreateClawItemsReq) (*CreateClawItemsResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateClawItems not implemented")
@@ -180,6 +220,60 @@ func _ClawMachineService_CreateClawPlayer_Handler(srv interface{}, ctx context.C
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ClawMachineServiceServer).CreateClawPlayer(ctx, req.(*CreateClawPlayerReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ClawMachineService_GetClawPlayerInfo_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetClawPlayerInfoReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ClawMachineServiceServer).GetClawPlayerInfo(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ClawMachineService_GetClawPlayerInfo_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ClawMachineServiceServer).GetClawPlayerInfo(ctx, req.(*GetClawPlayerInfoReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ClawMachineService_AdjustPlayerCoin_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AdjustPlayerCoinReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ClawMachineServiceServer).AdjustPlayerCoin(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ClawMachineService_AdjustPlayerCoin_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ClawMachineServiceServer).AdjustPlayerCoin(ctx, req.(*AdjustPlayerCoinReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ClawMachineService_AdjustPlayerDiamond_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AdjustPlayerDiamondReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ClawMachineServiceServer).AdjustPlayerDiamond(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ClawMachineService_AdjustPlayerDiamond_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ClawMachineServiceServer).AdjustPlayerDiamond(ctx, req.(*AdjustPlayerDiamondReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -238,24 +332,6 @@ func _ClawMachineService_StartClawGame_Handler(srv interface{}, ctx context.Cont
 	return interceptor(ctx, in, info, handler)
 }
 
-func _ClawMachineService_GetClawPlayerInfo_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetClawPlayerInfoReq)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(ClawMachineServiceServer).GetClawPlayerInfo(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: ClawMachineService_GetClawPlayerInfo_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ClawMachineServiceServer).GetClawPlayerInfo(ctx, req.(*GetClawPlayerInfoReq))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 func _ClawMachineService_CreateClawItems_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(CreateClawItemsReq)
 	if err := dec(in); err != nil {
@@ -286,6 +362,18 @@ var ClawMachineService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _ClawMachineService_CreateClawPlayer_Handler,
 		},
 		{
+			MethodName: "GetClawPlayerInfo",
+			Handler:    _ClawMachineService_GetClawPlayerInfo_Handler,
+		},
+		{
+			MethodName: "AdjustPlayerCoin",
+			Handler:    _ClawMachineService_AdjustPlayerCoin_Handler,
+		},
+		{
+			MethodName: "AdjustPlayerDiamond",
+			Handler:    _ClawMachineService_AdjustPlayerDiamond_Handler,
+		},
+		{
 			MethodName: "CreateClawMachine",
 			Handler:    _ClawMachineService_CreateClawMachine_Handler,
 		},
@@ -296,10 +384,6 @@ var ClawMachineService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "StartClawGame",
 			Handler:    _ClawMachineService_StartClawGame_Handler,
-		},
-		{
-			MethodName: "GetClawPlayerInfo",
-			Handler:    _ClawMachineService_GetClawPlayerInfo_Handler,
 		},
 		{
 			MethodName: "CreateClawItems",

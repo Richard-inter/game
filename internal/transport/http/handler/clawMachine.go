@@ -62,7 +62,7 @@ func (h *ClawMachineHandler) HandleCreateClawMachine(c *gin.Context) {
 	}
 
 	h.logger.Infow("Successfully created claw machine", "machine_name", req.Name)
-	common.SendCreated(c, resp.Machine)
+	common.SendCreated(c, resp)
 }
 
 func (h *ClawMachineHandler) HandleGetClawMachineInfo(c *gin.Context) {
@@ -87,7 +87,7 @@ func (h *ClawMachineHandler) HandleGetClawMachineInfo(c *gin.Context) {
 	}
 
 	h.logger.Infow("Successfully retrieved claw machine info", "machine_id", machineID)
-	common.SendSuccess(c, resp.Machine)
+	common.SendSuccess(c, resp)
 }
 
 func (h *ClawMachineHandler) HandleCreateClawItems(c *gin.Context) {
@@ -120,7 +120,7 @@ func (h *ClawMachineHandler) HandleCreateClawItems(c *gin.Context) {
 	}
 
 	h.logger.Infow("Successfully created claw items", "item_count", len(req.ClawItems))
-	common.SendCreated(c, resp.ClawItems)
+	common.SendCreated(c, resp)
 }
 
 func (h *ClawMachineHandler) HandleGetClawPlayerInfo(c *gin.Context) {
@@ -145,10 +145,10 @@ func (h *ClawMachineHandler) HandleGetClawPlayerInfo(c *gin.Context) {
 	}
 
 	h.logger.Infow("Successfully retrieved claw player info", "player_id", playerID)
-	common.SendSuccess(c, resp.Player)
+	common.SendSuccess(c, resp)
 }
 
-func (h *ClawMachineHandler) HandleCreatePlayer(c *gin.Context) {
+func (h *ClawMachineHandler) HandleCreateClawPlayer(c *gin.Context) {
 	var req dto.CreateClawPlayerRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		h.logger.Errorw("Invalid request body", "error", err)
@@ -176,5 +176,78 @@ func (h *ClawMachineHandler) HandleCreatePlayer(c *gin.Context) {
 	}
 
 	h.logger.Infow("Successfully created claw player", "player_id", req.PlayerID)
-	common.SendCreated(c, resp.Player)
+	common.SendCreated(c, resp)
+}
+
+func (h *ClawMachineHandler) HandleAdjustPlayerCoin(c *gin.Context) {
+	var req dto.AdjustPlayerCoinRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		h.logger.Errorw("Invalid request body", "error", err)
+		common.SendError(c, 400, "Invalid request body")
+		return
+	}
+
+	grpcReq := &clawMachine.AdjustPlayerCoinReq{
+		PlayerID: req.PlayerID,
+		Amount:   req.Amount,
+		Type:     req.Type,
+	}
+
+	resp, err := h.clawMachineClient.AdjustPlayerCoin(c, grpcReq)
+	if err != nil {
+		h.logger.Errorw("Failed to adjust player coin", "error", err)
+		common.SendError(c, 500, err.Error())
+		return
+	}
+
+	h.logger.Infow("Successfully adjusted player coin", "player_id", req.PlayerID, "amount", req.Amount, "type", req.Type)
+	common.SendSuccess(c, resp)
+}
+
+func (h *ClawMachineHandler) HandleAdjustPlayerDiamond(c *gin.Context) {
+	var req dto.AdjustPlayerDiamondRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		h.logger.Errorw("Invalid request body", "error", err)
+		common.SendError(c, 400, "Invalid request body")
+		return
+	}
+
+	grpcReq := &clawMachine.AdjustPlayerDiamondReq{
+		PlayerID: req.PlayerID,
+		Amount:   req.Amount,
+		Type:     req.Type,
+	}
+
+	resp, err := h.clawMachineClient.AdjustPlayerDiamond(c, grpcReq)
+	if err != nil {
+		h.logger.Errorw("Failed to adjust player diamond", "error", err)
+		common.SendError(c, 500, err.Error())
+		return
+	}
+
+	h.logger.Infow("Successfully adjusted player diamond", "player_id", req.PlayerID, "amount", req.Amount, "type", req.Type)
+	common.SendSuccess(c, resp)
+}
+
+func (h *ClawMachineHandler) HandleStartClawGame(c *gin.Context) {
+	var req dto.StartClawGameRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		h.logger.Errorw("Invalid request body", "error", err)
+		common.SendError(c, 400, "Invalid request body")
+		return
+	}
+
+	grpcReq := &clawMachine.StartClawGameReq{
+		PlayerID:  req.PlayerID,
+		MachineID: req.MachineID,
+	}
+	resp, err := h.clawMachineClient.StartClawGame(c, grpcReq)
+	if err != nil {
+		h.logger.Errorw("Failed to start claw game", "error", err)
+		common.SendError(c, 500, err.Error())
+		return
+	}
+
+	h.logger.Infow("Successfully started claw game", "player_id", req.PlayerID, "machine_id", req.MachineID)
+	common.SendSuccess(c, resp)
 }

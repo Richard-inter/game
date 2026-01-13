@@ -53,7 +53,7 @@ message StartClawGameReq {
 
 message ClawResult {
     int64 itemID = 1;
-    bool catched = 2;
+    optional bool catched = 2;
 }
 
 message StartClawGameResp {
@@ -101,15 +101,42 @@ message CreateClawPlayerResp {
     ClawPlayer player = 2;
 }
 
-service ClawMachineService {
-    rpc CreateClawPlayer (CreateClawPlayerReq) returns (CreateClawPlayerResp);
+message AdjustPlayerCoinReq{
+    int64 playerID = 1;
+    int64 amount = 2;
+    string type = 3;
+}
 
+message AdjustPlayerCoinResp{
+    int64 playerID = 1;
+    int64 adjustedAmount = 2;
+}
+
+message AdjustPlayerDiamondReq{
+    int64 playerID = 1;
+    int64 amount = 2;
+    string type = 3;
+}
+
+message AdjustPlayerDiamondResp{
+    int64 playerID = 1;
+    int64 adjustedAmount = 2;
+}
+
+service ClawMachineService {
+    // player
+    rpc CreateClawPlayer (CreateClawPlayerReq) returns (CreateClawPlayerResp);
+    rpc GetClawPlayerInfo (GetClawPlayerInfoReq) returns (GetClawPlayerInfoResp);
+    rpc AdjustPlayerCoin (AdjustPlayerCoinReq) returns (AdjustPlayerCoinResp);
+    rpc AdjustPlayerDiamond (AdjustPlayerDiamondReq) returns (AdjustPlayerDiamondResp);
+
+    // machine 
     rpc CreateClawMachine (CreateClawMachineReq) returns (CreateClawMachineResp);
     rpc GetClawMachineInfo (GetClawMachineInfoReq) returns (GetClawMachineInfoResp);
 
+    // game
     rpc StartClawGame (StartClawGameReq) returns (StartClawGameResp);
 
-    rpc GetClawPlayerInfo (GetClawPlayerInfoReq) returns (GetClawPlayerInfoResp);
-
+    // items
     rpc CreateClawItems (CreateClawItemsReq) returns (CreateClawItemsResp);
 }

@@ -33,3 +33,21 @@ type CreateClawPlayerRequest struct {
 	Coin     int64  `json:"coin" binding:"required"`
 	Diamond  int64  `json:"diamond" binding:"required"`
 }
+
+type AdjustPlayerCoinRequest struct {
+	PlayerID int64  `json:"playerID" binding:"required"`
+	Amount   int64  `json:"amount" binding:"required"`
+	Type     string `json:"type" binding:"required,oneof=plus minus"`
+}
+
+type AdjustPlayerDiamondRequest struct {
+	PlayerID int64  `json:"playerID" binding:"required"`
+	Amount   int64  `json:"amount" binding:"required"`
+	Type     string `json:"type" binding:"required,oneof=plus minus"`
+}
+
+type StartClawGameRequest struct {
+	PlayerID  int64 `json:"playerID" binding:"required"`
+	MachineID int64 `json:"machineID" binding:"required"`
+	// TouchedItemID int64 `json:"touchedItemID" binding:"required"`
+}

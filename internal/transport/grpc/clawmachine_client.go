@@ -51,6 +51,14 @@ func (c *ClawMachineClient) CreateClawPlayer(ctx context.Context, req *clawmachi
 	return c.client.CreateClawPlayer(ctx, req)
 }
 
+func (c *ClawMachineClient) AdjustPlayerCoin(ctx context.Context, req *clawmachinepb.AdjustPlayerCoinReq) (*clawmachinepb.AdjustPlayerCoinResp, error) {
+	return c.client.AdjustPlayerCoin(ctx, req)
+}
+
+func (c *ClawMachineClient) AdjustPlayerDiamond(ctx context.Context, req *clawmachinepb.AdjustPlayerDiamondReq) (*clawmachinepb.AdjustPlayerDiamondResp, error) {
+	return c.client.AdjustPlayerDiamond(ctx, req)
+}
+
 func (c *ClawMachineClient) Close() error {
 	return c.conn.Close()
 }

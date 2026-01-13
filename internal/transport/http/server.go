@@ -139,7 +139,12 @@ func (s *Server) setupRoutes() {
 
 			// player
 			clawMachine.GET("/getClawPlayerInfo/:playerID", clawMachineHandler.HandleGetClawPlayerInfo)
-			clawMachine.POST("/createClawPlayer", clawMachineHandler.HandleCreatePlayer)
+			clawMachine.POST("/createClawPlayer", clawMachineHandler.HandleCreateClawPlayer)
+			clawMachine.POST("/adjustPlayerCoin", clawMachineHandler.HandleAdjustPlayerCoin)
+			clawMachine.POST("/adjustPlayerDiamond", clawMachineHandler.HandleAdjustPlayerDiamond)
+
+			// game
+			clawMachine.POST("/startClawGame", clawMachineHandler.HandleStartClawGame)
 		}
 	}
 }

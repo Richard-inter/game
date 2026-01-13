@@ -2,6 +2,8 @@ package clawmachine
 
 import (
 	"context"
+	"fmt"
+	"time"
 
 	"github.com/Richard-inter/game/internal/domain"
 	"github.com/Richard-inter/game/internal/repository"
@@ -50,10 +52,40 @@ func (s *ClawMachineGRPCServices) GetClawPlayerInfo(
 }
 
 func (s *ClawMachineGRPCServices) StartClawGame(ctx context.Context, req *pb.StartClawGameReq) (*pb.StartClawGameResp, error) {
-	// TODO: Implement game logic using repository
+	// 1. Validate request
+	if req.PlayerID <= 0 || req.MachineID <= 0 {
+		return nil, fmt.Errorf("invalid player ID or machine ID")
+	}
+
+	// 2. Get pre-determined catch results
+	results, err := s.PreDetermineCatchResults(ctx, req.MachineID)
+	fmt.Println(results)
+	if err != nil {
+		return nil, fmt.Errorf("failed to pre-determine catch results: %w", err)
+	}
+
+	// 3. Charge player for playing the machine
+	err = s.PlayMachine(ctx, req.PlayerID, req.MachineID)
+	if err != nil {
+		return nil, fmt.Errorf("failed to charge player: %w", err)
+	}
+
+	// 4. Convert domain results to protobuf
+	protoResults := make([]*pb.ClawResult, 0, len(results))
+	for _, result := range results {
+		clawResult := &pb.ClawResult{
+			ItemID:  result.ItemID,
+			Catched: &result.Success,
+		}
+		protoResults = append(protoResults, clawResult)
+	}
+
+	// 5. Generate unique game ID
+	gameID := time.Now().UnixNano()
+
 	return &pb.StartClawGameResp{
-		GameID:  123, // placeholder
-		Results: []*pb.ClawResult{},
+		GameID:  gameID,
+		Results: protoResults,
 	}, nil
 }
 
@@ -195,5 +227,29 @@ func (s *ClawMachineGRPCServices) CreateClawPlayer(ctx context.Context, req *pb.
 
 	return &pb.CreateClawPlayerResp{
 		Player: clawPlayer,
+	}, nil
+}
+
+func (s *ClawMachineGRPCServices) AdjustPlayerCoin(ctx context.Context, req *pb.AdjustPlayerCoinReq) (*pb.AdjustPlayerCoinResp, error) {
+	updated, err := s.repo.AdjustPlayerCoin(req.PlayerID, req.Amount, req.Type)
+	if err != nil {
+		return nil, err
+	}
+
+	return &pb.AdjustPlayerCoinResp{
+		PlayerID:       updated.Player.ID,
+		AdjustedAmount: updated.Coin,
+	}, nil
+}
+
+func (s *ClawMachineGRPCServices) AdjustPlayerDiamond(ctx context.Context, req *pb.AdjustPlayerDiamondReq) (*pb.AdjustPlayerDiamondResp, error) {
+	updated, err := s.repo.AdjustPlayerDiamond(req.PlayerID, req.Amount, req.Type)
+	if err != nil {
+		return nil, err
+	}
+
+	return &pb.AdjustPlayerDiamondResp{
+		PlayerID:       updated.Player.ID,
+		AdjustedAmount: updated.Diamond,
 	}, nil
 }
