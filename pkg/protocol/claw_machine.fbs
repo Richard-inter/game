@@ -1,0 +1,50 @@
+namespace clawMachine;
+
+enum MessageType : byte {
+  StartClawGameReq = 0,
+  StartClawGameResp = 1,
+  AddTouchedItemRecordReq = 2,
+  AddTouchedItemRecordResp = 3,
+  GetPlayerSnapshotReq = 4,
+  GetPlayerSnapshotResp = 5
+}
+
+table StartClawGameReq {
+  player_id:ulong;
+  machine_id:ulong;
+}
+
+table ClawResult {
+  item_id:ulong;
+  catched:bool;
+}
+
+table StartClawGameResp {
+  game_id:ulong;
+  results:[ClawResult];
+}
+
+table AddTouchedItemRecordReq {
+  game_id:ulong;
+  item_id:ulong;
+  catched:bool;
+}
+
+table AddTouchedItemRecordResp {
+  game_id:ulong;
+  item_id:ulong;
+  catched:bool;
+}
+
+table PlayerSnapshot {
+  player_id:ulong;
+  coin:long;
+  diamond:long;
+}   
+
+table Envelope {
+  type:MessageType;
+  payload:[ubyte];
+}
+
+root_type Envelope;

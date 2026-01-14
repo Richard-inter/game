@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+package clawMachine.runtime;
+
+option go_package = "github.com/Richard-inter/game/pkg/protocol/runtime";
+
+service ClawMachineRuntimeService {
+    rpc StartClawGame (bytes) returns (bytes);
+    rpc AddTouchedItemRecord (bytes) returns (bytes);
+    rpc GetPlayerSnapshot (bytes) returns (bytes);
+    rpc GetMachineSnapshot (bytes) returns (bytes);
+}
