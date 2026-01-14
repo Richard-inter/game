@@ -102,7 +102,8 @@ func (h *WebSocketHandler) handleMessage(data []byte) ([]byte, error) {
 				"playerID", playerID,
 				"machineID", machineID)
 
-			// Call websocket service instead of gRPC
+			// Call websocket service and return raw response
+			h.logger.Infow("Calling StartClawGameWs", "payload_length", len(payloadBytes))
 			wsReq := &runtimepb.RuntimeRequest{
 				Payload: payloadBytes,
 			}
@@ -113,9 +114,11 @@ func (h *WebSocketHandler) handleMessage(data []byte) ([]byte, error) {
 				return []byte(`{"error":"Failed to start game"}`), nil
 			}
 
-			// Create response from websocket service response
-			response := []byte(fmt.Sprintf(`{"status":"success","gameID":%d}`, resp.Payload))
-			return response, nil
+			h.logger.Infow("Received response from service", "response_length", len(resp.Payload))
+			h.logger.Infow("Response hex", "hex", fmt.Sprintf("%x", resp.Payload))
+
+			// Return the raw response payload from the service
+			return resp.Payload, nil
 		} else {
 			h.logger.Errorw("Empty StartClawGame payload")
 			return []byte(`{"error":"Empty payload"}`), nil

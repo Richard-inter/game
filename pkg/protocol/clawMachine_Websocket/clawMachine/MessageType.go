@@ -13,6 +13,7 @@ const (
 	MessageTypeAddTouchedItemRecordResp MessageType = 3
 	MessageTypeGetPlayerSnapshotReq     MessageType = 4
 	MessageTypeGetPlayerSnapshotResp    MessageType = 5
+	MessageTypeErrorResp                MessageType = 100
 )
 
 var EnumNamesMessageType = map[MessageType]string{
@@ -22,6 +23,7 @@ var EnumNamesMessageType = map[MessageType]string{
 	MessageTypeAddTouchedItemRecordResp: "AddTouchedItemRecordResp",
 	MessageTypeGetPlayerSnapshotReq:     "GetPlayerSnapshotReq",
 	MessageTypeGetPlayerSnapshotResp:    "GetPlayerSnapshotResp",
+	MessageTypeErrorResp:                "ErrorResp",
 }
 
 var EnumValuesMessageType = map[string]MessageType{
@@ -31,6 +33,7 @@ var EnumValuesMessageType = map[string]MessageType{
 	"AddTouchedItemRecordResp": MessageTypeAddTouchedItemRecordResp,
 	"GetPlayerSnapshotReq":     MessageTypeGetPlayerSnapshotReq,
 	"GetPlayerSnapshotResp":    MessageTypeGetPlayerSnapshotResp,
+	"ErrorResp":                MessageTypeErrorResp,
 }
 
 func (v MessageType) String() string {

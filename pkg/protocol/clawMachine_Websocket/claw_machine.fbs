@@ -6,14 +6,31 @@ enum MessageType : byte {
   AddTouchedItemRecordReq = 2,
   AddTouchedItemRecordResp = 3,
   GetPlayerSnapshotReq = 4,
-  GetPlayerSnapshotResp = 5
+  GetPlayerSnapshotResp = 5,
+  ErrorResp = 100
 }
 
+/***************
+ * Requests
+ ***************/
 table StartClawGameReq {
   player_id:ulong;
   machine_id:ulong;
 }
 
+table AddTouchedItemRecordReq {
+  game_id:ulong;
+  item_id:ulong;
+  catched:bool;
+}
+
+table GetPlayerSnapshotReq {
+  player_id:ulong;
+}
+
+/***************
+ * Responses
+ ***************/
 table ClawResult {
   item_id:ulong;
   catched:bool;
@@ -22,12 +39,6 @@ table ClawResult {
 table StartClawGameResp {
   game_id:ulong;
   results:[ClawResult];
-}
-
-table AddTouchedItemRecordReq {
-  game_id:ulong;
-  item_id:ulong;
-  catched:bool;
 }
 
 table AddTouchedItemRecordResp {
@@ -40,8 +51,19 @@ table PlayerSnapshot {
   player_id:ulong;
   coin:long;
   diamond:long;
-}   
+}
 
+/***************
+ * Error
+ ***************/
+table ErrorResp {
+  code:int;
+  message:string;
+}
+
+/***************
+ * Envelope
+ ***************/
 table Envelope {
   type:MessageType;
   payload:[ubyte];
