@@ -54,19 +54,20 @@ func (s *ClawMachineGRPCServices) GetClawPlayerInfo(
 }
 
 func (s *ClawMachineGRPCServices) StartClawGame(ctx context.Context, req *pb.StartClawGameReq) (*pb.StartClawGameResp, error) {
-	// 1. Validate request
 	if req.PlayerID <= 0 || req.MachineID <= 0 {
 		return nil, fmt.Errorf("invalid player ID or machine ID")
 	}
 
-	// 2. Get pre-determined catch results
 	results, err := s.PreDetermineCatchResults(ctx, req.MachineID)
-	fmt.Println(results)
 	if err != nil {
 		return nil, fmt.Errorf("failed to pre-determine catch results: %w", err)
 	}
 
-	// 3. Create game history record
+	err = s.PlayMachine(ctx, req.PlayerID, req.MachineID)
+	if err != nil {
+		return nil, fmt.Errorf("failed to charge player: %w", err)
+	}
+
 	gameID, err := s.repo.AddGameHistory(req.PlayerID, &domain.ClawMachineGameRecord{
 		PlayerID:      req.PlayerID,
 		ClawMachineID: req.MachineID,
@@ -75,13 +76,6 @@ func (s *ClawMachineGRPCServices) StartClawGame(ctx context.Context, req *pb.Sta
 		return nil, fmt.Errorf("failed to create game history: %w", err)
 	}
 
-	// 4. Charge player coin
-	err = s.PlayMachine(ctx, req.PlayerID, req.MachineID)
-	if err != nil {
-		return nil, fmt.Errorf("failed to charge player: %w", err)
-	}
-
-	// 5. Convert domain results to protobuf
 	protoResults := make([]*pb.ClawResult, 0, len(results))
 	for _, result := range results {
 		clawResult := &pb.ClawResult{
@@ -91,7 +85,6 @@ func (s *ClawMachineGRPCServices) StartClawGame(ctx context.Context, req *pb.Sta
 		protoResults = append(protoResults, clawResult)
 	}
 
-	// 6. Store game results in Redis
 	err = s.redis.StoreGameResults(ctx, gameID, results)
 	if err != nil {
 		// Log error but don't fail the request

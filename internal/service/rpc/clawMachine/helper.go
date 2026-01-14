@@ -203,7 +203,7 @@ func (s *ClawMachineGRPCServices) PlayMachine(
 
 	if resp.Coin < 0 {
 		// Revert adjustment
-		_, _ = s.repo.AdjustPlayerCoin(playerID, int64(clawMachine.Price), "add")
+		_, _ = s.repo.AdjustPlayerCoin(playerID, int64(clawMachine.Price), "plus")
 		return fmt.Errorf("insufficient coins to play the claw machine")
 	}
 
