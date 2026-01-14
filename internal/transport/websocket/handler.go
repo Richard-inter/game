@@ -8,12 +8,16 @@ import (
 	"go.uber.org/zap"
 
 	"github.com/Richard-inter/game/internal/transport/grpc"
+	runtimepb "github.com/Richard-inter/game/pkg/protocol/clawMachine_Websocket"
+	fbs "github.com/Richard-inter/game/pkg/protocol/clawMachine_Websocket/clawMachine"
 	player "github.com/Richard-inter/game/pkg/protocol/player"
 )
 
 type WebSocketHandler struct {
-	logger       *zap.SugaredLogger
-	playerClient *grpc.PlayerClient
+	logger            *zap.SugaredLogger
+	playerClient      *grpc.PlayerClient
+	clawmachineClient *grpc.ClawMachineClient
+	wsClient          *grpc.ClawMachineRuntimeClient
 }
 
 func NewWebSocketHandler(logger *zap.SugaredLogger, grpcManager *grpc.ClientManager) (*WebSocketHandler, error) {
@@ -22,9 +26,21 @@ func NewWebSocketHandler(logger *zap.SugaredLogger, grpcManager *grpc.ClientMana
 		return nil, err
 	}
 
+	clawmachineClient, err := grpcManager.GetClawMachineClient()
+	if err != nil {
+		return nil, err
+	}
+
+	runtimeClient, err := grpcManager.GetClawMachineRuntimeClient()
+	if err != nil {
+		return nil, err
+	}
+
 	return &WebSocketHandler{
-		logger:       logger,
-		playerClient: playerClient,
+		logger:            logger,
+		playerClient:      playerClient,
+		clawmachineClient: clawmachineClient,
+		wsClient:          runtimeClient,
 	}, nil
 }
 
@@ -64,10 +80,51 @@ func (h *WebSocketHandler) HandleConnection(conn *websocket.Conn) {
 }
 
 func (h *WebSocketHandler) handleMessage(data []byte) ([]byte, error) {
-	// For now, just echo the message back
-	// TODO: Implement proper message parsing and handling
 	h.logger.Infow("Processing WebSocket message")
-	return data, nil
+
+	// Parse the payload as FlatBuffer Envelope
+	envelope := fbs.GetRootAsEnvelope(data, 0)
+
+	// Check the message type
+	msgType := envelope.Type()
+	h.logger.Infow("Message type", "type", msgType)
+
+	switch msgType {
+	case fbs.MessageTypeStartClawGameReq:
+		// Get the payload bytes and parse as StartClawGameReq
+		payloadBytes := envelope.PayloadBytes()
+		if len(payloadBytes) > 0 {
+			startReq := fbs.GetRootAsStartClawGameReq(payloadBytes, 0)
+			playerID := startReq.PlayerId()
+			machineID := startReq.MachineId()
+
+			h.logger.Infow("StartClawGame request",
+				"playerID", playerID,
+				"machineID", machineID)
+
+			// Call websocket service instead of gRPC
+			wsReq := &runtimepb.RuntimeRequest{
+				Payload: payloadBytes,
+			}
+
+			resp, err := h.wsClient.StartClawGameWs(context.Background(), wsReq)
+			if err != nil {
+				h.logger.Errorw("Failed to call StartClawGameWs", "error", err)
+				return []byte(`{"error":"Failed to start game"}`), nil
+			}
+
+			// Create response from websocket service response
+			response := []byte(fmt.Sprintf(`{"status":"success","gameID":%d}`, resp.Payload))
+			return response, nil
+		} else {
+			h.logger.Errorw("Empty StartClawGame payload")
+			return []byte(`{"error":"Empty payload"}`), nil
+		}
+
+	default:
+		h.logger.Errorw("Unknown message type", "type", msgType)
+		return []byte(`{"error":"Unknown message type"}`), nil
+	}
 }
 
 func (h *WebSocketHandler) handlePlayerRequest(playerID int64) ([]byte, error) {

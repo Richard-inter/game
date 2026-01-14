@@ -114,8 +114,13 @@ proto:
 
 # Generate flatbuffer files
 flatbuffers:
-	@echo "Generating flatbuffer files..."
-	flatc --go -o pkg/protocol pkg/protocol/*.fbs
+	@echo "Generating FlatBuffers Go files..."
+	@find pkg/protocol -name "*.fbs" | while read fbs; do \
+		dir=$$(dirname $$fbs); \
+		echo "flatc --go -o $$dir $$fbs"; \
+		flatc --go -o $$dir $$fbs; \
+	done
+
 
 # Docker commands
 docker-build:

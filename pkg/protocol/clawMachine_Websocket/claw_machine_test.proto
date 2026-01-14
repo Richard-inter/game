@@ -63,7 +63,7 @@ message GetClawMachineInfoResp {
     ClawMachine machine = 1;
 }
 
-service ClawMachineService {
+service ClawMachineWebService {
     rpc CreateClawPlayer (CreateClawPlayerReq) returns (CreateClawPlayerResp);
     rpc GetClawPlayerInfo (GetClawPlayerInfoReq) returns (GetClawPlayerInfoResp);
     rpc CreateClawMachine (CreateClawMachineReq) returns (CreateClawMachineResp);
