@@ -1,0 +1,27 @@
+# RPC GachaMachine Service Configuration (gRPC)
+
+service:
+  name: "rpc-gachamachine-service"
+  host: "0.0.0.0"
+  port: 9096
+  mode: "release"
+
+grpc:
+  host: "0.0.0.0"
+  port: 9096
+  reflection: true
+
+discovery:
+  enabled: false
+  etcd:
+    endpoints:
+      - "localhost:2379"
+    timeout: "5s"
+
+# Import shared configurations
+shared:
+  gachamachine_database: "shared.yaml"
+  redis: "shared.yaml"
+  logging: "shared.yaml"
+  jwt: "shared.yaml"
+  tracing: "shared.yaml"
