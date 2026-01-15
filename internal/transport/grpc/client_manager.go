@@ -8,15 +8,18 @@ type ClientManager struct {
 	discovery   *DiscoveryManager
 	player      *PlayerClient
 	clawmachine *ClawMachineClient
+	runtime     *ClawMachineRuntimeClient
 	// Direct connection addresses for when discovery is disabled
 	playerAddr      string
 	clawmachineAddr string
+	runtimeAddr     string
 }
 
 type ClientManagerConfig struct {
 	EtcdEndpoints   []string
 	PlayerAddr      string // Direct address when discovery disabled
 	ClawmachineAddr string // Direct address when discovery disabled
+	RuntimeAddr     string // Direct address when discovery disabled
 }
 
 func NewClientManager(cfg *ClientManagerConfig) (*ClientManager, error) {
@@ -35,6 +38,7 @@ func NewClientManager(cfg *ClientManagerConfig) (*ClientManager, error) {
 		discovery:       discovery,
 		playerAddr:      cfg.PlayerAddr,
 		clawmachineAddr: cfg.ClawmachineAddr,
+		runtimeAddr:     cfg.RuntimeAddr,
 	}, nil
 }
 
@@ -98,6 +102,39 @@ func (cm *ClientManager) GetClawMachineClient() (*ClawMachineClient, error) {
 	return cm.clawmachine, nil
 }
 
+func (cm *ClientManager) GetClawMachineRuntimeClient() (*ClawMachineRuntimeClient, error) {
+	if cm == nil {
+		return nil, fmt.Errorf("client manager is nil")
+	}
+
+	if cm.runtime == nil {
+		var runtimeAddr string
+		var err error
+
+		// Use discovery if available, otherwise use direct address
+		if cm.discovery != nil {
+			runtimeAddr, err = cm.discovery.GetService("clawmachine-runtime-service")
+			if err != nil {
+				return nil, fmt.Errorf("failed to get clawmachine runtime service address: %w", err)
+			}
+		} else {
+			if cm.runtimeAddr == "" {
+				return nil, fmt.Errorf("clawmachine runtime service address not configured and discovery is disabled")
+			}
+			runtimeAddr = cm.runtimeAddr
+		}
+
+		// Create client
+		runtime, err := NewClawMachineRuntimeClient(runtimeAddr)
+		if err != nil {
+			return nil, fmt.Errorf("failed to create clawmachine runtime client: %w", err)
+		}
+		cm.runtime = runtime
+	}
+
+	return cm.runtime, nil
+}
+
 func (cm *ClientManager) Close() error {
 	var errors []string
 
@@ -111,6 +148,10 @@ func (cm *ClientManager) Close() error {
 		if err := cm.clawmachine.Close(); err != nil {
 			errors = append(errors, fmt.Sprintf("clawmachine client: %v", err))
 		}
+	}
+	if cm.runtime != nil {
+		// Note: Runtime client doesn't have Close method in the interface
+		// Connection will be closed when the process exits
 	}
 
 	if cm.discovery != nil {

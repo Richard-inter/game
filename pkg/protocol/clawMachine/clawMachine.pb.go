@@ -689,7 +689,7 @@ func (x *GetClawMachineInfoReq) GetMachineID() int64 {
 
 type GetClawMachineInfoResp struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Machine       *ClawMachine           `protobuf:"bytes,1,opt,name=machine,proto3" json:"machine,omitempty"`
+	Machine       []*ClawMachine         `protobuf:"bytes,1,rep,name=machine,proto3" json:"machine,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -724,7 +724,7 @@ func (*GetClawMachineInfoResp) Descriptor() ([]byte, []int) {
 	return file_clawMachine_clawMachine_proto_rawDescGZIP(), []int{12}
 }
 
-func (x *GetClawMachineInfoResp) GetMachine() *ClawMachine {
+func (x *GetClawMachineInfoResp) GetMachine() []*ClawMachine {
 	if x != nil {
 		return x.Machine
 	}
@@ -1380,7 +1380,7 @@ const file_clawMachine_clawMachine_proto_rawDesc = "" +
 	"\x15GetClawMachineInfoReq\x12\x1c\n" +
 	"\tmachineID\x18\x01 \x01(\x03R\tmachineID\"L\n" +
 	"\x16GetClawMachineInfoResp\x122\n" +
-	"\amachine\x18\x01 \x01(\v2\x18.clawMachine.ClawMachineR\amachine\"\xb7\x01\n" +
+	"\amachine\x18\x01 \x03(\v2\x18.clawMachine.ClawMachineR\amachine\"\xb7\x01\n" +
 	"\rCreateItemReq\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x16\n" +
 	"\x06rarity\x18\x02 \x01(\tR\x06rarity\x12(\n" +

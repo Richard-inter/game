@@ -2,18 +2,25 @@ package websocket
 
 import (
 	"context"
-	"fmt"
 
+	flatbuffers "github.com/google/flatbuffers/go"
 	"github.com/gorilla/websocket"
 	"go.uber.org/zap"
 
 	"github.com/Richard-inter/game/internal/transport/grpc"
-	player "github.com/Richard-inter/game/pkg/protocol/player"
+	runtimepb "github.com/Richard-inter/game/pkg/protocol/clawMachine_Websocket"
+	fbs "github.com/Richard-inter/game/pkg/protocol/clawMachine_Websocket/clawMachine"
 )
 
+type messageHandler func(ctx context.Context, payload []byte) ([]byte, error)
+
 type WebSocketHandler struct {
-	logger       *zap.SugaredLogger
-	playerClient *grpc.PlayerClient
+	logger            *zap.SugaredLogger
+	playerClient      *grpc.PlayerClient
+	clawmachineClient *grpc.ClawMachineClient
+	wsClient          *grpc.ClawMachineRuntimeClient
+
+	handlers map[fbs.MessageType]messageHandler
 }
 
 func NewWebSocketHandler(logger *zap.SugaredLogger, grpcManager *grpc.ClientManager) (*WebSocketHandler, error) {
@@ -22,10 +29,29 @@ func NewWebSocketHandler(logger *zap.SugaredLogger, grpcManager *grpc.ClientMana
 		return nil, err
 	}
 
-	return &WebSocketHandler{
-		logger:       logger,
-		playerClient: playerClient,
-	}, nil
+	clawmachineClient, err := grpcManager.GetClawMachineClient()
+	if err != nil {
+		return nil, err
+	}
+
+	runtimeClient, err := grpcManager.GetClawMachineRuntimeClient()
+	if err != nil {
+		return nil, err
+	}
+
+	h := &WebSocketHandler{
+		logger:            logger,
+		playerClient:      playerClient,
+		clawmachineClient: clawmachineClient,
+		wsClient:          runtimeClient,
+		handlers:          make(map[fbs.MessageType]messageHandler),
+	}
+
+	h.handlers[fbs.MessageTypeStartClawGameReq] = h.handleStartClawGame
+	h.handlers[fbs.MessageTypeGetPlayerInfoWsReq] = h.handleGetPlayerInfo
+	h.handlers[fbs.MessageTypeAddTouchedItemRecordReq] = h.handleAddTouchedItemRecord
+
+	return h, nil
 }
 
 func (h *WebSocketHandler) HandleConnection(conn *websocket.Conn) {
@@ -56,7 +82,7 @@ func (h *WebSocketHandler) HandleConnection(conn *websocket.Conn) {
 		}
 
 		// Send response
-		if err := conn.WriteMessage(messageType, response); err != nil {
+		if err := conn.WriteMessage(websocket.BinaryMessage, response); err != nil {
 			h.logger.Errorw("Error sending response", "error", err)
 			return
 		}
@@ -64,29 +90,99 @@ func (h *WebSocketHandler) HandleConnection(conn *websocket.Conn) {
 }
 
 func (h *WebSocketHandler) handleMessage(data []byte) ([]byte, error) {
-	// For now, just echo the message back
-	// TODO: Implement proper message parsing and handling
-	h.logger.Infow("Processing WebSocket message")
-	return data, nil
-}
+	envelope := fbs.GetRootAsEnvelope(data, 0)
+	msgType := envelope.Type()
+	payload := envelope.PayloadBytes()
 
-func (h *WebSocketHandler) handlePlayerRequest(playerID int64) ([]byte, error) {
-	// Example: Get player info via gRPC
-	resp, err := h.playerClient.GetPlayerInfo(context.Background(), &player.GetPlayerInfoReq{
-		PlayerID: playerID,
-	})
-	if err != nil {
-		return nil, fmt.Errorf("failed to get player info: %w", err)
+	handler, ok := h.handlers[msgType]
+	if !ok {
+		h.logger.Errorw("Unknown message type", "type", msgType)
+		return h.buildErrorResp(400, "Unknown message type"), nil
 	}
 
-	// Convert response to bytes (simplified for now)
-	return []byte(fmt.Sprintf("Player info: %+v", resp.Player)), nil
+	if len(payload) == 0 {
+		h.logger.Errorw("Empty payload", "type", msgType)
+		return h.buildErrorResp(400, "Empty payload"), nil
+	}
+
+	return handler(context.Background(), payload)
+}
+
+func (h *WebSocketHandler) handleStartClawGame(
+	ctx context.Context,
+	payload []byte,
+) ([]byte, error) {
+	resp, err := h.wsClient.StartClawGameWs(ctx, &runtimepb.RuntimeRequest{
+		Payload: payload,
+	})
+	if err != nil {
+		h.logger.Errorw("StartClawGameWs failed", "error", err)
+		return h.buildErrorResp(500, err.Error()), nil
+	}
+
+	return resp.Payload, nil
+}
+
+func (h *WebSocketHandler) handleGetPlayerInfo(
+	ctx context.Context,
+	payload []byte,
+) ([]byte, error) {
+	resp, err := h.wsClient.GetPlayerSnapshotWs(ctx, &runtimepb.RuntimeRequest{
+		Payload: payload,
+	})
+	if err != nil {
+		h.logger.Errorw("GetPlayerSnapshotWs failed", "error", err)
+		return h.buildErrorResp(500, err.Error()), nil
+	}
+
+	return resp.Payload, nil
+}
+
+func (h *WebSocketHandler) handleAddTouchedItemRecord(
+	ctx context.Context,
+	payload []byte,
+) ([]byte, error) {
+	resp, err := h.wsClient.AddTouchedItemRecordWs(ctx, &runtimepb.RuntimeRequest{
+		Payload: payload,
+	})
+	if err != nil {
+		h.logger.Errorw("AddTouchedItemRecordWs failed", "error", err)
+		return h.buildErrorResp(500, err.Error()), nil
+	}
+
+	return resp.Payload, nil
+}
+
+func (h *WebSocketHandler) buildErrorResp(code int32, message string) []byte {
+	builder := flatbuffers.NewBuilder(128)
+
+	msgOffset := builder.CreateString(message)
+
+	fbs.ErrorRespStart(builder)
+	fbs.ErrorRespAddCode(builder, code)
+	fbs.ErrorRespAddMessage(builder, msgOffset)
+	errorResp := fbs.ErrorRespEnd(builder)
+
+	builder.Finish(errorResp)
+	errorBytes := builder.FinishedBytes()
+
+	// Wrap error response in Envelope
+	envBuilder := flatbuffers.NewBuilder(256)
+	payloadOffset := envBuilder.CreateByteVector(errorBytes)
+
+	fbs.EnvelopeStart(envBuilder)
+	fbs.EnvelopeAddType(envBuilder, fbs.MessageTypeErrorResp)
+	fbs.EnvelopeAddPayload(envBuilder, payloadOffset)
+	envOffset := fbs.EnvelopeEnd(envBuilder)
+	envBuilder.Finish(envOffset)
+
+	return envBuilder.FinishedBytes()
 }
 
 func (h *WebSocketHandler) sendError(conn *websocket.Conn, message string) {
-	response := []byte(fmt.Sprintf(`{"error": "%s"}`, message))
+	response := h.buildErrorResp(500, message)
 
-	err := conn.WriteMessage(websocket.TextMessage, response)
+	err := conn.WriteMessage(websocket.BinaryMessage, response)
 	if err != nil {
 		h.logger.Errorw("Failed to send error message", "error", err)
 	}

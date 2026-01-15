@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package clawMachine.runtime;
+
+option go_package = "github.com/Richard-inter/game/pkg/protocol/clawMachine_Websocket";
+
+message RuntimeRequest {
+    bytes payload = 1;
+}
+
+message RuntimeResponse {
+    bytes payload = 1;
+}
+
+service ClawMachineRuntimeService {
+    rpc StartClawGameWs (RuntimeRequest) returns (RuntimeResponse);
+    rpc AddTouchedItemRecordWs (RuntimeRequest) returns (RuntimeResponse);
+    rpc GetPlayerInfoWs (RuntimeRequest) returns (RuntimeResponse);
+    rpc GetMachineInfoWs (RuntimeRequest) returns (RuntimeResponse);
+}

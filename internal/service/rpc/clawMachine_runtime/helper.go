@@ -4,8 +4,6 @@ import (
 	"context"
 	"fmt"
 	"math/rand/v2"
-
-	pb "github.com/Richard-inter/game/pkg/protocol/clawMachine"
 )
 
 type SpawnConfig struct {
@@ -93,64 +91,7 @@ func SpawnWithControls(items []SpawnItem, config SpawnConfig) []SpawnItem {
 	return result
 }
 
-func (s *ClawMachineGRPCServices) GetMachineItems(
-	ctx context.Context,
-	machineID int64,
-) ([]*pb.Item, error) {
-	clawMachine, err := s.repo.GetClawMachineInfo(machineID)
-	if err != nil {
-		return nil, err
-	}
-
-	items := make([]*pb.Item, 0, len(clawMachine.Items))
-	for _, item := range clawMachine.Items {
-		items = append(items, &pb.Item{
-			ItemID:          item.Item.ID,
-			Name:            item.Item.Name,
-			Rarity:          item.Item.Rarity,
-			SpawnPercentage: item.Item.SpawnPercentage,
-			CatchPercentage: item.Item.CatchPercentage,
-			MaxItemSpawned:  item.Item.MaxItemSpawned,
-		})
-	}
-
-	return items, nil
-}
-
-func (s *ClawMachineGRPCServices) SpawnMachineItems(
-	ctx context.Context,
-	machineID int64,
-) ([]int64, error) {
-	clawMachine, err := s.repo.GetClawMachineInfo(machineID)
-	if err != nil {
-		return nil, fmt.Errorf("failed to get machine info: %w", err)
-	}
-	config := SpawnConfig{
-		MaxOutput: int(clawMachine.MaxItem), // Use machine's MaxItem as output cap
-	}
-
-	spawnItems := make([]SpawnItem, 0, len(clawMachine.Items))
-	for _, item := range clawMachine.Items {
-		spawnItems = append(spawnItems, SpawnItem{
-			ID:           item.Item.ID,
-			SpawnPercent: int(item.Item.SpawnPercentage),
-			MaxPerRound:  int(item.Item.MaxItemSpawned),
-		})
-	}
-
-	spawnedItems := SpawnWithControls(spawnItems, config)
-
-	// Convert SpawnItem results to item IDs
-	spawnedIDs := make([]int64, 0, len(spawnedItems))
-	for _, spawnedItem := range spawnedItems {
-		spawnedIDs = append(spawnedIDs, spawnedItem.ID)
-	}
-
-	return spawnedIDs, nil
-}
-
-// PreDetermineCatchResults generates a list of pre-determined catch results for all items
-func (s *ClawMachineGRPCServices) PreDetermineCatchResults(
+func (s *ClawMachineWebsocketService) PreDetermineCatchResults(
 	ctx context.Context,
 	machineID int64,
 ) ([]*CatchResult, error) {
@@ -186,7 +127,7 @@ func (s *ClawMachineGRPCServices) PreDetermineCatchResults(
 	return results, nil
 }
 
-func (s *ClawMachineGRPCServices) PlayMachine(
+func (s *ClawMachineWebsocketService) PlayMachine(
 	ctx context.Context,
 	playerID int64,
 	machineID int64,

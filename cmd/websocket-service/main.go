@@ -10,6 +10,8 @@ import (
 	"time"
 
 	"github.com/Richard-inter/game/internal/config"
+	"github.com/Richard-inter/game/internal/transport/grpc"
+	wshandler "github.com/Richard-inter/game/internal/transport/websocket"
 	"github.com/Richard-inter/game/pkg/logger"
 	"github.com/gorilla/websocket"
 	"go.uber.org/zap"
@@ -111,28 +113,30 @@ func handleWebSocket(upgrader websocket.Upgrader, w http.ResponseWriter, r *http
 		log.Errorw("Failed to upgrade WebSocket connection", "error", err)
 		return
 	}
-	defer conn.Close()
 
-	log.Infow("WebSocket client connected", "client_ip", r.RemoteAddr, "user_agent", r.UserAgent())
-
-	// Handle WebSocket messages
-	for {
-		messageType, message, err := conn.ReadMessage()
-		if err != nil {
-			if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway, websocket.CloseAbnormalClosure) {
-				log.Errorw("WebSocket error", "error", err)
-			}
-			break
-		}
-
-		log.Debugw("Received WebSocket message", "message_type", messageType, "message", string(message))
-
-		// Echo message back (placeholder)
-		if err := conn.WriteMessage(messageType, message); err != nil {
-			log.Errorw("Failed to send WebSocket message", "error", err)
-			break
-		}
+	// Initialize gRPC client manager
+	grpcConfig := &grpc.ClientManagerConfig{
+		EtcdEndpoints:   []string{}, // Empty to disable etcd
+		PlayerAddr:      "localhost:9094",
+		ClawmachineAddr: "localhost:9091",
+		RuntimeAddr:     "localhost:9092",
 	}
 
-	log.Infow("WebSocket client disconnected", "client_ip", r.RemoteAddr)
+	grpcManager, err := grpc.NewClientManager(grpcConfig)
+	if err != nil {
+		log.Errorw("Failed to create gRPC client manager", "error", err)
+		return
+	}
+
+	log.Infow("gRPC client manager created successfully")
+
+	// Create WebSocket handler
+	handler, err := wshandler.NewWebSocketHandler(log, grpcManager)
+	if err != nil {
+		log.Errorw("Failed to create WebSocket handler", "error", err)
+		return
+	}
+
+	// Handle the connection
+	handler.HandleConnection(conn)
 }

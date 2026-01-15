@@ -30,14 +30,11 @@ func (s *ClawMachineGRPCServices) GetClawPlayerInfo(
 	ctx context.Context,
 	req *pb.GetClawPlayerInfoReq,
 ) (*pb.GetClawPlayerInfoResp, error) {
-
-	// 1. Fetch domain model
 	domainPlayer, err := s.repo.GetClawPlayerInfo(req.PlayerID)
 	if err != nil {
 		return nil, err
 	}
 
-	// 2. Map domain → protobuf
 	clawPlayer := &pb.ClawPlayer{
 		BasePlayer: &player.Player{
 			PlayerID: domainPlayer.Player.ID,
@@ -47,7 +44,6 @@ func (s *ClawMachineGRPCServices) GetClawPlayerInfo(
 		Diamond: domainPlayer.Diamond,
 	}
 
-	// 3. Return response
 	return &pb.GetClawPlayerInfoResp{
 		Player: clawPlayer,
 	}, nil
@@ -101,36 +97,69 @@ func (s *ClawMachineGRPCServices) GetClawMachineInfo(
 	ctx context.Context,
 	req *pb.GetClawMachineInfoReq,
 ) (*pb.GetClawMachineInfoResp, error) {
-	resp, err := s.repo.GetClawMachineInfo(req.MachineID)
-	if err != nil {
-		return nil, err
-	}
+	var machines []*pb.ClawMachine
 
-	items := make([]*pb.Item, 0, len(resp.Items))
-	for _, it := range resp.Items {
-		items = append(items, &pb.Item{
-			ItemID:          it.Item.ID,
-			Name:            it.Item.Name,
-			Rarity:          it.Item.Rarity,
-			SpawnPercentage: it.Item.SpawnPercentage,
-			CatchPercentage: it.Item.CatchPercentage,
-			MaxItemSpawned:  it.Item.MaxItemSpawned,
-		})
-	}
+	// get all machines
+	if req.MachineID == 0 {
+		machineDomainList, err := s.repo.GetAllClawMachines()
+		if err != nil {
+			return nil, err
+		}
 
-	return &pb.GetClawMachineInfoResp{
-		Machine: &pb.ClawMachine{
+		for _, resp := range machineDomainList {
+			items := make([]*pb.Item, 0, len(resp.Items))
+			for _, it := range resp.Items {
+				items = append(items, &pb.Item{
+					ItemID:          it.Item.ID,
+					Name:            it.Item.Name,
+					Rarity:          it.Item.Rarity,
+					SpawnPercentage: it.Item.SpawnPercentage,
+					CatchPercentage: it.Item.CatchPercentage,
+					MaxItemSpawned:  it.Item.MaxItemSpawned,
+				})
+			}
+
+			machines = append(machines, &pb.ClawMachine{
+				MachineID: resp.ID,
+				Name:      resp.Name,
+				Price:     resp.Price,
+				MaxItem:   resp.MaxItem,
+				Items:     items,
+			})
+		}
+	} else {
+		resp, err := s.repo.GetClawMachineInfo(req.MachineID)
+		if err != nil {
+			return nil, err
+		}
+
+		items := make([]*pb.Item, 0, len(resp.Items))
+		for _, it := range resp.Items {
+			items = append(items, &pb.Item{
+				ItemID:          it.Item.ID,
+				Name:            it.Item.Name,
+				Rarity:          it.Item.Rarity,
+				SpawnPercentage: it.Item.SpawnPercentage,
+				CatchPercentage: it.Item.CatchPercentage,
+				MaxItemSpawned:  it.Item.MaxItemSpawned,
+			})
+		}
+
+		machines = append(machines, &pb.ClawMachine{
 			MachineID: resp.ID,
 			Name:      resp.Name,
 			Price:     resp.Price,
 			MaxItem:   resp.MaxItem,
 			Items:     items,
-		},
+		})
+	}
+
+	return &pb.GetClawMachineInfoResp{
+		Machine: machines,
 	}, nil
 }
 
 func (s *ClawMachineGRPCServices) CreateClawMachine(ctx context.Context, req *pb.CreateClawMachineReq) (*pb.CreateClawMachineResp, error) {
-	// Create domain claw machine with items
 	c := &domain.ClawMachine{
 		Name:    req.Name,
 		Price:   req.Price,
@@ -138,14 +167,12 @@ func (s *ClawMachineGRPCServices) CreateClawMachine(ctx context.Context, req *pb
 		Items:   make([]domain.ClawMachineItem, 0, len(req.Items)),
 	}
 
-	// Convert protobuf items to domain items
 	for _, item := range req.Items {
 		c.Items = append(c.Items, domain.ClawMachineItem{
 			ItemID: item.ItemID,
 		})
 	}
 
-	// Create claw machine with items in a single transaction
 	created, err := s.repo.CreateClawMachine(c)
 	if err != nil {
 		return nil, err
@@ -175,7 +202,6 @@ func (s *ClawMachineGRPCServices) CreateClawMachine(ctx context.Context, req *pb
 }
 
 func (s *ClawMachineGRPCServices) CreateClawItems(ctx context.Context, req *pb.CreateClawItemsReq) (*pb.CreateClawItemsResp, error) {
-	// Convert protobuf items to domain items
 	items := make([]domain.Item, 0, len(req.ClawItems))
 	for _, item := range req.ClawItems {
 		items = append(items, domain.Item{
@@ -209,7 +235,6 @@ func (s *ClawMachineGRPCServices) CreateClawItems(ctx context.Context, req *pb.C
 }
 
 func (s *ClawMachineGRPCServices) CreateClawPlayer(ctx context.Context, req *pb.CreateClawPlayerReq) (*pb.CreateClawPlayerResp, error) {
-	// Create domain claw player
 	cp := &domain.ClawPlayer{
 		Player: domain.Player{
 			ID:       req.Player.BasePlayer.PlayerID,

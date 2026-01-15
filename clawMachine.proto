@@ -1,0 +1,71 @@
+syntax = "proto3";
+
+package clawMachine;
+
+option go_package = "github.com/Richard-inter/game/pkg/protocol/";
+
+import "player/player.proto";
+
+message Item {
+    int64 itemID = 1;
+    string name = 2;
+    string rarity = 3;
+    int64 spawnPercentage = 4;
+    int64 catchPercentage = 5;
+    int64 maxItemSpawned = 6;
+}
+
+message ClawMachine {
+    int64 machineID = 1;
+    string name = 2;
+    repeated Item items = 3;
+    int64 price = 4;
+    int32 maxItem = 5;
+}
+
+message ClawPlayer {
+    player.Player basePlayer = 1;
+    int64 coin = 2;
+    int64 diamond = 3;
+}
+
+message CreateClawPlayerReq {
+    ClawPlayer player = 1;
+}
+
+message CreateClawPlayerResp {
+    ClawPlayer player = 1;
+}
+
+message GetClawPlayerInfoReq {
+    int64 playerID = 1;
+}
+
+message GetClawPlayerInfoResp {
+    ClawPlayer player = 1;
+}
+
+message CreateClawMachineReq {
+    string name = 1;
+    int64 price = 2;
+    int32 maxItem = 3;
+}
+
+message CreateClawMachineResp {
+    ClawMachine machine = 1;
+}
+
+message GetClawMachineInfoReq {
+    int64 machineID = 1;
+}
+
+message GetClawMachineInfoResp {
+    repeated ClawMachine machine = 1;
+}
+
+service ClawMachineWebService {
+    rpc CreateClawPlayer (CreateClawPlayerReq) returns (CreateClawPlayerResp);
+    rpc GetClawPlayerInfo (GetClawPlayerInfoReq) returns (GetClawPlayerInfoResp);
+    rpc CreateClawMachine (CreateClawMachineReq) returns (CreateClawMachineResp);
+    rpc GetClawMachineInfo (GetClawMachineInfoReq) returns (GetClawMachineInfoResp);
+}
