@@ -70,3 +70,29 @@ func InitClawmachineDB(cfg *config.ServiceConfig) (*gorm.DB, error) {
 
 	return db, nil
 }
+
+// InitGachaMachineDB initializes gacha machine database connection
+func InitGachaMachineDB(cfg *config.ServiceConfig) (*gorm.DB, error) {
+	dsn := cfg.GetGachaMachineDSN()
+
+	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
+		Logger: logger.Default.LogMode(logger.Info),
+	})
+	if err != nil {
+		return nil, fmt.Errorf("failed to connect to gacha machine database: %w", err)
+	}
+
+	// Auto migrate the schema
+	err = db.AutoMigrate(
+		&domain.GachaPlayer{},
+		&domain.GachaPool{},
+		&domain.GachaItem{},
+		&domain.GachaPullResult{},
+		&domain.GachaPoolItem{},
+	)
+	if err != nil {
+		return nil, fmt.Errorf("failed to migrate gacha machine database: %w", err)
+	}
+
+	return db, nil
+}
