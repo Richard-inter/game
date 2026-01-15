@@ -21,8 +21,8 @@ const _ = grpc.SupportPackageIsVersion9
 const (
 	ClawMachineRuntimeService_StartClawGameWs_FullMethodName        = "/clawMachine.runtime.ClawMachineRuntimeService/StartClawGameWs"
 	ClawMachineRuntimeService_AddTouchedItemRecordWs_FullMethodName = "/clawMachine.runtime.ClawMachineRuntimeService/AddTouchedItemRecordWs"
-	ClawMachineRuntimeService_GetPlayerSnapshotWs_FullMethodName    = "/clawMachine.runtime.ClawMachineRuntimeService/GetPlayerSnapshotWs"
-	ClawMachineRuntimeService_GetMachineSnapshotWs_FullMethodName   = "/clawMachine.runtime.ClawMachineRuntimeService/GetMachineSnapshotWs"
+	ClawMachineRuntimeService_GetPlayerInfoWs_FullMethodName        = "/clawMachine.runtime.ClawMachineRuntimeService/GetPlayerInfoWs"
+	ClawMachineRuntimeService_GetMachineInfoWs_FullMethodName       = "/clawMachine.runtime.ClawMachineRuntimeService/GetMachineInfoWs"
 )
 
 // ClawMachineRuntimeServiceClient is the client API for ClawMachineRuntimeService service.
@@ -31,8 +31,8 @@ const (
 type ClawMachineRuntimeServiceClient interface {
 	StartClawGameWs(ctx context.Context, in *RuntimeRequest, opts ...grpc.CallOption) (*RuntimeResponse, error)
 	AddTouchedItemRecordWs(ctx context.Context, in *RuntimeRequest, opts ...grpc.CallOption) (*RuntimeResponse, error)
-	GetPlayerSnapshotWs(ctx context.Context, in *RuntimeRequest, opts ...grpc.CallOption) (*RuntimeResponse, error)
-	GetMachineSnapshotWs(ctx context.Context, in *RuntimeRequest, opts ...grpc.CallOption) (*RuntimeResponse, error)
+	GetPlayerInfoWs(ctx context.Context, in *RuntimeRequest, opts ...grpc.CallOption) (*RuntimeResponse, error)
+	GetMachineInfoWs(ctx context.Context, in *RuntimeRequest, opts ...grpc.CallOption) (*RuntimeResponse, error)
 }
 
 type clawMachineRuntimeServiceClient struct {
@@ -63,20 +63,20 @@ func (c *clawMachineRuntimeServiceClient) AddTouchedItemRecordWs(ctx context.Con
 	return out, nil
 }
 
-func (c *clawMachineRuntimeServiceClient) GetPlayerSnapshotWs(ctx context.Context, in *RuntimeRequest, opts ...grpc.CallOption) (*RuntimeResponse, error) {
+func (c *clawMachineRuntimeServiceClient) GetPlayerInfoWs(ctx context.Context, in *RuntimeRequest, opts ...grpc.CallOption) (*RuntimeResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(RuntimeResponse)
-	err := c.cc.Invoke(ctx, ClawMachineRuntimeService_GetPlayerSnapshotWs_FullMethodName, in, out, cOpts...)
+	err := c.cc.Invoke(ctx, ClawMachineRuntimeService_GetPlayerInfoWs_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *clawMachineRuntimeServiceClient) GetMachineSnapshotWs(ctx context.Context, in *RuntimeRequest, opts ...grpc.CallOption) (*RuntimeResponse, error) {
+func (c *clawMachineRuntimeServiceClient) GetMachineInfoWs(ctx context.Context, in *RuntimeRequest, opts ...grpc.CallOption) (*RuntimeResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(RuntimeResponse)
-	err := c.cc.Invoke(ctx, ClawMachineRuntimeService_GetMachineSnapshotWs_FullMethodName, in, out, cOpts...)
+	err := c.cc.Invoke(ctx, ClawMachineRuntimeService_GetMachineInfoWs_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -89,8 +89,8 @@ func (c *clawMachineRuntimeServiceClient) GetMachineSnapshotWs(ctx context.Conte
 type ClawMachineRuntimeServiceServer interface {
 	StartClawGameWs(context.Context, *RuntimeRequest) (*RuntimeResponse, error)
 	AddTouchedItemRecordWs(context.Context, *RuntimeRequest) (*RuntimeResponse, error)
-	GetPlayerSnapshotWs(context.Context, *RuntimeRequest) (*RuntimeResponse, error)
-	GetMachineSnapshotWs(context.Context, *RuntimeRequest) (*RuntimeResponse, error)
+	GetPlayerInfoWs(context.Context, *RuntimeRequest) (*RuntimeResponse, error)
+	GetMachineInfoWs(context.Context, *RuntimeRequest) (*RuntimeResponse, error)
 	mustEmbedUnimplementedClawMachineRuntimeServiceServer()
 }
 
@@ -107,11 +107,11 @@ func (UnimplementedClawMachineRuntimeServiceServer) StartClawGameWs(context.Cont
 func (UnimplementedClawMachineRuntimeServiceServer) AddTouchedItemRecordWs(context.Context, *RuntimeRequest) (*RuntimeResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AddTouchedItemRecordWs not implemented")
 }
-func (UnimplementedClawMachineRuntimeServiceServer) GetPlayerSnapshotWs(context.Context, *RuntimeRequest) (*RuntimeResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetPlayerSnapshotWs not implemented")
+func (UnimplementedClawMachineRuntimeServiceServer) GetPlayerInfoWs(context.Context, *RuntimeRequest) (*RuntimeResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetPlayerInfoWs not implemented")
 }
-func (UnimplementedClawMachineRuntimeServiceServer) GetMachineSnapshotWs(context.Context, *RuntimeRequest) (*RuntimeResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetMachineSnapshotWs not implemented")
+func (UnimplementedClawMachineRuntimeServiceServer) GetMachineInfoWs(context.Context, *RuntimeRequest) (*RuntimeResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetMachineInfoWs not implemented")
 }
 func (UnimplementedClawMachineRuntimeServiceServer) mustEmbedUnimplementedClawMachineRuntimeServiceServer() {
 }
@@ -171,38 +171,38 @@ func _ClawMachineRuntimeService_AddTouchedItemRecordWs_Handler(srv interface{}, 
 	return interceptor(ctx, in, info, handler)
 }
 
-func _ClawMachineRuntimeService_GetPlayerSnapshotWs_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _ClawMachineRuntimeService_GetPlayerInfoWs_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(RuntimeRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ClawMachineRuntimeServiceServer).GetPlayerSnapshotWs(ctx, in)
+		return srv.(ClawMachineRuntimeServiceServer).GetPlayerInfoWs(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: ClawMachineRuntimeService_GetPlayerSnapshotWs_FullMethodName,
+		FullMethod: ClawMachineRuntimeService_GetPlayerInfoWs_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ClawMachineRuntimeServiceServer).GetPlayerSnapshotWs(ctx, req.(*RuntimeRequest))
+		return srv.(ClawMachineRuntimeServiceServer).GetPlayerInfoWs(ctx, req.(*RuntimeRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _ClawMachineRuntimeService_GetMachineSnapshotWs_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _ClawMachineRuntimeService_GetMachineInfoWs_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(RuntimeRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ClawMachineRuntimeServiceServer).GetMachineSnapshotWs(ctx, in)
+		return srv.(ClawMachineRuntimeServiceServer).GetMachineInfoWs(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: ClawMachineRuntimeService_GetMachineSnapshotWs_FullMethodName,
+		FullMethod: ClawMachineRuntimeService_GetMachineInfoWs_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ClawMachineRuntimeServiceServer).GetMachineSnapshotWs(ctx, req.(*RuntimeRequest))
+		return srv.(ClawMachineRuntimeServiceServer).GetMachineInfoWs(ctx, req.(*RuntimeRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -223,12 +223,12 @@ var ClawMachineRuntimeService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _ClawMachineRuntimeService_AddTouchedItemRecordWs_Handler,
 		},
 		{
-			MethodName: "GetPlayerSnapshotWs",
-			Handler:    _ClawMachineRuntimeService_GetPlayerSnapshotWs_Handler,
+			MethodName: "GetPlayerInfoWs",
+			Handler:    _ClawMachineRuntimeService_GetPlayerInfoWs_Handler,
 		},
 		{
-			MethodName: "GetMachineSnapshotWs",
-			Handler:    _ClawMachineRuntimeService_GetMachineSnapshotWs_Handler,
+			MethodName: "GetMachineInfoWs",
+			Handler:    _ClawMachineRuntimeService_GetMachineInfoWs_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

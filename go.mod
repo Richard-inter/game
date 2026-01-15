@@ -4,6 +4,7 @@ go 1.24.0
 
 require (
 	github.com/gin-gonic/gin v1.9.1
+	github.com/google/flatbuffers v25.12.19+incompatible
 	github.com/gorilla/websocket v1.5.3
 	github.com/redis/go-redis/v9 v9.17.2
 	github.com/spf13/viper v1.18.2
@@ -33,7 +34,6 @@ require (
 	github.com/goccy/go-json v0.10.2 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/golang/protobuf v1.5.4 // indirect
-	github.com/google/flatbuffers v25.12.19+incompatible // indirect
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.26.3 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect

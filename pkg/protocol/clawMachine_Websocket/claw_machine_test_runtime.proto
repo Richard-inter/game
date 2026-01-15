@@ -15,6 +15,6 @@ message RuntimeResponse {
 service ClawMachineRuntimeService {
     rpc StartClawGameWs (RuntimeRequest) returns (RuntimeResponse);
     rpc AddTouchedItemRecordWs (RuntimeRequest) returns (RuntimeResponse);
-    rpc GetPlayerSnapshotWs (RuntimeRequest) returns (RuntimeResponse);
-    rpc GetMachineSnapshotWs (RuntimeRequest) returns (RuntimeResponse);
+    rpc GetPlayerInfoWs (RuntimeRequest) returns (RuntimeResponse);
+    rpc GetMachineInfoWs (RuntimeRequest) returns (RuntimeResponse);
 }

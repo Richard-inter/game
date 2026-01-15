@@ -15,7 +15,7 @@ import (
 	"github.com/Richard-inter/game/internal/config"
 	"github.com/Richard-inter/game/internal/db"
 	"github.com/Richard-inter/game/internal/repository"
-	c "github.com/Richard-inter/game/internal/service/rpc/clawMachine"
+	c "github.com/Richard-inter/game/internal/service/rpc/clawMachine_runtime"
 	"github.com/Richard-inter/game/pkg/logger"
 	pb "github.com/Richard-inter/game/pkg/protocol/clawMachine_Websocket"
 )

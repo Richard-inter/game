@@ -117,63 +117,117 @@ func (s *ClawMachineWebsocketService) StartClawGameWs(
 	}, nil
 }
 
-// PreDetermineCatchResults generates a list of pre-determined catch results for all items
-func (s *ClawMachineWebsocketService) PreDetermineCatchResults(
+func (s *ClawMachineWebsocketService) GetPlayerInfoWs(
 	ctx context.Context,
-	machineID int64,
-) ([]*CatchResult, error) {
-	// Get machine info to access items and their catch percentages
-	clawMachine, err := s.repo.GetClawMachineInfo(machineID)
+	req *pb.RuntimeRequest,
+) (*pb.RuntimeResponse, error) {
+	startReq := fbs.GetRootAsGetPlayerInfoWsReq(req.Payload, 0)
+	playerID := startReq.PlayerId()
+
+	// 1. Fetch domain model
+	domainPlayer, err := s.repo.GetClawPlayerInfo(int64(playerID))
 	if err != nil {
-		return nil, fmt.Errorf("failed to get machine info: %w", err)
+		return nil, err
 	}
 
-	if len(clawMachine.Items) == 0 {
-		return nil, fmt.Errorf("no items in machine to catch from")
-	}
+	builder := flatbuffers.NewBuilder(1024)
+	usernameOffset := builder.CreateString(domainPlayer.Player.UserName)
 
-	results := make([]*CatchResult, 0, len(clawMachine.Items))
+	// Start table
+	fbs.GetPlayerInfoWsRespStart(builder)
 
-	// Generate pre-determined result for each item in the machine
-	for _, item := range clawMachine.Items {
-		catchWeight := item.Item.CatchPercentage
-		if catchWeight == 0 {
-			return nil, fmt.Errorf("database error: item %s (ID: %d) has zero catch percentage", item.Item.Name, item.Item.ID)
-		}
+	// Add fields
+	fbs.GetPlayerInfoWsRespAddPlayerId(builder, uint64(domainPlayer.Player.ID))
+	fbs.GetPlayerInfoWsRespAddUsername(builder, usernameOffset)
+	fbs.GetPlayerInfoWsRespAddCoin(builder, domainPlayer.Coin)
+	fbs.GetPlayerInfoWsRespAddDiamond(builder, domainPlayer.Diamond)
 
-		// Determine if catch is successful based on the item's catch percentage
-		catchSuccess := Roll(int(catchWeight))
+	// End table
+	resp := fbs.GetPlayerInfoWsRespEnd(builder)
+	builder.Finish(resp)
+	respBytes := builder.FinishedBytes()
 
-		results = append(results, &CatchResult{
-			ItemID:  item.ID,
-			Name:    item.Item.Name,
-			Success: catchSuccess,
-		})
-	}
+	// Wrap response in Envelope
+	envBuilder := flatbuffers.NewBuilder(1024)
+	payloadOffset := envBuilder.CreateByteVector(respBytes)
 
-	return results, nil
+	fbs.EnvelopeStart(envBuilder)
+	fbs.EnvelopeAddType(envBuilder, fbs.MessageTypeGetPlayerInfoWsResp)
+	fbs.EnvelopeAddPayload(envBuilder, payloadOffset)
+	envOffset := fbs.EnvelopeEnd(envBuilder)
+	envBuilder.Finish(envOffset)
+
+	// Return RuntimeResponse with envelope
+	return &pb.RuntimeResponse{
+		Payload: envBuilder.FinishedBytes(),
+	}, nil
 }
 
-func (s *ClawMachineWebsocketService) PlayMachine(
+func (s *ClawMachineWebsocketService) AddTouchedItemRecordWs(
 	ctx context.Context,
-	playerID int64,
-	machineID int64,
-) error {
-	clawMachine, err := s.repo.GetClawMachineInfo(machineID)
+	req *pb.RuntimeRequest,
+) (*pb.RuntimeResponse, error) {
+	startReq := fbs.GetRootAsAddTouchedItemRecordReq(req.Payload, 0)
+	gameID := startReq.GameId()
+	itemID := startReq.ItemId()
+	catched := startReq.Catched()
+
+	// Load stored results from Redis
+	var storedResults []CatchResult
+	err := s.redis.GetGameResults(ctx, int64(gameID), &storedResults)
 	if err != nil {
-		return fmt.Errorf("failed to get machine info: %w", err)
+		return nil, fmt.Errorf("failed to load game results from Redis: %w", err)
 	}
 
-	resp, err := s.repo.AdjustPlayerCoin(playerID, int64(clawMachine.Price), "minus")
+	var foundItem *CatchResult
+	for _, result := range storedResults {
+		if result.ItemID == int64(itemID) {
+			foundItem = &result
+			break
+		}
+	}
+
+	if foundItem.Success != catched {
+		err := s.redis.DeleteGameResults(ctx, int64(gameID))
+		if err != nil {
+			fmt.Printf("Warning: failed to delete game results from Redis: %v\n", err)
+		}
+		return nil, fmt.Errorf("catched value mismatch: expected %t, got %t", foundItem.Success, catched)
+	}
+
+	err = s.repo.AddTouchedItemRecord(int64(gameID), int64(itemID), catched)
 	if err != nil {
-		return fmt.Errorf("failed to adjust player coin: %w", err)
+		return nil, fmt.Errorf("failed to update touched item record: %w", err)
 	}
 
-	if resp.Coin < 0 {
-		// Revert adjustment
-		_, _ = s.repo.AdjustPlayerCoin(playerID, int64(clawMachine.Price), "plus")
-		return fmt.Errorf("insufficient coins to play the claw machine")
+	err = s.redis.DeleteGameResults(ctx, int64(gameID))
+	if err != nil {
+		// Log error but don't fail the request since validation passed
+		fmt.Printf("Warning: failed to delete game results from Redis: %v\n", err)
 	}
 
-	return nil
+	// Build AddTouchedItemRecordResp
+	builder := flatbuffers.NewBuilder(256)
+
+	fbs.AddTouchedItemRecordRespStart(builder)
+	fbs.AddTouchedItemRecordRespAddGameId(builder, uint64(gameID))
+	fbs.AddTouchedItemRecordRespAddItemId(builder, uint64(itemID))
+	fbs.AddTouchedItemRecordRespAddCatched(builder, catched)
+	respOffset := fbs.AddTouchedItemRecordRespEnd(builder)
+	builder.Finish(respOffset)
+	respBytes := builder.FinishedBytes()
+
+	// Wrap response in Envelope
+	envBuilder := flatbuffers.NewBuilder(256)
+	payloadOffset := envBuilder.CreateByteVector(respBytes)
+
+	fbs.EnvelopeStart(envBuilder)
+	fbs.EnvelopeAddType(envBuilder, fbs.MessageTypeAddTouchedItemRecordResp)
+	fbs.EnvelopeAddPayload(envBuilder, payloadOffset)
+	envOffset := fbs.EnvelopeEnd(envBuilder)
+	envBuilder.Finish(envOffset)
+
+	return &pb.RuntimeResponse{
+		Payload: envBuilder.FinishedBytes(),
+	}, nil
 }

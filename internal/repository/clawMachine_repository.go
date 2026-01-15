@@ -51,48 +51,54 @@ func (r *clawMachineRepository) GetClawPlayerInfo(playerID int64) (*domain.ClawP
 	return &clawPlayer, nil
 }
 
-func (r *clawMachineRepository) AdjustPlayerCoin(playerID int64, amount int64, adjustmentType string) (*domain.ClawPlayer, error) {
+func (r *clawMachineRepository) adjustPlayerBalance(playerID int64, amount int64, adjustmentType, field string) (*domain.ClawPlayer, error) {
 	if adjustmentType != "plus" && adjustmentType != "minus" {
-		return nil, fmt.Errorf("invalid type: %s", adjustmentType)
+		return nil, fmt.Errorf("invalid adjustment type: %s", adjustmentType)
 	}
 
 	if adjustmentType == "minus" {
 		amount = -amount
 	}
 
-	var updatedPlayer domain.ClawPlayer
-	err := r.db.Model(&domain.ClawPlayer{}).
+	tx := r.db.Model(&domain.ClawPlayer{}).
 		Where("player_id = ?", playerID).
-		UpdateColumn("coin", gorm.Expr("coin + ?", amount)).
-		Scan(&updatedPlayer).Error
+		Where(fmt.Sprintf("%s + ? >= 0", field), amount).
+		UpdateColumn(field, gorm.Expr(fmt.Sprintf("%s + ?", field), amount))
 
-	if err != nil {
+	if tx.Error != nil {
+		return nil, tx.Error
+	}
+
+	if tx.RowsAffected == 0 {
+		var exists bool
+		if err := r.db.Model(&domain.ClawPlayer{}).
+			Select("1").
+			Where("player_id = ?", playerID).
+			Limit(1).
+			Scan(&exists).Error; err != nil {
+			return nil, err
+		}
+
+		if !exists {
+			return nil, fmt.Errorf("player not found")
+		}
+		return nil, fmt.Errorf("not enough %s", field)
+	}
+
+	var updatedPlayer domain.ClawPlayer
+	if err := r.db.First(&updatedPlayer, "player_id = ?", playerID).Error; err != nil {
 		return nil, err
 	}
 
 	return &updatedPlayer, nil
 }
 
+func (r *clawMachineRepository) AdjustPlayerCoin(playerID int64, amount int64, adjustmentType string) (*domain.ClawPlayer, error) {
+	return r.adjustPlayerBalance(playerID, amount, adjustmentType, "coin")
+}
+
 func (r *clawMachineRepository) AdjustPlayerDiamond(playerID int64, amount int64, adjustmentType string) (*domain.ClawPlayer, error) {
-	if adjustmentType != "plus" && adjustmentType != "minus" {
-		return nil, fmt.Errorf("invalid type: %s", adjustmentType)
-	}
-
-	if adjustmentType == "minus" {
-		amount = -amount
-	}
-
-	var updatedPlayer domain.ClawPlayer
-	err := r.db.Model(&domain.ClawPlayer{}).
-		Where("player_id = ?", playerID).
-		UpdateColumn("diamond", gorm.Expr("diamond + ?", amount)).
-		Scan(&updatedPlayer).Error
-
-	if err != nil {
-		return nil, err
-	}
-
-	return &updatedPlayer, nil
+	return r.adjustPlayerBalance(playerID, amount, adjustmentType, "diamond")
 }
 
 func (r *clawMachineRepository) AddGameHistory(playerID int64, gameRecord *domain.ClawMachineGameRecord) (int64, error) {

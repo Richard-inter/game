@@ -5,8 +5,8 @@ enum MessageType : byte {
   StartClawGameResp = 1,
   AddTouchedItemRecordReq = 2,
   AddTouchedItemRecordResp = 3,
-  GetPlayerSnapshotReq = 4,
-  GetPlayerSnapshotResp = 5,
+  GetPlayerInfoWsReq = 4,
+  GetPlayerInfoWsResp = 5,
   ErrorResp = 100
 }
 
@@ -24,7 +24,7 @@ table AddTouchedItemRecordReq {
   catched:bool;
 }
 
-table GetPlayerSnapshotReq {
+table GetPlayerInfoWsReq {
   player_id:ulong;
 }
 
@@ -47,8 +47,9 @@ table AddTouchedItemRecordResp {
   catched:bool;
 }
 
-table PlayerSnapshot {
+table GetPlayerInfoWsResp {
   player_id:ulong;
+  username:string;
   coin:long;
   diamond:long;
 }

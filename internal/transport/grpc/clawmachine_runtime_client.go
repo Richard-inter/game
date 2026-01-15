@@ -36,9 +36,9 @@ func (c *ClawMachineRuntimeClient) AddTouchedItemRecordWs(ctx context.Context, r
 }
 
 func (c *ClawMachineRuntimeClient) GetPlayerSnapshotWs(ctx context.Context, req *runtimepb.RuntimeRequest) (*runtimepb.RuntimeResponse, error) {
-	return c.client.GetPlayerSnapshotWs(ctx, req)
+	return c.client.GetPlayerInfoWs(ctx, req)
 }
 
 func (c *ClawMachineRuntimeClient) GetMachineSnapshotWs(ctx context.Context, req *runtimepb.RuntimeRequest) (*runtimepb.RuntimeResponse, error) {
-	return c.client.GetMachineSnapshotWs(ctx, req)
+	return c.client.GetMachineInfoWs(ctx, req)
 }

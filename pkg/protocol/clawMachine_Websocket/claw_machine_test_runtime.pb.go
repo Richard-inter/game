@@ -117,12 +117,12 @@ const file_clawMachine_Websocket_claw_machine_test_runtime_proto_rawDesc = "" +
 	"\x0eRuntimeRequest\x12\x18\n" +
 	"\apayload\x18\x01 \x01(\fR\apayload\"+\n" +
 	"\x0fRuntimeResponse\x12\x18\n" +
-	"\apayload\x18\x01 \x01(\fR\apayload2\xa3\x03\n" +
+	"\apayload\x18\x01 \x01(\fR\apayload2\x9b\x03\n" +
 	"\x19ClawMachineRuntimeService\x12\\\n" +
 	"\x0fStartClawGameWs\x12#.clawMachine.runtime.RuntimeRequest\x1a$.clawMachine.runtime.RuntimeResponse\x12c\n" +
-	"\x16AddTouchedItemRecordWs\x12#.clawMachine.runtime.RuntimeRequest\x1a$.clawMachine.runtime.RuntimeResponse\x12`\n" +
-	"\x13GetPlayerSnapshotWs\x12#.clawMachine.runtime.RuntimeRequest\x1a$.clawMachine.runtime.RuntimeResponse\x12a\n" +
-	"\x14GetMachineSnapshotWs\x12#.clawMachine.runtime.RuntimeRequest\x1a$.clawMachine.runtime.RuntimeResponseBBZ@github.com/Richard-inter/game/pkg/protocol/clawMachine_Websocketb\x06proto3"
+	"\x16AddTouchedItemRecordWs\x12#.clawMachine.runtime.RuntimeRequest\x1a$.clawMachine.runtime.RuntimeResponse\x12\\\n" +
+	"\x0fGetPlayerInfoWs\x12#.clawMachine.runtime.RuntimeRequest\x1a$.clawMachine.runtime.RuntimeResponse\x12]\n" +
+	"\x10GetMachineInfoWs\x12#.clawMachine.runtime.RuntimeRequest\x1a$.clawMachine.runtime.RuntimeResponseBBZ@github.com/Richard-inter/game/pkg/protocol/clawMachine_Websocketb\x06proto3"
 
 var (
 	file_clawMachine_Websocket_claw_machine_test_runtime_proto_rawDescOnce sync.Once
@@ -144,12 +144,12 @@ var file_clawMachine_Websocket_claw_machine_test_runtime_proto_goTypes = []any{
 var file_clawMachine_Websocket_claw_machine_test_runtime_proto_depIdxs = []int32{
 	0, // 0: clawMachine.runtime.ClawMachineRuntimeService.StartClawGameWs:input_type -> clawMachine.runtime.RuntimeRequest
 	0, // 1: clawMachine.runtime.ClawMachineRuntimeService.AddTouchedItemRecordWs:input_type -> clawMachine.runtime.RuntimeRequest
-	0, // 2: clawMachine.runtime.ClawMachineRuntimeService.GetPlayerSnapshotWs:input_type -> clawMachine.runtime.RuntimeRequest
-	0, // 3: clawMachine.runtime.ClawMachineRuntimeService.GetMachineSnapshotWs:input_type -> clawMachine.runtime.RuntimeRequest
+	0, // 2: clawMachine.runtime.ClawMachineRuntimeService.GetPlayerInfoWs:input_type -> clawMachine.runtime.RuntimeRequest
+	0, // 3: clawMachine.runtime.ClawMachineRuntimeService.GetMachineInfoWs:input_type -> clawMachine.runtime.RuntimeRequest
 	1, // 4: clawMachine.runtime.ClawMachineRuntimeService.StartClawGameWs:output_type -> clawMachine.runtime.RuntimeResponse
 	1, // 5: clawMachine.runtime.ClawMachineRuntimeService.AddTouchedItemRecordWs:output_type -> clawMachine.runtime.RuntimeResponse
-	1, // 6: clawMachine.runtime.ClawMachineRuntimeService.GetPlayerSnapshotWs:output_type -> clawMachine.runtime.RuntimeResponse
-	1, // 7: clawMachine.runtime.ClawMachineRuntimeService.GetMachineSnapshotWs:output_type -> clawMachine.runtime.RuntimeResponse
+	1, // 6: clawMachine.runtime.ClawMachineRuntimeService.GetPlayerInfoWs:output_type -> clawMachine.runtime.RuntimeResponse
+	1, // 7: clawMachine.runtime.ClawMachineRuntimeService.GetMachineInfoWs:output_type -> clawMachine.runtime.RuntimeResponse
 	4, // [4:8] is the sub-list for method output_type
 	0, // [0:4] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name

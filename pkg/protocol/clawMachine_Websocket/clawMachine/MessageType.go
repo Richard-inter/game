@@ -11,8 +11,8 @@ const (
 	MessageTypeStartClawGameResp        MessageType = 1
 	MessageTypeAddTouchedItemRecordReq  MessageType = 2
 	MessageTypeAddTouchedItemRecordResp MessageType = 3
-	MessageTypeGetPlayerSnapshotReq     MessageType = 4
-	MessageTypeGetPlayerSnapshotResp    MessageType = 5
+	MessageTypeGetPlayerInfoWsReq       MessageType = 4
+	MessageTypeGetPlayerInfoWsResp      MessageType = 5
 	MessageTypeErrorResp                MessageType = 100
 )
 
@@ -21,8 +21,8 @@ var EnumNamesMessageType = map[MessageType]string{
 	MessageTypeStartClawGameResp:        "StartClawGameResp",
 	MessageTypeAddTouchedItemRecordReq:  "AddTouchedItemRecordReq",
 	MessageTypeAddTouchedItemRecordResp: "AddTouchedItemRecordResp",
-	MessageTypeGetPlayerSnapshotReq:     "GetPlayerSnapshotReq",
-	MessageTypeGetPlayerSnapshotResp:    "GetPlayerSnapshotResp",
+	MessageTypeGetPlayerInfoWsReq:       "GetPlayerInfoWsReq",
+	MessageTypeGetPlayerInfoWsResp:      "GetPlayerInfoWsResp",
 	MessageTypeErrorResp:                "ErrorResp",
 }
 
@@ -31,8 +31,8 @@ var EnumValuesMessageType = map[string]MessageType{
 	"StartClawGameResp":        MessageTypeStartClawGameResp,
 	"AddTouchedItemRecordReq":  MessageTypeAddTouchedItemRecordReq,
 	"AddTouchedItemRecordResp": MessageTypeAddTouchedItemRecordResp,
-	"GetPlayerSnapshotReq":     MessageTypeGetPlayerSnapshotReq,
-	"GetPlayerSnapshotResp":    MessageTypeGetPlayerSnapshotResp,
+	"GetPlayerInfoWsReq":       MessageTypeGetPlayerInfoWsReq,
+	"GetPlayerInfoWsResp":      MessageTypeGetPlayerInfoWsResp,
 	"ErrorResp":                MessageTypeErrorResp,
 }
 
