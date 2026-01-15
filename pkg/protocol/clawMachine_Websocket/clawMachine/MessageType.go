@@ -13,6 +13,8 @@ const (
 	MessageTypeAddTouchedItemRecordResp MessageType = 3
 	MessageTypeGetPlayerInfoWsReq       MessageType = 4
 	MessageTypeGetPlayerInfoWsResp      MessageType = 5
+	MessageTypeSpawnItemReq             MessageType = 6
+	MessageTypeSpawnItemResp            MessageType = 7
 	MessageTypeErrorResp                MessageType = 100
 )
 
@@ -23,6 +25,8 @@ var EnumNamesMessageType = map[MessageType]string{
 	MessageTypeAddTouchedItemRecordResp: "AddTouchedItemRecordResp",
 	MessageTypeGetPlayerInfoWsReq:       "GetPlayerInfoWsReq",
 	MessageTypeGetPlayerInfoWsResp:      "GetPlayerInfoWsResp",
+	MessageTypeSpawnItemReq:             "SpawnItemReq",
+	MessageTypeSpawnItemResp:            "SpawnItemResp",
 	MessageTypeErrorResp:                "ErrorResp",
 }
 
@@ -33,6 +37,8 @@ var EnumValuesMessageType = map[string]MessageType{
 	"AddTouchedItemRecordResp": MessageTypeAddTouchedItemRecordResp,
 	"GetPlayerInfoWsReq":       MessageTypeGetPlayerInfoWsReq,
 	"GetPlayerInfoWsResp":      MessageTypeGetPlayerInfoWsResp,
+	"SpawnItemReq":             MessageTypeSpawnItemReq,
+	"SpawnItemResp":            MessageTypeSpawnItemResp,
 	"ErrorResp":                MessageTypeErrorResp,
 }
 

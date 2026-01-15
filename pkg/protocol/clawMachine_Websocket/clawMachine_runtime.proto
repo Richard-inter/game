@@ -17,4 +17,5 @@ service ClawMachineRuntimeService {
     rpc AddTouchedItemRecordWs (RuntimeRequest) returns (RuntimeResponse);
     rpc GetPlayerInfoWs (RuntimeRequest) returns (RuntimeResponse);
     rpc GetMachineInfoWs (RuntimeRequest) returns (RuntimeResponse);
+    rpc SpawnItemWs (RuntimeRequest) returns (RuntimeResponse);
 }

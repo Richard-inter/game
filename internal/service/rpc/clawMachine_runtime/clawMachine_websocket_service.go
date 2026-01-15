@@ -26,6 +26,21 @@ func NewClawMachineWebsocketService(repo repository.ClawMachineRepository, redis
 	}
 }
 
+func (_ *ClawMachineWebsocketService) buildEnvelopeResponse(messageType fbs.MessageType, payloadBytes []byte) *pb.RuntimeResponse {
+	builder := flatbuffers.NewBuilder(len(payloadBytes) + 256)
+	payloadOffset := builder.CreateByteVector(payloadBytes)
+
+	fbs.EnvelopeStart(builder)
+	fbs.EnvelopeAddType(builder, messageType)
+	fbs.EnvelopeAddPayload(builder, payloadOffset)
+	envOffset := fbs.EnvelopeEnd(builder)
+	builder.Finish(envOffset)
+
+	return &pb.RuntimeResponse{
+		Payload: builder.FinishedBytes(),
+	}
+}
+
 func (s *ClawMachineWebsocketService) StartClawGameWs(
 	ctx context.Context,
 	req *pb.RuntimeRequest,
@@ -89,18 +104,7 @@ func (s *ClawMachineWebsocketService) StartClawGameWs(
 	builder.Finish(respOffset)
 	respBytes := builder.FinishedBytes()
 
-	envBuilder := flatbuffers.NewBuilder(1024)
-	payloadOffset := envBuilder.CreateByteVector(respBytes)
-
-	fbs.EnvelopeStart(envBuilder)
-	fbs.EnvelopeAddType(envBuilder, fbs.MessageTypeStartClawGameResp)
-	fbs.EnvelopeAddPayload(envBuilder, payloadOffset)
-	envOffset := fbs.EnvelopeEnd(envBuilder)
-	envBuilder.Finish(envOffset)
-
-	return &pb.RuntimeResponse{
-		Payload: envBuilder.FinishedBytes(),
-	}, nil
+	return s.buildEnvelopeResponse(fbs.MessageTypeStartClawGameResp, respBytes), nil
 }
 
 func (s *ClawMachineWebsocketService) GetPlayerInfoWs(
@@ -129,18 +133,7 @@ func (s *ClawMachineWebsocketService) GetPlayerInfoWs(
 	builder.Finish(resp)
 	respBytes := builder.FinishedBytes()
 
-	envBuilder := flatbuffers.NewBuilder(1024)
-	payloadOffset := envBuilder.CreateByteVector(respBytes)
-
-	fbs.EnvelopeStart(envBuilder)
-	fbs.EnvelopeAddType(envBuilder, fbs.MessageTypeGetPlayerInfoWsResp)
-	fbs.EnvelopeAddPayload(envBuilder, payloadOffset)
-	envOffset := fbs.EnvelopeEnd(envBuilder)
-	envBuilder.Finish(envOffset)
-
-	return &pb.RuntimeResponse{
-		Payload: envBuilder.FinishedBytes(),
-	}, nil
+	return s.buildEnvelopeResponse(fbs.MessageTypeGetPlayerInfoWsResp, respBytes), nil
 }
 
 func (s *ClawMachineWebsocketService) AddTouchedItemRecordWs(
@@ -195,16 +188,40 @@ func (s *ClawMachineWebsocketService) AddTouchedItemRecordWs(
 	builder.Finish(respOffset)
 	respBytes := builder.FinishedBytes()
 
-	envBuilder := flatbuffers.NewBuilder(256)
-	payloadOffset := envBuilder.CreateByteVector(respBytes)
+	return s.buildEnvelopeResponse(fbs.MessageTypeAddTouchedItemRecordResp, respBytes), nil
+}
 
-	fbs.EnvelopeStart(envBuilder)
-	fbs.EnvelopeAddType(envBuilder, fbs.MessageTypeAddTouchedItemRecordResp)
-	fbs.EnvelopeAddPayload(envBuilder, payloadOffset)
-	envOffset := fbs.EnvelopeEnd(envBuilder)
-	envBuilder.Finish(envOffset)
+func (s *ClawMachineWebsocketService) SpawnItemWs(
+	ctx context.Context,
+	req *pb.RuntimeRequest,
+) (*pb.RuntimeResponse, error) {
+	startReq := fbs.GetRootAsSpawnItemReq(req.Payload, 0)
+	machineID := startReq.MachineId()
 
-	return &pb.RuntimeResponse{
-		Payload: envBuilder.FinishedBytes(),
-	}, nil
+	result, err := s.SpawnMachineItems(ctx, int64(machineID))
+	if err != nil {
+		return nil, fmt.Errorf("failed to spawn item: %w", err)
+	}
+
+	items := make([]uint64, len(result))
+	for i, v := range result {
+		items[i] = uint64(v)
+	}
+
+	builder := flatbuffers.NewBuilder(256)
+
+	fbs.SpawnItemRespStartItemsVector(builder, len(result))
+	for i := len(result) - 1; i >= 0; i-- {
+		builder.PrependUint64(uint64(result[i]))
+	}
+	itemsVector := builder.EndVector(len(result))
+
+	fbs.SpawnItemRespStart(builder)
+	fbs.SpawnItemRespAddItems(builder, itemsVector)
+	respOffset := fbs.SpawnItemRespEnd(builder)
+	builder.Finish(respOffset)
+
+	respBytes := builder.FinishedBytes()
+
+	return s.buildEnvelopeResponse(fbs.MessageTypeSpawnItemResp, respBytes), nil
 }

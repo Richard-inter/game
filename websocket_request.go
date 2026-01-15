@@ -10,7 +10,7 @@ import (
 )
 
 // change to main to test
-func mains() {
+func main() {
 	conn, _, err := websocket.DefaultDialer.Dial("ws://localhost:8081/ws", nil)
 	if err != nil {
 		log.Fatal(err)
@@ -45,6 +45,9 @@ func mains() {
 			case fbs.MessageTypeAddTouchedItemRecordResp:
 				handleAddTouchedItemRecordResp(env)
 				return // stop loop after receiving response
+			case fbs.MessageTypeSpawnItemResp:
+				handleSpawnItemResp(env)
+				return // stop loop after receiving response
 			case fbs.MessageTypeErrorResp:
 				handleErrorResp(env)
 				return // stop loop after receiving response
@@ -58,7 +61,8 @@ func mains() {
 	// Send request
 	// msg := createStartClawGameRequest(1, 1)
 	// msg := createGetPlayerInfoWsRequest(1)
-	msg := createAddTouchedItemRecordRequest(23, 1, true)
+	msg := createSpawnItemRequest(1)
+	// msg := createAddTouchedItemRecordRequest(23, 1, true)
 	if err := conn.WriteMessage(websocket.BinaryMessage, msg); err != nil {
 		log.Fatal("write error:", err)
 	}
@@ -143,6 +147,30 @@ func createAddTouchedItemRecordRequest(gameID, itemID uint64, catched bool) []by
 	return envBuilder.FinishedBytes()
 }
 
+// createSpawnItemRequest builds a SpawnItemReq Envelope
+func createSpawnItemRequest(machineID uint64) []byte {
+	builder := flatbuffers.NewBuilder(1024)
+
+	// Build SpawnItemReq table
+	fbs.SpawnItemReqStart(builder)
+	fbs.SpawnItemReqAddMachineId(builder, machineID)
+	reqOffset := fbs.SpawnItemReqEnd(builder)
+	builder.Finish(reqOffset)
+	reqBytes := builder.FinishedBytes()
+
+	// Wrap in Envelope
+	envBuilder := flatbuffers.NewBuilder(1024)
+	payloadOffset := envBuilder.CreateByteVector(reqBytes)
+
+	fbs.EnvelopeStart(envBuilder)
+	fbs.EnvelopeAddType(envBuilder, fbs.MessageTypeSpawnItemReq)
+	fbs.EnvelopeAddPayload(envBuilder, payloadOffset)
+	envOffset := fbs.EnvelopeEnd(envBuilder)
+	envBuilder.Finish(envOffset)
+
+	return envBuilder.FinishedBytes()
+}
+
 // handleStartClawGameResp safely reads StartClawGameResp from the Envelope
 func handleStartClawGameResp(env *fbs.Envelope) {
 	resp := fbs.GetRootAsStartClawGameResp(env.PayloadBytes(), 0)
@@ -181,6 +209,18 @@ func handleAddTouchedItemRecordResp(env *fbs.Envelope) {
 	fmt.Println("Item ID:", resp.ItemId())
 	fmt.Println("Catched:", resp.Catched())
 	fmt.Println("================================")
+}
+
+// handleSpawnItemResp safely reads SpawnItemResp from the Envelope
+func handleSpawnItemResp(env *fbs.Envelope) {
+	resp := fbs.GetRootAsSpawnItemResp(env.PayloadBytes(), 0)
+
+	fmt.Println("=== SpawnItemResp ===")
+	fmt.Println("Items:")
+	for i := 0; i < resp.ItemsLength(); i++ {
+		fmt.Printf("  Item ID: %d\n", resp.Items(i))
+	}
+	fmt.Println("====================")
 }
 
 // handleErrorResp safely reads ErrorResp from the Envelope

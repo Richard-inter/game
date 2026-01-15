@@ -42,3 +42,7 @@ func (c *ClawMachineRuntimeClient) GetPlayerSnapshotWs(ctx context.Context, req 
 func (c *ClawMachineRuntimeClient) GetMachineSnapshotWs(ctx context.Context, req *runtimepb.RuntimeRequest) (*runtimepb.RuntimeResponse, error) {
 	return c.client.GetMachineInfoWs(ctx, req)
 }
+
+func (c *ClawMachineRuntimeClient) SpawnItemWs(ctx context.Context, req *runtimepb.RuntimeRequest) (*runtimepb.RuntimeResponse, error) {
+	return c.client.SpawnItemWs(ctx, req)
+}
