@@ -25,6 +25,7 @@ type ClawMachineRepository interface {
 	CreateClawMachine(clawMachine *domain.ClawMachine) (*domain.ClawMachine, error)
 	UpdateClawMachineItems(clawMachineID int64, items []domain.ClawMachineItem) error
 	GetClawMachineInfo(machineID int64) (*domain.ClawMachine, error)
+	GetAllClawMachines() ([]*domain.ClawMachine, error)
 
 	// items
 	CreateClawItems(items *[]domain.Item) (*[]domain.Item, error)
@@ -192,6 +193,15 @@ func (r *clawMachineRepository) GetClawMachineInfo(machineID int64) (*domain.Cla
 		return nil, err
 	}
 	return &clawMachine, nil
+}
+
+func (r *clawMachineRepository) GetAllClawMachines() ([]*domain.ClawMachine, error) {
+	var clawMachines []*domain.ClawMachine
+	err := r.db.Preload("Items.Item").Find(&clawMachines).Error
+	if err != nil {
+		return nil, err
+	}
+	return clawMachines, nil
 }
 
 func (r *clawMachineRepository) CreateClawItems(items *[]domain.Item) (*[]domain.Item, error) {

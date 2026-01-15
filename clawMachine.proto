@@ -60,7 +60,7 @@ message GetClawMachineInfoReq {
 }
 
 message GetClawMachineInfoResp {
-    ClawMachine machine = 1;
+    repeated ClawMachine machine = 1;
 }
 
 service ClawMachineWebService {

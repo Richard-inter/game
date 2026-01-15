@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.5.1
 // - protoc             v6.33.0
-// source: clawMachine_Websocket/claw_machine_test_runtime.proto
+// source: clawMachine_Websocket/clawMachine_runtime.proto
 
 package clawMachine_Websocket
 
@@ -232,5 +232,5 @@ var ClawMachineRuntimeService_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "clawMachine_Websocket/claw_machine_test_runtime.proto",
+	Metadata: "clawMachine_Websocket/clawMachine_runtime.proto",
 }
