@@ -7,6 +7,8 @@ enum MessageType : byte {
   AddTouchedItemRecordResp = 3,
   GetPlayerInfoWsReq = 4,
   GetPlayerInfoWsResp = 5,
+  SpawnItemReq = 6,
+  SpawnItemResp = 7,
   ErrorResp = 100
 }
 
@@ -26,6 +28,10 @@ table AddTouchedItemRecordReq {
 
 table GetPlayerInfoWsReq {
   player_id:ulong;
+}
+
+table SpawnItemReq {
+  machine_id:ulong;
 }
 
 /***************
@@ -52,6 +58,10 @@ table GetPlayerInfoWsResp {
   username:string;
   coin:long;
   diamond:long;
+}
+
+table SpawnItemResp {
+  items:[ulong];
 }
 
 /***************

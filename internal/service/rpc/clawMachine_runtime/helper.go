@@ -144,3 +144,35 @@ func (s *ClawMachineWebsocketService) PlayMachine(
 
 	return nil
 }
+
+func (s *ClawMachineWebsocketService) SpawnMachineItems(
+	ctx context.Context,
+	machineID int64,
+) ([]int64, error) {
+	clawMachine, err := s.repo.GetClawMachineInfo(machineID)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get machine info: %w", err)
+	}
+	config := SpawnConfig{
+		MaxOutput: int(clawMachine.MaxItem), // Use machine's MaxItem as output cap
+	}
+
+	spawnItems := make([]SpawnItem, 0, len(clawMachine.Items))
+	for _, item := range clawMachine.Items {
+		spawnItems = append(spawnItems, SpawnItem{
+			ID:           item.Item.ID,
+			SpawnPercent: int(item.Item.SpawnPercentage),
+			MaxPerRound:  int(item.Item.MaxItemSpawned),
+		})
+	}
+
+	spawnedItems := SpawnWithControls(spawnItems, config)
+
+	// Convert SpawnItem results to item IDs
+	spawnedIDs := make([]int64, 0, len(spawnedItems))
+	for _, spawnedItem := range spawnedItems {
+		spawnedIDs = append(spawnedIDs, spawnedItem.ID)
+	}
+
+	return spawnedIDs, nil
+}

@@ -50,6 +50,7 @@ func NewWebSocketHandler(logger *zap.SugaredLogger, grpcManager *grpc.ClientMana
 	h.handlers[fbs.MessageTypeStartClawGameReq] = h.handleStartClawGame
 	h.handlers[fbs.MessageTypeGetPlayerInfoWsReq] = h.handleGetPlayerInfo
 	h.handlers[fbs.MessageTypeAddTouchedItemRecordReq] = h.handleAddTouchedItemRecord
+	h.handlers[fbs.MessageTypeSpawnItemReq] = h.handleSpawnItem
 
 	return h, nil
 }
@@ -147,6 +148,21 @@ func (h *WebSocketHandler) handleAddTouchedItemRecord(
 	})
 	if err != nil {
 		h.logger.Errorw("AddTouchedItemRecordWs failed", "error", err)
+		return h.buildErrorResp(500, err.Error()), nil
+	}
+
+	return resp.Payload, nil
+}
+
+func (h *WebSocketHandler) handleSpawnItem(
+	ctx context.Context,
+	payload []byte,
+) ([]byte, error) {
+	resp, err := h.wsClient.SpawnItemWs(ctx, &runtimepb.RuntimeRequest{
+		Payload: payload,
+	})
+	if err != nil {
+		h.logger.Errorw("SpawnItemWs failed", "error", err)
 		return h.buildErrorResp(500, err.Error()), nil
 	}
 

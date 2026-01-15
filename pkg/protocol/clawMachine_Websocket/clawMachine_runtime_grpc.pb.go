@@ -23,6 +23,7 @@ const (
 	ClawMachineRuntimeService_AddTouchedItemRecordWs_FullMethodName = "/clawMachine.runtime.ClawMachineRuntimeService/AddTouchedItemRecordWs"
 	ClawMachineRuntimeService_GetPlayerInfoWs_FullMethodName        = "/clawMachine.runtime.ClawMachineRuntimeService/GetPlayerInfoWs"
 	ClawMachineRuntimeService_GetMachineInfoWs_FullMethodName       = "/clawMachine.runtime.ClawMachineRuntimeService/GetMachineInfoWs"
+	ClawMachineRuntimeService_SpawnItemWs_FullMethodName            = "/clawMachine.runtime.ClawMachineRuntimeService/SpawnItemWs"
 )
 
 // ClawMachineRuntimeServiceClient is the client API for ClawMachineRuntimeService service.
@@ -33,6 +34,7 @@ type ClawMachineRuntimeServiceClient interface {
 	AddTouchedItemRecordWs(ctx context.Context, in *RuntimeRequest, opts ...grpc.CallOption) (*RuntimeResponse, error)
 	GetPlayerInfoWs(ctx context.Context, in *RuntimeRequest, opts ...grpc.CallOption) (*RuntimeResponse, error)
 	GetMachineInfoWs(ctx context.Context, in *RuntimeRequest, opts ...grpc.CallOption) (*RuntimeResponse, error)
+	SpawnItemWs(ctx context.Context, in *RuntimeRequest, opts ...grpc.CallOption) (*RuntimeResponse, error)
 }
 
 type clawMachineRuntimeServiceClient struct {
@@ -83,6 +85,16 @@ func (c *clawMachineRuntimeServiceClient) GetMachineInfoWs(ctx context.Context, 
 	return out, nil
 }
 
+func (c *clawMachineRuntimeServiceClient) SpawnItemWs(ctx context.Context, in *RuntimeRequest, opts ...grpc.CallOption) (*RuntimeResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(RuntimeResponse)
+	err := c.cc.Invoke(ctx, ClawMachineRuntimeService_SpawnItemWs_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ClawMachineRuntimeServiceServer is the server API for ClawMachineRuntimeService service.
 // All implementations must embed UnimplementedClawMachineRuntimeServiceServer
 // for forward compatibility.
@@ -91,6 +103,7 @@ type ClawMachineRuntimeServiceServer interface {
 	AddTouchedItemRecordWs(context.Context, *RuntimeRequest) (*RuntimeResponse, error)
 	GetPlayerInfoWs(context.Context, *RuntimeRequest) (*RuntimeResponse, error)
 	GetMachineInfoWs(context.Context, *RuntimeRequest) (*RuntimeResponse, error)
+	SpawnItemWs(context.Context, *RuntimeRequest) (*RuntimeResponse, error)
 	mustEmbedUnimplementedClawMachineRuntimeServiceServer()
 }
 
@@ -112,6 +125,9 @@ func (UnimplementedClawMachineRuntimeServiceServer) GetPlayerInfoWs(context.Cont
 }
 func (UnimplementedClawMachineRuntimeServiceServer) GetMachineInfoWs(context.Context, *RuntimeRequest) (*RuntimeResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetMachineInfoWs not implemented")
+}
+func (UnimplementedClawMachineRuntimeServiceServer) SpawnItemWs(context.Context, *RuntimeRequest) (*RuntimeResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SpawnItemWs not implemented")
 }
 func (UnimplementedClawMachineRuntimeServiceServer) mustEmbedUnimplementedClawMachineRuntimeServiceServer() {
 }
@@ -207,6 +223,24 @@ func _ClawMachineRuntimeService_GetMachineInfoWs_Handler(srv interface{}, ctx co
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ClawMachineRuntimeService_SpawnItemWs_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RuntimeRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ClawMachineRuntimeServiceServer).SpawnItemWs(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ClawMachineRuntimeService_SpawnItemWs_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ClawMachineRuntimeServiceServer).SpawnItemWs(ctx, req.(*RuntimeRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // ClawMachineRuntimeService_ServiceDesc is the grpc.ServiceDesc for ClawMachineRuntimeService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -229,6 +263,10 @@ var ClawMachineRuntimeService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetMachineInfoWs",
 			Handler:    _ClawMachineRuntimeService_GetMachineInfoWs_Handler,
+		},
+		{
+			MethodName: "SpawnItemWs",
+			Handler:    _ClawMachineRuntimeService_SpawnItemWs_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
