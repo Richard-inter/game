@@ -22,6 +22,7 @@ build:
 	go build $(LDFLAGS) -o bin/tcp-service ./cmd/tcp-service
 	go build $(LDFLAGS) -o bin/rpc-clawmachine-service ./cmd/rpc/rpc-clawmachine-service
 	go build $(LDFLAGS) -o bin/rpc-player-service ./cmd/rpc/rpc-player-service
+	go build $(LDFLAGS) -o bin/rpc-gachamachine-service ./cmd/rpc/rpc-gachamachine-service
 
 # Build individual services
 build-game:
@@ -48,6 +49,10 @@ build-player:
 	@echo "Building RPC Player service..."
 	go build $(LDFLAGS) -o bin/rpc-player-service ./cmd/rpc/rpc-player-service
 
+build-gachamachine:
+	@echo "Building RPC GachaMachine service..."
+	go build $(LDFLAGS) -o bin/rpc-gachamachine-service ./cmd/rpc/rpc-gachamachine-service
+
 # Run individual services
 run-game:
 	@echo "Running game service..."
@@ -72,6 +77,10 @@ run-clawmachine:
 run-player:
 	@echo "Running RPC Player service..."
 	go run $(LDFLAGS) ./cmd/rpc/rpc-player-service
+
+run-gachamachine:
+	@echo "Running RPC GachaMachine service..."
+	go run $(LDFLAGS) ./cmd/rpc/rpc-gachamachine-service
 
 # Run the application (all services)
 run:

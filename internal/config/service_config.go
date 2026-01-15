@@ -10,20 +10,21 @@ import (
 )
 
 type ServiceConfig struct {
-	Service             ServiceDetails  `mapstructure:"service"`
-	Shared              SharedConfig    `mapstructure:"shared"`
-	Database            DatabaseConfig  `mapstructure:"database"`
-	PlayerDatabase      DatabaseConfig  `mapstructure:"player_database"`
-	ClawmachineDatabase DatabaseConfig  `mapstructure:"clawmachine_database"`
-	Redis               RedisConfig     `mapstructure:"redis"`
-	GRPC                GRPCConfig      `mapstructure:"grpc"`
-	WebSocket           WebSocketConfig `mapstructure:"websocket"`
-	TCP                 TCPConfig       `mapstructure:"tcp"`
-	CORS                CORSConfig      `mapstructure:"cors"`
-	Logging             LoggingConfig   `mapstructure:"logging"`
-	JWT                 JWTConfig       `mapstructure:"jwt"`
-	Tracing             TracingConfig   `mapstructure:"tracing"`
-	Discovery           DiscoveryConfig `mapstructure:"discovery"`
+	Service              ServiceDetails  `mapstructure:"service"`
+	Shared               SharedConfig    `mapstructure:"shared"`
+	Database             DatabaseConfig  `mapstructure:"database"`
+	PlayerDatabase       DatabaseConfig  `mapstructure:"player_database"`
+	ClawmachineDatabase  DatabaseConfig  `mapstructure:"clawmachine_database"`
+	GachaMachineDatabase DatabaseConfig  `mapstructure:"gachamachine_database"`
+	Redis                RedisConfig     `mapstructure:"redis"`
+	GRPC                 GRPCConfig      `mapstructure:"grpc"`
+	WebSocket            WebSocketConfig `mapstructure:"websocket"`
+	TCP                  TCPConfig       `mapstructure:"tcp"`
+	CORS                 CORSConfig      `mapstructure:"cors"`
+	Logging              LoggingConfig   `mapstructure:"logging"`
+	JWT                  JWTConfig       `mapstructure:"jwt"`
+	Tracing              TracingConfig   `mapstructure:"tracing"`
+	Discovery            DiscoveryConfig `mapstructure:"discovery"`
 }
 
 // GetRedisAddr returns the Redis address in host:port format
@@ -47,13 +48,14 @@ type ServiceDetails struct {
 }
 
 type SharedConfig struct {
-	Database            string `mapstructure:"database"`
-	PlayerDatabase      string `mapstructure:"player_database"`
-	ClawmachineDatabase string `mapstructure:"clawmachine_database"`
-	Redis               string `mapstructure:"redis"`
-	Logging             string `mapstructure:"logging"`
-	JWT                 string `mapstructure:"jwt"`
-	Tracing             string `mapstructure:"tracing"`
+	Database             string `mapstructure:"database"`
+	PlayerDatabase       string `mapstructure:"player_database"`
+	ClawmachineDatabase  string `mapstructure:"clawmachine_database"`
+	GachaMachineDatabase string `mapstructure:"gachamachine_database"`
+	Redis                string `mapstructure:"redis"`
+	Logging              string `mapstructure:"logging"`
+	JWT                  string `mapstructure:"jwt"`
+	Tracing              string `mapstructure:"tracing"`
 }
 
 type CORSConfig struct {
@@ -108,6 +110,11 @@ func LoadServiceConfigFromPath(configFile string) (*ServiceConfig, error) {
 	}
 	if config.Shared.ClawmachineDatabase != "" {
 		if err := loadSharedConfig(v, config.Shared.ClawmachineDatabase, "clawmachine_database"); err != nil {
+			return nil, err
+		}
+	}
+	if config.Shared.GachaMachineDatabase != "" {
+		if err := loadSharedConfig(v, config.Shared.GachaMachineDatabase, "gachamachine_database"); err != nil {
 			return nil, err
 		}
 	}
@@ -233,6 +240,17 @@ func (c *ServiceConfig) GetClawmachineDSN() string {
 		c.ClawmachineDatabase.Host,
 		c.ClawmachineDatabase.Port,
 		c.ClawmachineDatabase.Name,
+	)
+}
+
+// GetGachaMachineDSN returns gacha machine database connection string
+func (c *ServiceConfig) GetGachaMachineDSN() string {
+	return fmt.Sprintf("%s:%s@tcp(%s:%d)/%s",
+		c.GachaMachineDatabase.User,
+		c.GachaMachineDatabase.Password,
+		c.GachaMachineDatabase.Host,
+		c.GachaMachineDatabase.Port,
+		c.GachaMachineDatabase.Name,
 	)
 }
 
