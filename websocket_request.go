@@ -9,7 +9,8 @@ import (
 	"github.com/gorilla/websocket"
 )
 
-func main() {
+// change to main to test
+func mains() {
 	conn, _, err := websocket.DefaultDialer.Dial("ws://localhost:8081/ws", nil)
 	if err != nil {
 		log.Fatal(err)
