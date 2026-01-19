@@ -152,9 +152,9 @@ func (s *ClawMachineWebsocketService) AddTouchedItemRecordWs(
 	}
 
 	var foundItem *CatchResult
-	for _, result := range storedResults {
-		if result.ItemID == int64(itemID) {
-			foundItem = &result
+	for i := range storedResults {
+		if storedResults[i].ItemID == int64(itemID) {
+			foundItem = &storedResults[i]
 			break
 		}
 	}
