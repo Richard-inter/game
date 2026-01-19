@@ -22,32 +22,30 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-type GachaItem struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	ItemID        int64                  `protobuf:"varint,1,opt,name=itemID,proto3" json:"itemID,omitempty"`
-	Name          string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
-	Rarity        string                 `protobuf:"bytes,3,opt,name=rarity,proto3" json:"rarity,omitempty"`
-	DropRate      float64                `protobuf:"fixed64,4,opt,name=dropRate,proto3" json:"dropRate,omitempty"`
-	Category      string                 `protobuf:"bytes,5,opt,name=category,proto3" json:"category,omitempty"`
-	Description   string                 `protobuf:"bytes,6,opt,name=description,proto3" json:"description,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+type Item struct {
+	state           protoimpl.MessageState `protogen:"open.v1"`
+	ItemID          int64                  `protobuf:"varint,1,opt,name=itemID,proto3" json:"itemID,omitempty"`
+	Name            string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	Rarity          string                 `protobuf:"bytes,3,opt,name=rarity,proto3" json:"rarity,omitempty"`
+	CatchPercentage int64                  `protobuf:"varint,5,opt,name=catchPercentage,proto3" json:"catchPercentage,omitempty"`
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
 }
 
-func (x *GachaItem) Reset() {
-	*x = GachaItem{}
+func (x *Item) Reset() {
+	*x = Item{}
 	mi := &file_gachaMachine_gachaMachine_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GachaItem) String() string {
+func (x *Item) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GachaItem) ProtoMessage() {}
+func (*Item) ProtoMessage() {}
 
-func (x *GachaItem) ProtoReflect() protoreflect.Message {
+func (x *Item) ProtoReflect() protoreflect.Message {
 	mi := &file_gachaMachine_gachaMachine_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,79 +57,64 @@ func (x *GachaItem) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GachaItem.ProtoReflect.Descriptor instead.
-func (*GachaItem) Descriptor() ([]byte, []int) {
+// Deprecated: Use Item.ProtoReflect.Descriptor instead.
+func (*Item) Descriptor() ([]byte, []int) {
 	return file_gachaMachine_gachaMachine_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GachaItem) GetItemID() int64 {
+func (x *Item) GetItemID() int64 {
 	if x != nil {
 		return x.ItemID
 	}
 	return 0
 }
 
-func (x *GachaItem) GetName() string {
+func (x *Item) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *GachaItem) GetRarity() string {
+func (x *Item) GetRarity() string {
 	if x != nil {
 		return x.Rarity
 	}
 	return ""
 }
 
-func (x *GachaItem) GetDropRate() float64 {
+func (x *Item) GetCatchPercentage() int64 {
 	if x != nil {
-		return x.DropRate
+		return x.CatchPercentage
 	}
 	return 0
 }
 
-func (x *GachaItem) GetCategory() string {
-	if x != nil {
-		return x.Category
-	}
-	return ""
-}
-
-func (x *GachaItem) GetDescription() string {
-	if x != nil {
-		return x.Description
-	}
-	return ""
-}
-
-type GachaPool struct {
+type GachaMachine struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	PoolID        int64                  `protobuf:"varint,1,opt,name=poolID,proto3" json:"poolID,omitempty"`
+	MachineID     int64                  `protobuf:"varint,1,opt,name=machineID,proto3" json:"machineID,omitempty"`
 	Name          string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
-	Items         []*GachaItem           `protobuf:"bytes,3,rep,name=items,proto3" json:"items,omitempty"`
-	Cost          int64                  `protobuf:"varint,4,opt,name=cost,proto3" json:"cost,omitempty"`
-	Currency      string                 `protobuf:"bytes,5,opt,name=currency,proto3" json:"currency,omitempty"`
-	MaxPulls      int32                  `protobuf:"varint,6,opt,name=maxPulls,proto3" json:"maxPulls,omitempty"`
+	Items         []*Item                `protobuf:"bytes,3,rep,name=items,proto3" json:"items,omitempty"`
+	Price         int64                  `protobuf:"varint,4,opt,name=price,proto3" json:"price,omitempty"`
+	PriceTimesTen int64                  `protobuf:"varint,5,opt,name=priceTimesTen,proto3" json:"priceTimesTen,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GachaPool) Reset() {
-	*x = GachaPool{}
+func (x *GachaMachine) Reset() {
+	*x = GachaMachine{}
 	mi := &file_gachaMachine_gachaMachine_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GachaPool) String() string {
+func (x *GachaMachine) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GachaPool) ProtoMessage() {}
+func (*GachaMachine) ProtoMessage() {}
 
-func (x *GachaPool) ProtoReflect() protoreflect.Message {
+func (x *GachaMachine) ProtoReflect() protoreflect.Message {
 	mi := &file_gachaMachine_gachaMachine_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -143,49 +126,42 @@ func (x *GachaPool) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GachaPool.ProtoReflect.Descriptor instead.
-func (*GachaPool) Descriptor() ([]byte, []int) {
+// Deprecated: Use GachaMachine.ProtoReflect.Descriptor instead.
+func (*GachaMachine) Descriptor() ([]byte, []int) {
 	return file_gachaMachine_gachaMachine_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *GachaPool) GetPoolID() int64 {
+func (x *GachaMachine) GetMachineID() int64 {
 	if x != nil {
-		return x.PoolID
+		return x.MachineID
 	}
 	return 0
 }
 
-func (x *GachaPool) GetName() string {
+func (x *GachaMachine) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *GachaPool) GetItems() []*GachaItem {
+func (x *GachaMachine) GetItems() []*Item {
 	if x != nil {
 		return x.Items
 	}
 	return nil
 }
 
-func (x *GachaPool) GetCost() int64 {
+func (x *GachaMachine) GetPrice() int64 {
 	if x != nil {
-		return x.Cost
+		return x.Price
 	}
 	return 0
 }
 
-func (x *GachaPool) GetCurrency() string {
+func (x *GachaMachine) GetPriceTimesTen() int64 {
 	if x != nil {
-		return x.Currency
-	}
-	return ""
-}
-
-func (x *GachaPool) GetMaxPulls() int32 {
-	if x != nil {
-		return x.MaxPulls
+		return x.PriceTimesTen
 	}
 	return 0
 }
@@ -193,10 +169,9 @@ func (x *GachaPool) GetMaxPulls() int32 {
 type GachaPlayer struct {
 	state      protoimpl.MessageState `protogen:"open.v1"`
 	BasePlayer *player.Player         `protobuf:"bytes,1,opt,name=basePlayer,proto3" json:"basePlayer,omitempty"`
-	// gacha specific attributes
-	Gems          int64   `protobuf:"varint,2,opt,name=gems,proto3" json:"gems,omitempty"`
-	Tickets       int64   `protobuf:"varint,3,opt,name=tickets,proto3" json:"tickets,omitempty"`
-	OwnedItems    []int64 `protobuf:"varint,4,rep,packed,name=ownedItems,proto3" json:"ownedItems,omitempty"`
+	// game specific attributes
+	Coin          int64 `protobuf:"varint,2,opt,name=coin,proto3" json:"coin,omitempty"`
+	Diamond       int64 `protobuf:"varint,3,opt,name=diamond,proto3" json:"diamond,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -238,50 +213,41 @@ func (x *GachaPlayer) GetBasePlayer() *player.Player {
 	return nil
 }
 
-func (x *GachaPlayer) GetGems() int64 {
+func (x *GachaPlayer) GetCoin() int64 {
 	if x != nil {
-		return x.Gems
+		return x.Coin
 	}
 	return 0
 }
 
-func (x *GachaPlayer) GetTickets() int64 {
+func (x *GachaPlayer) GetDiamond() int64 {
 	if x != nil {
-		return x.Tickets
+		return x.Diamond
 	}
 	return 0
 }
 
-func (x *GachaPlayer) GetOwnedItems() []int64 {
-	if x != nil {
-		return x.OwnedItems
-	}
-	return nil
-}
-
-type PullGachaReq struct {
+type Items struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	PlayerID      int64                  `protobuf:"varint,1,opt,name=playerID,proto3" json:"playerID,omitempty"`
-	PoolID        int64                  `protobuf:"varint,2,opt,name=poolID,proto3" json:"poolID,omitempty"`
-	PullCount     int32                  `protobuf:"varint,3,opt,name=pullCount,proto3" json:"pullCount,omitempty"`
+	ItemID        int64                  `protobuf:"varint,1,opt,name=itemID,proto3" json:"itemID,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *PullGachaReq) Reset() {
-	*x = PullGachaReq{}
+func (x *Items) Reset() {
+	*x = Items{}
 	mi := &file_gachaMachine_gachaMachine_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *PullGachaReq) String() string {
+func (x *Items) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*PullGachaReq) ProtoMessage() {}
+func (*Items) ProtoMessage() {}
 
-func (x *PullGachaReq) ProtoReflect() protoreflect.Message {
+func (x *Items) ProtoReflect() protoreflect.Message {
 	mi := &file_gachaMachine_gachaMachine_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -293,55 +259,42 @@ func (x *PullGachaReq) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use PullGachaReq.ProtoReflect.Descriptor instead.
-func (*PullGachaReq) Descriptor() ([]byte, []int) {
+// Deprecated: Use Items.ProtoReflect.Descriptor instead.
+func (*Items) Descriptor() ([]byte, []int) {
 	return file_gachaMachine_gachaMachine_proto_rawDescGZIP(), []int{3}
 }
 
-func (x *PullGachaReq) GetPlayerID() int64 {
+func (x *Items) GetItemID() int64 {
 	if x != nil {
-		return x.PlayerID
+		return x.ItemID
 	}
 	return 0
 }
 
-func (x *PullGachaReq) GetPoolID() int64 {
-	if x != nil {
-		return x.PoolID
-	}
-	return 0
-}
-
-func (x *PullGachaReq) GetPullCount() int32 {
-	if x != nil {
-		return x.PullCount
-	}
-	return 0
-}
-
-type GachaResult struct {
+type CreateGachaMachineReq struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Item          *GachaItem             `protobuf:"bytes,1,opt,name=item,proto3" json:"item,omitempty"`
-	IsNew         bool                   `protobuf:"varint,2,opt,name=isNew,proto3" json:"isNew,omitempty"`
-	PullID        int64                  `protobuf:"varint,3,opt,name=pullID,proto3" json:"pullID,omitempty"`
+	Name          string                 `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	Items         []*Items               `protobuf:"bytes,2,rep,name=items,proto3" json:"items,omitempty"`
+	Price         int64                  `protobuf:"varint,3,opt,name=price,proto3" json:"price,omitempty"`
+	PriceTimesTen int64                  `protobuf:"varint,4,opt,name=priceTimesTen,proto3" json:"priceTimesTen,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GachaResult) Reset() {
-	*x = GachaResult{}
+func (x *CreateGachaMachineReq) Reset() {
+	*x = CreateGachaMachineReq{}
 	mi := &file_gachaMachine_gachaMachine_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GachaResult) String() string {
+func (x *CreateGachaMachineReq) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GachaResult) ProtoMessage() {}
+func (*CreateGachaMachineReq) ProtoMessage() {}
 
-func (x *GachaResult) ProtoReflect() protoreflect.Message {
+func (x *CreateGachaMachineReq) ProtoReflect() protoreflect.Message {
 	mi := &file_gachaMachine_gachaMachine_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -353,189 +306,164 @@ func (x *GachaResult) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GachaResult.ProtoReflect.Descriptor instead.
-func (*GachaResult) Descriptor() ([]byte, []int) {
+// Deprecated: Use CreateGachaMachineReq.ProtoReflect.Descriptor instead.
+func (*CreateGachaMachineReq) Descriptor() ([]byte, []int) {
 	return file_gachaMachine_gachaMachine_proto_rawDescGZIP(), []int{4}
 }
 
-func (x *GachaResult) GetItem() *GachaItem {
-	if x != nil {
-		return x.Item
-	}
-	return nil
-}
-
-func (x *GachaResult) GetIsNew() bool {
-	if x != nil {
-		return x.IsNew
-	}
-	return false
-}
-
-func (x *GachaResult) GetPullID() int64 {
-	if x != nil {
-		return x.PullID
-	}
-	return 0
-}
-
-type PullGachaResp struct {
-	state             protoimpl.MessageState `protogen:"open.v1"`
-	TotalPulls        int64                  `protobuf:"varint,1,opt,name=totalPulls,proto3" json:"totalPulls,omitempty"`
-	Results           []*GachaResult         `protobuf:"bytes,2,rep,name=results,proto3" json:"results,omitempty"`
-	RemainingCurrency int64                  `protobuf:"varint,3,opt,name=remainingCurrency,proto3" json:"remainingCurrency,omitempty"`
-	unknownFields     protoimpl.UnknownFields
-	sizeCache         protoimpl.SizeCache
-}
-
-func (x *PullGachaResp) Reset() {
-	*x = PullGachaResp{}
-	mi := &file_gachaMachine_gachaMachine_proto_msgTypes[5]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *PullGachaResp) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*PullGachaResp) ProtoMessage() {}
-
-func (x *PullGachaResp) ProtoReflect() protoreflect.Message {
-	mi := &file_gachaMachine_gachaMachine_proto_msgTypes[5]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use PullGachaResp.ProtoReflect.Descriptor instead.
-func (*PullGachaResp) Descriptor() ([]byte, []int) {
-	return file_gachaMachine_gachaMachine_proto_rawDescGZIP(), []int{5}
-}
-
-func (x *PullGachaResp) GetTotalPulls() int64 {
-	if x != nil {
-		return x.TotalPulls
-	}
-	return 0
-}
-
-func (x *PullGachaResp) GetResults() []*GachaResult {
-	if x != nil {
-		return x.Results
-	}
-	return nil
-}
-
-func (x *PullGachaResp) GetRemainingCurrency() int64 {
-	if x != nil {
-		return x.RemainingCurrency
-	}
-	return 0
-}
-
-type CreateGachaPoolReq struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Name          string                 `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	Items         []*GachaItem           `protobuf:"bytes,2,rep,name=items,proto3" json:"items,omitempty"`
-	Cost          int64                  `protobuf:"varint,3,opt,name=cost,proto3" json:"cost,omitempty"`
-	Currency      string                 `protobuf:"bytes,4,opt,name=currency,proto3" json:"currency,omitempty"`
-	MaxPulls      int32                  `protobuf:"varint,5,opt,name=maxPulls,proto3" json:"maxPulls,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *CreateGachaPoolReq) Reset() {
-	*x = CreateGachaPoolReq{}
-	mi := &file_gachaMachine_gachaMachine_proto_msgTypes[6]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *CreateGachaPoolReq) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*CreateGachaPoolReq) ProtoMessage() {}
-
-func (x *CreateGachaPoolReq) ProtoReflect() protoreflect.Message {
-	mi := &file_gachaMachine_gachaMachine_proto_msgTypes[6]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use CreateGachaPoolReq.ProtoReflect.Descriptor instead.
-func (*CreateGachaPoolReq) Descriptor() ([]byte, []int) {
-	return file_gachaMachine_gachaMachine_proto_rawDescGZIP(), []int{6}
-}
-
-func (x *CreateGachaPoolReq) GetName() string {
+func (x *CreateGachaMachineReq) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *CreateGachaPoolReq) GetItems() []*GachaItem {
+func (x *CreateGachaMachineReq) GetItems() []*Items {
 	if x != nil {
 		return x.Items
 	}
 	return nil
 }
 
-func (x *CreateGachaPoolReq) GetCost() int64 {
+func (x *CreateGachaMachineReq) GetPrice() int64 {
 	if x != nil {
-		return x.Cost
+		return x.Price
 	}
 	return 0
 }
 
-func (x *CreateGachaPoolReq) GetCurrency() string {
+func (x *CreateGachaMachineReq) GetPriceTimesTen() int64 {
 	if x != nil {
-		return x.Currency
+		return x.PriceTimesTen
+	}
+	return 0
+}
+
+type CreateGachaMachineResp struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Machine       *GachaMachine          `protobuf:"bytes,1,opt,name=machine,proto3" json:"machine,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CreateGachaMachineResp) Reset() {
+	*x = CreateGachaMachineResp{}
+	mi := &file_gachaMachine_gachaMachine_proto_msgTypes[5]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CreateGachaMachineResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateGachaMachineResp) ProtoMessage() {}
+
+func (x *CreateGachaMachineResp) ProtoReflect() protoreflect.Message {
+	mi := &file_gachaMachine_gachaMachine_proto_msgTypes[5]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateGachaMachineResp.ProtoReflect.Descriptor instead.
+func (*CreateGachaMachineResp) Descriptor() ([]byte, []int) {
+	return file_gachaMachine_gachaMachine_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *CreateGachaMachineResp) GetMachine() *GachaMachine {
+	if x != nil {
+		return x.Machine
+	}
+	return nil
+}
+
+type CreateGachaItemReq struct {
+	state           protoimpl.MessageState `protogen:"open.v1"`
+	Name            string                 `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	Rarity          string                 `protobuf:"bytes,2,opt,name=rarity,proto3" json:"rarity,omitempty"`
+	CatchPercentage int64                  `protobuf:"varint,4,opt,name=catchPercentage,proto3" json:"catchPercentage,omitempty"`
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
+}
+
+func (x *CreateGachaItemReq) Reset() {
+	*x = CreateGachaItemReq{}
+	mi := &file_gachaMachine_gachaMachine_proto_msgTypes[6]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CreateGachaItemReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateGachaItemReq) ProtoMessage() {}
+
+func (x *CreateGachaItemReq) ProtoReflect() protoreflect.Message {
+	mi := &file_gachaMachine_gachaMachine_proto_msgTypes[6]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateGachaItemReq.ProtoReflect.Descriptor instead.
+func (*CreateGachaItemReq) Descriptor() ([]byte, []int) {
+	return file_gachaMachine_gachaMachine_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *CreateGachaItemReq) GetName() string {
+	if x != nil {
+		return x.Name
 	}
 	return ""
 }
 
-func (x *CreateGachaPoolReq) GetMaxPulls() int32 {
+func (x *CreateGachaItemReq) GetRarity() string {
 	if x != nil {
-		return x.MaxPulls
+		return x.Rarity
+	}
+	return ""
+}
+
+func (x *CreateGachaItemReq) GetCatchPercentage() int64 {
+	if x != nil {
+		return x.CatchPercentage
 	}
 	return 0
 }
 
-type CreateGachaPoolResp struct {
+type CreateGachaItemsReq struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Pool          *GachaPool             `protobuf:"bytes,1,opt,name=pool,proto3" json:"pool,omitempty"`
+	GachaItems    []*CreateGachaItemReq  `protobuf:"bytes,1,rep,name=gachaItems,proto3" json:"gachaItems,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *CreateGachaPoolResp) Reset() {
-	*x = CreateGachaPoolResp{}
+func (x *CreateGachaItemsReq) Reset() {
+	*x = CreateGachaItemsReq{}
 	mi := &file_gachaMachine_gachaMachine_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *CreateGachaPoolResp) String() string {
+func (x *CreateGachaItemsReq) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CreateGachaPoolResp) ProtoMessage() {}
+func (*CreateGachaItemsReq) ProtoMessage() {}
 
-func (x *CreateGachaPoolResp) ProtoReflect() protoreflect.Message {
+func (x *CreateGachaItemsReq) ProtoReflect() protoreflect.Message {
 	mi := &file_gachaMachine_gachaMachine_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -547,270 +475,14 @@ func (x *CreateGachaPoolResp) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CreateGachaPoolResp.ProtoReflect.Descriptor instead.
-func (*CreateGachaPoolResp) Descriptor() ([]byte, []int) {
+// Deprecated: Use CreateGachaItemsReq.ProtoReflect.Descriptor instead.
+func (*CreateGachaItemsReq) Descriptor() ([]byte, []int) {
 	return file_gachaMachine_gachaMachine_proto_rawDescGZIP(), []int{7}
 }
 
-func (x *CreateGachaPoolResp) GetPool() *GachaPool {
+func (x *CreateGachaItemsReq) GetGachaItems() []*CreateGachaItemReq {
 	if x != nil {
-		return x.Pool
-	}
-	return nil
-}
-
-type GetGachaPoolInfoReq struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	PoolID        int64                  `protobuf:"varint,1,opt,name=poolID,proto3" json:"poolID,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *GetGachaPoolInfoReq) Reset() {
-	*x = GetGachaPoolInfoReq{}
-	mi := &file_gachaMachine_gachaMachine_proto_msgTypes[8]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *GetGachaPoolInfoReq) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*GetGachaPoolInfoReq) ProtoMessage() {}
-
-func (x *GetGachaPoolInfoReq) ProtoReflect() protoreflect.Message {
-	mi := &file_gachaMachine_gachaMachine_proto_msgTypes[8]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use GetGachaPoolInfoReq.ProtoReflect.Descriptor instead.
-func (*GetGachaPoolInfoReq) Descriptor() ([]byte, []int) {
-	return file_gachaMachine_gachaMachine_proto_rawDescGZIP(), []int{8}
-}
-
-func (x *GetGachaPoolInfoReq) GetPoolID() int64 {
-	if x != nil {
-		return x.PoolID
-	}
-	return 0
-}
-
-type GetGachaPoolInfoResp struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Pool          *GachaPool             `protobuf:"bytes,1,opt,name=pool,proto3" json:"pool,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *GetGachaPoolInfoResp) Reset() {
-	*x = GetGachaPoolInfoResp{}
-	mi := &file_gachaMachine_gachaMachine_proto_msgTypes[9]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *GetGachaPoolInfoResp) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*GetGachaPoolInfoResp) ProtoMessage() {}
-
-func (x *GetGachaPoolInfoResp) ProtoReflect() protoreflect.Message {
-	mi := &file_gachaMachine_gachaMachine_proto_msgTypes[9]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use GetGachaPoolInfoResp.ProtoReflect.Descriptor instead.
-func (*GetGachaPoolInfoResp) Descriptor() ([]byte, []int) {
-	return file_gachaMachine_gachaMachine_proto_rawDescGZIP(), []int{9}
-}
-
-func (x *GetGachaPoolInfoResp) GetPool() *GachaPool {
-	if x != nil {
-		return x.Pool
-	}
-	return nil
-}
-
-type GetAllGachaPoolsReq struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *GetAllGachaPoolsReq) Reset() {
-	*x = GetAllGachaPoolsReq{}
-	mi := &file_gachaMachine_gachaMachine_proto_msgTypes[10]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *GetAllGachaPoolsReq) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*GetAllGachaPoolsReq) ProtoMessage() {}
-
-func (x *GetAllGachaPoolsReq) ProtoReflect() protoreflect.Message {
-	mi := &file_gachaMachine_gachaMachine_proto_msgTypes[10]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use GetAllGachaPoolsReq.ProtoReflect.Descriptor instead.
-func (*GetAllGachaPoolsReq) Descriptor() ([]byte, []int) {
-	return file_gachaMachine_gachaMachine_proto_rawDescGZIP(), []int{10}
-}
-
-type GetAllGachaPoolsResp struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Pools         []*GachaPool           `protobuf:"bytes,1,rep,name=pools,proto3" json:"pools,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *GetAllGachaPoolsResp) Reset() {
-	*x = GetAllGachaPoolsResp{}
-	mi := &file_gachaMachine_gachaMachine_proto_msgTypes[11]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *GetAllGachaPoolsResp) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*GetAllGachaPoolsResp) ProtoMessage() {}
-
-func (x *GetAllGachaPoolsResp) ProtoReflect() protoreflect.Message {
-	mi := &file_gachaMachine_gachaMachine_proto_msgTypes[11]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use GetAllGachaPoolsResp.ProtoReflect.Descriptor instead.
-func (*GetAllGachaPoolsResp) Descriptor() ([]byte, []int) {
-	return file_gachaMachine_gachaMachine_proto_rawDescGZIP(), []int{11}
-}
-
-func (x *GetAllGachaPoolsResp) GetPools() []*GachaPool {
-	if x != nil {
-		return x.Pools
-	}
-	return nil
-}
-
-type GetGachaPlayerInfoReq struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	PlayerID      int64                  `protobuf:"varint,1,opt,name=playerID,proto3" json:"playerID,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *GetGachaPlayerInfoReq) Reset() {
-	*x = GetGachaPlayerInfoReq{}
-	mi := &file_gachaMachine_gachaMachine_proto_msgTypes[12]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *GetGachaPlayerInfoReq) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*GetGachaPlayerInfoReq) ProtoMessage() {}
-
-func (x *GetGachaPlayerInfoReq) ProtoReflect() protoreflect.Message {
-	mi := &file_gachaMachine_gachaMachine_proto_msgTypes[12]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use GetGachaPlayerInfoReq.ProtoReflect.Descriptor instead.
-func (*GetGachaPlayerInfoReq) Descriptor() ([]byte, []int) {
-	return file_gachaMachine_gachaMachine_proto_rawDescGZIP(), []int{12}
-}
-
-func (x *GetGachaPlayerInfoReq) GetPlayerID() int64 {
-	if x != nil {
-		return x.PlayerID
-	}
-	return 0
-}
-
-type GetGachaPlayerInfoResp struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Player        *GachaPlayer           `protobuf:"bytes,1,opt,name=player,proto3" json:"player,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *GetGachaPlayerInfoResp) Reset() {
-	*x = GetGachaPlayerInfoResp{}
-	mi := &file_gachaMachine_gachaMachine_proto_msgTypes[13]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *GetGachaPlayerInfoResp) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*GetGachaPlayerInfoResp) ProtoMessage() {}
-
-func (x *GetGachaPlayerInfoResp) ProtoReflect() protoreflect.Message {
-	mi := &file_gachaMachine_gachaMachine_proto_msgTypes[13]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use GetGachaPlayerInfoResp.ProtoReflect.Descriptor instead.
-func (*GetGachaPlayerInfoResp) Descriptor() ([]byte, []int) {
-	return file_gachaMachine_gachaMachine_proto_rawDescGZIP(), []int{13}
-}
-
-func (x *GetGachaPlayerInfoResp) GetPlayer() *GachaPlayer {
-	if x != nil {
-		return x.Player
+		return x.GachaItems
 	}
 	return nil
 }
@@ -824,7 +496,7 @@ type CreateGachaPlayerReq struct {
 
 func (x *CreateGachaPlayerReq) Reset() {
 	*x = CreateGachaPlayerReq{}
-	mi := &file_gachaMachine_gachaMachine_proto_msgTypes[14]
+	mi := &file_gachaMachine_gachaMachine_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -836,7 +508,7 @@ func (x *CreateGachaPlayerReq) String() string {
 func (*CreateGachaPlayerReq) ProtoMessage() {}
 
 func (x *CreateGachaPlayerReq) ProtoReflect() protoreflect.Message {
-	mi := &file_gachaMachine_gachaMachine_proto_msgTypes[14]
+	mi := &file_gachaMachine_gachaMachine_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -849,7 +521,7 @@ func (x *CreateGachaPlayerReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateGachaPlayerReq.ProtoReflect.Descriptor instead.
 func (*CreateGachaPlayerReq) Descriptor() ([]byte, []int) {
-	return file_gachaMachine_gachaMachine_proto_rawDescGZIP(), []int{14}
+	return file_gachaMachine_gachaMachine_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *CreateGachaPlayerReq) GetPlayer() *GachaPlayer {
@@ -868,7 +540,7 @@ type CreateGachaPlayerResp struct {
 
 func (x *CreateGachaPlayerResp) Reset() {
 	*x = CreateGachaPlayerResp{}
-	mi := &file_gachaMachine_gachaMachine_proto_msgTypes[15]
+	mi := &file_gachaMachine_gachaMachine_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -880,7 +552,7 @@ func (x *CreateGachaPlayerResp) String() string {
 func (*CreateGachaPlayerResp) ProtoMessage() {}
 
 func (x *CreateGachaPlayerResp) ProtoReflect() protoreflect.Message {
-	mi := &file_gachaMachine_gachaMachine_proto_msgTypes[15]
+	mi := &file_gachaMachine_gachaMachine_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -893,7 +565,7 @@ func (x *CreateGachaPlayerResp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateGachaPlayerResp.ProtoReflect.Descriptor instead.
 func (*CreateGachaPlayerResp) Descriptor() ([]byte, []int) {
-	return file_gachaMachine_gachaMachine_proto_rawDescGZIP(), []int{15}
+	return file_gachaMachine_gachaMachine_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *CreateGachaPlayerResp) GetPlayer() *GachaPlayer {
@@ -903,29 +575,339 @@ func (x *CreateGachaPlayerResp) GetPlayer() *GachaPlayer {
 	return nil
 }
 
-type AdjustPlayerGemsReq struct {
+type AdjustPlayerCoinReq struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	PlayerID      int64                  `protobuf:"varint,1,opt,name=playerID,proto3" json:"playerID,omitempty"`
 	Amount        int64                  `protobuf:"varint,2,opt,name=amount,proto3" json:"amount,omitempty"`
-	Type          string                 `protobuf:"bytes,3,opt,name=type,proto3" json:"type,omitempty"` // "add" or "subtract"
+	Type          string                 `protobuf:"bytes,3,opt,name=type,proto3" json:"type,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AdjustPlayerGemsReq) Reset() {
-	*x = AdjustPlayerGemsReq{}
+func (x *AdjustPlayerCoinReq) Reset() {
+	*x = AdjustPlayerCoinReq{}
+	mi := &file_gachaMachine_gachaMachine_proto_msgTypes[10]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *AdjustPlayerCoinReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AdjustPlayerCoinReq) ProtoMessage() {}
+
+func (x *AdjustPlayerCoinReq) ProtoReflect() protoreflect.Message {
+	mi := &file_gachaMachine_gachaMachine_proto_msgTypes[10]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AdjustPlayerCoinReq.ProtoReflect.Descriptor instead.
+func (*AdjustPlayerCoinReq) Descriptor() ([]byte, []int) {
+	return file_gachaMachine_gachaMachine_proto_rawDescGZIP(), []int{10}
+}
+
+func (x *AdjustPlayerCoinReq) GetPlayerID() int64 {
+	if x != nil {
+		return x.PlayerID
+	}
+	return 0
+}
+
+func (x *AdjustPlayerCoinReq) GetAmount() int64 {
+	if x != nil {
+		return x.Amount
+	}
+	return 0
+}
+
+func (x *AdjustPlayerCoinReq) GetType() string {
+	if x != nil {
+		return x.Type
+	}
+	return ""
+}
+
+type AdjustPlayerCoinResp struct {
+	state          protoimpl.MessageState `protogen:"open.v1"`
+	PlayerID       int64                  `protobuf:"varint,1,opt,name=playerID,proto3" json:"playerID,omitempty"`
+	AdjustedAmount int64                  `protobuf:"varint,2,opt,name=adjustedAmount,proto3" json:"adjustedAmount,omitempty"`
+	unknownFields  protoimpl.UnknownFields
+	sizeCache      protoimpl.SizeCache
+}
+
+func (x *AdjustPlayerCoinResp) Reset() {
+	*x = AdjustPlayerCoinResp{}
+	mi := &file_gachaMachine_gachaMachine_proto_msgTypes[11]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *AdjustPlayerCoinResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AdjustPlayerCoinResp) ProtoMessage() {}
+
+func (x *AdjustPlayerCoinResp) ProtoReflect() protoreflect.Message {
+	mi := &file_gachaMachine_gachaMachine_proto_msgTypes[11]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AdjustPlayerCoinResp.ProtoReflect.Descriptor instead.
+func (*AdjustPlayerCoinResp) Descriptor() ([]byte, []int) {
+	return file_gachaMachine_gachaMachine_proto_rawDescGZIP(), []int{11}
+}
+
+func (x *AdjustPlayerCoinResp) GetPlayerID() int64 {
+	if x != nil {
+		return x.PlayerID
+	}
+	return 0
+}
+
+func (x *AdjustPlayerCoinResp) GetAdjustedAmount() int64 {
+	if x != nil {
+		return x.AdjustedAmount
+	}
+	return 0
+}
+
+type AdjustPlayerDiamondReq struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	PlayerID      int64                  `protobuf:"varint,1,opt,name=playerID,proto3" json:"playerID,omitempty"`
+	Amount        int64                  `protobuf:"varint,2,opt,name=amount,proto3" json:"amount,omitempty"`
+	Type          string                 `protobuf:"bytes,3,opt,name=type,proto3" json:"type,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *AdjustPlayerDiamondReq) Reset() {
+	*x = AdjustPlayerDiamondReq{}
+	mi := &file_gachaMachine_gachaMachine_proto_msgTypes[12]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *AdjustPlayerDiamondReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AdjustPlayerDiamondReq) ProtoMessage() {}
+
+func (x *AdjustPlayerDiamondReq) ProtoReflect() protoreflect.Message {
+	mi := &file_gachaMachine_gachaMachine_proto_msgTypes[12]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AdjustPlayerDiamondReq.ProtoReflect.Descriptor instead.
+func (*AdjustPlayerDiamondReq) Descriptor() ([]byte, []int) {
+	return file_gachaMachine_gachaMachine_proto_rawDescGZIP(), []int{12}
+}
+
+func (x *AdjustPlayerDiamondReq) GetPlayerID() int64 {
+	if x != nil {
+		return x.PlayerID
+	}
+	return 0
+}
+
+func (x *AdjustPlayerDiamondReq) GetAmount() int64 {
+	if x != nil {
+		return x.Amount
+	}
+	return 0
+}
+
+func (x *AdjustPlayerDiamondReq) GetType() string {
+	if x != nil {
+		return x.Type
+	}
+	return ""
+}
+
+type AdjustPlayerDiamondResp struct {
+	state          protoimpl.MessageState `protogen:"open.v1"`
+	PlayerID       int64                  `protobuf:"varint,1,opt,name=playerID,proto3" json:"playerID,omitempty"`
+	AdjustedAmount int64                  `protobuf:"varint,2,opt,name=adjustedAmount,proto3" json:"adjustedAmount,omitempty"`
+	unknownFields  protoimpl.UnknownFields
+	sizeCache      protoimpl.SizeCache
+}
+
+func (x *AdjustPlayerDiamondResp) Reset() {
+	*x = AdjustPlayerDiamondResp{}
+	mi := &file_gachaMachine_gachaMachine_proto_msgTypes[13]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *AdjustPlayerDiamondResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AdjustPlayerDiamondResp) ProtoMessage() {}
+
+func (x *AdjustPlayerDiamondResp) ProtoReflect() protoreflect.Message {
+	mi := &file_gachaMachine_gachaMachine_proto_msgTypes[13]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AdjustPlayerDiamondResp.ProtoReflect.Descriptor instead.
+func (*AdjustPlayerDiamondResp) Descriptor() ([]byte, []int) {
+	return file_gachaMachine_gachaMachine_proto_rawDescGZIP(), []int{13}
+}
+
+func (x *AdjustPlayerDiamondResp) GetPlayerID() int64 {
+	if x != nil {
+		return x.PlayerID
+	}
+	return 0
+}
+
+func (x *AdjustPlayerDiamondResp) GetAdjustedAmount() int64 {
+	if x != nil {
+		return x.AdjustedAmount
+	}
+	return 0
+}
+
+type GetGachaPlayerInfoReq struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	PlayerID      int64                  `protobuf:"varint,1,opt,name=playerID,proto3" json:"playerID,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetGachaPlayerInfoReq) Reset() {
+	*x = GetGachaPlayerInfoReq{}
+	mi := &file_gachaMachine_gachaMachine_proto_msgTypes[14]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetGachaPlayerInfoReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetGachaPlayerInfoReq) ProtoMessage() {}
+
+func (x *GetGachaPlayerInfoReq) ProtoReflect() protoreflect.Message {
+	mi := &file_gachaMachine_gachaMachine_proto_msgTypes[14]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetGachaPlayerInfoReq.ProtoReflect.Descriptor instead.
+func (*GetGachaPlayerInfoReq) Descriptor() ([]byte, []int) {
+	return file_gachaMachine_gachaMachine_proto_rawDescGZIP(), []int{14}
+}
+
+func (x *GetGachaPlayerInfoReq) GetPlayerID() int64 {
+	if x != nil {
+		return x.PlayerID
+	}
+	return 0
+}
+
+type GetGachaPlayerInfoResp struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Player        *GachaPlayer           `protobuf:"bytes,1,opt,name=player,proto3" json:"player,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetGachaPlayerInfoResp) Reset() {
+	*x = GetGachaPlayerInfoResp{}
+	mi := &file_gachaMachine_gachaMachine_proto_msgTypes[15]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetGachaPlayerInfoResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetGachaPlayerInfoResp) ProtoMessage() {}
+
+func (x *GetGachaPlayerInfoResp) ProtoReflect() protoreflect.Message {
+	mi := &file_gachaMachine_gachaMachine_proto_msgTypes[15]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetGachaPlayerInfoResp.ProtoReflect.Descriptor instead.
+func (*GetGachaPlayerInfoResp) Descriptor() ([]byte, []int) {
+	return file_gachaMachine_gachaMachine_proto_rawDescGZIP(), []int{15}
+}
+
+func (x *GetGachaPlayerInfoResp) GetPlayer() *GachaPlayer {
+	if x != nil {
+		return x.Player
+	}
+	return nil
+}
+
+type GetGachaMachineInfoReq struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	MachineID     int64                  `protobuf:"varint,1,opt,name=machineID,proto3" json:"machineID,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetGachaMachineInfoReq) Reset() {
+	*x = GetGachaMachineInfoReq{}
 	mi := &file_gachaMachine_gachaMachine_proto_msgTypes[16]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AdjustPlayerGemsReq) String() string {
+func (x *GetGachaMachineInfoReq) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AdjustPlayerGemsReq) ProtoMessage() {}
+func (*GetGachaMachineInfoReq) ProtoMessage() {}
 
-func (x *AdjustPlayerGemsReq) ProtoReflect() protoreflect.Message {
+func (x *GetGachaMachineInfoReq) ProtoReflect() protoreflect.Message {
 	mi := &file_gachaMachine_gachaMachine_proto_msgTypes[16]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -937,54 +919,39 @@ func (x *AdjustPlayerGemsReq) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AdjustPlayerGemsReq.ProtoReflect.Descriptor instead.
-func (*AdjustPlayerGemsReq) Descriptor() ([]byte, []int) {
+// Deprecated: Use GetGachaMachineInfoReq.ProtoReflect.Descriptor instead.
+func (*GetGachaMachineInfoReq) Descriptor() ([]byte, []int) {
 	return file_gachaMachine_gachaMachine_proto_rawDescGZIP(), []int{16}
 }
 
-func (x *AdjustPlayerGemsReq) GetPlayerID() int64 {
+func (x *GetGachaMachineInfoReq) GetMachineID() int64 {
 	if x != nil {
-		return x.PlayerID
+		return x.MachineID
 	}
 	return 0
 }
 
-func (x *AdjustPlayerGemsReq) GetAmount() int64 {
-	if x != nil {
-		return x.Amount
-	}
-	return 0
-}
-
-func (x *AdjustPlayerGemsReq) GetType() string {
-	if x != nil {
-		return x.Type
-	}
-	return ""
-}
-
-type AdjustPlayerGemsResp struct {
+type GetGachaMachineInfoResp struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	PlayerID      int64                  `protobuf:"varint,1,opt,name=playerID,proto3" json:"playerID,omitempty"`
-	NewBalance    int64                  `protobuf:"varint,2,opt,name=newBalance,proto3" json:"newBalance,omitempty"`
+	Machine       *GachaMachine          `protobuf:"bytes,1,opt,name=machine,proto3" json:"machine,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AdjustPlayerGemsResp) Reset() {
-	*x = AdjustPlayerGemsResp{}
+func (x *GetGachaMachineInfoResp) Reset() {
+	*x = GetGachaMachineInfoResp{}
 	mi := &file_gachaMachine_gachaMachine_proto_msgTypes[17]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AdjustPlayerGemsResp) String() string {
+func (x *GetGachaMachineInfoResp) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AdjustPlayerGemsResp) ProtoMessage() {}
+func (*GetGachaMachineInfoResp) ProtoMessage() {}
 
-func (x *AdjustPlayerGemsResp) ProtoReflect() protoreflect.Message {
+func (x *GetGachaMachineInfoResp) ProtoReflect() protoreflect.Message {
 	mi := &file_gachaMachine_gachaMachine_proto_msgTypes[17]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -996,48 +963,40 @@ func (x *AdjustPlayerGemsResp) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AdjustPlayerGemsResp.ProtoReflect.Descriptor instead.
-func (*AdjustPlayerGemsResp) Descriptor() ([]byte, []int) {
+// Deprecated: Use GetGachaMachineInfoResp.ProtoReflect.Descriptor instead.
+func (*GetGachaMachineInfoResp) Descriptor() ([]byte, []int) {
 	return file_gachaMachine_gachaMachine_proto_rawDescGZIP(), []int{17}
 }
 
-func (x *AdjustPlayerGemsResp) GetPlayerID() int64 {
+func (x *GetGachaMachineInfoResp) GetMachine() *GachaMachine {
 	if x != nil {
-		return x.PlayerID
+		return x.Machine
 	}
-	return 0
+	return nil
 }
 
-func (x *AdjustPlayerGemsResp) GetNewBalance() int64 {
-	if x != nil {
-		return x.NewBalance
-	}
-	return 0
-}
-
-type AdjustPlayerTicketsReq struct {
+type GetPullResultReq struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	PlayerID      int64                  `protobuf:"varint,1,opt,name=playerID,proto3" json:"playerID,omitempty"`
-	Amount        int64                  `protobuf:"varint,2,opt,name=amount,proto3" json:"amount,omitempty"`
-	Type          string                 `protobuf:"bytes,3,opt,name=type,proto3" json:"type,omitempty"` // "add" or "subtract"
+	MachineID     int64                  `protobuf:"varint,2,opt,name=machineID,proto3" json:"machineID,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AdjustPlayerTicketsReq) Reset() {
-	*x = AdjustPlayerTicketsReq{}
+func (x *GetPullResultReq) Reset() {
+	*x = GetPullResultReq{}
 	mi := &file_gachaMachine_gachaMachine_proto_msgTypes[18]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AdjustPlayerTicketsReq) String() string {
+func (x *GetPullResultReq) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AdjustPlayerTicketsReq) ProtoMessage() {}
+func (*GetPullResultReq) ProtoMessage() {}
 
-func (x *AdjustPlayerTicketsReq) ProtoReflect() protoreflect.Message {
+func (x *GetPullResultReq) ProtoReflect() protoreflect.Message {
 	mi := &file_gachaMachine_gachaMachine_proto_msgTypes[18]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -1049,54 +1008,46 @@ func (x *AdjustPlayerTicketsReq) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AdjustPlayerTicketsReq.ProtoReflect.Descriptor instead.
-func (*AdjustPlayerTicketsReq) Descriptor() ([]byte, []int) {
+// Deprecated: Use GetPullResultReq.ProtoReflect.Descriptor instead.
+func (*GetPullResultReq) Descriptor() ([]byte, []int) {
 	return file_gachaMachine_gachaMachine_proto_rawDescGZIP(), []int{18}
 }
 
-func (x *AdjustPlayerTicketsReq) GetPlayerID() int64 {
+func (x *GetPullResultReq) GetPlayerID() int64 {
 	if x != nil {
 		return x.PlayerID
 	}
 	return 0
 }
 
-func (x *AdjustPlayerTicketsReq) GetAmount() int64 {
+func (x *GetPullResultReq) GetMachineID() int64 {
 	if x != nil {
-		return x.Amount
+		return x.MachineID
 	}
 	return 0
 }
 
-func (x *AdjustPlayerTicketsReq) GetType() string {
-	if x != nil {
-		return x.Type
-	}
-	return ""
-}
-
-type AdjustPlayerTicketsResp struct {
+type GetPullResultResp struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	PlayerID      int64                  `protobuf:"varint,1,opt,name=playerID,proto3" json:"playerID,omitempty"`
-	NewBalance    int64                  `protobuf:"varint,2,opt,name=newBalance,proto3" json:"newBalance,omitempty"`
+	ItemID        int64                  `protobuf:"varint,1,opt,name=itemID,proto3" json:"itemID,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AdjustPlayerTicketsResp) Reset() {
-	*x = AdjustPlayerTicketsResp{}
+func (x *GetPullResultResp) Reset() {
+	*x = GetPullResultResp{}
 	mi := &file_gachaMachine_gachaMachine_proto_msgTypes[19]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AdjustPlayerTicketsResp) String() string {
+func (x *GetPullResultResp) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AdjustPlayerTicketsResp) ProtoMessage() {}
+func (*GetPullResultResp) ProtoMessage() {}
 
-func (x *AdjustPlayerTicketsResp) ProtoReflect() protoreflect.Message {
+func (x *GetPullResultResp) ProtoReflect() protoreflect.Message {
 	mi := &file_gachaMachine_gachaMachine_proto_msgTypes[19]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -1108,47 +1059,40 @@ func (x *AdjustPlayerTicketsResp) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AdjustPlayerTicketsResp.ProtoReflect.Descriptor instead.
-func (*AdjustPlayerTicketsResp) Descriptor() ([]byte, []int) {
+// Deprecated: Use GetPullResultResp.ProtoReflect.Descriptor instead.
+func (*GetPullResultResp) Descriptor() ([]byte, []int) {
 	return file_gachaMachine_gachaMachine_proto_rawDescGZIP(), []int{19}
 }
 
-func (x *AdjustPlayerTicketsResp) GetPlayerID() int64 {
+func (x *GetPullResultResp) GetItemID() int64 {
 	if x != nil {
-		return x.PlayerID
+		return x.ItemID
 	}
 	return 0
 }
 
-func (x *AdjustPlayerTicketsResp) GetNewBalance() int64 {
-	if x != nil {
-		return x.NewBalance
-	}
-	return 0
-}
-
-type AddItemToPlayerReq struct {
+type GetPullTimesTenResultReq struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	PlayerID      int64                  `protobuf:"varint,1,opt,name=playerID,proto3" json:"playerID,omitempty"`
-	ItemID        int64                  `protobuf:"varint,2,opt,name=itemID,proto3" json:"itemID,omitempty"`
+	MachineID     int64                  `protobuf:"varint,2,opt,name=machineID,proto3" json:"machineID,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AddItemToPlayerReq) Reset() {
-	*x = AddItemToPlayerReq{}
+func (x *GetPullTimesTenResultReq) Reset() {
+	*x = GetPullTimesTenResultReq{}
 	mi := &file_gachaMachine_gachaMachine_proto_msgTypes[20]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AddItemToPlayerReq) String() string {
+func (x *GetPullTimesTenResultReq) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AddItemToPlayerReq) ProtoMessage() {}
+func (*GetPullTimesTenResultReq) ProtoMessage() {}
 
-func (x *AddItemToPlayerReq) ProtoReflect() protoreflect.Message {
+func (x *GetPullTimesTenResultReq) ProtoReflect() protoreflect.Message {
 	mi := &file_gachaMachine_gachaMachine_proto_msgTypes[20]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -1160,48 +1104,46 @@ func (x *AddItemToPlayerReq) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AddItemToPlayerReq.ProtoReflect.Descriptor instead.
-func (*AddItemToPlayerReq) Descriptor() ([]byte, []int) {
+// Deprecated: Use GetPullTimesTenResultReq.ProtoReflect.Descriptor instead.
+func (*GetPullTimesTenResultReq) Descriptor() ([]byte, []int) {
 	return file_gachaMachine_gachaMachine_proto_rawDescGZIP(), []int{20}
 }
 
-func (x *AddItemToPlayerReq) GetPlayerID() int64 {
+func (x *GetPullTimesTenResultReq) GetPlayerID() int64 {
 	if x != nil {
 		return x.PlayerID
 	}
 	return 0
 }
 
-func (x *AddItemToPlayerReq) GetItemID() int64 {
+func (x *GetPullTimesTenResultReq) GetMachineID() int64 {
 	if x != nil {
-		return x.ItemID
+		return x.MachineID
 	}
 	return 0
 }
 
-type AddItemToPlayerResp struct {
+type GetPullTimesTenResultResp struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	PlayerID      int64                  `protobuf:"varint,1,opt,name=playerID,proto3" json:"playerID,omitempty"`
-	ItemID        int64                  `protobuf:"varint,2,opt,name=itemID,proto3" json:"itemID,omitempty"`
-	WasNew        bool                   `protobuf:"varint,3,opt,name=wasNew,proto3" json:"wasNew,omitempty"`
+	ItemIDs       []int64                `protobuf:"varint,1,rep,packed,name=itemIDs,proto3" json:"itemIDs,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *AddItemToPlayerResp) Reset() {
-	*x = AddItemToPlayerResp{}
+func (x *GetPullTimesTenResultResp) Reset() {
+	*x = GetPullTimesTenResultResp{}
 	mi := &file_gachaMachine_gachaMachine_proto_msgTypes[21]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *AddItemToPlayerResp) String() string {
+func (x *GetPullTimesTenResultResp) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AddItemToPlayerResp) ProtoMessage() {}
+func (*GetPullTimesTenResultResp) ProtoMessage() {}
 
-func (x *AddItemToPlayerResp) ProtoReflect() protoreflect.Message {
+func (x *GetPullTimesTenResultResp) ProtoReflect() protoreflect.Message {
 	mi := &file_gachaMachine_gachaMachine_proto_msgTypes[21]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -1213,132 +1155,103 @@ func (x *AddItemToPlayerResp) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AddItemToPlayerResp.ProtoReflect.Descriptor instead.
-func (*AddItemToPlayerResp) Descriptor() ([]byte, []int) {
+// Deprecated: Use GetPullTimesTenResultResp.ProtoReflect.Descriptor instead.
+func (*GetPullTimesTenResultResp) Descriptor() ([]byte, []int) {
 	return file_gachaMachine_gachaMachine_proto_rawDescGZIP(), []int{21}
 }
 
-func (x *AddItemToPlayerResp) GetPlayerID() int64 {
+func (x *GetPullTimesTenResultResp) GetItemIDs() []int64 {
 	if x != nil {
-		return x.PlayerID
+		return x.ItemIDs
 	}
-	return 0
-}
-
-func (x *AddItemToPlayerResp) GetItemID() int64 {
-	if x != nil {
-		return x.ItemID
-	}
-	return 0
-}
-
-func (x *AddItemToPlayerResp) GetWasNew() bool {
-	if x != nil {
-		return x.WasNew
-	}
-	return false
+	return nil
 }
 
 var File_gachaMachine_gachaMachine_proto protoreflect.FileDescriptor
 
 const file_gachaMachine_gachaMachine_proto_rawDesc = "" +
 	"\n" +
-	"\x1fgachaMachine/gachaMachine.proto\x12\fgachaMachine\x1a\x13player/player.proto\"\xa9\x01\n" +
-	"\tGachaItem\x12\x16\n" +
+	"\x1fgachaMachine/gachaMachine.proto\x12\fgachaMachine\x1a\x13player/player.proto\"t\n" +
+	"\x04Item\x12\x16\n" +
 	"\x06itemID\x18\x01 \x01(\x03R\x06itemID\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12\x16\n" +
-	"\x06rarity\x18\x03 \x01(\tR\x06rarity\x12\x1a\n" +
-	"\bdropRate\x18\x04 \x01(\x01R\bdropRate\x12\x1a\n" +
-	"\bcategory\x18\x05 \x01(\tR\bcategory\x12 \n" +
-	"\vdescription\x18\x06 \x01(\tR\vdescription\"\xb2\x01\n" +
-	"\tGachaPool\x12\x16\n" +
-	"\x06poolID\x18\x01 \x01(\x03R\x06poolID\x12\x12\n" +
-	"\x04name\x18\x02 \x01(\tR\x04name\x12-\n" +
-	"\x05items\x18\x03 \x03(\v2\x17.gachaMachine.GachaItemR\x05items\x12\x12\n" +
-	"\x04cost\x18\x04 \x01(\x03R\x04cost\x12\x1a\n" +
-	"\bcurrency\x18\x05 \x01(\tR\bcurrency\x12\x1a\n" +
-	"\bmaxPulls\x18\x06 \x01(\x05R\bmaxPulls\"\x8b\x01\n" +
+	"\x06rarity\x18\x03 \x01(\tR\x06rarity\x12(\n" +
+	"\x0fcatchPercentage\x18\x05 \x01(\x03R\x0fcatchPercentage\"\xa6\x01\n" +
+	"\fGachaMachine\x12\x1c\n" +
+	"\tmachineID\x18\x01 \x01(\x03R\tmachineID\x12\x12\n" +
+	"\x04name\x18\x02 \x01(\tR\x04name\x12(\n" +
+	"\x05items\x18\x03 \x03(\v2\x12.gachaMachine.ItemR\x05items\x12\x14\n" +
+	"\x05price\x18\x04 \x01(\x03R\x05price\x12$\n" +
+	"\rpriceTimesTen\x18\x05 \x01(\x03R\rpriceTimesTen\"k\n" +
 	"\vGachaPlayer\x12.\n" +
 	"\n" +
 	"basePlayer\x18\x01 \x01(\v2\x0e.player.PlayerR\n" +
 	"basePlayer\x12\x12\n" +
-	"\x04gems\x18\x02 \x01(\x03R\x04gems\x12\x18\n" +
-	"\atickets\x18\x03 \x01(\x03R\atickets\x12\x1e\n" +
+	"\x04coin\x18\x02 \x01(\x03R\x04coin\x12\x18\n" +
+	"\adiamond\x18\x03 \x01(\x03R\adiamond\"\x1f\n" +
+	"\x05Items\x12\x16\n" +
+	"\x06itemID\x18\x01 \x01(\x03R\x06itemID\"\x92\x01\n" +
+	"\x15CreateGachaMachineReq\x12\x12\n" +
+	"\x04name\x18\x01 \x01(\tR\x04name\x12)\n" +
+	"\x05items\x18\x02 \x03(\v2\x13.gachaMachine.ItemsR\x05items\x12\x14\n" +
+	"\x05price\x18\x03 \x01(\x03R\x05price\x12$\n" +
+	"\rpriceTimesTen\x18\x04 \x01(\x03R\rpriceTimesTen\"N\n" +
+	"\x16CreateGachaMachineResp\x124\n" +
+	"\amachine\x18\x01 \x01(\v2\x1a.gachaMachine.GachaMachineR\amachine\"j\n" +
+	"\x12CreateGachaItemReq\x12\x12\n" +
+	"\x04name\x18\x01 \x01(\tR\x04name\x12\x16\n" +
+	"\x06rarity\x18\x02 \x01(\tR\x06rarity\x12(\n" +
+	"\x0fcatchPercentage\x18\x04 \x01(\x03R\x0fcatchPercentage\"W\n" +
+	"\x13CreateGachaItemsReq\x12@\n" +
 	"\n" +
-	"ownedItems\x18\x04 \x03(\x03R\n" +
-	"ownedItems\"`\n" +
-	"\fPullGachaReq\x12\x1a\n" +
-	"\bplayerID\x18\x01 \x01(\x03R\bplayerID\x12\x16\n" +
-	"\x06poolID\x18\x02 \x01(\x03R\x06poolID\x12\x1c\n" +
-	"\tpullCount\x18\x03 \x01(\x05R\tpullCount\"h\n" +
-	"\vGachaResult\x12+\n" +
-	"\x04item\x18\x01 \x01(\v2\x17.gachaMachine.GachaItemR\x04item\x12\x14\n" +
-	"\x05isNew\x18\x02 \x01(\bR\x05isNew\x12\x16\n" +
-	"\x06pullID\x18\x03 \x01(\x03R\x06pullID\"\x92\x01\n" +
-	"\rPullGachaResp\x12\x1e\n" +
-	"\n" +
-	"totalPulls\x18\x01 \x01(\x03R\n" +
-	"totalPulls\x123\n" +
-	"\aresults\x18\x02 \x03(\v2\x19.gachaMachine.GachaResultR\aresults\x12,\n" +
-	"\x11remainingCurrency\x18\x03 \x01(\x03R\x11remainingCurrency\"\xa3\x01\n" +
-	"\x12CreateGachaPoolReq\x12\x12\n" +
-	"\x04name\x18\x01 \x01(\tR\x04name\x12-\n" +
-	"\x05items\x18\x02 \x03(\v2\x17.gachaMachine.GachaItemR\x05items\x12\x12\n" +
-	"\x04cost\x18\x03 \x01(\x03R\x04cost\x12\x1a\n" +
-	"\bcurrency\x18\x04 \x01(\tR\bcurrency\x12\x1a\n" +
-	"\bmaxPulls\x18\x05 \x01(\x05R\bmaxPulls\"B\n" +
-	"\x13CreateGachaPoolResp\x12+\n" +
-	"\x04pool\x18\x01 \x01(\v2\x17.gachaMachine.GachaPoolR\x04pool\"-\n" +
-	"\x13GetGachaPoolInfoReq\x12\x16\n" +
-	"\x06poolID\x18\x01 \x01(\x03R\x06poolID\"C\n" +
-	"\x14GetGachaPoolInfoResp\x12+\n" +
-	"\x04pool\x18\x01 \x01(\v2\x17.gachaMachine.GachaPoolR\x04pool\"\x15\n" +
-	"\x13GetAllGachaPoolsReq\"E\n" +
-	"\x14GetAllGachaPoolsResp\x12-\n" +
-	"\x05pools\x18\x01 \x03(\v2\x17.gachaMachine.GachaPoolR\x05pools\"3\n" +
-	"\x15GetGachaPlayerInfoReq\x12\x1a\n" +
-	"\bplayerID\x18\x01 \x01(\x03R\bplayerID\"K\n" +
-	"\x16GetGachaPlayerInfoResp\x121\n" +
-	"\x06player\x18\x01 \x01(\v2\x19.gachaMachine.GachaPlayerR\x06player\"I\n" +
+	"gachaItems\x18\x01 \x03(\v2 .gachaMachine.CreateGachaItemReqR\n" +
+	"gachaItems\"I\n" +
 	"\x14CreateGachaPlayerReq\x121\n" +
 	"\x06player\x18\x01 \x01(\v2\x19.gachaMachine.GachaPlayerR\x06player\"J\n" +
 	"\x15CreateGachaPlayerResp\x121\n" +
 	"\x06player\x18\x01 \x01(\v2\x19.gachaMachine.GachaPlayerR\x06player\"]\n" +
-	"\x13AdjustPlayerGemsReq\x12\x1a\n" +
+	"\x13AdjustPlayerCoinReq\x12\x1a\n" +
 	"\bplayerID\x18\x01 \x01(\x03R\bplayerID\x12\x16\n" +
 	"\x06amount\x18\x02 \x01(\x03R\x06amount\x12\x12\n" +
-	"\x04type\x18\x03 \x01(\tR\x04type\"R\n" +
-	"\x14AdjustPlayerGemsResp\x12\x1a\n" +
-	"\bplayerID\x18\x01 \x01(\x03R\bplayerID\x12\x1e\n" +
-	"\n" +
-	"newBalance\x18\x02 \x01(\x03R\n" +
-	"newBalance\"`\n" +
-	"\x16AdjustPlayerTicketsReq\x12\x1a\n" +
+	"\x04type\x18\x03 \x01(\tR\x04type\"Z\n" +
+	"\x14AdjustPlayerCoinResp\x12\x1a\n" +
+	"\bplayerID\x18\x01 \x01(\x03R\bplayerID\x12&\n" +
+	"\x0eadjustedAmount\x18\x02 \x01(\x03R\x0eadjustedAmount\"`\n" +
+	"\x16AdjustPlayerDiamondReq\x12\x1a\n" +
 	"\bplayerID\x18\x01 \x01(\x03R\bplayerID\x12\x16\n" +
 	"\x06amount\x18\x02 \x01(\x03R\x06amount\x12\x12\n" +
-	"\x04type\x18\x03 \x01(\tR\x04type\"U\n" +
-	"\x17AdjustPlayerTicketsResp\x12\x1a\n" +
-	"\bplayerID\x18\x01 \x01(\x03R\bplayerID\x12\x1e\n" +
-	"\n" +
-	"newBalance\x18\x02 \x01(\x03R\n" +
-	"newBalance\"H\n" +
-	"\x12AddItemToPlayerReq\x12\x1a\n" +
-	"\bplayerID\x18\x01 \x01(\x03R\bplayerID\x12\x16\n" +
-	"\x06itemID\x18\x02 \x01(\x03R\x06itemID\"a\n" +
-	"\x13AddItemToPlayerResp\x12\x1a\n" +
-	"\bplayerID\x18\x01 \x01(\x03R\bplayerID\x12\x16\n" +
-	"\x06itemID\x18\x02 \x01(\x03R\x06itemID\x12\x16\n" +
-	"\x06wasNew\x18\x03 \x01(\bR\x06wasNew2\xbf\x06\n" +
-	"\x13GachaMachineService\x12\\\n" +
+	"\x04type\x18\x03 \x01(\tR\x04type\"]\n" +
+	"\x17AdjustPlayerDiamondResp\x12\x1a\n" +
+	"\bplayerID\x18\x01 \x01(\x03R\bplayerID\x12&\n" +
+	"\x0eadjustedAmount\x18\x02 \x01(\x03R\x0eadjustedAmount\"3\n" +
+	"\x15GetGachaPlayerInfoReq\x12\x1a\n" +
+	"\bplayerID\x18\x01 \x01(\x03R\bplayerID\"K\n" +
+	"\x16GetGachaPlayerInfoResp\x121\n" +
+	"\x06player\x18\x01 \x01(\v2\x19.gachaMachine.GachaPlayerR\x06player\"6\n" +
+	"\x16GetGachaMachineInfoReq\x12\x1c\n" +
+	"\tmachineID\x18\x01 \x01(\x03R\tmachineID\"O\n" +
+	"\x17GetGachaMachineInfoResp\x124\n" +
+	"\amachine\x18\x01 \x01(\v2\x1a.gachaMachine.GachaMachineR\amachine\"L\n" +
+	"\x10GetPullResultReq\x12\x1a\n" +
+	"\bplayerID\x18\x01 \x01(\x03R\bplayerID\x12\x1c\n" +
+	"\tmachineID\x18\x02 \x01(\x03R\tmachineID\"+\n" +
+	"\x11GetPullResultResp\x12\x16\n" +
+	"\x06itemID\x18\x01 \x01(\x03R\x06itemID\"T\n" +
+	"\x18GetPullTimesTenResultReq\x12\x1a\n" +
+	"\bplayerID\x18\x01 \x01(\x03R\bplayerID\x12\x1c\n" +
+	"\tmachineID\x18\x02 \x01(\x03R\tmachineID\"5\n" +
+	"\x19GetPullTimesTenResultResp\x12\x18\n" +
+	"\aitemIDs\x18\x01 \x03(\x03R\aitemIDs2\xe8\x06\n" +
+	"\x13GachaMachineService\x12_\n" +
+	"\x12CreateGachaMachine\x12#.gachaMachine.CreateGachaMachineReq\x1a$.gachaMachine.CreateGachaMachineResp\x12b\n" +
+	"\x13GetGachaMachineInfo\x12$.gachaMachine.GetGachaMachineInfoReq\x1a%.gachaMachine.GetGachaMachineInfoResp\x12X\n" +
+	"\x10CreateGachaItems\x12!.gachaMachine.CreateGachaItemsReq\x1a!.gachaMachine.CreateGachaItemsReq\x12\\\n" +
 	"\x11CreateGachaPlayer\x12\".gachaMachine.CreateGachaPlayerReq\x1a#.gachaMachine.CreateGachaPlayerResp\x12_\n" +
 	"\x12GetGachaPlayerInfo\x12#.gachaMachine.GetGachaPlayerInfoReq\x1a$.gachaMachine.GetGachaPlayerInfoResp\x12Y\n" +
-	"\x10AdjustPlayerGems\x12!.gachaMachine.AdjustPlayerGemsReq\x1a\".gachaMachine.AdjustPlayerGemsResp\x12b\n" +
-	"\x13AdjustPlayerTickets\x12$.gachaMachine.AdjustPlayerTicketsReq\x1a%.gachaMachine.AdjustPlayerTicketsResp\x12V\n" +
-	"\x0fAddItemToPlayer\x12 .gachaMachine.AddItemToPlayerReq\x1a!.gachaMachine.AddItemToPlayerResp\x12V\n" +
-	"\x0fCreateGachaPool\x12 .gachaMachine.CreateGachaPoolReq\x1a!.gachaMachine.CreateGachaPoolResp\x12Y\n" +
-	"\x10GetGachaPoolInfo\x12!.gachaMachine.GetGachaPoolInfoReq\x1a\".gachaMachine.GetGachaPoolInfoResp\x12Y\n" +
-	"\x10GetAllGachaPools\x12!.gachaMachine.GetAllGachaPoolsReq\x1a\".gachaMachine.GetAllGachaPoolsResp\x12D\n" +
-	"\tPullGacha\x12\x1a.gachaMachine.PullGachaReq\x1a\x1b.gachaMachine.PullGachaRespB9Z7github.com/Richard-inter/game/pkg/protocol/gachaMachineb\x06proto3"
+	"\x10AdjustPlayerCoin\x12!.gachaMachine.AdjustPlayerCoinReq\x1a\".gachaMachine.AdjustPlayerCoinResp\x12b\n" +
+	"\x13AdjustPlayerDiamond\x12$.gachaMachine.AdjustPlayerDiamondReq\x1a%.gachaMachine.AdjustPlayerDiamondResp\x12P\n" +
+	"\rGetPullResult\x12\x1e.gachaMachine.GetPullResultReq\x1a\x1f.gachaMachine.GetPullResultResp\x12b\n" +
+	"\x0fGetPullTimesTen\x12&.gachaMachine.GetPullTimesTenResultReq\x1a'.gachaMachine.GetPullTimesTenResultRespB9Z7github.com/Richard-inter/game/pkg/protocol/gachaMachineb\x06proto3"
 
 var (
 	file_gachaMachine_gachaMachine_proto_rawDescOnce sync.Once
@@ -1354,65 +1267,63 @@ func file_gachaMachine_gachaMachine_proto_rawDescGZIP() []byte {
 
 var file_gachaMachine_gachaMachine_proto_msgTypes = make([]protoimpl.MessageInfo, 22)
 var file_gachaMachine_gachaMachine_proto_goTypes = []any{
-	(*GachaItem)(nil),               // 0: gachaMachine.GachaItem
-	(*GachaPool)(nil),               // 1: gachaMachine.GachaPool
-	(*GachaPlayer)(nil),             // 2: gachaMachine.GachaPlayer
-	(*PullGachaReq)(nil),            // 3: gachaMachine.PullGachaReq
-	(*GachaResult)(nil),             // 4: gachaMachine.GachaResult
-	(*PullGachaResp)(nil),           // 5: gachaMachine.PullGachaResp
-	(*CreateGachaPoolReq)(nil),      // 6: gachaMachine.CreateGachaPoolReq
-	(*CreateGachaPoolResp)(nil),     // 7: gachaMachine.CreateGachaPoolResp
-	(*GetGachaPoolInfoReq)(nil),     // 8: gachaMachine.GetGachaPoolInfoReq
-	(*GetGachaPoolInfoResp)(nil),    // 9: gachaMachine.GetGachaPoolInfoResp
-	(*GetAllGachaPoolsReq)(nil),     // 10: gachaMachine.GetAllGachaPoolsReq
-	(*GetAllGachaPoolsResp)(nil),    // 11: gachaMachine.GetAllGachaPoolsResp
-	(*GetGachaPlayerInfoReq)(nil),   // 12: gachaMachine.GetGachaPlayerInfoReq
-	(*GetGachaPlayerInfoResp)(nil),  // 13: gachaMachine.GetGachaPlayerInfoResp
-	(*CreateGachaPlayerReq)(nil),    // 14: gachaMachine.CreateGachaPlayerReq
-	(*CreateGachaPlayerResp)(nil),   // 15: gachaMachine.CreateGachaPlayerResp
-	(*AdjustPlayerGemsReq)(nil),     // 16: gachaMachine.AdjustPlayerGemsReq
-	(*AdjustPlayerGemsResp)(nil),    // 17: gachaMachine.AdjustPlayerGemsResp
-	(*AdjustPlayerTicketsReq)(nil),  // 18: gachaMachine.AdjustPlayerTicketsReq
-	(*AdjustPlayerTicketsResp)(nil), // 19: gachaMachine.AdjustPlayerTicketsResp
-	(*AddItemToPlayerReq)(nil),      // 20: gachaMachine.AddItemToPlayerReq
-	(*AddItemToPlayerResp)(nil),     // 21: gachaMachine.AddItemToPlayerResp
-	(*player.Player)(nil),           // 22: player.Player
+	(*Item)(nil),                      // 0: gachaMachine.Item
+	(*GachaMachine)(nil),              // 1: gachaMachine.GachaMachine
+	(*GachaPlayer)(nil),               // 2: gachaMachine.GachaPlayer
+	(*Items)(nil),                     // 3: gachaMachine.Items
+	(*CreateGachaMachineReq)(nil),     // 4: gachaMachine.CreateGachaMachineReq
+	(*CreateGachaMachineResp)(nil),    // 5: gachaMachine.CreateGachaMachineResp
+	(*CreateGachaItemReq)(nil),        // 6: gachaMachine.CreateGachaItemReq
+	(*CreateGachaItemsReq)(nil),       // 7: gachaMachine.CreateGachaItemsReq
+	(*CreateGachaPlayerReq)(nil),      // 8: gachaMachine.CreateGachaPlayerReq
+	(*CreateGachaPlayerResp)(nil),     // 9: gachaMachine.CreateGachaPlayerResp
+	(*AdjustPlayerCoinReq)(nil),       // 10: gachaMachine.AdjustPlayerCoinReq
+	(*AdjustPlayerCoinResp)(nil),      // 11: gachaMachine.AdjustPlayerCoinResp
+	(*AdjustPlayerDiamondReq)(nil),    // 12: gachaMachine.AdjustPlayerDiamondReq
+	(*AdjustPlayerDiamondResp)(nil),   // 13: gachaMachine.AdjustPlayerDiamondResp
+	(*GetGachaPlayerInfoReq)(nil),     // 14: gachaMachine.GetGachaPlayerInfoReq
+	(*GetGachaPlayerInfoResp)(nil),    // 15: gachaMachine.GetGachaPlayerInfoResp
+	(*GetGachaMachineInfoReq)(nil),    // 16: gachaMachine.GetGachaMachineInfoReq
+	(*GetGachaMachineInfoResp)(nil),   // 17: gachaMachine.GetGachaMachineInfoResp
+	(*GetPullResultReq)(nil),          // 18: gachaMachine.GetPullResultReq
+	(*GetPullResultResp)(nil),         // 19: gachaMachine.GetPullResultResp
+	(*GetPullTimesTenResultReq)(nil),  // 20: gachaMachine.GetPullTimesTenResultReq
+	(*GetPullTimesTenResultResp)(nil), // 21: gachaMachine.GetPullTimesTenResultResp
+	(*player.Player)(nil),             // 22: player.Player
 }
 var file_gachaMachine_gachaMachine_proto_depIdxs = []int32{
-	0,  // 0: gachaMachine.GachaPool.items:type_name -> gachaMachine.GachaItem
+	0,  // 0: gachaMachine.GachaMachine.items:type_name -> gachaMachine.Item
 	22, // 1: gachaMachine.GachaPlayer.basePlayer:type_name -> player.Player
-	0,  // 2: gachaMachine.GachaResult.item:type_name -> gachaMachine.GachaItem
-	4,  // 3: gachaMachine.PullGachaResp.results:type_name -> gachaMachine.GachaResult
-	0,  // 4: gachaMachine.CreateGachaPoolReq.items:type_name -> gachaMachine.GachaItem
-	1,  // 5: gachaMachine.CreateGachaPoolResp.pool:type_name -> gachaMachine.GachaPool
-	1,  // 6: gachaMachine.GetGachaPoolInfoResp.pool:type_name -> gachaMachine.GachaPool
-	1,  // 7: gachaMachine.GetAllGachaPoolsResp.pools:type_name -> gachaMachine.GachaPool
-	2,  // 8: gachaMachine.GetGachaPlayerInfoResp.player:type_name -> gachaMachine.GachaPlayer
-	2,  // 9: gachaMachine.CreateGachaPlayerReq.player:type_name -> gachaMachine.GachaPlayer
-	2,  // 10: gachaMachine.CreateGachaPlayerResp.player:type_name -> gachaMachine.GachaPlayer
-	14, // 11: gachaMachine.GachaMachineService.CreateGachaPlayer:input_type -> gachaMachine.CreateGachaPlayerReq
-	12, // 12: gachaMachine.GachaMachineService.GetGachaPlayerInfo:input_type -> gachaMachine.GetGachaPlayerInfoReq
-	16, // 13: gachaMachine.GachaMachineService.AdjustPlayerGems:input_type -> gachaMachine.AdjustPlayerGemsReq
-	18, // 14: gachaMachine.GachaMachineService.AdjustPlayerTickets:input_type -> gachaMachine.AdjustPlayerTicketsReq
-	20, // 15: gachaMachine.GachaMachineService.AddItemToPlayer:input_type -> gachaMachine.AddItemToPlayerReq
-	6,  // 16: gachaMachine.GachaMachineService.CreateGachaPool:input_type -> gachaMachine.CreateGachaPoolReq
-	8,  // 17: gachaMachine.GachaMachineService.GetGachaPoolInfo:input_type -> gachaMachine.GetGachaPoolInfoReq
-	10, // 18: gachaMachine.GachaMachineService.GetAllGachaPools:input_type -> gachaMachine.GetAllGachaPoolsReq
-	3,  // 19: gachaMachine.GachaMachineService.PullGacha:input_type -> gachaMachine.PullGachaReq
-	15, // 20: gachaMachine.GachaMachineService.CreateGachaPlayer:output_type -> gachaMachine.CreateGachaPlayerResp
-	13, // 21: gachaMachine.GachaMachineService.GetGachaPlayerInfo:output_type -> gachaMachine.GetGachaPlayerInfoResp
-	17, // 22: gachaMachine.GachaMachineService.AdjustPlayerGems:output_type -> gachaMachine.AdjustPlayerGemsResp
-	19, // 23: gachaMachine.GachaMachineService.AdjustPlayerTickets:output_type -> gachaMachine.AdjustPlayerTicketsResp
-	21, // 24: gachaMachine.GachaMachineService.AddItemToPlayer:output_type -> gachaMachine.AddItemToPlayerResp
-	7,  // 25: gachaMachine.GachaMachineService.CreateGachaPool:output_type -> gachaMachine.CreateGachaPoolResp
-	9,  // 26: gachaMachine.GachaMachineService.GetGachaPoolInfo:output_type -> gachaMachine.GetGachaPoolInfoResp
-	11, // 27: gachaMachine.GachaMachineService.GetAllGachaPools:output_type -> gachaMachine.GetAllGachaPoolsResp
-	5,  // 28: gachaMachine.GachaMachineService.PullGacha:output_type -> gachaMachine.PullGachaResp
-	20, // [20:29] is the sub-list for method output_type
-	11, // [11:20] is the sub-list for method input_type
-	11, // [11:11] is the sub-list for extension type_name
-	11, // [11:11] is the sub-list for extension extendee
-	0,  // [0:11] is the sub-list for field type_name
+	3,  // 2: gachaMachine.CreateGachaMachineReq.items:type_name -> gachaMachine.Items
+	1,  // 3: gachaMachine.CreateGachaMachineResp.machine:type_name -> gachaMachine.GachaMachine
+	6,  // 4: gachaMachine.CreateGachaItemsReq.gachaItems:type_name -> gachaMachine.CreateGachaItemReq
+	2,  // 5: gachaMachine.CreateGachaPlayerReq.player:type_name -> gachaMachine.GachaPlayer
+	2,  // 6: gachaMachine.CreateGachaPlayerResp.player:type_name -> gachaMachine.GachaPlayer
+	2,  // 7: gachaMachine.GetGachaPlayerInfoResp.player:type_name -> gachaMachine.GachaPlayer
+	1,  // 8: gachaMachine.GetGachaMachineInfoResp.machine:type_name -> gachaMachine.GachaMachine
+	4,  // 9: gachaMachine.GachaMachineService.CreateGachaMachine:input_type -> gachaMachine.CreateGachaMachineReq
+	16, // 10: gachaMachine.GachaMachineService.GetGachaMachineInfo:input_type -> gachaMachine.GetGachaMachineInfoReq
+	7,  // 11: gachaMachine.GachaMachineService.CreateGachaItems:input_type -> gachaMachine.CreateGachaItemsReq
+	8,  // 12: gachaMachine.GachaMachineService.CreateGachaPlayer:input_type -> gachaMachine.CreateGachaPlayerReq
+	14, // 13: gachaMachine.GachaMachineService.GetGachaPlayerInfo:input_type -> gachaMachine.GetGachaPlayerInfoReq
+	10, // 14: gachaMachine.GachaMachineService.AdjustPlayerCoin:input_type -> gachaMachine.AdjustPlayerCoinReq
+	12, // 15: gachaMachine.GachaMachineService.AdjustPlayerDiamond:input_type -> gachaMachine.AdjustPlayerDiamondReq
+	18, // 16: gachaMachine.GachaMachineService.GetPullResult:input_type -> gachaMachine.GetPullResultReq
+	20, // 17: gachaMachine.GachaMachineService.GetPullTimesTen:input_type -> gachaMachine.GetPullTimesTenResultReq
+	5,  // 18: gachaMachine.GachaMachineService.CreateGachaMachine:output_type -> gachaMachine.CreateGachaMachineResp
+	17, // 19: gachaMachine.GachaMachineService.GetGachaMachineInfo:output_type -> gachaMachine.GetGachaMachineInfoResp
+	7,  // 20: gachaMachine.GachaMachineService.CreateGachaItems:output_type -> gachaMachine.CreateGachaItemsReq
+	9,  // 21: gachaMachine.GachaMachineService.CreateGachaPlayer:output_type -> gachaMachine.CreateGachaPlayerResp
+	15, // 22: gachaMachine.GachaMachineService.GetGachaPlayerInfo:output_type -> gachaMachine.GetGachaPlayerInfoResp
+	11, // 23: gachaMachine.GachaMachineService.AdjustPlayerCoin:output_type -> gachaMachine.AdjustPlayerCoinResp
+	13, // 24: gachaMachine.GachaMachineService.AdjustPlayerDiamond:output_type -> gachaMachine.AdjustPlayerDiamondResp
+	19, // 25: gachaMachine.GachaMachineService.GetPullResult:output_type -> gachaMachine.GetPullResultResp
+	21, // 26: gachaMachine.GachaMachineService.GetPullTimesTen:output_type -> gachaMachine.GetPullTimesTenResultResp
+	18, // [18:27] is the sub-list for method output_type
+	9,  // [9:18] is the sub-list for method input_type
+	9,  // [9:9] is the sub-list for extension type_name
+	9,  // [9:9] is the sub-list for extension extendee
+	0,  // [0:9] is the sub-list for field type_name
 }
 
 func init() { file_gachaMachine_gachaMachine_proto_init() }
