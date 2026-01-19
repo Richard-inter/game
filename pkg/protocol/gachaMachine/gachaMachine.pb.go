@@ -1289,7 +1289,7 @@ const file_gachaMachine_gachaMachine_proto_rawDesc = "" +
 	"\bplayerID\x18\x01 \x01(\x03R\bplayerID\x12\x1c\n" +
 	"\tmachineID\x18\x02 \x01(\x03R\tmachineID\"5\n" +
 	"\x19GetPullTimesTenResultResp\x12\x18\n" +
-	"\aitemIDs\x18\x01 \x03(\x03R\aitemIDs2\xe9\x06\n" +
+	"\aitemIDs\x18\x01 \x03(\x03R\aitemIDs2\xef\x06\n" +
 	"\x13GachaMachineService\x12_\n" +
 	"\x12CreateGachaMachine\x12#.gachaMachine.CreateGachaMachineReq\x1a$.gachaMachine.CreateGachaMachineResp\x12b\n" +
 	"\x13GetGachaMachineInfo\x12$.gachaMachine.GetGachaMachineInfoReq\x1a%.gachaMachine.GetGachaMachineInfoResp\x12Y\n" +
@@ -1298,8 +1298,8 @@ const file_gachaMachine_gachaMachine_proto_rawDesc = "" +
 	"\x12GetGachaPlayerInfo\x12#.gachaMachine.GetGachaPlayerInfoReq\x1a$.gachaMachine.GetGachaPlayerInfoResp\x12Y\n" +
 	"\x10AdjustPlayerCoin\x12!.gachaMachine.AdjustPlayerCoinReq\x1a\".gachaMachine.AdjustPlayerCoinResp\x12b\n" +
 	"\x13AdjustPlayerDiamond\x12$.gachaMachine.AdjustPlayerDiamondReq\x1a%.gachaMachine.AdjustPlayerDiamondResp\x12P\n" +
-	"\rGetPullResult\x12\x1e.gachaMachine.GetPullResultReq\x1a\x1f.gachaMachine.GetPullResultResp\x12b\n" +
-	"\x0fGetPullTimesTen\x12&.gachaMachine.GetPullTimesTenResultReq\x1a'.gachaMachine.GetPullTimesTenResultRespB9Z7github.com/Richard-inter/game/pkg/protocol/gachaMachineb\x06proto3"
+	"\rGetPullResult\x12\x1e.gachaMachine.GetPullResultReq\x1a\x1f.gachaMachine.GetPullResultResp\x12h\n" +
+	"\x15GetPullTimesTenResult\x12&.gachaMachine.GetPullTimesTenResultReq\x1a'.gachaMachine.GetPullTimesTenResultRespB9Z7github.com/Richard-inter/game/pkg/protocol/gachaMachineb\x06proto3"
 
 var (
 	file_gachaMachine_gachaMachine_proto_rawDescOnce sync.Once
@@ -1359,7 +1359,7 @@ var file_gachaMachine_gachaMachine_proto_depIdxs = []int32{
 	11, // 15: gachaMachine.GachaMachineService.AdjustPlayerCoin:input_type -> gachaMachine.AdjustPlayerCoinReq
 	13, // 16: gachaMachine.GachaMachineService.AdjustPlayerDiamond:input_type -> gachaMachine.AdjustPlayerDiamondReq
 	19, // 17: gachaMachine.GachaMachineService.GetPullResult:input_type -> gachaMachine.GetPullResultReq
-	21, // 18: gachaMachine.GachaMachineService.GetPullTimesTen:input_type -> gachaMachine.GetPullTimesTenResultReq
+	21, // 18: gachaMachine.GachaMachineService.GetPullTimesTenResult:input_type -> gachaMachine.GetPullTimesTenResultReq
 	5,  // 19: gachaMachine.GachaMachineService.CreateGachaMachine:output_type -> gachaMachine.CreateGachaMachineResp
 	18, // 20: gachaMachine.GachaMachineService.GetGachaMachineInfo:output_type -> gachaMachine.GetGachaMachineInfoResp
 	8,  // 21: gachaMachine.GachaMachineService.CreateGachaItems:output_type -> gachaMachine.CreateGachaItemsResp
@@ -1368,7 +1368,7 @@ var file_gachaMachine_gachaMachine_proto_depIdxs = []int32{
 	12, // 24: gachaMachine.GachaMachineService.AdjustPlayerCoin:output_type -> gachaMachine.AdjustPlayerCoinResp
 	14, // 25: gachaMachine.GachaMachineService.AdjustPlayerDiamond:output_type -> gachaMachine.AdjustPlayerDiamondResp
 	20, // 26: gachaMachine.GachaMachineService.GetPullResult:output_type -> gachaMachine.GetPullResultResp
-	22, // 27: gachaMachine.GachaMachineService.GetPullTimesTen:output_type -> gachaMachine.GetPullTimesTenResultResp
+	22, // 27: gachaMachine.GachaMachineService.GetPullTimesTenResult:output_type -> gachaMachine.GetPullTimesTenResultResp
 	19, // [19:28] is the sub-list for method output_type
 	10, // [10:19] is the sub-list for method input_type
 	10, // [10:10] is the sub-list for extension type_name
