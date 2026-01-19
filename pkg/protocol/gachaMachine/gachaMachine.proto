@@ -54,6 +54,10 @@ message CreateGachaItemsReq {
     repeated CreateGachaItemReq gachaItems = 1;
 }
 
+message CreateGachaItemsResp {
+    repeated Item gachaItems = 1;
+}
+
 message CreateGachaPlayerReq {
     GachaPlayer player = 1;
 }
@@ -124,7 +128,7 @@ service GachaMachineService {
     rpc GetGachaMachineInfo (GetGachaMachineInfoReq) returns (GetGachaMachineInfoResp);
 
     // item
-    rpc CreateGachaItems (CreateGachaItemsReq) returns (CreateGachaItemsReq);
+    rpc CreateGachaItems (CreateGachaItemsReq) returns (CreateGachaItemsResp);
 
     // player
     rpc CreateGachaPlayer (CreateGachaPlayerReq) returns (CreateGachaPlayerResp);

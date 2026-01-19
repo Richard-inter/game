@@ -38,7 +38,7 @@ type GachaMachineServiceClient interface {
 	CreateGachaMachine(ctx context.Context, in *CreateGachaMachineReq, opts ...grpc.CallOption) (*CreateGachaMachineResp, error)
 	GetGachaMachineInfo(ctx context.Context, in *GetGachaMachineInfoReq, opts ...grpc.CallOption) (*GetGachaMachineInfoResp, error)
 	// item
-	CreateGachaItems(ctx context.Context, in *CreateGachaItemsReq, opts ...grpc.CallOption) (*CreateGachaItemsReq, error)
+	CreateGachaItems(ctx context.Context, in *CreateGachaItemsReq, opts ...grpc.CallOption) (*CreateGachaItemsResp, error)
 	// player
 	CreateGachaPlayer(ctx context.Context, in *CreateGachaPlayerReq, opts ...grpc.CallOption) (*CreateGachaPlayerResp, error)
 	GetGachaPlayerInfo(ctx context.Context, in *GetGachaPlayerInfoReq, opts ...grpc.CallOption) (*GetGachaPlayerInfoResp, error)
@@ -77,9 +77,9 @@ func (c *gachaMachineServiceClient) GetGachaMachineInfo(ctx context.Context, in 
 	return out, nil
 }
 
-func (c *gachaMachineServiceClient) CreateGachaItems(ctx context.Context, in *CreateGachaItemsReq, opts ...grpc.CallOption) (*CreateGachaItemsReq, error) {
+func (c *gachaMachineServiceClient) CreateGachaItems(ctx context.Context, in *CreateGachaItemsReq, opts ...grpc.CallOption) (*CreateGachaItemsResp, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(CreateGachaItemsReq)
+	out := new(CreateGachaItemsResp)
 	err := c.cc.Invoke(ctx, GachaMachineService_CreateGachaItems_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -155,7 +155,7 @@ type GachaMachineServiceServer interface {
 	CreateGachaMachine(context.Context, *CreateGachaMachineReq) (*CreateGachaMachineResp, error)
 	GetGachaMachineInfo(context.Context, *GetGachaMachineInfoReq) (*GetGachaMachineInfoResp, error)
 	// item
-	CreateGachaItems(context.Context, *CreateGachaItemsReq) (*CreateGachaItemsReq, error)
+	CreateGachaItems(context.Context, *CreateGachaItemsReq) (*CreateGachaItemsResp, error)
 	// player
 	CreateGachaPlayer(context.Context, *CreateGachaPlayerReq) (*CreateGachaPlayerResp, error)
 	GetGachaPlayerInfo(context.Context, *GetGachaPlayerInfoReq) (*GetGachaPlayerInfoResp, error)
@@ -180,7 +180,7 @@ func (UnimplementedGachaMachineServiceServer) CreateGachaMachine(context.Context
 func (UnimplementedGachaMachineServiceServer) GetGachaMachineInfo(context.Context, *GetGachaMachineInfoReq) (*GetGachaMachineInfoResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetGachaMachineInfo not implemented")
 }
-func (UnimplementedGachaMachineServiceServer) CreateGachaItems(context.Context, *CreateGachaItemsReq) (*CreateGachaItemsReq, error) {
+func (UnimplementedGachaMachineServiceServer) CreateGachaItems(context.Context, *CreateGachaItemsReq) (*CreateGachaItemsResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateGachaItems not implemented")
 }
 func (UnimplementedGachaMachineServiceServer) CreateGachaPlayer(context.Context, *CreateGachaPlayerReq) (*CreateGachaPlayerResp, error) {
