@@ -18,12 +18,12 @@ type ClawMachineItem struct {
 }
 
 type ClawItem struct {
-	ID              int64  `gorm:"column:id;primaryKey" json:"itemID"`
-	Name            string `gorm:"column:name" json:"name"`
-	Rarity          string `gorm:"column:rarity" json:"rarity"`
-	SpawnPercentage int64  `gorm:"column:spawn_percentage" json:"spawnPercentage"`
-	CatchPercentage int64  `gorm:"column:catch_percentage" json:"catchPercentage"`
-	MaxItemSpawned  int64  `gorm:"column:max_item_spawned" json:"maxItemSpawned"`
+	ID              int64   `gorm:"column:id;primaryKey" json:"itemID"`
+	Name            string  `gorm:"column:name" json:"name"`
+	Rarity          string  `gorm:"column:rarity" json:"rarity"`
+	SpawnPercentage float64 `gorm:"column:spawn_percentage" json:"spawnPercentage"`
+	CatchPercentage float64 `gorm:"column:catch_percentage" json:"catchPercentage"`
+	MaxItemSpawned  int64   `gorm:"column:max_item_spawned" json:"maxItemSpawned"`
 }
 
 type ClawPlayer struct {

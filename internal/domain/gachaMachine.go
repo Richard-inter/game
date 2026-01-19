@@ -26,10 +26,10 @@ type GachaMachineItem struct {
 }
 
 type GachaItem struct {
-	ID             int64  `gorm:"column:id;primaryKey" json:"itemID"`
-	Name           string `gorm:"column:name" json:"name"`
-	Rarity         string `gorm:"column:rarity" json:"rarity"`
-	PullPercentage int64  `gorm:"column:pull_percentage" json:"pullPercentage"`
+	ID             int64   `gorm:"column:id;primaryKey" json:"itemID"`
+	Name           string  `gorm:"column:name" json:"name"`
+	Rarity         string  `gorm:"column:rarity" json:"rarity"`
+	PullPercentage float64 `gorm:"column:pull_percentage" json:"pullPercentage"`
 }
 
 type GachaPullSession struct {

@@ -27,7 +27,7 @@ type Item struct {
 	ItemID         int64                  `protobuf:"varint,1,opt,name=itemID,proto3" json:"itemID,omitempty"`
 	Name           string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
 	Rarity         string                 `protobuf:"bytes,3,opt,name=rarity,proto3" json:"rarity,omitempty"`
-	PullPercentage int64                  `protobuf:"varint,4,opt,name=pullPercentage,proto3" json:"pullPercentage,omitempty"`
+	PullPercentage float64                `protobuf:"fixed64,4,opt,name=pullPercentage,proto3" json:"pullPercentage,omitempty"`
 	unknownFields  protoimpl.UnknownFields
 	sizeCache      protoimpl.SizeCache
 }
@@ -83,7 +83,7 @@ func (x *Item) GetRarity() string {
 	return ""
 }
 
-func (x *Item) GetPullPercentage() int64 {
+func (x *Item) GetPullPercentage() float64 {
 	if x != nil {
 		return x.PullPercentage
 	}
@@ -419,7 +419,7 @@ type CreateGachaItemReq struct {
 	state          protoimpl.MessageState `protogen:"open.v1"`
 	Name           string                 `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
 	Rarity         string                 `protobuf:"bytes,2,opt,name=rarity,proto3" json:"rarity,omitempty"`
-	PullPercentage int64                  `protobuf:"varint,3,opt,name=pullPercentage,proto3" json:"pullPercentage,omitempty"`
+	PullPercentage float64                `protobuf:"fixed64,3,opt,name=pullPercentage,proto3" json:"pullPercentage,omitempty"`
 	unknownFields  protoimpl.UnknownFields
 	sizeCache      protoimpl.SizeCache
 }
@@ -468,7 +468,7 @@ func (x *CreateGachaItemReq) GetRarity() string {
 	return ""
 }
 
-func (x *CreateGachaItemReq) GetPullPercentage() int64 {
+func (x *CreateGachaItemReq) GetPullPercentage() float64 {
 	if x != nil {
 		return x.PullPercentage
 	}
@@ -1252,7 +1252,7 @@ const file_gachaMachine_gachaMachine_proto_rawDesc = "" +
 	"\x06itemID\x18\x01 \x01(\x03R\x06itemID\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12\x16\n" +
 	"\x06rarity\x18\x03 \x01(\tR\x06rarity\x12&\n" +
-	"\x0epullPercentage\x18\x04 \x01(\x03R\x0epullPercentage\"\xf2\x01\n" +
+	"\x0epullPercentage\x18\x04 \x01(\x01R\x0epullPercentage\"\xf2\x01\n" +
 	"\fGachaMachine\x12\x1c\n" +
 	"\tmachineID\x18\x01 \x01(\x03R\tmachineID\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12(\n" +
@@ -1281,7 +1281,7 @@ const file_gachaMachine_gachaMachine_proto_rawDesc = "" +
 	"\x12CreateGachaItemReq\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x16\n" +
 	"\x06rarity\x18\x02 \x01(\tR\x06rarity\x12&\n" +
-	"\x0epullPercentage\x18\x03 \x01(\x03R\x0epullPercentage\"W\n" +
+	"\x0epullPercentage\x18\x03 \x01(\x01R\x0epullPercentage\"W\n" +
 	"\x13CreateGachaItemsReq\x12@\n" +
 	"\n" +
 	"gachaItems\x18\x01 \x03(\v2 .gachaMachine.CreateGachaItemReqR\n" +

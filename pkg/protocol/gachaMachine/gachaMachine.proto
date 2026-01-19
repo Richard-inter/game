@@ -10,7 +10,7 @@ message Item {
     int64 itemID = 1;
     string name = 2;
     string rarity = 3;
-    int64 pullPercentage = 4;
+    double pullPercentage = 4;
 }
 
 message GachaMachine {
@@ -51,7 +51,7 @@ message CreateGachaMachineResp {
 message CreateGachaItemReq {
     string name = 1;
     string rarity = 2;
-    int64 pullPercentage = 3;
+    double pullPercentage = 3;
 }
 
 message CreateGachaItemsReq {
