@@ -114,13 +114,25 @@ func handleWebSocket(upgrader websocket.Upgrader, w http.ResponseWriter, r *http
 		return
 	}
 
-	// Initialize gRPC client manager
+	// Load service configurations dynamically
+	serviceConfigs, err := config.LoadMultipleServiceConfigs([]string{"player", "clawmachine", "clawmachine_runtime"})
+	if err != nil {
+		log.Errorw("Failed to load service configs", "error", err)
+		return
+	}
+
+	// Initialize gRPC client manager with dynamic addresses
 	grpcConfig := &grpc.ClientManagerConfig{
 		EtcdEndpoints:   []string{}, // Empty to disable etcd
-		PlayerAddr:      "localhost:9094",
-		ClawmachineAddr: "localhost:9091",
-		RuntimeAddr:     "localhost:9092",
+		PlayerAddr:      fmt.Sprintf("%s:%d", serviceConfigs["player"].Service.Host, serviceConfigs["player"].Service.Port),
+		ClawmachineAddr: fmt.Sprintf("%s:%d", serviceConfigs["clawmachine"].Service.Host, serviceConfigs["clawmachine"].Service.Port),
+		RuntimeAddr:     fmt.Sprintf("%s:%d", serviceConfigs["clawmachine_runtime"].Service.Host, serviceConfigs["clawmachine_runtime"].Service.Port),
 	}
+
+	log.Infow("Creating gRPC client manager with dynamic addresses",
+		"player", grpcConfig.PlayerAddr,
+		"clawmachine", grpcConfig.ClawmachineAddr,
+		"clawmachine_runtime", grpcConfig.RuntimeAddr)
 
 	grpcManager, err := grpc.NewClientManager(grpcConfig)
 	if err != nil {

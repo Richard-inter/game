@@ -18,6 +18,15 @@ clawmachine_database:
   name: "game"
   charset: "utf8mb4"
 
+# GachaMachine service database  
+gachamachine_database:
+  host: "localhost"
+  port: 3309
+  user: "gameuser"
+  password: "gamepass"
+  name: "game"
+  charset: "utf8mb4"
+
 redis:
   host: "localhost"
   port: 6380

@@ -5,21 +5,24 @@ import (
 )
 
 type ClientManager struct {
-	discovery   *DiscoveryManager
-	player      *PlayerClient
-	clawmachine *ClawMachineClient
-	runtime     *ClawMachineRuntimeClient
+	discovery          *DiscoveryManager
+	player             *PlayerClient
+	clawmachine        *ClawMachineClient
+	clawmachineRuntime *ClawMachineRuntimeClient
+	gachaMachine       *GachaMachineClient
 	// Direct connection addresses for when discovery is disabled
-	playerAddr      string
-	clawmachineAddr string
-	runtimeAddr     string
+	playerAddr       string
+	clawmachineAddr  string
+	runtimeAddr      string
+	gachaMachineAddr string
 }
 
 type ClientManagerConfig struct {
-	EtcdEndpoints   []string
-	PlayerAddr      string // Direct address when discovery disabled
-	ClawmachineAddr string // Direct address when discovery disabled
-	RuntimeAddr     string // Direct address when discovery disabled
+	EtcdEndpoints    []string
+	PlayerAddr       string // Direct address when discovery disabled
+	ClawmachineAddr  string // Direct address when discovery disabled
+	RuntimeAddr      string // Direct address when discovery disabled
+	GachaMachineAddr string // Direct address when discovery disabled
 }
 
 func NewClientManager(cfg *ClientManagerConfig) (*ClientManager, error) {
@@ -35,10 +38,11 @@ func NewClientManager(cfg *ClientManagerConfig) (*ClientManager, error) {
 	}
 
 	return &ClientManager{
-		discovery:       discovery,
-		playerAddr:      cfg.PlayerAddr,
-		clawmachineAddr: cfg.ClawmachineAddr,
-		runtimeAddr:     cfg.RuntimeAddr,
+		discovery:        discovery,
+		playerAddr:       cfg.PlayerAddr,
+		clawmachineAddr:  cfg.ClawmachineAddr,
+		runtimeAddr:      cfg.RuntimeAddr,
+		gachaMachineAddr: cfg.GachaMachineAddr,
 	}, nil
 }
 
@@ -107,7 +111,7 @@ func (cm *ClientManager) GetClawMachineRuntimeClient() (*ClawMachineRuntimeClien
 		return nil, fmt.Errorf("client manager is nil")
 	}
 
-	if cm.runtime == nil {
+	if cm.clawmachineRuntime == nil {
 		var runtimeAddr string
 		var err error
 
@@ -125,14 +129,47 @@ func (cm *ClientManager) GetClawMachineRuntimeClient() (*ClawMachineRuntimeClien
 		}
 
 		// Create client
-		runtime, err := NewClawMachineRuntimeClient(runtimeAddr)
+		clawmachineRuntime, err := NewClawMachineRuntimeClient(runtimeAddr)
 		if err != nil {
 			return nil, fmt.Errorf("failed to create clawmachine runtime client: %w", err)
 		}
-		cm.runtime = runtime
+		cm.clawmachineRuntime = clawmachineRuntime
 	}
 
-	return cm.runtime, nil
+	return cm.clawmachineRuntime, nil
+}
+
+func (cm *ClientManager) GetGachaMachineClient() (*GachaMachineClient, error) {
+	if cm == nil {
+		return nil, fmt.Errorf("client manager is nil")
+	}
+
+	if cm.gachaMachine == nil {
+		var gachaMachineAddr string
+		var err error
+
+		// Use discovery if available, otherwise use direct address
+		if cm.discovery != nil {
+			gachaMachineAddr, err = cm.discovery.GetService("gachamachine-service")
+			if err != nil {
+				return nil, fmt.Errorf("failed to get gachamachine service address: %w", err)
+			}
+		} else {
+			if cm.gachaMachineAddr == "" {
+				return nil, fmt.Errorf("gachamachine service address not configured and discovery is disabled")
+			}
+			gachaMachineAddr = cm.gachaMachineAddr
+		}
+
+		// Create client
+		gachaMachine, err := NewGachaMachineClient(gachaMachineAddr)
+		if err != nil {
+			return nil, fmt.Errorf("failed to create gachamachine client: %w", err)
+		}
+		cm.gachaMachine = gachaMachine
+	}
+
+	return cm.gachaMachine, nil
 }
 
 func (cm *ClientManager) Close() error {
@@ -149,7 +186,7 @@ func (cm *ClientManager) Close() error {
 			errors = append(errors, fmt.Sprintf("clawmachine client: %v", err))
 		}
 	}
-	if cm.runtime != nil {
+	if cm.clawmachineRuntime != nil {
 		// Note: Runtime client doesn't have Close method in the interface
 		// Connection will be closed when the process exits
 	}

@@ -18,6 +18,8 @@ type ClawMachineRepository interface {
 	GetClawPlayerInfo(playerID int64) (*domain.ClawPlayer, error)
 	AdjustPlayerCoin(playerID int64, amount int64, adjustmentType string) (*domain.ClawPlayer, error)
 	AdjustPlayerDiamond(playerID int64, amount int64, adjustmentType string) (*domain.ClawPlayer, error)
+
+	// game
 	AddGameHistory(playerID int64, gameRecord *domain.ClawMachineGameRecord) (int64, error)
 	AddTouchedItemRecord(gameID int64, itemID int64, catched bool) error
 
@@ -28,7 +30,7 @@ type ClawMachineRepository interface {
 	GetAllClawMachines() ([]*domain.ClawMachine, error)
 
 	// items
-	CreateClawItems(items *[]domain.Item) (*[]domain.Item, error)
+	CreateClawItems(items *[]domain.ClawItem) (*[]domain.ClawItem, error)
 }
 
 func NewClawMachineRepository(db *gorm.DB) ClawMachineRepository {
@@ -204,7 +206,7 @@ func (r *clawMachineRepository) GetAllClawMachines() ([]*domain.ClawMachine, err
 	return clawMachines, nil
 }
 
-func (r *clawMachineRepository) CreateClawItems(items *[]domain.Item) (*[]domain.Item, error) {
+func (r *clawMachineRepository) CreateClawItems(items *[]domain.ClawItem) (*[]domain.ClawItem, error) {
 	err := r.db.Create(items).Error
 	if err != nil {
 		return nil, err

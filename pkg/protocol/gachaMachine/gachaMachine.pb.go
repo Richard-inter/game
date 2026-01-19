@@ -23,13 +23,13 @@ const (
 )
 
 type Item struct {
-	state           protoimpl.MessageState `protogen:"open.v1"`
-	ItemID          int64                  `protobuf:"varint,1,opt,name=itemID,proto3" json:"itemID,omitempty"`
-	Name            string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
-	Rarity          string                 `protobuf:"bytes,3,opt,name=rarity,proto3" json:"rarity,omitempty"`
-	CatchPercentage int64                  `protobuf:"varint,5,opt,name=catchPercentage,proto3" json:"catchPercentage,omitempty"`
-	unknownFields   protoimpl.UnknownFields
-	sizeCache       protoimpl.SizeCache
+	state          protoimpl.MessageState `protogen:"open.v1"`
+	ItemID         int64                  `protobuf:"varint,1,opt,name=itemID,proto3" json:"itemID,omitempty"`
+	Name           string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	Rarity         string                 `protobuf:"bytes,3,opt,name=rarity,proto3" json:"rarity,omitempty"`
+	PullPercentage int64                  `protobuf:"varint,4,opt,name=pullPercentage,proto3" json:"pullPercentage,omitempty"`
+	unknownFields  protoimpl.UnknownFields
+	sizeCache      protoimpl.SizeCache
 }
 
 func (x *Item) Reset() {
@@ -83,9 +83,9 @@ func (x *Item) GetRarity() string {
 	return ""
 }
 
-func (x *Item) GetCatchPercentage() int64 {
+func (x *Item) GetPullPercentage() int64 {
 	if x != nil {
-		return x.CatchPercentage
+		return x.PullPercentage
 	}
 	return 0
 }
@@ -97,6 +97,8 @@ type GachaMachine struct {
 	Items         []*Item                `protobuf:"bytes,3,rep,name=items,proto3" json:"items,omitempty"`
 	Price         int64                  `protobuf:"varint,4,opt,name=price,proto3" json:"price,omitempty"`
 	PriceTimesTen int64                  `protobuf:"varint,5,opt,name=priceTimesTen,proto3" json:"priceTimesTen,omitempty"`
+	SuperRarePity int32                  `protobuf:"varint,6,opt,name=superRarePity,proto3" json:"superRarePity,omitempty"`
+	UltraRarePity int32                  `protobuf:"varint,7,opt,name=ultraRarePity,proto3" json:"ultraRarePity,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -162,6 +164,20 @@ func (x *GachaMachine) GetPrice() int64 {
 func (x *GachaMachine) GetPriceTimesTen() int64 {
 	if x != nil {
 		return x.PriceTimesTen
+	}
+	return 0
+}
+
+func (x *GachaMachine) GetSuperRarePity() int32 {
+	if x != nil {
+		return x.SuperRarePity
+	}
+	return 0
+}
+
+func (x *GachaMachine) GetUltraRarePity() int32 {
+	if x != nil {
+		return x.UltraRarePity
 	}
 	return 0
 }
@@ -277,6 +293,8 @@ type CreateGachaMachineReq struct {
 	Items         []*Items               `protobuf:"bytes,2,rep,name=items,proto3" json:"items,omitempty"`
 	Price         int64                  `protobuf:"varint,3,opt,name=price,proto3" json:"price,omitempty"`
 	PriceTimesTen int64                  `protobuf:"varint,4,opt,name=priceTimesTen,proto3" json:"priceTimesTen,omitempty"`
+	SuperRarePity int32                  `protobuf:"varint,5,opt,name=superRarePity,proto3" json:"superRarePity,omitempty"`
+	UltraRarePity int32                  `protobuf:"varint,6,opt,name=ultraRarePity,proto3" json:"ultraRarePity,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -339,6 +357,20 @@ func (x *CreateGachaMachineReq) GetPriceTimesTen() int64 {
 	return 0
 }
 
+func (x *CreateGachaMachineReq) GetSuperRarePity() int32 {
+	if x != nil {
+		return x.SuperRarePity
+	}
+	return 0
+}
+
+func (x *CreateGachaMachineReq) GetUltraRarePity() int32 {
+	if x != nil {
+		return x.UltraRarePity
+	}
+	return 0
+}
+
 type CreateGachaMachineResp struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Machine       *GachaMachine          `protobuf:"bytes,1,opt,name=machine,proto3" json:"machine,omitempty"`
@@ -384,12 +416,12 @@ func (x *CreateGachaMachineResp) GetMachine() *GachaMachine {
 }
 
 type CreateGachaItemReq struct {
-	state           protoimpl.MessageState `protogen:"open.v1"`
-	Name            string                 `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	Rarity          string                 `protobuf:"bytes,2,opt,name=rarity,proto3" json:"rarity,omitempty"`
-	CatchPercentage int64                  `protobuf:"varint,4,opt,name=catchPercentage,proto3" json:"catchPercentage,omitempty"`
-	unknownFields   protoimpl.UnknownFields
-	sizeCache       protoimpl.SizeCache
+	state          protoimpl.MessageState `protogen:"open.v1"`
+	Name           string                 `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	Rarity         string                 `protobuf:"bytes,2,opt,name=rarity,proto3" json:"rarity,omitempty"`
+	PullPercentage int64                  `protobuf:"varint,3,opt,name=pullPercentage,proto3" json:"pullPercentage,omitempty"`
+	unknownFields  protoimpl.UnknownFields
+	sizeCache      protoimpl.SizeCache
 }
 
 func (x *CreateGachaItemReq) Reset() {
@@ -436,9 +468,9 @@ func (x *CreateGachaItemReq) GetRarity() string {
 	return ""
 }
 
-func (x *CreateGachaItemReq) GetCatchPercentage() int64 {
+func (x *CreateGachaItemReq) GetPullPercentage() int64 {
 	if x != nil {
-		return x.CatchPercentage
+		return x.PullPercentage
 	}
 	return 0
 }
@@ -977,7 +1009,7 @@ func (x *GetGachaMachineInfoReq) GetMachineID() int64 {
 
 type GetGachaMachineInfoResp struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Machine       *GachaMachine          `protobuf:"bytes,1,opt,name=machine,proto3" json:"machine,omitempty"`
+	Machine       []*GachaMachine        `protobuf:"bytes,1,rep,name=machine,proto3" json:"machine,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -1012,7 +1044,7 @@ func (*GetGachaMachineInfoResp) Descriptor() ([]byte, []int) {
 	return file_gachaMachine_gachaMachine_proto_rawDescGZIP(), []int{18}
 }
 
-func (x *GetGachaMachineInfoResp) GetMachine() *GachaMachine {
+func (x *GetGachaMachineInfoResp) GetMachine() []*GachaMachine {
 	if x != nil {
 		return x.Machine
 	}
@@ -1215,18 +1247,20 @@ var File_gachaMachine_gachaMachine_proto protoreflect.FileDescriptor
 
 const file_gachaMachine_gachaMachine_proto_rawDesc = "" +
 	"\n" +
-	"\x1fgachaMachine/gachaMachine.proto\x12\fgachaMachine\x1a\x13player/player.proto\"t\n" +
+	"\x1fgachaMachine/gachaMachine.proto\x12\fgachaMachine\x1a\x13player/player.proto\"r\n" +
 	"\x04Item\x12\x16\n" +
 	"\x06itemID\x18\x01 \x01(\x03R\x06itemID\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12\x16\n" +
-	"\x06rarity\x18\x03 \x01(\tR\x06rarity\x12(\n" +
-	"\x0fcatchPercentage\x18\x05 \x01(\x03R\x0fcatchPercentage\"\xa6\x01\n" +
+	"\x06rarity\x18\x03 \x01(\tR\x06rarity\x12&\n" +
+	"\x0epullPercentage\x18\x04 \x01(\x03R\x0epullPercentage\"\xf2\x01\n" +
 	"\fGachaMachine\x12\x1c\n" +
 	"\tmachineID\x18\x01 \x01(\x03R\tmachineID\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12(\n" +
 	"\x05items\x18\x03 \x03(\v2\x12.gachaMachine.ItemR\x05items\x12\x14\n" +
 	"\x05price\x18\x04 \x01(\x03R\x05price\x12$\n" +
-	"\rpriceTimesTen\x18\x05 \x01(\x03R\rpriceTimesTen\"k\n" +
+	"\rpriceTimesTen\x18\x05 \x01(\x03R\rpriceTimesTen\x12$\n" +
+	"\rsuperRarePity\x18\x06 \x01(\x05R\rsuperRarePity\x12$\n" +
+	"\rultraRarePity\x18\a \x01(\x05R\rultraRarePity\"k\n" +
 	"\vGachaPlayer\x12.\n" +
 	"\n" +
 	"basePlayer\x18\x01 \x01(\v2\x0e.player.PlayerR\n" +
@@ -1234,18 +1268,20 @@ const file_gachaMachine_gachaMachine_proto_rawDesc = "" +
 	"\x04coin\x18\x02 \x01(\x03R\x04coin\x12\x18\n" +
 	"\adiamond\x18\x03 \x01(\x03R\adiamond\"\x1f\n" +
 	"\x05Items\x12\x16\n" +
-	"\x06itemID\x18\x01 \x01(\x03R\x06itemID\"\x92\x01\n" +
+	"\x06itemID\x18\x01 \x01(\x03R\x06itemID\"\xde\x01\n" +
 	"\x15CreateGachaMachineReq\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12)\n" +
 	"\x05items\x18\x02 \x03(\v2\x13.gachaMachine.ItemsR\x05items\x12\x14\n" +
 	"\x05price\x18\x03 \x01(\x03R\x05price\x12$\n" +
-	"\rpriceTimesTen\x18\x04 \x01(\x03R\rpriceTimesTen\"N\n" +
+	"\rpriceTimesTen\x18\x04 \x01(\x03R\rpriceTimesTen\x12$\n" +
+	"\rsuperRarePity\x18\x05 \x01(\x05R\rsuperRarePity\x12$\n" +
+	"\rultraRarePity\x18\x06 \x01(\x05R\rultraRarePity\"N\n" +
 	"\x16CreateGachaMachineResp\x124\n" +
-	"\amachine\x18\x01 \x01(\v2\x1a.gachaMachine.GachaMachineR\amachine\"j\n" +
+	"\amachine\x18\x01 \x01(\v2\x1a.gachaMachine.GachaMachineR\amachine\"h\n" +
 	"\x12CreateGachaItemReq\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x16\n" +
-	"\x06rarity\x18\x02 \x01(\tR\x06rarity\x12(\n" +
-	"\x0fcatchPercentage\x18\x04 \x01(\x03R\x0fcatchPercentage\"W\n" +
+	"\x06rarity\x18\x02 \x01(\tR\x06rarity\x12&\n" +
+	"\x0epullPercentage\x18\x03 \x01(\x03R\x0epullPercentage\"W\n" +
 	"\x13CreateGachaItemsReq\x12@\n" +
 	"\n" +
 	"gachaItems\x18\x01 \x03(\v2 .gachaMachine.CreateGachaItemReqR\n" +
@@ -1279,7 +1315,7 @@ const file_gachaMachine_gachaMachine_proto_rawDesc = "" +
 	"\x16GetGachaMachineInfoReq\x12\x1c\n" +
 	"\tmachineID\x18\x01 \x01(\x03R\tmachineID\"O\n" +
 	"\x17GetGachaMachineInfoResp\x124\n" +
-	"\amachine\x18\x01 \x01(\v2\x1a.gachaMachine.GachaMachineR\amachine\"L\n" +
+	"\amachine\x18\x01 \x03(\v2\x1a.gachaMachine.GachaMachineR\amachine\"L\n" +
 	"\x10GetPullResultReq\x12\x1a\n" +
 	"\bplayerID\x18\x01 \x01(\x03R\bplayerID\x12\x1c\n" +
 	"\tmachineID\x18\x02 \x01(\x03R\tmachineID\"+\n" +

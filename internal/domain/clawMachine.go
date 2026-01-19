@@ -14,10 +14,10 @@ type ClawMachineItem struct {
 	ClawMachineID int64 `gorm:"column:claw_machine_id" json:"clawMachineID"`
 	ItemID        int64 `gorm:"column:item_id" json:"itemID"`
 
-	Item Item `gorm:"foreignKey:ItemID;references:ID"`
+	Item ClawItem `gorm:"foreignKey:ItemID;references:ID"`
 }
 
-type Item struct {
+type ClawItem struct {
 	ID              int64  `gorm:"column:id;primaryKey" json:"itemID"`
 	Name            string `gorm:"column:name" json:"name"`
 	Rarity          string `gorm:"column:rarity" json:"rarity"`
@@ -48,7 +48,7 @@ func (ClawMachineItem) TableName() string {
 	return "claw_machine_item"
 }
 
-func (Item) TableName() string {
+func (ClawItem) TableName() string {
 	return "claw_item"
 }
 

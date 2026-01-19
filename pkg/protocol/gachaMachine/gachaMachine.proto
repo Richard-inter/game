@@ -10,7 +10,7 @@ message Item {
     int64 itemID = 1;
     string name = 2;
     string rarity = 3;
-    int64 catchPercentage = 5;
+    int64 pullPercentage = 4;
 }
 
 message GachaMachine {
@@ -19,6 +19,8 @@ message GachaMachine {
     repeated Item items = 3;
     int64 price = 4;
     int64 priceTimesTen = 5;
+    int32 superRarePity = 6;
+    int32 ultraRarePity = 7;
 }
 
 message GachaPlayer {
@@ -38,6 +40,8 @@ message CreateGachaMachineReq {
     repeated Items items = 2;
     int64 price = 3;
     int64 priceTimesTen = 4;
+    int32 superRarePity = 5;
+    int32 ultraRarePity = 6;
 }
 
 message CreateGachaMachineResp {
@@ -47,7 +51,7 @@ message CreateGachaMachineResp {
 message CreateGachaItemReq {
     string name = 1;
     string rarity = 2;
-    int64 catchPercentage = 4;
+    int64 pullPercentage = 3;
 }
 
 message CreateGachaItemsReq {
@@ -101,7 +105,7 @@ message GetGachaMachineInfoReq {
 }
 
 message GetGachaMachineInfoResp {
-    GachaMachine machine = 1;
+    repeated GachaMachine machine = 1;
 }
 
 message GetPullResultReq {

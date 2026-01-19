@@ -30,8 +30,8 @@ type CreateClawItemRequest struct {
 type CreateClawPlayerRequest struct {
 	PlayerID int64  `json:"playerID" binding:"required"`
 	UserName string `json:"userName" binding:"required"`
-	Coin     int64  `json:"coin" binding:"required"`
-	Diamond  int64  `json:"diamond" binding:"required"`
+	Coin     int64  `json:"coin" binding:"required,min=0"`
+	Diamond  int64  `json:"diamond" binding:"required,min=0"`
 }
 
 type AdjustPlayerCoinRequest struct {

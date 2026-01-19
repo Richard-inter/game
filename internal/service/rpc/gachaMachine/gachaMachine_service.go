@@ -2,16 +2,20 @@ package gachaMachine
 
 import (
 	"context"
+	"fmt"
+
+	"go.uber.org/zap"
 
 	"github.com/Richard-inter/game/internal/cache"
+	"github.com/Richard-inter/game/internal/domain"
 	"github.com/Richard-inter/game/internal/repository"
 	"github.com/Richard-inter/game/pkg/logger"
-	gachaMachine "github.com/Richard-inter/game/pkg/protocol/gachaMachine"
-	"go.uber.org/zap"
+	pb "github.com/Richard-inter/game/pkg/protocol/gachaMachine"
+	"github.com/Richard-inter/game/pkg/protocol/player"
 )
 
 type GachaMachineGRPCService struct {
-	gachaMachine.UnimplementedGachaMachineServiceServer
+	pb.UnimplementedGachaMachineServiceServer
 	repo  repository.GachaMachineRepository
 	redis *cache.RedisClient
 	log   *zap.SugaredLogger
@@ -25,83 +29,216 @@ func NewGachaMachineGRPCService(repo repository.GachaMachineRepository, redis *c
 	}
 }
 
-func (s *GachaMachineGRPCService) CreateGachaPlayer(ctx context.Context, req *gachaMachine.CreateGachaPlayerReq) (*gachaMachine.CreateGachaPlayerResp, error) {
-	// TODO: Implement gacha player creation
-	s.log.Infow("CreateGachaPlayer called", "playerID", req.Player.BasePlayer.PlayerID)
-	return &gachaMachine.CreateGachaPlayerResp{
-		Player: req.Player,
+func (s *GachaMachineGRPCService) CreateGachaItems(ctx context.Context, req *pb.CreateGachaItemsReq) (*pb.CreateGachaItemsResp, error) {
+	items := make([]domain.GachaItem, 0, len(req.GachaItems))
+	for _, item := range req.GachaItems {
+		items = append(items, domain.GachaItem{
+			Name:           item.Name,
+			Rarity:         item.Rarity,
+			PullPercentage: item.PullPercentage,
+		})
+	}
+
+	resp, err := s.repo.CreateGachaItems(&items)
+	if err != nil {
+		return nil, err
+	}
+	createdItems := make([]*pb.Item, 0, len(*resp))
+	for _, it := range *resp {
+		createdItems = append(createdItems, &pb.Item{
+			ItemID:         it.ID,
+			Name:           it.Name,
+			Rarity:         it.Rarity,
+			PullPercentage: it.PullPercentage,
+		})
+	}
+
+	return &pb.CreateGachaItemsResp{
+		GachaItems: createdItems,
 	}, nil
 }
 
-func (s *GachaMachineGRPCService) GetGachaPlayerInfo(ctx context.Context, req *gachaMachine.GetGachaPlayerInfoReq) (*gachaMachine.GetGachaPlayerInfoResp, error) {
-	// TODO: Implement get gacha player info
-	s.log.Infow("GetGachaPlayerInfo called", "playerID", req.PlayerID)
-	return nil, nil
-}
+func (s *GachaMachineGRPCService) CreateGachaPlayer(ctx context.Context, req *pb.CreateGachaPlayerReq) (*pb.CreateGachaPlayerResp, error) {
+	gp := &domain.GachaPlayer{
+		Player: domain.Player{
+			ID:       req.Player.BasePlayer.PlayerID,
+			UserName: req.Player.BasePlayer.UserName,
+		},
+		Coin:    req.Player.Coin,
+		Diamond: req.Player.Diamond,
+	}
 
-func (s *GachaMachineGRPCService) AdjustPlayerGems(ctx context.Context, req *gachaMachine.AdjustPlayerGemsReq) (*gachaMachine.AdjustPlayerGemsResp, error) {
-	// TODO: Implement adjust player gems
-	s.log.Infow("AdjustPlayerGems called", "playerID", req.PlayerID, "amount", req.Amount, "type", req.Type)
-	return &gachaMachine.AdjustPlayerGemsResp{
-		PlayerID:   req.PlayerID,
-		NewBalance: 0,
+	created, err := s.repo.CreateGachaPlayer(gp)
+	if err != nil {
+		s.log.Errorf("Failed to create gacha player: %v", err)
+		return nil, fmt.Errorf("failed to create gacha player: %w", err)
+	}
+
+	gachaPlayer := &pb.GachaPlayer{
+		BasePlayer: &player.Player{
+			PlayerID: created.Player.ID,
+			UserName: created.Player.UserName,
+		},
+		Coin:    created.Coin,
+		Diamond: created.Diamond,
+	}
+
+	return &pb.CreateGachaPlayerResp{
+		Player: gachaPlayer,
 	}, nil
 }
 
-func (s *GachaMachineGRPCService) AdjustPlayerTickets(ctx context.Context, req *gachaMachine.AdjustPlayerTicketsReq) (*gachaMachine.AdjustPlayerTicketsResp, error) {
-	// TODO: Implement adjust player tickets
-	s.log.Infow("AdjustPlayerTickets called", "playerID", req.PlayerID, "amount", req.Amount, "type", req.Type)
-	return &gachaMachine.AdjustPlayerTicketsResp{
-		PlayerID:   req.PlayerID,
-		NewBalance: 0,
+func (s *GachaMachineGRPCService) GetGachaPlayerInfo(ctx context.Context, req *pb.GetGachaPlayerInfoReq) (*pb.GetGachaPlayerInfoResp, error) {
+	domainPlayer, err := s.repo.GetGachaPlayerInfo(req.PlayerID)
+	if err != nil {
+		s.log.Errorf("Failed to get gacha player info: %v", err)
+		return nil, fmt.Errorf("failed to get gacha player info: %w", err)
+	}
+
+	gachaPlayer := &pb.GachaPlayer{
+		BasePlayer: &player.Player{
+			PlayerID: domainPlayer.Player.ID,
+			UserName: domainPlayer.Player.UserName,
+		},
+		Coin:    domainPlayer.Coin,
+		Diamond: domainPlayer.Diamond,
+	}
+
+	return &pb.GetGachaPlayerInfoResp{
+		Player: gachaPlayer,
 	}, nil
 }
 
-func (s *GachaMachineGRPCService) AddItemToPlayer(ctx context.Context, req *gachaMachine.AddItemToPlayerReq) (*gachaMachine.AddItemToPlayerResp, error) {
-	// TODO: Implement add item to player
-	s.log.Infow("AddItemToPlayer called", "playerID", req.PlayerID, "itemID", req.ItemID)
-	return &gachaMachine.AddItemToPlayerResp{
-		PlayerID: req.PlayerID,
-		ItemID:   req.ItemID,
-		WasNew:   false,
+func (s *GachaMachineGRPCService) AdjustPlayerCoin(ctx context.Context, req *pb.AdjustPlayerCoinReq) (*pb.AdjustPlayerCoinResp, error) {
+	updated, err := s.repo.AdjustPlayerCoin(req.PlayerID, req.Amount, req.Type)
+	if err != nil {
+		s.log.Errorf("Failed to adjust player coins: %v", err)
+		return nil, fmt.Errorf("failed to adjust player coins: %w", err)
+	}
+
+	return &pb.AdjustPlayerCoinResp{
+		PlayerID:       req.PlayerID,
+		AdjustedAmount: updated.Coin,
 	}, nil
 }
 
-func (s *GachaMachineGRPCService) CreateGachaPool(ctx context.Context, req *gachaMachine.CreateGachaPoolReq) (*gachaMachine.CreateGachaPoolResp, error) {
-	// TODO: Implement create gacha pool
-	s.log.Infow("CreateGachaPool called", "name", req.Name, "cost", req.Cost)
-	return &gachaMachine.CreateGachaPoolResp{
-		Pool: &gachaMachine.GachaPool{
-			PoolID:   0,
-			Name:     req.Name,
-			Items:    req.Items,
-			Cost:     req.Cost,
-			Currency: req.Currency,
-			MaxPulls: req.MaxPulls,
+func (s *GachaMachineGRPCService) AdjustPlayerDiamond(ctx context.Context, req *pb.AdjustPlayerDiamondReq) (*pb.AdjustPlayerDiamondResp, error) {
+	updated, err := s.repo.AdjustPlayerDiamond(req.PlayerID, req.Amount, req.Type)
+	if err != nil {
+		s.log.Errorf("Failed to adjust player diamonds: %v", err)
+		return nil, fmt.Errorf("failed to adjust player diamonds: %w", err)
+	}
+
+	return &pb.AdjustPlayerDiamondResp{
+		PlayerID:       req.PlayerID,
+		AdjustedAmount: updated.Diamond,
+	}, nil
+}
+
+func (s *GachaMachineGRPCService) CreateGachaMachine(ctx context.Context, req *pb.CreateGachaMachineReq) (*pb.CreateGachaMachineResp, error) {
+	g := &domain.GachaMachine{
+		Name:          req.Name,
+		Price:         req.Price,
+		PriceTimesTen: req.PriceTimesTen,
+		SuperRarePity: req.SuperRarePity,
+		UltraRarePity: req.UltraRarePity,
+		Items:         make([]domain.GachaMachineItem, 0, len(req.Items)),
+	}
+
+	for _, item := range req.Items {
+		g.Items = append(g.Items, domain.GachaMachineItem{
+			ItemID: item.ItemID,
+		})
+	}
+
+	created, err := s.repo.CreateGachaMachine(g)
+	if err != nil {
+		return nil, err
+	}
+
+	fmt.Println(created.Items)
+	items := make([]*pb.Item, 0, len(created.Items))
+	for _, it := range created.Items {
+		items = append(items, &pb.Item{
+			ItemID:         it.Item.ID,
+			Name:           it.Item.Name,
+			Rarity:         it.Item.Rarity,
+			PullPercentage: it.Item.PullPercentage,
+		})
+	}
+
+	return &pb.CreateGachaMachineResp{
+		Machine: &pb.GachaMachine{
+			MachineID:     created.ID,
+			Name:          created.Name,
+			Price:         created.Price,
+			PriceTimesTen: created.PriceTimesTen,
+			SuperRarePity: created.SuperRarePity,
+			UltraRarePity: created.UltraRarePity,
+			Items:         items,
 		},
 	}, nil
 }
 
-func (s *GachaMachineGRPCService) GetGachaPoolInfo(ctx context.Context, req *gachaMachine.GetGachaPoolInfoReq) (*gachaMachine.GetGachaPoolInfoResp, error) {
-	// TODO: Implement get gacha pool info
-	s.log.Infow("GetGachaPoolInfo called", "poolID", req.PoolID)
-	return nil, nil
-}
+func (s *GachaMachineGRPCService) GetGachaMachineInfo(ctx context.Context, req *pb.GetGachaMachineInfoReq) (*pb.GetGachaMachineInfoResp, error) {
+	var machines []*pb.GachaMachine
 
-func (s *GachaMachineGRPCService) GetAllGachaPools(ctx context.Context, req *gachaMachine.GetAllGachaPoolsReq) (*gachaMachine.GetAllGachaPoolsResp, error) {
-	// TODO: Implement get all gacha pools
-	s.log.Infow("GetAllGachaPools called")
-	return &gachaMachine.GetAllGachaPoolsResp{
-		Pools: []*gachaMachine.GachaPool{},
-	}, nil
-}
+	// get all machines
+	if req.MachineID == 0 {
+		machineDomainList, err := s.repo.GetAllGachaMachines()
+		if err != nil {
+			return nil, err
+		}
 
-func (s *GachaMachineGRPCService) PullGacha(ctx context.Context, req *gachaMachine.PullGachaReq) (*gachaMachine.PullGachaResp, error) {
-	// TODO: Implement pull gacha
-	s.log.Infow("PullGacha called", "playerID", req.PlayerID, "poolID", req.PoolID, "pullCount", req.PullCount)
-	return &gachaMachine.PullGachaResp{
-		TotalPulls:        0,
-		Results:           []*gachaMachine.GachaResult{},
-		RemainingCurrency: 0,
+		for _, resp := range machineDomainList {
+			items := make([]*pb.Item, 0, len(resp.Items))
+			for _, it := range resp.Items {
+				items = append(items, &pb.Item{
+					ItemID:         it.Item.ID,
+					Name:           it.Item.Name,
+					Rarity:         it.Item.Rarity,
+					PullPercentage: it.Item.PullPercentage,
+				})
+			}
+
+			machines = append(machines, &pb.GachaMachine{
+				MachineID:     resp.ID,
+				Name:          resp.Name,
+				Price:         resp.Price,
+				PriceTimesTen: resp.PriceTimesTen,
+				SuperRarePity: resp.SuperRarePity,
+				UltraRarePity: resp.UltraRarePity,
+				Items:         items,
+			})
+		}
+	} else {
+		resp, err := s.repo.GetGachaMachineInfo(req.MachineID)
+		if err != nil {
+			return nil, err
+		}
+
+		items := make([]*pb.Item, 0, len(resp.Items))
+		for _, it := range resp.Items {
+			items = append(items, &pb.Item{
+				ItemID:         it.Item.ID,
+				Name:           it.Item.Name,
+				Rarity:         it.Item.Rarity,
+				PullPercentage: it.Item.PullPercentage,
+			})
+		}
+
+		machines = append(machines, &pb.GachaMachine{
+			MachineID:     resp.ID,
+			Name:          resp.Name,
+			Price:         resp.Price,
+			PriceTimesTen: resp.PriceTimesTen,
+			SuperRarePity: resp.SuperRarePity,
+			UltraRarePity: resp.UltraRarePity,
+			Items:         items,
+		})
+	}
+
+	return &pb.GetGachaMachineInfoResp{
+		Machine: machines,
 	}, nil
 }

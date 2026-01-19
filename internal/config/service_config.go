@@ -27,6 +27,14 @@ type ServiceConfig struct {
 	Discovery            DiscoveryConfig `mapstructure:"discovery"`
 }
 
+// Service filenames for loading multiple service configs
+var ServiceConfigFiles = map[string]string{
+	"player":              "config/rpc-player-service.yaml",
+	"clawmachine":         "config/rpc-clawmachine-service.yaml",
+	"gachamachine":        "config/rpc-gachamachine-service.yaml",
+	"clawmachine_runtime": "config/rpc-clawmachine-runtime-service.yaml",
+}
+
 // GetRedisAddr returns the Redis address in host:port format
 func (c *ServiceConfig) GetRedisAddr() string {
 	return fmt.Sprintf("%s:%d", c.Redis.Host, c.Redis.Port)
@@ -68,6 +76,27 @@ type CORSConfig struct {
 func LoadServiceConfig(serviceName string) (*ServiceConfig, error) {
 	configFile := fmt.Sprintf("config/%s.yaml", serviceName)
 	return LoadServiceConfigFromPath(configFile)
+}
+
+// LoadMultipleServiceConfigs loads multiple service configs using the ServiceConfigFiles map
+func LoadMultipleServiceConfigs(serviceNames []string) (map[string]*ServiceConfig, error) {
+	configs := make(map[string]*ServiceConfig)
+
+	for _, serviceName := range serviceNames {
+		filename, exists := ServiceConfigFiles[serviceName]
+		if !exists {
+			return nil, fmt.Errorf("unknown service name: %s", serviceName)
+		}
+
+		config, err := LoadServiceConfigFromPath(filename)
+		if err != nil {
+			return nil, fmt.Errorf("failed to load config for %s: %w", serviceName, err)
+		}
+
+		configs[serviceName] = config
+	}
+
+	return configs, nil
 }
 
 // LoadServiceConfigFromPath loads config from a specific file path

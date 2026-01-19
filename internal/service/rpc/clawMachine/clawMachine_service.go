@@ -202,9 +202,9 @@ func (s *ClawMachineGRPCServices) CreateClawMachine(ctx context.Context, req *pb
 }
 
 func (s *ClawMachineGRPCServices) CreateClawItems(ctx context.Context, req *pb.CreateClawItemsReq) (*pb.CreateClawItemsResp, error) {
-	items := make([]domain.Item, 0, len(req.ClawItems))
+	items := make([]domain.ClawItem, 0, len(req.ClawItems))
 	for _, item := range req.ClawItems {
-		items = append(items, domain.Item{
+		items = append(items, domain.ClawItem{
 			Name:            item.Name,
 			Rarity:          item.Rarity,
 			SpawnPercentage: item.SpawnPercentage,

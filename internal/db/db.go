@@ -63,7 +63,7 @@ func InitClawmachineDB(cfg *config.ServiceConfig) (*gorm.DB, error) {
 	}
 
 	// Auto migrate the schema
-	err = db.AutoMigrate(&domain.ClawMachine{}, &domain.ClawMachineItem{}, &domain.Item{}, &domain.ClawPlayer{}, &domain.ClawMachineGameRecord{})
+	err = db.AutoMigrate(&domain.ClawMachine{}, &domain.ClawMachineItem{}, &domain.ClawItem{}, &domain.ClawPlayer{}, &domain.ClawMachineGameRecord{})
 	if err != nil {
 		return nil, fmt.Errorf("failed to migrate clawmachine database: %w", err)
 	}
@@ -83,13 +83,7 @@ func InitGachaMachineDB(cfg *config.ServiceConfig) (*gorm.DB, error) {
 	}
 
 	// Auto migrate the schema
-	err = db.AutoMigrate(
-		&domain.GachaPlayer{},
-		&domain.GachaPool{},
-		&domain.GachaItem{},
-		&domain.GachaPullResult{},
-		&domain.GachaPoolItem{},
-	)
+	err = db.AutoMigrate(&domain.GachaMachine{}, &domain.GachaMachineItem{}, &domain.GachaItem{}, &domain.GachaPlayer{}, &domain.GachaPullSession{}, &domain.GachaPullHistory{}, &domain.GachaPityState{})
 	if err != nil {
 		return nil, fmt.Errorf("failed to migrate gacha machine database: %w", err)
 	}
