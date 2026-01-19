@@ -30,7 +30,7 @@ func (s *ClawMachineGRPCServices) GetClawPlayerInfo(
 	ctx context.Context,
 	req *pb.GetClawPlayerInfoReq,
 ) (*pb.GetClawPlayerInfoResp, error) {
-	domainPlayer, err := s.repo.GetClawPlayerInfo(req.PlayerID)
+	domainPlayer, err := s.repo.GetClawPlayerInfo(ctx, req.PlayerID)
 	if err != nil {
 		return nil, err
 	}
@@ -64,7 +64,7 @@ func (s *ClawMachineGRPCServices) StartClawGame(ctx context.Context, req *pb.Sta
 		return nil, fmt.Errorf("failed to charge player: %w", err)
 	}
 
-	gameID, err := s.repo.AddGameHistory(req.PlayerID, &domain.ClawMachineGameRecord{
+	gameID, err := s.repo.AddGameHistory(ctx, req.PlayerID, &domain.ClawMachineGameRecord{
 		PlayerID:      req.PlayerID,
 		ClawMachineID: req.MachineID,
 	})
@@ -101,7 +101,7 @@ func (s *ClawMachineGRPCServices) GetClawMachineInfo(
 
 	// get all machines
 	if req.MachineID == 0 {
-		machineDomainList, err := s.repo.GetAllClawMachines()
+		machineDomainList, err := s.repo.GetAllClawMachines(ctx)
 		if err != nil {
 			return nil, err
 		}
@@ -128,7 +128,7 @@ func (s *ClawMachineGRPCServices) GetClawMachineInfo(
 			})
 		}
 	} else {
-		resp, err := s.repo.GetClawMachineInfo(req.MachineID)
+		resp, err := s.repo.GetClawMachineInfo(ctx, req.MachineID)
 		if err != nil {
 			return nil, err
 		}
@@ -173,7 +173,7 @@ func (s *ClawMachineGRPCServices) CreateClawMachine(ctx context.Context, req *pb
 		})
 	}
 
-	created, err := s.repo.CreateClawMachine(c)
+	created, err := s.repo.CreateClawMachine(ctx, c)
 	if err != nil {
 		return nil, err
 	}
@@ -213,7 +213,7 @@ func (s *ClawMachineGRPCServices) CreateClawItems(ctx context.Context, req *pb.C
 		})
 	}
 
-	resp, err := s.repo.CreateClawItems(&items)
+	resp, err := s.repo.CreateClawItems(ctx, &items)
 	if err != nil {
 		return nil, err
 	}
@@ -244,7 +244,7 @@ func (s *ClawMachineGRPCServices) CreateClawPlayer(ctx context.Context, req *pb.
 		Diamond: req.Player.Diamond,
 	}
 
-	created, err := s.repo.CreateClawPlayer(cp)
+	created, err := s.repo.CreateClawPlayer(ctx, cp)
 	if err != nil {
 		return nil, err
 	}
@@ -264,7 +264,7 @@ func (s *ClawMachineGRPCServices) CreateClawPlayer(ctx context.Context, req *pb.
 }
 
 func (s *ClawMachineGRPCServices) AdjustPlayerCoin(ctx context.Context, req *pb.AdjustPlayerCoinReq) (*pb.AdjustPlayerCoinResp, error) {
-	updated, err := s.repo.AdjustPlayerCoin(req.PlayerID, req.Amount, req.Type)
+	updated, err := s.repo.AdjustPlayerCoin(ctx, req.PlayerID, req.Amount, req.Type)
 	if err != nil {
 		return nil, err
 	}
@@ -276,7 +276,7 @@ func (s *ClawMachineGRPCServices) AdjustPlayerCoin(ctx context.Context, req *pb.
 }
 
 func (s *ClawMachineGRPCServices) AdjustPlayerDiamond(ctx context.Context, req *pb.AdjustPlayerDiamondReq) (*pb.AdjustPlayerDiamondResp, error) {
-	updated, err := s.repo.AdjustPlayerDiamond(req.PlayerID, req.Amount, req.Type)
+	updated, err := s.repo.AdjustPlayerDiamond(ctx, req.PlayerID, req.Amount, req.Type)
 	if err != nil {
 		return nil, err
 	}
@@ -310,7 +310,7 @@ func (s *ClawMachineGRPCServices) AddTouchedItemRecord(ctx context.Context, req 
 		return nil, fmt.Errorf("catched value mismatch: expected %t, got %t", foundItem.Success, *req.Catched)
 	}
 
-	err = s.repo.AddTouchedItemRecord(req.GameID, req.ItemID, *req.Catched)
+	err = s.repo.AddTouchedItemRecord(ctx, req.GameID, req.ItemID, *req.Catched)
 	if err != nil {
 		return nil, fmt.Errorf("failed to update touched item record: %w", err)
 	}

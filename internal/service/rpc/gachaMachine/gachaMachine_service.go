@@ -39,7 +39,7 @@ func (s *GachaMachineGRPCService) CreateGachaItems(ctx context.Context, req *pb.
 		})
 	}
 
-	resp, err := s.repo.CreateGachaItems(&items)
+	resp, err := s.repo.CreateGachaItems(ctx, &items)
 	if err != nil {
 		return nil, err
 	}
@@ -68,7 +68,7 @@ func (s *GachaMachineGRPCService) CreateGachaPlayer(ctx context.Context, req *pb
 		Diamond: req.Player.Diamond,
 	}
 
-	created, err := s.repo.CreateGachaPlayer(gp)
+	created, err := s.repo.CreateGachaPlayer(ctx, gp)
 	if err != nil {
 		s.log.Errorf("Failed to create gacha player: %v", err)
 		return nil, fmt.Errorf("failed to create gacha player: %w", err)
@@ -89,7 +89,7 @@ func (s *GachaMachineGRPCService) CreateGachaPlayer(ctx context.Context, req *pb
 }
 
 func (s *GachaMachineGRPCService) GetGachaPlayerInfo(ctx context.Context, req *pb.GetGachaPlayerInfoReq) (*pb.GetGachaPlayerInfoResp, error) {
-	domainPlayer, err := s.repo.GetGachaPlayerInfo(req.PlayerID)
+	domainPlayer, err := s.repo.GetGachaPlayerInfo(ctx, req.PlayerID)
 	if err != nil {
 		s.log.Errorf("Failed to get gacha player info: %v", err)
 		return nil, fmt.Errorf("failed to get gacha player info: %w", err)
@@ -110,7 +110,7 @@ func (s *GachaMachineGRPCService) GetGachaPlayerInfo(ctx context.Context, req *p
 }
 
 func (s *GachaMachineGRPCService) AdjustPlayerCoin(ctx context.Context, req *pb.AdjustPlayerCoinReq) (*pb.AdjustPlayerCoinResp, error) {
-	updated, err := s.repo.AdjustPlayerCoin(req.PlayerID, req.Amount, req.Type)
+	updated, err := s.repo.AdjustPlayerCoin(ctx, req.PlayerID, req.Amount, req.Type)
 	if err != nil {
 		s.log.Errorf("Failed to adjust player coins: %v", err)
 		return nil, fmt.Errorf("failed to adjust player coins: %w", err)
@@ -123,7 +123,7 @@ func (s *GachaMachineGRPCService) AdjustPlayerCoin(ctx context.Context, req *pb.
 }
 
 func (s *GachaMachineGRPCService) AdjustPlayerDiamond(ctx context.Context, req *pb.AdjustPlayerDiamondReq) (*pb.AdjustPlayerDiamondResp, error) {
-	updated, err := s.repo.AdjustPlayerDiamond(req.PlayerID, req.Amount, req.Type)
+	updated, err := s.repo.AdjustPlayerDiamond(ctx, req.PlayerID, req.Amount, req.Type)
 	if err != nil {
 		s.log.Errorf("Failed to adjust player diamonds: %v", err)
 		return nil, fmt.Errorf("failed to adjust player diamonds: %w", err)
@@ -151,7 +151,7 @@ func (s *GachaMachineGRPCService) CreateGachaMachine(ctx context.Context, req *p
 		})
 	}
 
-	created, err := s.repo.CreateGachaMachine(g)
+	created, err := s.repo.CreateGachaMachine(ctx, g)
 	if err != nil {
 		return nil, err
 	}
@@ -185,7 +185,7 @@ func (s *GachaMachineGRPCService) GetGachaMachineInfo(ctx context.Context, req *
 
 	// get all machines
 	if req.MachineID == 0 {
-		machineDomainList, err := s.repo.GetAllGachaMachines()
+		machineDomainList, err := s.repo.GetAllGachaMachines(ctx)
 		if err != nil {
 			return nil, err
 		}
@@ -212,7 +212,7 @@ func (s *GachaMachineGRPCService) GetGachaMachineInfo(ctx context.Context, req *
 			})
 		}
 	} else {
-		resp, err := s.repo.GetGachaMachineInfo(req.MachineID)
+		resp, err := s.repo.GetGachaMachineInfo(ctx, req.MachineID)
 		if err != nil {
 			return nil, err
 		}

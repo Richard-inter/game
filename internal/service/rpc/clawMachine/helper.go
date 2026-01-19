@@ -97,7 +97,7 @@ func (s *ClawMachineGRPCServices) GetMachineItems(
 	ctx context.Context,
 	machineID int64,
 ) ([]*pb.Item, error) {
-	clawMachine, err := s.repo.GetClawMachineInfo(machineID)
+	clawMachine, err := s.repo.GetClawMachineInfo(ctx, machineID)
 	if err != nil {
 		return nil, err
 	}
@@ -121,7 +121,7 @@ func (s *ClawMachineGRPCServices) SpawnMachineItems(
 	ctx context.Context,
 	machineID int64,
 ) ([]int64, error) {
-	clawMachine, err := s.repo.GetClawMachineInfo(machineID)
+	clawMachine, err := s.repo.GetClawMachineInfo(ctx, machineID)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get machine info: %w", err)
 	}
@@ -155,7 +155,7 @@ func (s *ClawMachineGRPCServices) PreDetermineCatchResults(
 	machineID int64,
 ) ([]*CatchResult, error) {
 	// Get machine info to access items and their catch percentages
-	clawMachine, err := s.repo.GetClawMachineInfo(machineID)
+	clawMachine, err := s.repo.GetClawMachineInfo(ctx, machineID)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get machine info: %w", err)
 	}
@@ -191,12 +191,12 @@ func (s *ClawMachineGRPCServices) PlayMachine(
 	playerID int64,
 	machineID int64,
 ) error {
-	clawMachine, err := s.repo.GetClawMachineInfo(machineID)
+	clawMachine, err := s.repo.GetClawMachineInfo(ctx, machineID)
 	if err != nil {
 		return fmt.Errorf("failed to get machine info: %w", err)
 	}
 
-	_, err = s.repo.AdjustPlayerCoin(playerID, int64(clawMachine.Price), "minus")
+	_, err = s.repo.AdjustPlayerCoin(ctx, playerID, int64(clawMachine.Price), "minus")
 	if err != nil {
 		return fmt.Errorf("failed to adjust player coin: %w", err)
 	}
