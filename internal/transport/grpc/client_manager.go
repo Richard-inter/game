@@ -5,16 +5,18 @@ import (
 )
 
 type ClientManager struct {
-	discovery          *DiscoveryManager
-	player             *PlayerClient
-	clawmachine        *ClawMachineClient
-	clawmachineRuntime *ClawMachineRuntimeClient
-	gachaMachine       *GachaMachineClient
+	discovery           *DiscoveryManager
+	player              *PlayerClient
+	clawmachine         *ClawMachineClient
+	clawmachineRuntime  *ClawMachineRuntimeClient
+	gachaMachine        *GachaMachineClient
+	gachaMachineRuntime *GachaMachineRuntimeClient
 	// Direct connection addresses for when discovery is disabled
 	playerAddr       string
 	clawmachineAddr  string
 	runtimeAddr      string
 	gachaMachineAddr string
+	gachaRuntimeAddr string
 }
 
 type ClientManagerConfig struct {
@@ -23,6 +25,7 @@ type ClientManagerConfig struct {
 	ClawmachineAddr  string // Direct address when discovery disabled
 	RuntimeAddr      string // Direct address when discovery disabled
 	GachaMachineAddr string // Direct address when discovery disabled
+	GachaRuntimeAddr string // Direct address when discovery disabled
 }
 
 func NewClientManager(cfg *ClientManagerConfig) (*ClientManager, error) {
@@ -43,6 +46,7 @@ func NewClientManager(cfg *ClientManagerConfig) (*ClientManager, error) {
 		clawmachineAddr:  cfg.ClawmachineAddr,
 		runtimeAddr:      cfg.RuntimeAddr,
 		gachaMachineAddr: cfg.GachaMachineAddr,
+		gachaRuntimeAddr: cfg.GachaRuntimeAddr,
 	}, nil
 }
 
@@ -170,6 +174,39 @@ func (cm *ClientManager) GetGachaMachineClient() (*GachaMachineClient, error) {
 	}
 
 	return cm.gachaMachine, nil
+}
+
+func (cm *ClientManager) GetGachaMachineRuntimeClient() (*GachaMachineRuntimeClient, error) {
+	if cm == nil {
+		return nil, fmt.Errorf("client manager is nil")
+	}
+
+	if cm.gachaMachineRuntime == nil {
+		var gachaRuntimeAddr string
+		var err error
+
+		// Use discovery if available, otherwise use direct address
+		if cm.discovery != nil {
+			gachaRuntimeAddr, err = cm.discovery.GetService("gachamachine-runtime-service")
+			if err != nil {
+				return nil, fmt.Errorf("failed to get gachamachine runtime service address: %w", err)
+			}
+		} else {
+			if cm.gachaRuntimeAddr == "" {
+				return nil, fmt.Errorf("gachamachine runtime service address not configured and discovery is disabled")
+			}
+			gachaRuntimeAddr = cm.gachaRuntimeAddr
+		}
+
+		// Create client
+		gachaMachineRuntime, err := NewGachaMachineRuntimeClient(gachaRuntimeAddr)
+		if err != nil {
+			return nil, fmt.Errorf("failed to create gachamachine runtime client: %w", err)
+		}
+		cm.gachaMachineRuntime = gachaMachineRuntime
+	}
+
+	return cm.gachaMachineRuntime, nil
 }
 
 func (cm *ClientManager) Close() error {

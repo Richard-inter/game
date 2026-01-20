@@ -85,7 +85,7 @@ func (s *ClawMachineWebsocketService) StartClawGameWs(
 	resultOffsets := make([]flatbuffers.UOffsetT, len(results))
 	for i := len(results) - 1; i >= 0; i-- {
 		fbs.ClawResultStart(builder)
-		fbs.ClawResultAddItemId(builder, uint64(results[i].ItemID))
+		fbs.ClawResultAddItemId(builder, results[i].ItemID)
 		fbs.ClawResultAddCatched(builder, results[i].Success)
 		resultOffsets[i] = fbs.ClawResultEnd(builder)
 	}
@@ -97,7 +97,7 @@ func (s *ClawMachineWebsocketService) StartClawGameWs(
 	resultsVector := builder.EndVector(len(resultOffsets))
 
 	fbs.StartClawGameRespStart(builder)
-	fbs.StartClawGameRespAddGameId(builder, uint64(gameID))
+	fbs.StartClawGameRespAddGameId(builder, gameID)
 	fbs.StartClawGameRespAddResults(builder, resultsVector)
 	respOffset := fbs.StartClawGameRespEnd(builder)
 
@@ -124,7 +124,7 @@ func (s *ClawMachineWebsocketService) GetPlayerInfoWs(
 
 	fbs.GetPlayerInfoWsRespStart(builder)
 
-	fbs.GetPlayerInfoWsRespAddPlayerId(builder, uint64(domainPlayer.Player.ID))
+	fbs.GetPlayerInfoWsRespAddPlayerId(builder, domainPlayer.Player.ID)
 	fbs.GetPlayerInfoWsRespAddUsername(builder, usernameOffset)
 	fbs.GetPlayerInfoWsRespAddCoin(builder, domainPlayer.Coin)
 	fbs.GetPlayerInfoWsRespAddDiamond(builder, domainPlayer.Diamond)

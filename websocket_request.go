@@ -11,7 +11,7 @@ import (
 
 // change to main to test
 func main() {
-	conn, _, err := websocket.DefaultDialer.Dial("ws://localhost:8081/ws", nil)
+	conn, _, err := websocket.DefaultDialer.Dial("ws://localhost:8081/clawmachine", nil)
 	if err != nil {
 		log.Fatal(err)
 	}

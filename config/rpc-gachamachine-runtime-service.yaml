@@ -1,0 +1,20 @@
+# RPC GachaMachine Runtime Service Configuration (gRPC)
+
+service:
+  name: "gachamachine-runtime-service"
+  host: "0.0.0.0"
+  port: 9093
+  mode: "release"
+
+grpc:
+  host: "0.0.0.0"
+  port: 9093
+  reflection: true
+
+# Import shared configurations
+shared:
+  gachamachine_database: "shared.yaml"
+  redis: "shared.yaml"
+  logging: "shared.yaml"
+  jwt: "shared.yaml"
+  tracing: "shared.yaml"

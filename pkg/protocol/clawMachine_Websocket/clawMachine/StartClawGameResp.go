@@ -41,16 +41,16 @@ func (rcv *StartClawGameResp) Table() flatbuffers.Table {
 	return rcv._tab
 }
 
-func (rcv *StartClawGameResp) GameId() uint64 {
+func (rcv *StartClawGameResp) GameId() int64 {
 	o := flatbuffers.UOffsetT(rcv._tab.Offset(4))
 	if o != 0 {
-		return rcv._tab.GetUint64(o + rcv._tab.Pos)
+		return rcv._tab.GetInt64(o + rcv._tab.Pos)
 	}
 	return 0
 }
 
-func (rcv *StartClawGameResp) MutateGameId(n uint64) bool {
-	return rcv._tab.MutateUint64Slot(4, n)
+func (rcv *StartClawGameResp) MutateGameId(n int64) bool {
+	return rcv._tab.MutateInt64Slot(4, n)
 }
 
 func (rcv *StartClawGameResp) Results(obj *ClawResult, j int) bool {
@@ -76,8 +76,8 @@ func (rcv *StartClawGameResp) ResultsLength() int {
 func StartClawGameRespStart(builder *flatbuffers.Builder) {
 	builder.StartObject(2)
 }
-func StartClawGameRespAddGameId(builder *flatbuffers.Builder, gameId uint64) {
-	builder.PrependUint64Slot(0, gameId, 0)
+func StartClawGameRespAddGameId(builder *flatbuffers.Builder, gameId int64) {
+	builder.PrependInt64Slot(0, gameId, 0)
 }
 func StartClawGameRespAddResults(builder *flatbuffers.Builder, results flatbuffers.UOffsetT) {
 	builder.PrependUOffsetTSlot(1, flatbuffers.UOffsetT(results), 0)

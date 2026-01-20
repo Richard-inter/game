@@ -1,0 +1,66 @@
+namespace gachaMachine;
+
+enum MessageType : byte {
+  GetPullResultWs = 0,
+  GetPlayerInfoWs = 1,
+  GetMachineInfoWs = 2,
+  ErrorResp = 100
+}
+
+/***************
+ * Requests
+ ***************/
+table GetPullResultWsReq {
+  player_id:long;
+  machine_id:long;
+  pull_count:int;
+}
+
+table GetPlayerInfoWsReq {
+  player_id:long;
+}
+
+table GetMachineInfoWsReq {
+  machine_id:long;
+}
+
+/***************
+ * Responses
+ ***************/
+table GetPullResultWsResp {
+  item_ids:[long];
+}
+
+table GetPlayerInfoWsResp {
+  player_id:long;
+  username:string;
+  coin:long;
+  diamond:long;
+}
+
+table GetMachineInfoWsResp {
+  machine_id:long;
+  name:string;
+  price:long;
+  price_times_ten:long;
+  super_rare_pity:int;
+  ultra_rare_pity:int;
+}
+
+/***************
+ * Error
+ ***************/
+table ErrorResp {
+  code:int;
+  message:string;
+}
+
+/***************
+ * Envelope
+ ***************/
+table Envelope {
+  type:MessageType;
+  payload:[ubyte];
+}
+
+root_type Envelope;

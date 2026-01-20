@@ -41,16 +41,16 @@ func (rcv *ClawResult) Table() flatbuffers.Table {
 	return rcv._tab
 }
 
-func (rcv *ClawResult) ItemId() uint64 {
+func (rcv *ClawResult) ItemId() int64 {
 	o := flatbuffers.UOffsetT(rcv._tab.Offset(4))
 	if o != 0 {
-		return rcv._tab.GetUint64(o + rcv._tab.Pos)
+		return rcv._tab.GetInt64(o + rcv._tab.Pos)
 	}
 	return 0
 }
 
-func (rcv *ClawResult) MutateItemId(n uint64) bool {
-	return rcv._tab.MutateUint64Slot(4, n)
+func (rcv *ClawResult) MutateItemId(n int64) bool {
+	return rcv._tab.MutateInt64Slot(4, n)
 }
 
 func (rcv *ClawResult) Catched() bool {
@@ -68,8 +68,8 @@ func (rcv *ClawResult) MutateCatched(n bool) bool {
 func ClawResultStart(builder *flatbuffers.Builder) {
 	builder.StartObject(2)
 }
-func ClawResultAddItemId(builder *flatbuffers.Builder, itemId uint64) {
-	builder.PrependUint64Slot(0, itemId, 0)
+func ClawResultAddItemId(builder *flatbuffers.Builder, itemId int64) {
+	builder.PrependInt64Slot(0, itemId, 0)
 }
 func ClawResultAddCatched(builder *flatbuffers.Builder, catched bool) {
 	builder.PrependBoolSlot(1, catched, false)

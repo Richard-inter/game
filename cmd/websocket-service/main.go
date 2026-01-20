@@ -61,8 +61,15 @@ func main() {
 
 	// Create HTTP server
 	mux := http.NewServeMux()
-	mux.HandleFunc(cfg.Service.Path, func(w http.ResponseWriter, r *http.Request) {
-		handleWebSocket(upgrader, w, r, log)
+
+	// ClawMachine WebSocket endpoint
+	mux.HandleFunc("/clawmachine", func(w http.ResponseWriter, r *http.Request) {
+		handleClawMachineWebSocket(upgrader, w, r, log)
+	})
+
+	// GachaMachine WebSocket endpoint
+	mux.HandleFunc("/gachamachine", func(w http.ResponseWriter, r *http.Request) {
+		handleGachaMachineWebSocket(upgrader, w, r, log)
 	})
 
 	// Add health check
@@ -106,11 +113,11 @@ func main() {
 	log.Infow("WebSocket Service stopped")
 }
 
-func handleWebSocket(upgrader websocket.Upgrader, w http.ResponseWriter, r *http.Request, log *zap.SugaredLogger) {
+func handleClawMachineWebSocket(upgrader websocket.Upgrader, w http.ResponseWriter, r *http.Request, log *zap.SugaredLogger) {
 	// Upgrade HTTP connection to WebSocket
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
-		log.Errorw("Failed to upgrade WebSocket connection", "error", err)
+		log.Errorw("Failed to upgrade ClawMachine WebSocket connection", "error", err)
 		return
 	}
 
@@ -129,7 +136,7 @@ func handleWebSocket(upgrader websocket.Upgrader, w http.ResponseWriter, r *http
 		RuntimeAddr:     fmt.Sprintf("%s:%d", serviceConfigs["clawmachine_runtime"].Service.Host, serviceConfigs["clawmachine_runtime"].Service.Port),
 	}
 
-	log.Infow("Creating gRPC client manager with dynamic addresses",
+	log.Infow("Creating ClawMachine gRPC client manager with dynamic addresses",
 		"player", grpcConfig.PlayerAddr,
 		"clawmachine", grpcConfig.ClawmachineAddr,
 		"clawmachine_runtime", grpcConfig.RuntimeAddr)
@@ -140,12 +147,57 @@ func handleWebSocket(upgrader websocket.Upgrader, w http.ResponseWriter, r *http
 		return
 	}
 
-	log.Infow("gRPC client manager created successfully")
+	log.Infow("ClawMachine gRPC client manager created successfully")
 
 	// Create WebSocket handler
-	handler, err := wshandler.NewWebSocketHandler(log, grpcManager)
+	handler, err := wshandler.NewClawMachineWebSocketHandler(log, grpcManager)
 	if err != nil {
-		log.Errorw("Failed to create WebSocket handler", "error", err)
+		log.Errorw("Failed to create ClawMachine WebSocket handler", "error", err)
+		return
+	}
+
+	// Handle the connection
+	handler.HandleConnection(conn)
+}
+
+func handleGachaMachineWebSocket(upgrader websocket.Upgrader, w http.ResponseWriter, r *http.Request, log *zap.SugaredLogger) {
+	// Upgrade HTTP connection to WebSocket
+	conn, err := upgrader.Upgrade(w, r, nil)
+	if err != nil {
+		log.Errorw("Failed to upgrade GachaMachine WebSocket connection", "error", err)
+		return
+	}
+
+	// Load service configurations dynamically
+	serviceConfigs, err := config.LoadMultipleServiceConfigs([]string{"gachamachine", "gachamachine_runtime"})
+	if err != nil {
+		log.Errorw("Failed to load GachaMachine service configs", "error", err)
+		return
+	}
+
+	// Initialize gRPC client manager with dynamic addresses
+	grpcConfig := &grpc.ClientManagerConfig{
+		EtcdEndpoints:    []string{}, // Empty to disable etcd
+		GachaMachineAddr: fmt.Sprintf("%s:%d", serviceConfigs["gachamachine"].Service.Host, serviceConfigs["gachamachine"].Service.Port),
+		GachaRuntimeAddr: fmt.Sprintf("%s:%d", serviceConfigs["gachamachine_runtime"].Service.Host, serviceConfigs["gachamachine_runtime"].Service.Port),
+	}
+
+	log.Infow("Creating GachaMachine gRPC client manager with dynamic addresses",
+		"gachamachine", grpcConfig.GachaMachineAddr,
+		"gachamachine_runtime", grpcConfig.GachaRuntimeAddr)
+
+	grpcManager, err := grpc.NewClientManager(grpcConfig)
+	if err != nil {
+		log.Errorw("Failed to create GachaMachine gRPC client manager", "error", err)
+		return
+	}
+
+	log.Infow("GachaMachine gRPC client manager created successfully")
+
+	// Create GachaMachine WebSocket handler
+	handler, err := wshandler.NewGachaMachineWebSocketHandler(log, grpcManager)
+	if err != nil {
+		log.Errorw("Failed to create GachaMachine WebSocket handler", "error", err)
 		return
 	}
 

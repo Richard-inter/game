@@ -14,7 +14,7 @@ import (
 
 type messageHandler func(ctx context.Context, payload []byte) ([]byte, error)
 
-type WebSocketHandler struct {
+type ClawMachineWebSocketHandler struct {
 	logger            *zap.SugaredLogger
 	playerClient      *grpc.PlayerClient
 	clawmachineClient *grpc.ClawMachineClient
@@ -23,7 +23,7 @@ type WebSocketHandler struct {
 	handlers map[fbs.MessageType]messageHandler
 }
 
-func NewWebSocketHandler(logger *zap.SugaredLogger, grpcManager *grpc.ClientManager) (*WebSocketHandler, error) {
+func NewClawMachineWebSocketHandler(logger *zap.SugaredLogger, grpcManager *grpc.ClientManager) (*ClawMachineWebSocketHandler, error) {
 	playerClient, err := grpcManager.GetPlayerClient()
 	if err != nil {
 		return nil, err
@@ -39,7 +39,7 @@ func NewWebSocketHandler(logger *zap.SugaredLogger, grpcManager *grpc.ClientMana
 		return nil, err
 	}
 
-	h := &WebSocketHandler{
+	h := &ClawMachineWebSocketHandler{
 		logger:            logger,
 		playerClient:      playerClient,
 		clawmachineClient: clawmachineClient,
@@ -55,7 +55,7 @@ func NewWebSocketHandler(logger *zap.SugaredLogger, grpcManager *grpc.ClientMana
 	return h, nil
 }
 
-func (h *WebSocketHandler) HandleConnection(conn *websocket.Conn) {
+func (h *ClawMachineWebSocketHandler) HandleConnection(conn *websocket.Conn) {
 	defer conn.Close()
 
 	h.logger.Infow("WebSocket client connected")
@@ -90,7 +90,7 @@ func (h *WebSocketHandler) HandleConnection(conn *websocket.Conn) {
 	}
 }
 
-func (h *WebSocketHandler) handleMessage(data []byte) ([]byte, error) {
+func (h *ClawMachineWebSocketHandler) handleMessage(data []byte) ([]byte, error) {
 	envelope := fbs.GetRootAsEnvelope(data, 0)
 	msgType := envelope.Type()
 	payload := envelope.PayloadBytes()
@@ -109,7 +109,7 @@ func (h *WebSocketHandler) handleMessage(data []byte) ([]byte, error) {
 	return handler(context.Background(), payload)
 }
 
-func (h *WebSocketHandler) handleStartClawGame(
+func (h *ClawMachineWebSocketHandler) handleStartClawGame(
 	ctx context.Context,
 	payload []byte,
 ) ([]byte, error) {
@@ -124,7 +124,7 @@ func (h *WebSocketHandler) handleStartClawGame(
 	return resp.Payload, nil
 }
 
-func (h *WebSocketHandler) handleGetPlayerInfo(
+func (h *ClawMachineWebSocketHandler) handleGetPlayerInfo(
 	ctx context.Context,
 	payload []byte,
 ) ([]byte, error) {
@@ -139,7 +139,7 @@ func (h *WebSocketHandler) handleGetPlayerInfo(
 	return resp.Payload, nil
 }
 
-func (h *WebSocketHandler) handleAddTouchedItemRecord(
+func (h *ClawMachineWebSocketHandler) handleAddTouchedItemRecord(
 	ctx context.Context,
 	payload []byte,
 ) ([]byte, error) {
@@ -154,7 +154,7 @@ func (h *WebSocketHandler) handleAddTouchedItemRecord(
 	return resp.Payload, nil
 }
 
-func (h *WebSocketHandler) handleSpawnItem(
+func (h *ClawMachineWebSocketHandler) handleSpawnItem(
 	ctx context.Context,
 	payload []byte,
 ) ([]byte, error) {
@@ -169,7 +169,7 @@ func (h *WebSocketHandler) handleSpawnItem(
 	return resp.Payload, nil
 }
 
-func (h *WebSocketHandler) buildErrorResp(code int32, message string) []byte {
+func (h *ClawMachineWebSocketHandler) buildErrorResp(code int32, message string) []byte {
 	builder := flatbuffers.NewBuilder(128)
 
 	msgOffset := builder.CreateString(message)
@@ -195,7 +195,7 @@ func (h *WebSocketHandler) buildErrorResp(code int32, message string) []byte {
 	return envBuilder.FinishedBytes()
 }
 
-func (h *WebSocketHandler) sendError(conn *websocket.Conn, message string) {
+func (h *ClawMachineWebSocketHandler) sendError(conn *websocket.Conn, message string) {
 	response := h.buildErrorResp(500, message)
 
 	err := conn.WriteMessage(websocket.BinaryMessage, response)

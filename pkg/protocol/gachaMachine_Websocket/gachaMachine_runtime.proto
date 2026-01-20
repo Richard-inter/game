@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package gachaMachine;
+
+option go_package = "github.com/Richard-inter/game/pkg/protocol/gachaMachine";
+
+
+message RuntimeRequest {
+    bytes payload = 1;
+}
+
+message RuntimeResponse {
+    bytes payload = 1;
+}
+
+service GachaMachineRuntimeService {
+    rpc GetPullResultWs (RuntimeRequest) returns (RuntimeResponse);
+    rpc GetPlayerInfoWs (RuntimeRequest) returns (RuntimeResponse);
+    rpc GetMachineInfoWs (RuntimeRequest) returns (RuntimeResponse);
+}
