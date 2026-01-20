@@ -16,16 +16,18 @@ import (
 
 type GachaMachineGRPCService struct {
 	pb.UnimplementedGachaMachineServiceServer
-	repo  repository.GachaMachineRepository
-	redis *cache.RedisClient
-	log   *zap.SugaredLogger
+	repo      repository.GachaMachineRepository
+	redis     *cache.RedisClient
+	streamKey string
+	log       *zap.SugaredLogger
 }
 
-func NewGachaMachineGRPCService(repo repository.GachaMachineRepository, redis *cache.RedisClient) *GachaMachineGRPCService {
+func NewGachaMachineGRPCService(repo repository.GachaMachineRepository, redis *cache.RedisClient, streamKey string) *GachaMachineGRPCService {
 	return &GachaMachineGRPCService{
-		repo:  repo,
-		redis: redis,
-		log:   logger.GetSugar(),
+		repo:      repo,
+		redis:     redis,
+		streamKey: streamKey,
+		log:       logger.GetSugar(),
 	}
 }
 
@@ -33,9 +35,9 @@ func (s *GachaMachineGRPCService) CreateGachaItems(ctx context.Context, req *pb.
 	items := make([]domain.GachaItem, 0, len(req.GachaItems))
 	for _, item := range req.GachaItems {
 		items = append(items, domain.GachaItem{
-			Name:           item.Name,
-			Rarity:         item.Rarity,
-			PullPercentage: item.PullPercentage,
+			Name:       item.Name,
+			Rarity:     item.Rarity,
+			PullWeight: item.PullWeight,
 		})
 	}
 
@@ -46,10 +48,10 @@ func (s *GachaMachineGRPCService) CreateGachaItems(ctx context.Context, req *pb.
 	createdItems := make([]*pb.Item, 0, len(*resp))
 	for _, it := range *resp {
 		createdItems = append(createdItems, &pb.Item{
-			ItemID:         it.ID,
-			Name:           it.Name,
-			Rarity:         it.Rarity,
-			PullPercentage: it.PullPercentage,
+			ItemID:     it.ID,
+			Name:       it.Name,
+			Rarity:     it.Rarity,
+			PullWeight: it.PullWeight,
 		})
 	}
 
@@ -160,10 +162,10 @@ func (s *GachaMachineGRPCService) CreateGachaMachine(ctx context.Context, req *p
 	items := make([]*pb.Item, 0, len(created.Items))
 	for _, it := range created.Items {
 		items = append(items, &pb.Item{
-			ItemID:         it.Item.ID,
-			Name:           it.Item.Name,
-			Rarity:         it.Item.Rarity,
-			PullPercentage: it.Item.PullPercentage,
+			ItemID:     it.Item.ID,
+			Name:       it.Item.Name,
+			Rarity:     it.Item.Rarity,
+			PullWeight: it.Item.PullWeight,
 		})
 	}
 
@@ -182,8 +184,6 @@ func (s *GachaMachineGRPCService) CreateGachaMachine(ctx context.Context, req *p
 
 func (s *GachaMachineGRPCService) GetGachaMachineInfo(ctx context.Context, req *pb.GetGachaMachineInfoReq) (*pb.GetGachaMachineInfoResp, error) {
 	var machines []*pb.GachaMachine
-
-	// get all machines
 	if req.MachineID == 0 {
 		machineDomainList, err := s.repo.GetAllGachaMachines(ctx)
 		if err != nil {
@@ -194,10 +194,10 @@ func (s *GachaMachineGRPCService) GetGachaMachineInfo(ctx context.Context, req *
 			items := make([]*pb.Item, 0, len(resp.Items))
 			for _, it := range resp.Items {
 				items = append(items, &pb.Item{
-					ItemID:         it.Item.ID,
-					Name:           it.Item.Name,
-					Rarity:         it.Item.Rarity,
-					PullPercentage: it.Item.PullPercentage,
+					ItemID:     it.Item.ID,
+					Name:       it.Item.Name,
+					Rarity:     it.Item.Rarity,
+					PullWeight: it.Item.PullWeight,
 				})
 			}
 
@@ -220,10 +220,10 @@ func (s *GachaMachineGRPCService) GetGachaMachineInfo(ctx context.Context, req *
 		items := make([]*pb.Item, 0, len(resp.Items))
 		for _, it := range resp.Items {
 			items = append(items, &pb.Item{
-				ItemID:         it.Item.ID,
-				Name:           it.Item.Name,
-				Rarity:         it.Item.Rarity,
-				PullPercentage: it.Item.PullPercentage,
+				ItemID:     it.Item.ID,
+				Name:       it.Item.Name,
+				Rarity:     it.Item.Rarity,
+				PullWeight: it.Item.PullWeight,
 			})
 		}
 
@@ -241,4 +241,65 @@ func (s *GachaMachineGRPCService) GetGachaMachineInfo(ctx context.Context, req *
 	return &pb.GetGachaMachineInfoResp{
 		Machine: machines,
 	}, nil
+}
+
+func (s *GachaMachineGRPCService) GetPullResult(ctx context.Context, req *pb.GetPullResultReq) (*pb.GetPullResultResp, error) {
+	session := &domain.GachaPullSession{
+		GachaMachineID: req.MachineID,
+		PlayerID:       req.PlayerID,
+		PullCount:      req.PullCount,
+	}
+
+	if req.PullCount == 1 {
+		itemID, err := s.PullGachaSingle(ctx, req.MachineID, req.PlayerID)
+		if err != nil {
+			return nil, err
+		}
+
+		if err := s.redis.PublishGachaEvent(ctx, s.streamKey, session, itemID); err != nil {
+			s.log.Errorf("Failed to publish gacha pull history to stream: %v", err)
+			// Continue even if stream publish fails
+		}
+
+		return &pb.GetPullResultResp{
+			ItemIDs: []int64{itemID},
+		}, nil
+	}
+
+	itemIDs, err := s.PullGachaByMachineIDMulti(ctx, req.MachineID, req.PlayerID, int(req.PullCount))
+	if err != nil {
+		return nil, err
+	}
+
+	// Publish all pull histories to stream with session data in a single message
+	if err := s.redis.PublishGachaEvent(ctx, s.streamKey, session, itemIDs); err != nil {
+		s.log.Errorf("Failed to publish gacha pull history to stream: %v", err)
+		// Continue even if stream publish fails
+	}
+
+	return &pb.GetPullResultResp{
+		ItemIDs: itemIDs,
+	}, nil
+}
+
+func (s *GachaMachineGRPCService) AddGameToHistory(ctx context.Context, session domain.GachaPullSession, itemIDs []int64) error {
+	createdSession, err := s.repo.CreateGachaPullSession(ctx, &session)
+	if err != nil {
+		s.log.Errorf("Failed to create gacha pull session: %v", err)
+		return err
+	}
+
+	for _, itemID := range itemIDs {
+		history := &domain.GachaPullHistory{
+			GachaPullSessionID: createdSession.ID,
+			ItemID:             itemID,
+		}
+
+		_, err = s.repo.CreateGachaPullHistories(ctx, &[]domain.GachaPullHistory{*history})
+		if err != nil {
+			s.log.Errorf("Failed to create gacha pull history: %v", err)
+			return err
+		}
+	}
+	return nil
 }

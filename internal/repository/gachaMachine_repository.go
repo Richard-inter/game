@@ -31,10 +31,11 @@ type GachaMachineRepository interface {
 	// game
 	CreateGachaPullSession(ctx context.Context, session *domain.GachaPullSession) (*domain.GachaPullSession, error)
 	CreateGachaPullHistories(ctx context.Context, histories *[]domain.GachaPullHistory) (*[]domain.GachaPullHistory, error)
+	GetGachaPullSession(ctx context.Context, sessionID int64) (*domain.GachaPullSession, error)
 
 	// pity state
 	GetGachaPityState(ctx context.Context, playerID int64, machineID int64) (*domain.GachaPityState, error)
-	UpdateGachaPityState(ctx context.Context, pityState *domain.GachaPityState) (*domain.GachaPityState, error)
+	SetGachaPityState(ctx context.Context, pityState *domain.GachaPityState) error
 }
 
 func NewGachaMachineRepository(db *gorm.DB) GachaMachineRepository {
@@ -210,19 +211,42 @@ func (r *gachaMachineRepository) CreateGachaPullHistories(ctx context.Context, h
 	return histories, nil
 }
 
-func (r *gachaMachineRepository) GetGachaPityState(ctx context.Context, playerID int64, machineID int64) (*domain.GachaPityState, error) {
-	var pityState domain.GachaPityState
-	err := r.db.WithContext(ctx).Where("player_id = ? AND gacha_machine_id = ?", playerID, machineID).First(&pityState).Error
+func (r *gachaMachineRepository) GetGachaPullSession(ctx context.Context, sessionID int64) (*domain.GachaPullSession, error) {
+	var session domain.GachaPullSession
+	err := r.db.WithContext(ctx).Where("id = ?", sessionID).First(&session).Error
 	if err != nil {
 		return nil, err
 	}
+	return &session, nil
+}
+
+func (r *gachaMachineRepository) GetGachaPityState(
+	ctx context.Context,
+	playerID int64,
+	machineID int64,
+) (*domain.GachaPityState, error) {
+
+	pityState := domain.GachaPityState{
+		PlayerID:       playerID,
+		GachaMachineID: machineID,
+	}
+
+	err := r.db.WithContext(ctx).
+		Where("player_id = ? AND gacha_machine_id = ?", playerID, machineID).
+		FirstOrCreate(&pityState).Error
+
+	if err != nil {
+		return nil, err
+	}
+
 	return &pityState, nil
 }
 
-func (r *gachaMachineRepository) UpdateGachaPityState(ctx context.Context, pityState *domain.GachaPityState) (*domain.GachaPityState, error) {
-	err := r.db.WithContext(ctx).Save(pityState).Error
-	if err != nil {
-		return nil, err
-	}
-	return pityState, nil
+func (r *gachaMachineRepository) SetGachaPityState(ctx context.Context, pityState *domain.GachaPityState) error {
+	return r.db.WithContext(ctx).Model(&domain.GachaPityState{}).
+		Where("player_id = ? AND gacha_machine_id = ?", pityState.PlayerID, pityState.GachaMachineID).
+		Updates(map[string]interface{}{
+			"ultra_rare_pity_count": pityState.UltraRarePityCount,
+			"super_rare_pity_count": pityState.SuperRarePityCount,
+		}).Error
 }

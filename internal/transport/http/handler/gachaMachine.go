@@ -154,9 +154,9 @@ func (h *GachaMachineHandler) HandleCreateGachaItems(c *gin.Context) {
 	grpcReq := &gachaMachine.CreateGachaItemsReq{}
 	for _, item := range req.GachaItems {
 		grpcReq.GachaItems = append(grpcReq.GachaItems, &gachaMachine.CreateGachaItemReq{
-			Name:           item.Name,
-			Rarity:         item.Rarity,
-			PullPercentage: item.PullPercentage,
+			Name:       item.Name,
+			Rarity:     item.Rarity,
+			PullWeight: item.PullWeight,
 		})
 	}
 
@@ -226,5 +226,30 @@ func (h *GachaMachineHandler) HandleGetGachaMachineInfo(c *gin.Context) {
 	}
 
 	h.logger.Infow("Successfully retrieved gacha machine info", "machine_id", machineID)
+	common.SendSuccess(c, resp)
+}
+
+func (h *GachaMachineHandler) HandleGetPullResult(c *gin.Context) {
+	var req dto.GetPullResultRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		h.logger.Errorw("Invalid request body", "error", err)
+		common.SendError(c, 400, "Invalid request body")
+		return
+	}
+
+	grpcReq := &gachaMachine.GetPullResultReq{
+		MachineID: req.MachineID,
+		PlayerID:  req.PlayerID,
+		PullCount: req.PullCount,
+	}
+
+	resp, err := h.gachaMachineClient.GetPullResult(c, grpcReq)
+	if err != nil {
+		h.logger.Errorw("Failed to get pull result", "error", err)
+		common.SendError(c, 500, err.Error())
+		return
+	}
+
+	h.logger.Infow("Successfully retrieved pull result", "machine_id", req.MachineID, "player_id", req.PlayerID)
 	common.SendSuccess(c, resp)
 }

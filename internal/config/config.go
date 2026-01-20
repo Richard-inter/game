@@ -114,6 +114,14 @@ type TracingConfig struct {
 	JaegerURL   string `mapstructure:"jaeger_url"`
 }
 
+type StreamConsumerConfig struct {
+	StreamKey     string `mapstructure:"stream_key"`
+	ConsumerGroup string `mapstructure:"consumer_group"`
+	ConsumerName  string `mapstructure:"consumer_name"`
+	BatchSize     int    `mapstructure:"batch_size"`
+	BlockTimeout  string `mapstructure:"block_timeout"`
+}
+
 func LoadConfig() (*Config, error) {
 	viper.SetConfigName("config")
 	viper.SetConfigType("yaml")

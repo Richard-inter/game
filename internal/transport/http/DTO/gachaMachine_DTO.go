@@ -24,9 +24,9 @@ type CreateGachaItemsRequest struct {
 }
 
 type CreateGachaItemRequest struct {
-	Name           string  `json:"name" binding:"required"`
-	Rarity         string  `json:"rarity" binding:"required"`
-	PullPercentage float64 `json:"pullPercentage" binding:"required"`
+	Name       string `json:"name" binding:"required"`
+	Rarity     string `json:"rarity" binding:"required"`
+	PullWeight int32  `json:"pullWeight" binding:"required"`
 }
 
 type CreateGachaMachineRequest struct {
@@ -40,4 +40,10 @@ type CreateGachaMachineRequest struct {
 
 type CreateGachaMachineItemRequest struct {
 	ItemID int64 `json:"itemID" binding:"required"`
+}
+
+type GetPullResultRequest struct {
+	MachineID int64 `json:"machineID" binding:"required"`
+	PlayerID  int64 `json:"playerID" binding:"required"`
+	PullCount int32 `json:"pullCount" binding:"required,oneof=1 10"`
 }

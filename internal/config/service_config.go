@@ -10,21 +10,22 @@ import (
 )
 
 type ServiceConfig struct {
-	Service              ServiceDetails  `mapstructure:"service"`
-	Shared               SharedConfig    `mapstructure:"shared"`
-	Database             DatabaseConfig  `mapstructure:"database"`
-	PlayerDatabase       DatabaseConfig  `mapstructure:"player_database"`
-	ClawmachineDatabase  DatabaseConfig  `mapstructure:"clawmachine_database"`
-	GachaMachineDatabase DatabaseConfig  `mapstructure:"gachamachine_database"`
-	Redis                RedisConfig     `mapstructure:"redis"`
-	GRPC                 GRPCConfig      `mapstructure:"grpc"`
-	WebSocket            WebSocketConfig `mapstructure:"websocket"`
-	TCP                  TCPConfig       `mapstructure:"tcp"`
-	CORS                 CORSConfig      `mapstructure:"cors"`
-	Logging              LoggingConfig   `mapstructure:"logging"`
-	JWT                  JWTConfig       `mapstructure:"jwt"`
-	Tracing              TracingConfig   `mapstructure:"tracing"`
-	Discovery            DiscoveryConfig `mapstructure:"discovery"`
+	Service              ServiceDetails       `mapstructure:"service"`
+	Shared               SharedConfig         `mapstructure:"shared"`
+	Database             DatabaseConfig       `mapstructure:"database"`
+	PlayerDatabase       DatabaseConfig       `mapstructure:"player_database"`
+	ClawmachineDatabase  DatabaseConfig       `mapstructure:"clawmachine_database"`
+	GachaMachineDatabase DatabaseConfig       `mapstructure:"gachamachine_database"`
+	Redis                RedisConfig          `mapstructure:"redis"`
+	GRPC                 GRPCConfig           `mapstructure:"grpc"`
+	WebSocket            WebSocketConfig      `mapstructure:"websocket"`
+	TCP                  TCPConfig            `mapstructure:"tcp"`
+	CORS                 CORSConfig           `mapstructure:"cors"`
+	Logging              LoggingConfig        `mapstructure:"logging"`
+	JWT                  JWTConfig            `mapstructure:"jwt"`
+	Tracing              TracingConfig        `mapstructure:"tracing"`
+	Discovery            DiscoveryConfig      `mapstructure:"discovery"`
+	StreamConsumer       StreamConsumerConfig `mapstructure:"stream_consumer"`
 }
 
 // Service filenames for loading multiple service configs

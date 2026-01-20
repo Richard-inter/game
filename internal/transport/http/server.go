@@ -169,7 +169,7 @@ func (s *Server) setupRoutes() {
 			gachaMachine.POST("/adjustPlayerDiamond", gachaMachineHandler.HandleAdjustPlayerDiamond)
 
 			// game
-			// gachaMachine.POST("/getPullResult", gachaMachineHandler.HandleGetPullResult)
+			gachaMachine.POST("/getPullResult", gachaMachineHandler.HandleGetPullResult)
 		}
 	}
 }

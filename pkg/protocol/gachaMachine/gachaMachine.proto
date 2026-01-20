@@ -10,7 +10,7 @@ message Item {
     int64 itemID = 1;
     string name = 2;
     string rarity = 3;
-    double pullPercentage = 4;
+    int32 pullWeight = 4;
 }
 
 message GachaMachine {
@@ -51,7 +51,7 @@ message CreateGachaMachineResp {
 message CreateGachaItemReq {
     string name = 1;
     string rarity = 2;
-    double pullPercentage = 3;
+    int32 pullWeight = 3;
 }
 
 message CreateGachaItemsReq {
@@ -111,10 +111,11 @@ message GetGachaMachineInfoResp {
 message GetPullResultReq {
     int64 playerID = 1;
     int64 machineID = 2;
+    int32 pullCount = 3;
 }
 
 message GetPullResultResp {
-    int64 itemID = 1;
+    repeated int64 itemIDs = 1;
 }
 
 message GetPullTimesTenResultReq {
