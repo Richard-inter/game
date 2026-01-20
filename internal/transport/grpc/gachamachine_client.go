@@ -59,10 +59,6 @@ func (c *GachaMachineClient) GetPullResult(ctx context.Context, req *gachamachin
 	return c.client.GetPullResult(ctx, req)
 }
 
-func (c *GachaMachineClient) GetPullTimesTenResult(ctx context.Context, req *gachamachinepb.GetPullTimesTenResultReq) (*gachamachinepb.GetPullTimesTenResultResp, error) {
-	return c.client.GetPullTimesTenResult(ctx, req)
-}
-
 func (c *GachaMachineClient) Close() error {
 	return c.conn.Close()
 }
