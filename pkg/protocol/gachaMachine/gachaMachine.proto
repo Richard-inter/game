@@ -143,5 +143,4 @@ service GachaMachineService {
 
     // game
     rpc GetPullResult (GetPullResultReq) returns (GetPullResultResp);
-    rpc GetPullTimesTenResult (GetPullTimesTenResultReq) returns (GetPullTimesTenResultResp);
 }

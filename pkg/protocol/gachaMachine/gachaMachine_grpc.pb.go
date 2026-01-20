@@ -19,15 +19,14 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	GachaMachineService_CreateGachaMachine_FullMethodName    = "/gachaMachine.GachaMachineService/CreateGachaMachine"
-	GachaMachineService_GetGachaMachineInfo_FullMethodName   = "/gachaMachine.GachaMachineService/GetGachaMachineInfo"
-	GachaMachineService_CreateGachaItems_FullMethodName      = "/gachaMachine.GachaMachineService/CreateGachaItems"
-	GachaMachineService_CreateGachaPlayer_FullMethodName     = "/gachaMachine.GachaMachineService/CreateGachaPlayer"
-	GachaMachineService_GetGachaPlayerInfo_FullMethodName    = "/gachaMachine.GachaMachineService/GetGachaPlayerInfo"
-	GachaMachineService_AdjustPlayerCoin_FullMethodName      = "/gachaMachine.GachaMachineService/AdjustPlayerCoin"
-	GachaMachineService_AdjustPlayerDiamond_FullMethodName   = "/gachaMachine.GachaMachineService/AdjustPlayerDiamond"
-	GachaMachineService_GetPullResult_FullMethodName         = "/gachaMachine.GachaMachineService/GetPullResult"
-	GachaMachineService_GetPullTimesTenResult_FullMethodName = "/gachaMachine.GachaMachineService/GetPullTimesTenResult"
+	GachaMachineService_CreateGachaMachine_FullMethodName  = "/gachaMachine.GachaMachineService/CreateGachaMachine"
+	GachaMachineService_GetGachaMachineInfo_FullMethodName = "/gachaMachine.GachaMachineService/GetGachaMachineInfo"
+	GachaMachineService_CreateGachaItems_FullMethodName    = "/gachaMachine.GachaMachineService/CreateGachaItems"
+	GachaMachineService_CreateGachaPlayer_FullMethodName   = "/gachaMachine.GachaMachineService/CreateGachaPlayer"
+	GachaMachineService_GetGachaPlayerInfo_FullMethodName  = "/gachaMachine.GachaMachineService/GetGachaPlayerInfo"
+	GachaMachineService_AdjustPlayerCoin_FullMethodName    = "/gachaMachine.GachaMachineService/AdjustPlayerCoin"
+	GachaMachineService_AdjustPlayerDiamond_FullMethodName = "/gachaMachine.GachaMachineService/AdjustPlayerDiamond"
+	GachaMachineService_GetPullResult_FullMethodName       = "/gachaMachine.GachaMachineService/GetPullResult"
 )
 
 // GachaMachineServiceClient is the client API for GachaMachineService service.
@@ -46,7 +45,6 @@ type GachaMachineServiceClient interface {
 	AdjustPlayerDiamond(ctx context.Context, in *AdjustPlayerDiamondReq, opts ...grpc.CallOption) (*AdjustPlayerDiamondResp, error)
 	// game
 	GetPullResult(ctx context.Context, in *GetPullResultReq, opts ...grpc.CallOption) (*GetPullResultResp, error)
-	GetPullTimesTenResult(ctx context.Context, in *GetPullTimesTenResultReq, opts ...grpc.CallOption) (*GetPullTimesTenResultResp, error)
 }
 
 type gachaMachineServiceClient struct {
@@ -137,16 +135,6 @@ func (c *gachaMachineServiceClient) GetPullResult(ctx context.Context, in *GetPu
 	return out, nil
 }
 
-func (c *gachaMachineServiceClient) GetPullTimesTenResult(ctx context.Context, in *GetPullTimesTenResultReq, opts ...grpc.CallOption) (*GetPullTimesTenResultResp, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(GetPullTimesTenResultResp)
-	err := c.cc.Invoke(ctx, GachaMachineService_GetPullTimesTenResult_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 // GachaMachineServiceServer is the server API for GachaMachineService service.
 // All implementations must embed UnimplementedGachaMachineServiceServer
 // for forward compatibility.
@@ -163,7 +151,6 @@ type GachaMachineServiceServer interface {
 	AdjustPlayerDiamond(context.Context, *AdjustPlayerDiamondReq) (*AdjustPlayerDiamondResp, error)
 	// game
 	GetPullResult(context.Context, *GetPullResultReq) (*GetPullResultResp, error)
-	GetPullTimesTenResult(context.Context, *GetPullTimesTenResultReq) (*GetPullTimesTenResultResp, error)
 	mustEmbedUnimplementedGachaMachineServiceServer()
 }
 
@@ -197,9 +184,6 @@ func (UnimplementedGachaMachineServiceServer) AdjustPlayerDiamond(context.Contex
 }
 func (UnimplementedGachaMachineServiceServer) GetPullResult(context.Context, *GetPullResultReq) (*GetPullResultResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetPullResult not implemented")
-}
-func (UnimplementedGachaMachineServiceServer) GetPullTimesTenResult(context.Context, *GetPullTimesTenResultReq) (*GetPullTimesTenResultResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetPullTimesTenResult not implemented")
 }
 func (UnimplementedGachaMachineServiceServer) mustEmbedUnimplementedGachaMachineServiceServer() {}
 func (UnimplementedGachaMachineServiceServer) testEmbeddedByValue()                             {}
@@ -366,24 +350,6 @@ func _GachaMachineService_GetPullResult_Handler(srv interface{}, ctx context.Con
 	return interceptor(ctx, in, info, handler)
 }
 
-func _GachaMachineService_GetPullTimesTenResult_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetPullTimesTenResultReq)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(GachaMachineServiceServer).GetPullTimesTenResult(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: GachaMachineService_GetPullTimesTenResult_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(GachaMachineServiceServer).GetPullTimesTenResult(ctx, req.(*GetPullTimesTenResultReq))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 // GachaMachineService_ServiceDesc is the grpc.ServiceDesc for GachaMachineService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -422,10 +388,6 @@ var GachaMachineService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetPullResult",
 			Handler:    _GachaMachineService_GetPullResult_Handler,
-		},
-		{
-			MethodName: "GetPullTimesTenResult",
-			Handler:    _GachaMachineService_GetPullTimesTenResult_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
