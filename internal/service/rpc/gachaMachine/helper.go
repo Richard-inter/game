@@ -190,3 +190,26 @@ func getItemRarity(itemID int64, resp *domain.GachaMachine) string {
 	}
 	return ""
 }
+
+func (s *GachaMachineGRPCService) PlayMachine(ctx context.Context, playerID, machineID int64, pullCount int32) error {
+	resp, err := s.repo.GetGachaMachineInfo(ctx, machineID)
+	if err != nil {
+		return err
+	}
+
+	if pullCount == 1 {
+		_, err = s.repo.AdjustPlayerCoin(ctx, playerID, int64(resp.Price), "minus")
+		if err != nil {
+			return err
+		}
+	}
+
+	if pullCount == 10 {
+		_, err = s.repo.AdjustPlayerCoin(ctx, playerID, int64(resp.PriceTimesTen), "minus")
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}

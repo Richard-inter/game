@@ -244,6 +244,11 @@ func (s *GachaMachineGRPCService) GetGachaMachineInfo(ctx context.Context, req *
 }
 
 func (s *GachaMachineGRPCService) GetPullResult(ctx context.Context, req *pb.GetPullResultReq) (*pb.GetPullResultResp, error) {
+	err := s.PlayMachine(ctx, req.PlayerID, req.MachineID, req.PullCount)
+	if err != nil {
+		return nil, err
+	}
+
 	session := &domain.GachaPullSession{
 		GachaMachineID: req.MachineID,
 		PlayerID:       req.PlayerID,
