@@ -30,10 +30,11 @@ type ServiceConfig struct {
 
 // Service filenames for loading multiple service configs
 var ServiceConfigFiles = map[string]string{
-	"player":              "config/rpc-player-service.yaml",
-	"clawmachine":         "config/rpc-clawmachine-service.yaml",
-	"gachamachine":        "config/rpc-gachamachine-service.yaml",
-	"clawmachine_runtime": "config/rpc-clawmachine-runtime-service.yaml",
+	"player":               "config/rpc-player-service.yaml",
+	"clawmachine":          "config/rpc-clawmachine-service.yaml",
+	"gachamachine":         "config/rpc-gachamachine-service.yaml",
+	"clawmachine_runtime":  "config/rpc-clawmachine-runtime-service.yaml",
+	"gachamachine_runtime": "config/rpc-gachamachine-runtime-service.yaml",
 }
 
 // GetRedisAddr returns the Redis address in host:port format

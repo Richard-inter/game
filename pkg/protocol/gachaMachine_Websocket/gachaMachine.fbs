@@ -38,6 +38,13 @@ table GetPlayerInfoWsResp {
   diamond:long;
 }
 
+table Items {
+  item_id:long;
+  name:string;
+  rarity:string;
+  pull_weight:int;
+}
+
 table GetMachineInfoWsResp {
   machine_id:long;
   name:string;
@@ -45,6 +52,7 @@ table GetMachineInfoWsResp {
   price_times_ten:long;
   super_rare_pity:int;
   ultra_rare_pity:int;
+  items:[Items];
 }
 
 /***************

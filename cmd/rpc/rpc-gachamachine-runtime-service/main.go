@@ -15,8 +15,8 @@ import (
 	"github.com/Richard-inter/game/internal/config"
 	"github.com/Richard-inter/game/internal/db"
 	"github.com/Richard-inter/game/internal/repository"
-	"github.com/Richard-inter/game/internal/service/rpc/gachaMachine"
 	c "github.com/Richard-inter/game/internal/service/rpc/gachaMachine_runtime"
+	"github.com/Richard-inter/game/internal/worker"
 	"github.com/Richard-inter/game/pkg/logger"
 	pb "github.com/Richard-inter/game/pkg/protocol/gachaMachine_Websocket"
 )
@@ -74,11 +74,14 @@ func main() {
 	// Initialize Redis client
 	redisClient := cache.NewRedisClient(cfg.GetRedisAddr(), cfg.GetRedisPassword())
 
-	// Initialize the actual gachaMachine service
-	gachaMachineSvc := gachaMachine.NewGachaMachineGRPCService(gachaMachineRepo, redisClient, "")
-
-	runtimeService := c.NewGachaMachineWebsocketService(gachaMachineSvc)
+	runtimeService := c.NewGachaMachineWebsocketService(gachaMachineRepo, redisClient, cfg.StreamConsumer.StreamKey)
 	pb.RegisterGachaMachineRuntimeServiceServer(s, runtimeService)
+
+	// Initialize and start stream consumer (optional - only if you want runtime service to also consume)
+	streamConsumer := worker.NewGachaStreamConsumer(gachaMachineRepo, redisClient, &cfg.StreamConsumer, nil)
+	ctx := context.Background()
+	go streamConsumer.Start(ctx)
+	log.Infow("Gacha stream consumer started")
 
 	// Enable reflection for development
 	reflection.Register(s)
