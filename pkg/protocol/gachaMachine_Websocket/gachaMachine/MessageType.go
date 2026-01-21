@@ -7,24 +7,33 @@ import "strconv"
 type MessageType int8
 
 const (
-	MessageTypeGetPullResultWs  MessageType = 0
-	MessageTypeGetPlayerInfoWs  MessageType = 1
-	MessageTypeGetMachineInfoWs MessageType = 2
-	MessageTypeErrorResp        MessageType = 100
+	MessageTypeGetPullResultWsReq   MessageType = 0
+	MessageTypeGetPullResultWsResp  MessageType = 1
+	MessageTypeGetPlayerInfoWsReq   MessageType = 2
+	MessageTypeGetPlayerInfoWsResp  MessageType = 3
+	MessageTypeGetMachineInfoWsReq  MessageType = 4
+	MessageTypeGetMachineInfoWsResp MessageType = 5
+	MessageTypeErrorResp            MessageType = 100
 )
 
 var EnumNamesMessageType = map[MessageType]string{
-	MessageTypeGetPullResultWs:  "GetPullResultWs",
-	MessageTypeGetPlayerInfoWs:  "GetPlayerInfoWs",
-	MessageTypeGetMachineInfoWs: "GetMachineInfoWs",
-	MessageTypeErrorResp:        "ErrorResp",
+	MessageTypeGetPullResultWsReq:   "GetPullResultWsReq",
+	MessageTypeGetPullResultWsResp:  "GetPullResultWsResp",
+	MessageTypeGetPlayerInfoWsReq:   "GetPlayerInfoWsReq",
+	MessageTypeGetPlayerInfoWsResp:  "GetPlayerInfoWsResp",
+	MessageTypeGetMachineInfoWsReq:  "GetMachineInfoWsReq",
+	MessageTypeGetMachineInfoWsResp: "GetMachineInfoWsResp",
+	MessageTypeErrorResp:            "ErrorResp",
 }
 
 var EnumValuesMessageType = map[string]MessageType{
-	"GetPullResultWs":  MessageTypeGetPullResultWs,
-	"GetPlayerInfoWs":  MessageTypeGetPlayerInfoWs,
-	"GetMachineInfoWs": MessageTypeGetMachineInfoWs,
-	"ErrorResp":        MessageTypeErrorResp,
+	"GetPullResultWsReq":   MessageTypeGetPullResultWsReq,
+	"GetPullResultWsResp":  MessageTypeGetPullResultWsResp,
+	"GetPlayerInfoWsReq":   MessageTypeGetPlayerInfoWsReq,
+	"GetPlayerInfoWsResp":  MessageTypeGetPlayerInfoWsResp,
+	"GetMachineInfoWsReq":  MessageTypeGetMachineInfoWsReq,
+	"GetMachineInfoWsResp": MessageTypeGetMachineInfoWsResp,
+	"ErrorResp":            MessageTypeErrorResp,
 }
 
 func (v MessageType) String() string {

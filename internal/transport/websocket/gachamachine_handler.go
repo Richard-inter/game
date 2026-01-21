@@ -31,9 +31,9 @@ func NewGachaMachineWebSocketHandler(logger *zap.SugaredLogger, grpcManager *grp
 		handlers:     make(map[fbs.MessageType]messageHandler),
 	}
 
-	h.handlers[fbs.MessageTypeGetPullResultWs] = h.handleGetPullResult
-	h.handlers[fbs.MessageTypeGetPlayerInfoWs] = h.handleGetPlayerInfo
-	h.handlers[fbs.MessageTypeGetMachineInfoWs] = h.handleGetMachineInfo
+	h.handlers[fbs.MessageTypeGetPullResultWsReq] = h.handleGetPullResult
+	h.handlers[fbs.MessageTypeGetPlayerInfoWsReq] = h.handleGetPlayerInfo
+	h.handlers[fbs.MessageTypeGetMachineInfoWsReq] = h.handleGetMachineInfo
 
 	return h, nil
 }

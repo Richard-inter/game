@@ -36,13 +36,13 @@ func main() {
 
 			env := fbs.GetRootAsEnvelope(data, 0)
 			switch env.Type() {
-			case fbs.MessageTypeGetPullResultWs:
+			case fbs.MessageTypeGetPullResultWsResp:
 				handleGetPullResultWsResp(env)
 				return // stop loop after receiving response
-			case fbs.MessageTypeGetPlayerInfoWs:
+			case fbs.MessageTypeGetPlayerInfoWsResp:
 				handleGetPlayerInfoWsResp(env)
 				return // stop loop after receiving response
-			case fbs.MessageTypeGetMachineInfoWs:
+			case fbs.MessageTypeGetMachineInfoWsResp:
 				handleGetMachineInfoWsResp(env)
 				return // stop loop after receiving response
 			case fbs.MessageTypeErrorResp:
@@ -88,7 +88,7 @@ func createGetPullResultWsRequest(playerID, machineID int64, pullCount int) []by
 	payloadOffset := envBuilder.CreateByteVector(reqBytes)
 
 	fbs.EnvelopeStart(envBuilder)
-	fbs.EnvelopeAddType(envBuilder, fbs.MessageTypeGetPullResultWs)
+	fbs.EnvelopeAddType(envBuilder, fbs.MessageTypeGetPullResultWsReq)
 	fbs.EnvelopeAddPayload(envBuilder, payloadOffset)
 	env := fbs.EnvelopeEnd(envBuilder)
 	envBuilder.Finish(env)
@@ -114,7 +114,7 @@ func createGetPlayerInfoWsRequest(playerID int64) []byte {
 	payloadOffset := envBuilder.CreateByteVector(reqBytes)
 
 	fbs.EnvelopeStart(envBuilder)
-	fbs.EnvelopeAddType(envBuilder, fbs.MessageTypeGetPlayerInfoWs)
+	fbs.EnvelopeAddType(envBuilder, fbs.MessageTypeGetPlayerInfoWsReq)
 	fbs.EnvelopeAddPayload(envBuilder, payloadOffset)
 	env := fbs.EnvelopeEnd(envBuilder)
 	envBuilder.Finish(env)
@@ -140,7 +140,7 @@ func createGetMachineInfoWsRequest(machineID int64) []byte {
 	payloadOffset := envBuilder.CreateByteVector(reqBytes)
 
 	fbs.EnvelopeStart(envBuilder)
-	fbs.EnvelopeAddType(envBuilder, fbs.MessageTypeGetMachineInfoWs)
+	fbs.EnvelopeAddType(envBuilder, fbs.MessageTypeGetMachineInfoWsReq)
 	fbs.EnvelopeAddPayload(envBuilder, payloadOffset)
 	env := fbs.EnvelopeEnd(envBuilder)
 	envBuilder.Finish(env)

@@ -99,7 +99,7 @@ func (s *GachaMachineWebsocketService) GetPullResultWs(ctx context.Context, req 
 		respBytes := builder.FinishedBytes()
 
 		return s.buildEnvelopeResponse(
-			fbs.MessageTypeGetPullResultWs,
+			fbs.MessageTypeGetPullResultWsResp,
 			respBytes,
 		), nil
 	}
@@ -134,7 +134,7 @@ func (s *GachaMachineWebsocketService) GetPullResultWs(ctx context.Context, req 
 	builder.Finish(respOffset)
 	respBytes := builder.FinishedBytes()
 
-	return s.buildEnvelopeResponse(fbs.MessageTypeGetPullResultWs, respBytes), nil
+	return s.buildEnvelopeResponse(fbs.MessageTypeGetPullResultWsResp, respBytes), nil
 }
 
 func (s *GachaMachineWebsocketService) GetPlayerInfoWs(
@@ -172,7 +172,7 @@ func (s *GachaMachineWebsocketService) GetPlayerInfoWs(
 	respBytes := builder.FinishedBytes()
 
 	return s.buildEnvelopeResponse(
-		fbs.MessageTypeGetPlayerInfoWs,
+		fbs.MessageTypeGetPlayerInfoWsResp,
 		respBytes,
 	), nil
 }
@@ -234,7 +234,7 @@ func (s *GachaMachineWebsocketService) GetMachineInfoWs(
 	respBytes := builder.FinishedBytes()
 
 	return s.buildEnvelopeResponse(
-		fbs.MessageTypeGetMachineInfoWs,
+		fbs.MessageTypeGetMachineInfoWsResp,
 		respBytes,
 	), nil
 }

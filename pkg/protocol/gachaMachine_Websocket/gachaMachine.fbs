@@ -1,9 +1,12 @@
 namespace gachaMachine;
 
 enum MessageType : byte {
-  GetPullResultWs = 0,
-  GetPlayerInfoWs = 1,
-  GetMachineInfoWs = 2,
+  GetPullResultWsReq = 0,
+  GetPullResultWsResp = 1,
+  GetPlayerInfoWsReq = 2,
+  GetPlayerInfoWsResp = 3,
+  GetMachineInfoWsReq = 4,
+  GetMachineInfoWsResp = 5,
   ErrorResp = 100
 }
 
