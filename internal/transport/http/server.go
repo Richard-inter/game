@@ -116,6 +116,11 @@ func (s *Server) setupRoutes() {
 		s.logger.Fatalw("Failed to create claw machine handler", "error", err)
 	}
 
+	gachaMachineHandler, err := handler.NewGachaMachineHandler(s.logger, s.grpcClient)
+	if err != nil {
+		s.logger.Fatalw("Failed to create gacha machine handler", "error", err)
+	}
+
 	// Health check
 	s.engine.GET("/health", handler.HealthCheck(s.logger.Desugar()))
 
@@ -146,6 +151,25 @@ func (s *Server) setupRoutes() {
 			// game
 			clawMachine.POST("/startClawGame", clawMachineHandler.HandleStartClawGame)
 			clawMachine.POST("/addTouchedItemRecord", clawMachineHandler.HandleAddTouchedItemRecord)
+		}
+
+		gachaMachine := v1.Group("/gachaMachine")
+		{
+			// items
+			gachaMachine.POST("/createGachaItems", gachaMachineHandler.HandleCreateGachaItems)
+
+			// machine
+			gachaMachine.POST("/createGachaMachine", gachaMachineHandler.HandleCreateGachaMachine)
+			gachaMachine.GET("/getGachaMachineInfo/:machineID", gachaMachineHandler.HandleGetGachaMachineInfo)
+
+			// player
+			gachaMachine.GET("/getGachaPlayerInfo/:playerID", gachaMachineHandler.HandleGetGachaPlayerInfo)
+			gachaMachine.POST("/createGachaPlayer", gachaMachineHandler.HandleCreateGachaPlayer)
+			gachaMachine.POST("/adjustPlayerCoin", gachaMachineHandler.HandleAdjustPlayerCoin)
+			gachaMachine.POST("/adjustPlayerDiamond", gachaMachineHandler.HandleAdjustPlayerDiamond)
+
+			// game
+			gachaMachine.POST("/getPullResult", gachaMachineHandler.HandleGetPullResult)
 		}
 	}
 }

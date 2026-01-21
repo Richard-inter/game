@@ -10,20 +10,31 @@ import (
 )
 
 type ServiceConfig struct {
-	Service             ServiceDetails  `mapstructure:"service"`
-	Shared              SharedConfig    `mapstructure:"shared"`
-	Database            DatabaseConfig  `mapstructure:"database"`
-	PlayerDatabase      DatabaseConfig  `mapstructure:"player_database"`
-	ClawmachineDatabase DatabaseConfig  `mapstructure:"clawmachine_database"`
-	Redis               RedisConfig     `mapstructure:"redis"`
-	GRPC                GRPCConfig      `mapstructure:"grpc"`
-	WebSocket           WebSocketConfig `mapstructure:"websocket"`
-	TCP                 TCPConfig       `mapstructure:"tcp"`
-	CORS                CORSConfig      `mapstructure:"cors"`
-	Logging             LoggingConfig   `mapstructure:"logging"`
-	JWT                 JWTConfig       `mapstructure:"jwt"`
-	Tracing             TracingConfig   `mapstructure:"tracing"`
-	Discovery           DiscoveryConfig `mapstructure:"discovery"`
+	Service              ServiceDetails       `mapstructure:"service"`
+	Shared               SharedConfig         `mapstructure:"shared"`
+	Database             DatabaseConfig       `mapstructure:"database"`
+	PlayerDatabase       DatabaseConfig       `mapstructure:"player_database"`
+	ClawmachineDatabase  DatabaseConfig       `mapstructure:"clawmachine_database"`
+	GachaMachineDatabase DatabaseConfig       `mapstructure:"gachamachine_database"`
+	Redis                RedisConfig          `mapstructure:"redis"`
+	GRPC                 GRPCConfig           `mapstructure:"grpc"`
+	WebSocket            WebSocketConfig      `mapstructure:"websocket"`
+	TCP                  TCPConfig            `mapstructure:"tcp"`
+	CORS                 CORSConfig           `mapstructure:"cors"`
+	Logging              LoggingConfig        `mapstructure:"logging"`
+	JWT                  JWTConfig            `mapstructure:"jwt"`
+	Tracing              TracingConfig        `mapstructure:"tracing"`
+	Discovery            DiscoveryConfig      `mapstructure:"discovery"`
+	StreamConsumer       StreamConsumerConfig `mapstructure:"stream_consumer"`
+}
+
+// Service filenames for loading multiple service configs
+var ServiceConfigFiles = map[string]string{
+	"player":               "config/rpc-player-service.yaml",
+	"clawmachine":          "config/rpc-clawmachine-service.yaml",
+	"gachamachine":         "config/rpc-gachamachine-service.yaml",
+	"clawmachine_runtime":  "config/rpc-clawmachine-runtime-service.yaml",
+	"gachamachine_runtime": "config/rpc-gachamachine-runtime-service.yaml",
 }
 
 // GetRedisAddr returns the Redis address in host:port format
@@ -47,13 +58,14 @@ type ServiceDetails struct {
 }
 
 type SharedConfig struct {
-	Database            string `mapstructure:"database"`
-	PlayerDatabase      string `mapstructure:"player_database"`
-	ClawmachineDatabase string `mapstructure:"clawmachine_database"`
-	Redis               string `mapstructure:"redis"`
-	Logging             string `mapstructure:"logging"`
-	JWT                 string `mapstructure:"jwt"`
-	Tracing             string `mapstructure:"tracing"`
+	Database             string `mapstructure:"database"`
+	PlayerDatabase       string `mapstructure:"player_database"`
+	ClawmachineDatabase  string `mapstructure:"clawmachine_database"`
+	GachaMachineDatabase string `mapstructure:"gachamachine_database"`
+	Redis                string `mapstructure:"redis"`
+	Logging              string `mapstructure:"logging"`
+	JWT                  string `mapstructure:"jwt"`
+	Tracing              string `mapstructure:"tracing"`
 }
 
 type CORSConfig struct {
@@ -66,6 +78,27 @@ type CORSConfig struct {
 func LoadServiceConfig(serviceName string) (*ServiceConfig, error) {
 	configFile := fmt.Sprintf("config/%s.yaml", serviceName)
 	return LoadServiceConfigFromPath(configFile)
+}
+
+// LoadMultipleServiceConfigs loads multiple service configs using the ServiceConfigFiles map
+func LoadMultipleServiceConfigs(serviceNames []string) (map[string]*ServiceConfig, error) {
+	configs := make(map[string]*ServiceConfig)
+
+	for _, serviceName := range serviceNames {
+		filename, exists := ServiceConfigFiles[serviceName]
+		if !exists {
+			return nil, fmt.Errorf("unknown service name: %s", serviceName)
+		}
+
+		config, err := LoadServiceConfigFromPath(filename)
+		if err != nil {
+			return nil, fmt.Errorf("failed to load config for %s: %w", serviceName, err)
+		}
+
+		configs[serviceName] = config
+	}
+
+	return configs, nil
 }
 
 // LoadServiceConfigFromPath loads config from a specific file path
@@ -108,6 +141,11 @@ func LoadServiceConfigFromPath(configFile string) (*ServiceConfig, error) {
 	}
 	if config.Shared.ClawmachineDatabase != "" {
 		if err := loadSharedConfig(v, config.Shared.ClawmachineDatabase, "clawmachine_database"); err != nil {
+			return nil, err
+		}
+	}
+	if config.Shared.GachaMachineDatabase != "" {
+		if err := loadSharedConfig(v, config.Shared.GachaMachineDatabase, "gachamachine_database"); err != nil {
 			return nil, err
 		}
 	}
@@ -233,6 +271,17 @@ func (c *ServiceConfig) GetClawmachineDSN() string {
 		c.ClawmachineDatabase.Host,
 		c.ClawmachineDatabase.Port,
 		c.ClawmachineDatabase.Name,
+	)
+}
+
+// GetGachaMachineDSN returns gacha machine database connection string
+func (c *ServiceConfig) GetGachaMachineDSN() string {
+	return fmt.Sprintf("%s:%s@tcp(%s:%d)/%s",
+		c.GachaMachineDatabase.User,
+		c.GachaMachineDatabase.Password,
+		c.GachaMachineDatabase.Host,
+		c.GachaMachineDatabase.Port,
+		c.GachaMachineDatabase.Name,
 	)
 }
 

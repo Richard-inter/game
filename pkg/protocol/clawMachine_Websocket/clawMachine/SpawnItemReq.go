@@ -41,23 +41,23 @@ func (rcv *SpawnItemReq) Table() flatbuffers.Table {
 	return rcv._tab
 }
 
-func (rcv *SpawnItemReq) MachineId() uint64 {
+func (rcv *SpawnItemReq) MachineId() int64 {
 	o := flatbuffers.UOffsetT(rcv._tab.Offset(4))
 	if o != 0 {
-		return rcv._tab.GetUint64(o + rcv._tab.Pos)
+		return rcv._tab.GetInt64(o + rcv._tab.Pos)
 	}
 	return 0
 }
 
-func (rcv *SpawnItemReq) MutateMachineId(n uint64) bool {
-	return rcv._tab.MutateUint64Slot(4, n)
+func (rcv *SpawnItemReq) MutateMachineId(n int64) bool {
+	return rcv._tab.MutateInt64Slot(4, n)
 }
 
 func SpawnItemReqStart(builder *flatbuffers.Builder) {
 	builder.StartObject(1)
 }
-func SpawnItemReqAddMachineId(builder *flatbuffers.Builder, machineId uint64) {
-	builder.PrependUint64Slot(0, machineId, 0)
+func SpawnItemReqAddMachineId(builder *flatbuffers.Builder, machineId int64) {
+	builder.PrependInt64Slot(0, machineId, 0)
 }
 func SpawnItemReqEnd(builder *flatbuffers.Builder) flatbuffers.UOffsetT {
 	return builder.EndObject()

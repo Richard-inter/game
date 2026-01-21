@@ -41,23 +41,23 @@ func (rcv *GetPlayerInfoWsReq) Table() flatbuffers.Table {
 	return rcv._tab
 }
 
-func (rcv *GetPlayerInfoWsReq) PlayerId() uint64 {
+func (rcv *GetPlayerInfoWsReq) PlayerId() int64 {
 	o := flatbuffers.UOffsetT(rcv._tab.Offset(4))
 	if o != 0 {
-		return rcv._tab.GetUint64(o + rcv._tab.Pos)
+		return rcv._tab.GetInt64(o + rcv._tab.Pos)
 	}
 	return 0
 }
 
-func (rcv *GetPlayerInfoWsReq) MutatePlayerId(n uint64) bool {
-	return rcv._tab.MutateUint64Slot(4, n)
+func (rcv *GetPlayerInfoWsReq) MutatePlayerId(n int64) bool {
+	return rcv._tab.MutateInt64Slot(4, n)
 }
 
 func GetPlayerInfoWsReqStart(builder *flatbuffers.Builder) {
 	builder.StartObject(1)
 }
-func GetPlayerInfoWsReqAddPlayerId(builder *flatbuffers.Builder, playerId uint64) {
-	builder.PrependUint64Slot(0, playerId, 0)
+func GetPlayerInfoWsReqAddPlayerId(builder *flatbuffers.Builder, playerId int64) {
+	builder.PrependInt64Slot(0, playerId, 0)
 }
 func GetPlayerInfoWsReqEnd(builder *flatbuffers.Builder) flatbuffers.UOffsetT {
 	return builder.EndObject()

@@ -41,16 +41,16 @@ func (rcv *GetPlayerInfoWsResp) Table() flatbuffers.Table {
 	return rcv._tab
 }
 
-func (rcv *GetPlayerInfoWsResp) PlayerId() uint64 {
+func (rcv *GetPlayerInfoWsResp) PlayerId() int64 {
 	o := flatbuffers.UOffsetT(rcv._tab.Offset(4))
 	if o != 0 {
-		return rcv._tab.GetUint64(o + rcv._tab.Pos)
+		return rcv._tab.GetInt64(o + rcv._tab.Pos)
 	}
 	return 0
 }
 
-func (rcv *GetPlayerInfoWsResp) MutatePlayerId(n uint64) bool {
-	return rcv._tab.MutateUint64Slot(4, n)
+func (rcv *GetPlayerInfoWsResp) MutatePlayerId(n int64) bool {
+	return rcv._tab.MutateInt64Slot(4, n)
 }
 
 func (rcv *GetPlayerInfoWsResp) Username() []byte {
@@ -88,8 +88,8 @@ func (rcv *GetPlayerInfoWsResp) MutateDiamond(n int64) bool {
 func GetPlayerInfoWsRespStart(builder *flatbuffers.Builder) {
 	builder.StartObject(4)
 }
-func GetPlayerInfoWsRespAddPlayerId(builder *flatbuffers.Builder, playerId uint64) {
-	builder.PrependUint64Slot(0, playerId, 0)
+func GetPlayerInfoWsRespAddPlayerId(builder *flatbuffers.Builder, playerId int64) {
+	builder.PrependInt64Slot(0, playerId, 0)
 }
 func GetPlayerInfoWsRespAddUsername(builder *flatbuffers.Builder, username flatbuffers.UOffsetT) {
 	builder.PrependUOffsetTSlot(1, flatbuffers.UOffsetT(username), 0)

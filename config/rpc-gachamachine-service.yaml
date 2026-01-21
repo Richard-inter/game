@@ -1,0 +1,35 @@
+# RPC GachaMachine Service Configuration (gRPC)
+
+service:
+  name: "rpc-gachamachine-service"
+  host: "0.0.0.0"
+  port: 9096
+  mode: "release"
+
+grpc:
+  host: "0.0.0.0"
+  port: 9096
+  reflection: true
+
+# Stream Consumer Configuration
+stream_consumer:
+  stream_key: "gacha:pull_history_stream"
+  consumer_group: "gacha_event_group"
+  consumer_name: "gacha_event_worker"
+  batch_size: 50
+  block_timeout: "5s"
+
+discovery:
+  enabled: false
+  etcd:
+    endpoints:
+      - "localhost:2379"
+    timeout: "5s"
+
+# Import shared configurations
+shared:
+  gachamachine_database: "shared.yaml"
+  redis: "shared.yaml"
+  logging: "shared.yaml"
+  jwt: "shared.yaml"
+  tracing: "shared.yaml"

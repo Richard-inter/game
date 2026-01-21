@@ -67,7 +67,7 @@ func (s *ClawMachineWebsocketService) StartClawGameWs(
 		return nil, fmt.Errorf("failed to charge player: %w", err)
 	}
 
-	gameID, err := s.repo.AddGameHistory(int64(playerID), &domain.ClawMachineGameRecord{
+	gameID, err := s.repo.AddGameHistory(ctx, int64(playerID), &domain.ClawMachineGameRecord{
 		PlayerID:      int64(playerID),
 		ClawMachineID: int64(machineID),
 	})
@@ -85,7 +85,7 @@ func (s *ClawMachineWebsocketService) StartClawGameWs(
 	resultOffsets := make([]flatbuffers.UOffsetT, len(results))
 	for i := len(results) - 1; i >= 0; i-- {
 		fbs.ClawResultStart(builder)
-		fbs.ClawResultAddItemId(builder, uint64(results[i].ItemID))
+		fbs.ClawResultAddItemId(builder, results[i].ItemID)
 		fbs.ClawResultAddCatched(builder, results[i].Success)
 		resultOffsets[i] = fbs.ClawResultEnd(builder)
 	}
@@ -97,7 +97,7 @@ func (s *ClawMachineWebsocketService) StartClawGameWs(
 	resultsVector := builder.EndVector(len(resultOffsets))
 
 	fbs.StartClawGameRespStart(builder)
-	fbs.StartClawGameRespAddGameId(builder, uint64(gameID))
+	fbs.StartClawGameRespAddGameId(builder, gameID)
 	fbs.StartClawGameRespAddResults(builder, resultsVector)
 	respOffset := fbs.StartClawGameRespEnd(builder)
 
@@ -114,7 +114,7 @@ func (s *ClawMachineWebsocketService) GetPlayerInfoWs(
 	startReq := fbs.GetRootAsGetPlayerInfoWsReq(req.Payload, 0)
 	playerID := startReq.PlayerId()
 
-	domainPlayer, err := s.repo.GetClawPlayerInfo(int64(playerID))
+	domainPlayer, err := s.repo.GetClawPlayerInfo(ctx, int64(playerID))
 	if err != nil {
 		return nil, err
 	}
@@ -124,7 +124,7 @@ func (s *ClawMachineWebsocketService) GetPlayerInfoWs(
 
 	fbs.GetPlayerInfoWsRespStart(builder)
 
-	fbs.GetPlayerInfoWsRespAddPlayerId(builder, uint64(domainPlayer.Player.ID))
+	fbs.GetPlayerInfoWsRespAddPlayerId(builder, domainPlayer.Player.ID)
 	fbs.GetPlayerInfoWsRespAddUsername(builder, usernameOffset)
 	fbs.GetPlayerInfoWsRespAddCoin(builder, domainPlayer.Coin)
 	fbs.GetPlayerInfoWsRespAddDiamond(builder, domainPlayer.Diamond)
@@ -152,9 +152,9 @@ func (s *ClawMachineWebsocketService) AddTouchedItemRecordWs(
 	}
 
 	var foundItem *CatchResult
-	for _, result := range storedResults {
-		if result.ItemID == int64(itemID) {
-			foundItem = &result
+	for i := range storedResults {
+		if storedResults[i].ItemID == int64(itemID) {
+			foundItem = &storedResults[i]
 			break
 		}
 	}
@@ -167,7 +167,7 @@ func (s *ClawMachineWebsocketService) AddTouchedItemRecordWs(
 		return nil, fmt.Errorf("catched value mismatch: expected %t, got %t", foundItem.Success, catched)
 	}
 
-	err = s.repo.AddTouchedItemRecord(int64(gameID), int64(itemID), catched)
+	err = s.repo.AddTouchedItemRecord(ctx, int64(gameID), int64(itemID), catched)
 	if err != nil {
 		return nil, fmt.Errorf("failed to update touched item record: %w", err)
 	}

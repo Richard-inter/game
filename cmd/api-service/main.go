@@ -1,17 +1,13 @@
 package main
 
 import (
+	"fmt"
 	"os"
-	"time"
 
 	"github.com/Richard-inter/game/internal/config"
 	"github.com/Richard-inter/game/internal/transport/grpc"
 	httptransport "github.com/Richard-inter/game/internal/transport/http"
 	"github.com/Richard-inter/game/pkg/logger"
-)
-
-const (
-	shutdownTimeout = 5 * time.Second
 )
 
 var (
@@ -47,22 +43,36 @@ func main() {
 	var etcdEndpoints []string
 	var playerAddr string
 	var clawmachineAddr string
+	var gachaMachineAddr string
 
 	if cfg.Discovery.Enabled && len(cfg.Discovery.Etcd.Endpoints) > 0 {
 		etcdEndpoints = cfg.Discovery.Etcd.Endpoints
 		log.Infow("Using etcd endpoints from config", "endpoints", etcdEndpoints)
 	} else {
-		// Service discovery disabled - use direct connections
-		log.Infow("Service discovery disabled, using direct gRPC connections")
-		etcdEndpoints = []string{}         // Empty to disable service discovery
-		playerAddr = "localhost:9094"      // Player service direct address
-		clawmachineAddr = "localhost:9091" // Clawmachine service direct address
+		// Service discovery disabled - load required service configs
+		log.Infow("Service discovery disabled, loading service configurations")
+		etcdEndpoints = []string{} // Empty to disable service discovery
+
+		serviceConfigs, err := config.LoadMultipleServiceConfigs([]string{"player", "clawmachine", "gachamachine"})
+		if err != nil {
+			log.Fatalw("Failed to load service configs", "error", err)
+		}
+
+		playerAddr = fmt.Sprintf("%s:%d", serviceConfigs["player"].Service.Host, serviceConfigs["player"].Service.Port)
+		clawmachineAddr = fmt.Sprintf("%s:%d", serviceConfigs["clawmachine"].Service.Host, serviceConfigs["clawmachine"].Service.Port)
+		gachaMachineAddr = fmt.Sprintf("%s:%d", serviceConfigs["gachamachine"].Service.Host, serviceConfigs["gachamachine"].Service.Port)
+
+		log.Infow("Using gRPC service addresses from service configs",
+			"player", playerAddr,
+			"clawmachine", clawmachineAddr,
+			"gachamachine", gachaMachineAddr)
 	}
 
 	grpcClientManager, err := grpc.NewClientManager(&grpc.ClientManagerConfig{
-		EtcdEndpoints:   etcdEndpoints,
-		PlayerAddr:      playerAddr,
-		ClawmachineAddr: clawmachineAddr,
+		EtcdEndpoints:    etcdEndpoints,
+		PlayerAddr:       playerAddr,
+		ClawmachineAddr:  clawmachineAddr,
+		GachaMachineAddr: gachaMachineAddr,
 	})
 	if err != nil {
 		log.Fatalw("Failed to create gRPC client manager", "error", err)

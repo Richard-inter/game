@@ -41,28 +41,28 @@ func (rcv *AddTouchedItemRecordResp) Table() flatbuffers.Table {
 	return rcv._tab
 }
 
-func (rcv *AddTouchedItemRecordResp) GameId() uint64 {
+func (rcv *AddTouchedItemRecordResp) GameId() int64 {
 	o := flatbuffers.UOffsetT(rcv._tab.Offset(4))
 	if o != 0 {
-		return rcv._tab.GetUint64(o + rcv._tab.Pos)
+		return rcv._tab.GetInt64(o + rcv._tab.Pos)
 	}
 	return 0
 }
 
-func (rcv *AddTouchedItemRecordResp) MutateGameId(n uint64) bool {
-	return rcv._tab.MutateUint64Slot(4, n)
+func (rcv *AddTouchedItemRecordResp) MutateGameId(n int64) bool {
+	return rcv._tab.MutateInt64Slot(4, n)
 }
 
-func (rcv *AddTouchedItemRecordResp) ItemId() uint64 {
+func (rcv *AddTouchedItemRecordResp) ItemId() int64 {
 	o := flatbuffers.UOffsetT(rcv._tab.Offset(6))
 	if o != 0 {
-		return rcv._tab.GetUint64(o + rcv._tab.Pos)
+		return rcv._tab.GetInt64(o + rcv._tab.Pos)
 	}
 	return 0
 }
 
-func (rcv *AddTouchedItemRecordResp) MutateItemId(n uint64) bool {
-	return rcv._tab.MutateUint64Slot(6, n)
+func (rcv *AddTouchedItemRecordResp) MutateItemId(n int64) bool {
+	return rcv._tab.MutateInt64Slot(6, n)
 }
 
 func (rcv *AddTouchedItemRecordResp) Catched() bool {
@@ -80,11 +80,11 @@ func (rcv *AddTouchedItemRecordResp) MutateCatched(n bool) bool {
 func AddTouchedItemRecordRespStart(builder *flatbuffers.Builder) {
 	builder.StartObject(3)
 }
-func AddTouchedItemRecordRespAddGameId(builder *flatbuffers.Builder, gameId uint64) {
-	builder.PrependUint64Slot(0, gameId, 0)
+func AddTouchedItemRecordRespAddGameId(builder *flatbuffers.Builder, gameId int64) {
+	builder.PrependInt64Slot(0, gameId, 0)
 }
-func AddTouchedItemRecordRespAddItemId(builder *flatbuffers.Builder, itemId uint64) {
-	builder.PrependUint64Slot(1, itemId, 0)
+func AddTouchedItemRecordRespAddItemId(builder *flatbuffers.Builder, itemId int64) {
+	builder.PrependInt64Slot(1, itemId, 0)
 }
 func AddTouchedItemRecordRespAddCatched(builder *flatbuffers.Builder, catched bool) {
 	builder.PrependBoolSlot(2, catched, false)

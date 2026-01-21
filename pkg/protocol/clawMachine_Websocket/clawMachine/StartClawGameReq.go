@@ -41,38 +41,38 @@ func (rcv *StartClawGameReq) Table() flatbuffers.Table {
 	return rcv._tab
 }
 
-func (rcv *StartClawGameReq) PlayerId() uint64 {
+func (rcv *StartClawGameReq) PlayerId() int64 {
 	o := flatbuffers.UOffsetT(rcv._tab.Offset(4))
 	if o != 0 {
-		return rcv._tab.GetUint64(o + rcv._tab.Pos)
+		return rcv._tab.GetInt64(o + rcv._tab.Pos)
 	}
 	return 0
 }
 
-func (rcv *StartClawGameReq) MutatePlayerId(n uint64) bool {
-	return rcv._tab.MutateUint64Slot(4, n)
+func (rcv *StartClawGameReq) MutatePlayerId(n int64) bool {
+	return rcv._tab.MutateInt64Slot(4, n)
 }
 
-func (rcv *StartClawGameReq) MachineId() uint64 {
+func (rcv *StartClawGameReq) MachineId() int64 {
 	o := flatbuffers.UOffsetT(rcv._tab.Offset(6))
 	if o != 0 {
-		return rcv._tab.GetUint64(o + rcv._tab.Pos)
+		return rcv._tab.GetInt64(o + rcv._tab.Pos)
 	}
 	return 0
 }
 
-func (rcv *StartClawGameReq) MutateMachineId(n uint64) bool {
-	return rcv._tab.MutateUint64Slot(6, n)
+func (rcv *StartClawGameReq) MutateMachineId(n int64) bool {
+	return rcv._tab.MutateInt64Slot(6, n)
 }
 
 func StartClawGameReqStart(builder *flatbuffers.Builder) {
 	builder.StartObject(2)
 }
-func StartClawGameReqAddPlayerId(builder *flatbuffers.Builder, playerId uint64) {
-	builder.PrependUint64Slot(0, playerId, 0)
+func StartClawGameReqAddPlayerId(builder *flatbuffers.Builder, playerId int64) {
+	builder.PrependInt64Slot(0, playerId, 0)
 }
-func StartClawGameReqAddMachineId(builder *flatbuffers.Builder, machineId uint64) {
-	builder.PrependUint64Slot(1, machineId, 0)
+func StartClawGameReqAddMachineId(builder *flatbuffers.Builder, machineId int64) {
+	builder.PrependInt64Slot(1, machineId, 0)
 }
 func StartClawGameReqEnd(builder *flatbuffers.Builder) flatbuffers.UOffsetT {
 	return builder.EndObject()

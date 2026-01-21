@@ -63,9 +63,29 @@ func InitClawmachineDB(cfg *config.ServiceConfig) (*gorm.DB, error) {
 	}
 
 	// Auto migrate the schema
-	err = db.AutoMigrate(&domain.ClawMachine{}, &domain.ClawMachineItem{}, &domain.Item{}, &domain.ClawPlayer{}, &domain.ClawMachineGameRecord{})
+	err = db.AutoMigrate(&domain.ClawMachine{}, &domain.ClawMachineItem{}, &domain.ClawItem{}, &domain.ClawPlayer{}, &domain.ClawMachineGameRecord{})
 	if err != nil {
 		return nil, fmt.Errorf("failed to migrate clawmachine database: %w", err)
+	}
+
+	return db, nil
+}
+
+// InitGachaMachineDB initializes gacha machine database connection
+func InitGachaMachineDB(cfg *config.ServiceConfig) (*gorm.DB, error) {
+	dsn := cfg.GetGachaMachineDSN()
+
+	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
+		Logger: logger.Default.LogMode(logger.Info),
+	})
+	if err != nil {
+		return nil, fmt.Errorf("failed to connect to gacha machine database: %w", err)
+	}
+
+	// Auto migrate the schema
+	err = db.AutoMigrate(&domain.GachaMachine{}, &domain.GachaMachineItem{}, &domain.GachaItem{}, &domain.GachaPlayer{}, &domain.GachaPullSession{}, &domain.GachaPullHistory{}, &domain.GachaPityState{})
+	if err != nil {
+		return nil, fmt.Errorf("failed to migrate gacha machine database: %w", err)
 	}
 
 	return db, nil

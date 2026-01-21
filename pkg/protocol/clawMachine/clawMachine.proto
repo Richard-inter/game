@@ -10,8 +10,8 @@ message Item {
     int64 itemID = 1;
     string name = 2;
     string rarity = 3;
-    int64 spawnPercentage = 4;
-    int64 catchPercentage = 5;
+    double spawnPercentage = 4;
+    double catchPercentage = 5;
     int64 maxItemSpawned = 6;
 }
 
@@ -80,8 +80,8 @@ message GetClawMachineInfoResp {
 message CreateItemReq {
     string name = 1;
     string rarity = 2;
-    int64 spawnPercentage = 3;
-    int64 catchPercentage = 4;
+    double spawnPercentage = 3;
+    double catchPercentage = 4;
     int64 maxItemSpawned = 5;
 }
 

@@ -1,0 +1,146 @@
+syntax = "proto3";
+
+package gachaMachine;
+
+option go_package = "github.com/Richard-inter/game/pkg/protocol/gachaMachine";
+
+import "player/player.proto";
+
+message Item {
+    int64 itemID = 1;
+    string name = 2;
+    string rarity = 3;
+    int32 pullWeight = 4;
+}
+
+message GachaMachine {
+    int64 machineID = 1;
+    string name = 2;
+    repeated Item items = 3;
+    int64 price = 4;
+    int64 priceTimesTen = 5;
+    int32 superRarePity = 6;
+    int32 ultraRarePity = 7;
+}
+
+message GachaPlayer {
+     player.Player basePlayer = 1;
+
+    // game specific attributes
+    int64 coin = 2;
+    int64 diamond = 3;
+}
+
+message Items {
+    int64 itemID =1;
+}
+
+message CreateGachaMachineReq {
+    string name = 1;
+    repeated Items items = 2;
+    int64 price = 3;
+    int64 priceTimesTen = 4;
+    int32 superRarePity = 5;
+    int32 ultraRarePity = 6;
+}
+
+message CreateGachaMachineResp {
+    GachaMachine machine = 1;
+}
+
+message CreateGachaItemReq {
+    string name = 1;
+    string rarity = 2;
+    int32 pullWeight = 3;
+}
+
+message CreateGachaItemsReq {
+    repeated CreateGachaItemReq gachaItems = 1;
+}
+
+message CreateGachaItemsResp {
+    repeated Item gachaItems = 1;
+}
+
+message CreateGachaPlayerReq {
+    GachaPlayer player = 1;
+}
+
+message CreateGachaPlayerResp {
+    GachaPlayer player = 1;
+}
+
+message AdjustPlayerCoinReq{
+    int64 playerID = 1;
+    int64 amount = 2;
+    string type = 3;
+}
+
+message AdjustPlayerCoinResp{
+    int64 playerID = 1;
+    int64 adjustedAmount = 2;
+}
+
+message AdjustPlayerDiamondReq{
+    int64 playerID = 1;
+    int64 amount = 2;
+    string type = 3;
+}
+
+message AdjustPlayerDiamondResp{
+    int64 playerID = 1;
+    int64 adjustedAmount = 2;
+}
+
+message GetGachaPlayerInfoReq{
+    int64 playerID = 1;
+}
+
+message GetGachaPlayerInfoResp {
+    GachaPlayer player = 1;
+}
+
+message GetGachaMachineInfoReq {
+    int64 machineID = 1;
+}
+
+message GetGachaMachineInfoResp {
+    repeated GachaMachine machine = 1;
+}
+
+message GetPullResultReq {
+    int64 playerID = 1;
+    int64 machineID = 2;
+    int32 pullCount = 3;
+}
+
+message GetPullResultResp {
+    repeated int64 itemIDs = 1;
+}
+
+message GetPullTimesTenResultReq {
+    int64 playerID = 1;
+    int64 machineID = 2;
+}
+
+message GetPullTimesTenResultResp {
+    repeated int64 itemIDs = 1;
+}
+
+service GachaMachineService {
+    // machine
+    rpc CreateGachaMachine (CreateGachaMachineReq) returns (CreateGachaMachineResp);
+    rpc GetGachaMachineInfo (GetGachaMachineInfoReq) returns (GetGachaMachineInfoResp);
+
+    // item
+    rpc CreateGachaItems (CreateGachaItemsReq) returns (CreateGachaItemsResp);
+
+    // player
+    rpc CreateGachaPlayer (CreateGachaPlayerReq) returns (CreateGachaPlayerResp);
+    rpc GetGachaPlayerInfo (GetGachaPlayerInfoReq) returns (GetGachaPlayerInfoResp);
+    rpc AdjustPlayerCoin (AdjustPlayerCoinReq) returns (AdjustPlayerCoinResp);
+    rpc AdjustPlayerDiamond (AdjustPlayerDiamondReq) returns (AdjustPlayerDiamondResp);
+
+    // game
+    rpc GetPullResult (GetPullResultReq) returns (GetPullResultResp);
+}
