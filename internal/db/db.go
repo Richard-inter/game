@@ -90,3 +90,23 @@ func InitGachaMachineDB(cfg *config.ServiceConfig) (*gorm.DB, error) {
 
 	return db, nil
 }
+
+// InitWhackAMoleDB initializes whack a mole database connection
+func InitWhackAMoleDB(cfg *config.ServiceConfig) (*gorm.DB, error) {
+	dsn := cfg.GetWhackAMoleDSN()
+
+	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
+		Logger: logger.Default.LogMode(logger.Info),
+	})
+	if err != nil {
+		return nil, fmt.Errorf("failed to connect to whack a mole database: %w", err)
+	}
+
+	// Auto migrate the schema
+	err = db.AutoMigrate(&domain.WhackAMolePlayer{}, &domain.MoleWeightConfig{}, &domain.LeaderBoard{})
+	if err != nil {
+		return nil, fmt.Errorf("failed to migrate whack a mole database: %w", err)
+	}
+
+	return db, nil
+}

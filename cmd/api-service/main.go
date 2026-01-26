@@ -69,10 +69,12 @@ func main() {
 	}
 
 	grpcClientManager, err := grpc.NewClientManager(&grpc.ClientManagerConfig{
-		EtcdEndpoints:    etcdEndpoints,
-		PlayerAddr:       playerAddr,
-		ClawmachineAddr:  clawmachineAddr,
-		GachaMachineAddr: gachaMachineAddr,
+		EtcdEndpoints:         etcdEndpoints,
+		PlayerAddr:            playerAddr,
+		ClawmachineAddr:       clawmachineAddr,
+		GachaMachineAddr:      gachaMachineAddr,
+		WhackAMoleAddr:        "localhost:9097", // WhackAMole service address
+		WhackAMoleRuntimeAddr: "localhost:9098", // WhackAMole runtime service address
 	})
 	if err != nil {
 		log.Fatalw("Failed to create gRPC client manager", "error", err)

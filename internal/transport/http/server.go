@@ -12,7 +12,17 @@ import (
 	"github.com/Richard-inter/game/internal/config"
 	"github.com/Richard-inter/game/internal/transport/grpc"
 	"github.com/Richard-inter/game/internal/transport/http/handler"
+
+	_ "github.com/Richard-inter/game/docs"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
+
+// @title Game Service API
+// @version 1.0
+// @description This is the API documentation for the Game Service including Player, ClawMachine, GachaMachine, and WhackAMole endpoints.
+// @host localhost:8080
+// @BasePath /api/v1
 
 const (
 	httpStatusNoContent = 204
@@ -121,6 +131,14 @@ func (s *Server) setupRoutes() {
 		s.logger.Fatalw("Failed to create gacha machine handler", "error", err)
 	}
 
+	whackAMoleHandler, err := handler.NewWhackAMoleHandler(s.logger, s.grpcClient)
+	if err != nil {
+		s.logger.Fatalw("Failed to create whack-a-mole handler", "error", err)
+	}
+
+	// Swagger endpoint
+	s.engine.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+
 	// Health check
 	s.engine.GET("/health", handler.HealthCheck(s.logger.Desugar()))
 
@@ -170,6 +188,22 @@ func (s *Server) setupRoutes() {
 
 			// game
 			gachaMachine.POST("/getPullResult", gachaMachineHandler.HandleGetPullResult)
+		}
+
+		whackAMole := v1.Group("/whackAMole")
+		{
+			// player
+			whackAMole.POST("/createWhackAMolePlayer", whackAMoleHandler.HandleCreateWhackAMolePlayer)
+			whackAMole.GET("/getWhackAMolePlayer/:id", whackAMoleHandler.HandleGetPlayerInfo)
+
+			// leaderboard
+			whackAMole.GET("/leaderboard/:limit", whackAMoleHandler.HandleGetLeaderboard)
+			whackAMole.POST("/updateScore", whackAMoleHandler.HandleUpdateScore)
+
+			// mole weight configs
+			whackAMole.POST("/createMoleWeightConfig", whackAMoleHandler.HandleCreateMoleWeightConfig)
+			whackAMole.GET("/getMoleWeightConfig/:id", whackAMoleHandler.HandleGetMoleWeightConfig)
+			whackAMole.POST("/updateMoleWeightConfig", whackAMoleHandler.HandleUpdateMoleWeightConfig)
 		}
 	}
 }

@@ -16,6 +16,7 @@ type ServiceConfig struct {
 	PlayerDatabase       DatabaseConfig       `mapstructure:"player_database"`
 	ClawmachineDatabase  DatabaseConfig       `mapstructure:"clawmachine_database"`
 	GachaMachineDatabase DatabaseConfig       `mapstructure:"gachamachine_database"`
+	WhackAMoleDatabase   DatabaseConfig       `mapstructure:"whackamole_database"`
 	Redis                RedisConfig          `mapstructure:"redis"`
 	GRPC                 GRPCConfig           `mapstructure:"grpc"`
 	WebSocket            WebSocketConfig      `mapstructure:"websocket"`
@@ -282,6 +283,17 @@ func (c *ServiceConfig) GetGachaMachineDSN() string {
 		c.GachaMachineDatabase.Host,
 		c.GachaMachineDatabase.Port,
 		c.GachaMachineDatabase.Name,
+	)
+}
+
+// GetWhackAMoleDSN returns whack a mole database connection string
+func (c *ServiceConfig) GetWhackAMoleDSN() string {
+	return fmt.Sprintf("%s:%s@tcp(%s:%d)/%s",
+		c.WhackAMoleDatabase.User,
+		c.WhackAMoleDatabase.Password,
+		c.WhackAMoleDatabase.Host,
+		c.WhackAMoleDatabase.Port,
+		c.WhackAMoleDatabase.Name,
 	)
 }
 

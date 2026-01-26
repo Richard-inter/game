@@ -1,8 +1,8 @@
 syntax = "proto3";
 
-package gachaMachine;
+package gachaMachine.runtime;
 
-option go_package = "github.com/Richard-inter/game/pkg/protocol/gachaMachine";
+option go_package = "github.com/Richard-inter/game/pkg/protocol/gachaMachine_Websocket";
 
 
 message RuntimeRequest {
