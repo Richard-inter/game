@@ -35,6 +35,17 @@ func NewGachaMachineHandler(
 	}, nil
 }
 
+// HandleCreateGachaPlayer godoc
+// @Summary Create a new gacha player
+// @Description Create a new gacha player with initial coin and diamond balance
+// @Tags GachaMachine
+// @Accept json
+// @Produce json
+// @Param request body dto.CreateGachaPlayerReq true "Gacha player creation request"
+// @Success 200 {object} map[string]interface{} "Gacha player created successfully"
+// @Failure 400 {object} map[string]interface{} "Invalid request body"
+// @Failure 500 {object} map[string]interface{} "Internal server error"
+// @Router /gachaMachine/createGachaPlayer [post]
 func (h *GachaMachineHandler) HandleCreateGachaPlayer(c *gin.Context) {
 	var req dto.CreateGachaPlayerReq
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -65,6 +76,17 @@ func (h *GachaMachineHandler) HandleCreateGachaPlayer(c *gin.Context) {
 	common.SendSuccess(c, resp)
 }
 
+// HandleGetGachaPlayerInfo godoc
+// @Summary Get gacha player information
+// @Description Get gacha player information by player ID
+// @Tags GachaMachine
+// @Accept json
+// @Produce json
+// @Param playerID path int64 true "Player ID"
+// @Success 200 {object} map[string]interface{} "Gacha player info retrieved successfully"
+// @Failure 400 {object} map[string]interface{} "Invalid player ID"
+// @Failure 500 {object} map[string]interface{} "Internal server error"
+// @Router /gachaMachine/getGachaPlayerInfo/{playerID} [get]
 func (h *GachaMachineHandler) HandleGetGachaPlayerInfo(c *gin.Context) {
 	playerIDParam := c.Param("playerID")
 	var playerID int64
@@ -90,6 +112,17 @@ func (h *GachaMachineHandler) HandleGetGachaPlayerInfo(c *gin.Context) {
 	common.SendSuccess(c, resp)
 }
 
+// HandleAdjustPlayerCoin godoc
+// @Summary Adjust gacha player coin balance
+// @Description Add or subtract coins from a gacha player's balance
+// @Tags GachaMachine
+// @Accept json
+// @Produce json
+// @Param request body dto.AdjustGachaPlayerCoinRequest true "Adjust coin request"
+// @Success 200 {object} map[string]interface{} "Player coin adjusted successfully"
+// @Failure 400 {object} map[string]interface{} "Invalid request body"
+// @Failure 500 {object} map[string]interface{} "Internal server error"
+// @Router /gachaMachine/adjustPlayerCoin [post]
 func (h *GachaMachineHandler) HandleAdjustPlayerCoin(c *gin.Context) {
 	var req dto.AdjustGachaPlayerCoinRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -115,6 +148,17 @@ func (h *GachaMachineHandler) HandleAdjustPlayerCoin(c *gin.Context) {
 	common.SendSuccess(c, resp)
 }
 
+// HandleAdjustPlayerDiamond godoc
+// @Summary Adjust gacha player diamond balance
+// @Description Add or subtract diamonds from a gacha player's balance
+// @Tags GachaMachine
+// @Accept json
+// @Produce json
+// @Param request body dto.AdjustGachaPlayerDiamondRequest true "Adjust diamond request"
+// @Success 200 {object} map[string]interface{} "Player diamond adjusted successfully"
+// @Failure 400 {object} map[string]interface{} "Invalid request body"
+// @Failure 500 {object} map[string]interface{} "Internal server error"
+// @Router /gachaMachine/adjustPlayerDiamond [post]
 func (h *GachaMachineHandler) HandleAdjustPlayerDiamond(c *gin.Context) {
 	var req dto.AdjustGachaPlayerDiamondRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -140,6 +184,17 @@ func (h *GachaMachineHandler) HandleAdjustPlayerDiamond(c *gin.Context) {
 	common.SendSuccess(c, resp)
 }
 
+// HandleCreateGachaItems godoc
+// @Summary Create gacha items
+// @Description Create multiple gacha items with their properties
+// @Tags GachaMachine
+// @Accept json
+// @Produce json
+// @Param request body dto.CreateGachaItemsRequest true "Gacha items creation request"
+// @Success 201 {object} map[string]interface{} "Gacha items created successfully"
+// @Failure 400 {object} map[string]interface{} "Invalid request body"
+// @Failure 500 {object} map[string]interface{} "Internal server error"
+// @Router /gachaMachine/createGachaItems [post]
 func (h *GachaMachineHandler) HandleCreateGachaItems(c *gin.Context) {
 	var req dto.CreateGachaItemsRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -171,6 +226,17 @@ func (h *GachaMachineHandler) HandleCreateGachaItems(c *gin.Context) {
 	common.SendCreated(c, resp)
 }
 
+// HandleCreateGachaMachine godoc
+// @Summary Create a new gacha machine
+// @Description Create a new gacha machine with the provided details
+// @Tags GachaMachine
+// @Accept json
+// @Produce json
+// @Param request body dto.CreateGachaMachineRequest true "Gacha machine creation request"
+// @Success 201 {object} map[string]interface{} "Gacha machine created successfully"
+// @Failure 400 {object} map[string]interface{} "Invalid request body"
+// @Failure 500 {object} map[string]interface{} "Internal server error"
+// @Router /gachaMachine/createGachaMachine [post]
 func (h *GachaMachineHandler) HandleCreateGachaMachine(c *gin.Context) {
 	var req dto.CreateGachaMachineRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -204,6 +270,17 @@ func (h *GachaMachineHandler) HandleCreateGachaMachine(c *gin.Context) {
 	common.SendCreated(c, resp)
 }
 
+// HandleGetGachaMachineInfo godoc
+// @Summary Get gacha machine information
+// @Description Get gacha machine information by machine ID
+// @Tags GachaMachine
+// @Accept json
+// @Produce json
+// @Param machineID path int64 true "Machine ID"
+// @Success 200 {object} map[string]interface{} "Gacha machine info retrieved successfully"
+// @Failure 400 {object} map[string]interface{} "Invalid machine ID"
+// @Failure 500 {object} map[string]interface{} "Internal server error"
+// @Router /gachaMachine/getGachaMachineInfo/{machineID} [get]
 func (h *GachaMachineHandler) HandleGetGachaMachineInfo(c *gin.Context) {
 	machineIDParam := c.Param("machineID")
 	var machineID int64
@@ -229,6 +306,17 @@ func (h *GachaMachineHandler) HandleGetGachaMachineInfo(c *gin.Context) {
 	common.SendSuccess(c, resp)
 }
 
+// HandleGetPullResult godoc
+// @Summary Get gacha pull result
+// @Description Execute a gacha pull and get the result
+// @Tags GachaMachine
+// @Accept json
+// @Produce json
+// @Param request body dto.GetPullResultRequest true "Pull result request"
+// @Success 200 {object} map[string]interface{} "Pull result retrieved successfully"
+// @Failure 400 {object} map[string]interface{} "Invalid request body"
+// @Failure 500 {object} map[string]interface{} "Internal server error"
+// @Router /gachaMachine/getPullResult [post]
 func (h *GachaMachineHandler) HandleGetPullResult(c *gin.Context) {
 	var req dto.GetPullResultRequest
 	if err := c.ShouldBindJSON(&req); err != nil {

@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package whackAMole.runtime;
+
+option go_package = "github.com/Richard-inter/game/pkg/protocol/whackAMole_Websocket";
+
+
+message RuntimeRequest {
+    bytes payload = 1;
+}
+
+message RuntimeResponse {
+    bytes payload = 1;
+}
+
+service WhackAMoleRuntimeService {
+    rpc GetMoleWeight (RuntimeRequest) returns (RuntimeResponse);
+    rpc GetLeaderboard (RuntimeRequest) returns (RuntimeResponse);
+}

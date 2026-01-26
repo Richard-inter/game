@@ -1,0 +1,97 @@
+syntax = "proto3";
+
+package whackAMole;
+
+option go_package = "github.com/Richard-inter/game/pkg/protocol/whackAMole";
+
+message WhackAMolePlayer {
+  int64 player_id = 1;
+  string username = 2;
+}
+
+message MoleWeightConfig {
+  int64 id = 1;
+  string mole_type = 2;
+  int32 weight = 3;
+}
+
+message LeaderBoard {
+  int64 player_id = 1;
+  string username = 2;
+  int64 score = 3;
+  int32 rank = 4;
+}
+
+message CreateWhackAMolePlayerReq {
+  int64 player_id = 1;
+  string username = 2;
+}
+
+message CreateWhackAMolePlayerResp {
+    WhackAMolePlayer player = 1;
+}
+
+message GetPlayerInfoReq {
+  int64 player_id = 1;
+}
+
+message GetPlayerInfoResp {
+  WhackAMolePlayer player = 1;
+}
+
+message GetLeaderboardReq {
+  int32 limit = 1;
+}
+
+message GetLeaderboardResp {
+  repeated LeaderBoard leaderboard = 1;
+}
+
+message GetMoleWeightConfigReq {
+  int64 id = 1;
+}
+
+message GetMoleWeightConfigResp {
+  repeated MoleWeightConfig config = 1;
+}
+
+message CreateMoleWeightConfigReq {
+    string mole_type = 1;
+    int32 weight = 2;
+}
+
+message CreateMoleWeightConfigResp {
+    MoleWeightConfig config = 1;
+}
+
+message UpdateMoleWeightConfigReq {
+    int64 id = 1;
+    string mole_type = 2;
+    int32 weight = 3;
+}
+
+message UpdateMoleWeightConfigResp {
+    MoleWeightConfig config = 1;
+}
+
+message UpdateScoreReq {
+  int64 player_id = 1;
+  int64 score = 2;
+}
+
+message UpdateScoreResp {
+  bool success = 1;
+}
+
+service WhackAMoleService {
+  rpc CreateWhackAMolePlayer (CreateWhackAMolePlayerReq) returns (CreateWhackAMolePlayerResp);
+  rpc GetPlayerInfo(GetPlayerInfoReq) returns (GetPlayerInfoResp);
+
+  rpc GetLeaderboard(GetLeaderboardReq) returns (GetLeaderboardResp);
+
+  rpc UpdateScore(UpdateScoreReq) returns (UpdateScoreResp);
+  
+  rpc GetMoleWeightConfig(GetMoleWeightConfigReq) returns (GetMoleWeightConfigResp);
+  rpc CreateMoleWeightConfig (CreateMoleWeightConfigReq) returns (CreateMoleWeightConfigResp);
+  rpc UpdateMoleWeightConfig (UpdateMoleWeightConfigReq) returns (UpdateMoleWeightConfigResp);
+}

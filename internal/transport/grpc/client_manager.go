@@ -11,21 +11,27 @@ type ClientManager struct {
 	clawmachineRuntime  *ClawMachineRuntimeClient
 	gachaMachine        *GachaMachineClient
 	gachaMachineRuntime *GachaMachineRuntimeClient
+	whackAMole          *WhackAMoleClient
+	whackAMoleRuntime   *WhackAMoleRuntimeClient
 	// Direct connection addresses for when discovery is disabled
-	playerAddr       string
-	clawmachineAddr  string
-	runtimeAddr      string
-	gachaMachineAddr string
-	gachaRuntimeAddr string
+	playerAddr            string
+	clawmachineAddr       string
+	runtimeAddr           string
+	gachaMachineAddr      string
+	gachaRuntimeAddr      string
+	whackAMoleAddr        string
+	whackAMoleRuntimeAddr string
 }
 
 type ClientManagerConfig struct {
-	EtcdEndpoints    []string
-	PlayerAddr       string // Direct address when discovery disabled
-	ClawmachineAddr  string // Direct address when discovery disabled
-	RuntimeAddr      string // Direct address when discovery disabled
-	GachaMachineAddr string // Direct address when discovery disabled
-	GachaRuntimeAddr string // Direct address when discovery disabled
+	EtcdEndpoints         []string
+	PlayerAddr            string // Direct address when discovery disabled
+	ClawmachineAddr       string // Direct address when discovery disabled
+	RuntimeAddr           string // Direct address when discovery disabled
+	GachaMachineAddr      string // Direct address when discovery disabled
+	GachaRuntimeAddr      string // Direct address when discovery disabled
+	WhackAMoleAddr        string // Direct address when discovery disabled
+	WhackAMoleRuntimeAddr string // Direct address when discovery disabled
 }
 
 func NewClientManager(cfg *ClientManagerConfig) (*ClientManager, error) {
@@ -41,12 +47,14 @@ func NewClientManager(cfg *ClientManagerConfig) (*ClientManager, error) {
 	}
 
 	return &ClientManager{
-		discovery:        discovery,
-		playerAddr:       cfg.PlayerAddr,
-		clawmachineAddr:  cfg.ClawmachineAddr,
-		runtimeAddr:      cfg.RuntimeAddr,
-		gachaMachineAddr: cfg.GachaMachineAddr,
-		gachaRuntimeAddr: cfg.GachaRuntimeAddr,
+		discovery:             discovery,
+		playerAddr:            cfg.PlayerAddr,
+		clawmachineAddr:       cfg.ClawmachineAddr,
+		runtimeAddr:           cfg.RuntimeAddr,
+		gachaMachineAddr:      cfg.GachaMachineAddr,
+		gachaRuntimeAddr:      cfg.GachaRuntimeAddr,
+		whackAMoleAddr:        cfg.WhackAMoleAddr,
+		whackAMoleRuntimeAddr: cfg.WhackAMoleRuntimeAddr,
 	}, nil
 }
 
@@ -209,6 +217,72 @@ func (cm *ClientManager) GetGachaMachineRuntimeClient() (*GachaMachineRuntimeCli
 	return cm.gachaMachineRuntime, nil
 }
 
+func (cm *ClientManager) GetWhackAMoleClient() (*WhackAMoleClient, error) {
+	if cm == nil {
+		return nil, fmt.Errorf("client manager is nil")
+	}
+
+	if cm.whackAMole == nil {
+		var whackAMoleAddr string
+		var err error
+
+		// Use discovery if available, otherwise use direct address
+		if cm.discovery != nil {
+			whackAMoleAddr, err = cm.discovery.GetService("whackamole-service")
+			if err != nil {
+				return nil, fmt.Errorf("failed to get whack a mole service address: %w", err)
+			}
+		} else {
+			if cm.whackAMoleAddr == "" {
+				return nil, fmt.Errorf("whack a mole service address not configured and discovery is disabled")
+			}
+			whackAMoleAddr = cm.whackAMoleAddr
+		}
+
+		// Create client
+		whackAMole, err := NewWhackAMoleClient(whackAMoleAddr)
+		if err != nil {
+			return nil, fmt.Errorf("failed to create whack a mole client: %w", err)
+		}
+		cm.whackAMole = whackAMole
+	}
+
+	return cm.whackAMole, nil
+}
+
+func (cm *ClientManager) GetWhackAMoleRuntimeClient() (*WhackAMoleRuntimeClient, error) {
+	if cm == nil {
+		return nil, fmt.Errorf("client manager is nil")
+	}
+
+	if cm.whackAMoleRuntime == nil {
+		var whackAMoleRuntimeAddr string
+		var err error
+
+		// Use discovery if available, otherwise use direct address
+		if cm.discovery != nil {
+			whackAMoleRuntimeAddr, err = cm.discovery.GetService("whackamole-runtime-service")
+			if err != nil {
+				return nil, fmt.Errorf("failed to get whack a mole runtime service address: %w", err)
+			}
+		} else {
+			if cm.whackAMoleRuntimeAddr == "" {
+				return nil, fmt.Errorf("whack a mole runtime service address not configured and discovery is disabled")
+			}
+			whackAMoleRuntimeAddr = cm.whackAMoleRuntimeAddr
+		}
+
+		// Create client
+		whackAMoleRuntime, err := NewWhackAMoleRuntimeClient(whackAMoleRuntimeAddr)
+		if err != nil {
+			return nil, fmt.Errorf("failed to create whack a mole runtime client: %w", err)
+		}
+		cm.whackAMoleRuntime = whackAMoleRuntime
+	}
+
+	return cm.whackAMoleRuntime, nil
+}
+
 func (cm *ClientManager) Close() error {
 	var errors []string
 
@@ -226,6 +300,18 @@ func (cm *ClientManager) Close() error {
 	if cm.clawmachineRuntime != nil {
 		// Note: Runtime client doesn't have Close method in the interface
 		// Connection will be closed when the process exits
+	}
+
+	if cm.whackAMole != nil {
+		if err := cm.whackAMole.Close(); err != nil {
+			errors = append(errors, fmt.Sprintf("whack a mole client: %v", err))
+		}
+	}
+
+	if cm.whackAMoleRuntime != nil {
+		if err := cm.whackAMoleRuntime.Close(); err != nil {
+			errors = append(errors, fmt.Sprintf("whack a mole runtime client: %v", err))
+		}
 	}
 
 	if cm.discovery != nil {

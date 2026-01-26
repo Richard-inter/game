@@ -1,4 +1,4 @@
-package clawmachine
+package clawmachine_runtime
 
 import (
 	"context"

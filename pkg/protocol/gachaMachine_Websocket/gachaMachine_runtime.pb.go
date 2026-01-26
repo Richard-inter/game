@@ -4,7 +4,7 @@
 // 	protoc        v6.33.0
 // source: gachaMachine_Websocket/gachaMachine_runtime.proto
 
-package gachaMachine
+package gachaMachine_Websocket
 
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
@@ -113,15 +113,15 @@ var File_gachaMachine_Websocket_gachaMachine_runtime_proto protoreflect.FileDesc
 
 const file_gachaMachine_Websocket_gachaMachine_runtime_proto_rawDesc = "" +
 	"\n" +
-	"1gachaMachine_Websocket/gachaMachine_runtime.proto\x12\fgachaMachine\"*\n" +
+	"1gachaMachine_Websocket/gachaMachine_runtime.proto\x12\x14gachaMachine.runtime\"*\n" +
 	"\x0eRuntimeRequest\x12\x18\n" +
 	"\apayload\x18\x01 \x01(\fR\apayload\"+\n" +
 	"\x0fRuntimeResponse\x12\x18\n" +
-	"\apayload\x18\x01 \x01(\fR\apayload2\x8d\x02\n" +
-	"\x1aGachaMachineRuntimeService\x12N\n" +
-	"\x0fGetPullResultWs\x12\x1c.gachaMachine.RuntimeRequest\x1a\x1d.gachaMachine.RuntimeResponse\x12N\n" +
-	"\x0fGetPlayerInfoWs\x12\x1c.gachaMachine.RuntimeRequest\x1a\x1d.gachaMachine.RuntimeResponse\x12O\n" +
-	"\x10GetMachineInfoWs\x12\x1c.gachaMachine.RuntimeRequest\x1a\x1d.gachaMachine.RuntimeResponseB9Z7github.com/Richard-inter/game/pkg/protocol/gachaMachineb\x06proto3"
+	"\apayload\x18\x01 \x01(\fR\apayload2\xbd\x02\n" +
+	"\x1aGachaMachineRuntimeService\x12^\n" +
+	"\x0fGetPullResultWs\x12$.gachaMachine.runtime.RuntimeRequest\x1a%.gachaMachine.runtime.RuntimeResponse\x12^\n" +
+	"\x0fGetPlayerInfoWs\x12$.gachaMachine.runtime.RuntimeRequest\x1a%.gachaMachine.runtime.RuntimeResponse\x12_\n" +
+	"\x10GetMachineInfoWs\x12$.gachaMachine.runtime.RuntimeRequest\x1a%.gachaMachine.runtime.RuntimeResponseBCZAgithub.com/Richard-inter/game/pkg/protocol/gachaMachine_Websocketb\x06proto3"
 
 var (
 	file_gachaMachine_Websocket_gachaMachine_runtime_proto_rawDescOnce sync.Once
@@ -137,16 +137,16 @@ func file_gachaMachine_Websocket_gachaMachine_runtime_proto_rawDescGZIP() []byte
 
 var file_gachaMachine_Websocket_gachaMachine_runtime_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_gachaMachine_Websocket_gachaMachine_runtime_proto_goTypes = []any{
-	(*RuntimeRequest)(nil),  // 0: gachaMachine.RuntimeRequest
-	(*RuntimeResponse)(nil), // 1: gachaMachine.RuntimeResponse
+	(*RuntimeRequest)(nil),  // 0: gachaMachine.runtime.RuntimeRequest
+	(*RuntimeResponse)(nil), // 1: gachaMachine.runtime.RuntimeResponse
 }
 var file_gachaMachine_Websocket_gachaMachine_runtime_proto_depIdxs = []int32{
-	0, // 0: gachaMachine.GachaMachineRuntimeService.GetPullResultWs:input_type -> gachaMachine.RuntimeRequest
-	0, // 1: gachaMachine.GachaMachineRuntimeService.GetPlayerInfoWs:input_type -> gachaMachine.RuntimeRequest
-	0, // 2: gachaMachine.GachaMachineRuntimeService.GetMachineInfoWs:input_type -> gachaMachine.RuntimeRequest
-	1, // 3: gachaMachine.GachaMachineRuntimeService.GetPullResultWs:output_type -> gachaMachine.RuntimeResponse
-	1, // 4: gachaMachine.GachaMachineRuntimeService.GetPlayerInfoWs:output_type -> gachaMachine.RuntimeResponse
-	1, // 5: gachaMachine.GachaMachineRuntimeService.GetMachineInfoWs:output_type -> gachaMachine.RuntimeResponse
+	0, // 0: gachaMachine.runtime.GachaMachineRuntimeService.GetPullResultWs:input_type -> gachaMachine.runtime.RuntimeRequest
+	0, // 1: gachaMachine.runtime.GachaMachineRuntimeService.GetPlayerInfoWs:input_type -> gachaMachine.runtime.RuntimeRequest
+	0, // 2: gachaMachine.runtime.GachaMachineRuntimeService.GetMachineInfoWs:input_type -> gachaMachine.runtime.RuntimeRequest
+	1, // 3: gachaMachine.runtime.GachaMachineRuntimeService.GetPullResultWs:output_type -> gachaMachine.runtime.RuntimeResponse
+	1, // 4: gachaMachine.runtime.GachaMachineRuntimeService.GetPlayerInfoWs:output_type -> gachaMachine.runtime.RuntimeResponse
+	1, // 5: gachaMachine.runtime.GachaMachineRuntimeService.GetMachineInfoWs:output_type -> gachaMachine.runtime.RuntimeResponse
 	3, // [3:6] is the sub-list for method output_type
 	0, // [0:3] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name

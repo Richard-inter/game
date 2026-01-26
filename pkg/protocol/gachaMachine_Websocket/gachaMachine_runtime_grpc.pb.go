@@ -4,7 +4,7 @@
 // - protoc             v6.33.0
 // source: gachaMachine_Websocket/gachaMachine_runtime.proto
 
-package gachaMachine
+package gachaMachine_Websocket
 
 import (
 	context "context"
@@ -19,9 +19,9 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	GachaMachineRuntimeService_GetPullResultWs_FullMethodName  = "/gachaMachine.GachaMachineRuntimeService/GetPullResultWs"
-	GachaMachineRuntimeService_GetPlayerInfoWs_FullMethodName  = "/gachaMachine.GachaMachineRuntimeService/GetPlayerInfoWs"
-	GachaMachineRuntimeService_GetMachineInfoWs_FullMethodName = "/gachaMachine.GachaMachineRuntimeService/GetMachineInfoWs"
+	GachaMachineRuntimeService_GetPullResultWs_FullMethodName  = "/gachaMachine.runtime.GachaMachineRuntimeService/GetPullResultWs"
+	GachaMachineRuntimeService_GetPlayerInfoWs_FullMethodName  = "/gachaMachine.runtime.GachaMachineRuntimeService/GetPlayerInfoWs"
+	GachaMachineRuntimeService_GetMachineInfoWs_FullMethodName = "/gachaMachine.runtime.GachaMachineRuntimeService/GetMachineInfoWs"
 )
 
 // GachaMachineRuntimeServiceClient is the client API for GachaMachineRuntimeService service.
@@ -177,7 +177,7 @@ func _GachaMachineRuntimeService_GetMachineInfoWs_Handler(srv interface{}, ctx c
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var GachaMachineRuntimeService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "gachaMachine.GachaMachineRuntimeService",
+	ServiceName: "gachaMachine.runtime.GachaMachineRuntimeService",
 	HandlerType: (*GachaMachineRuntimeServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{

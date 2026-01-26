@@ -1,0 +1,1159 @@
+basePath: /api/v1
+definitions:
+  dto.AddTouchedItemRecordRequest:
+    properties:
+      catched:
+        type: boolean
+      gameID:
+        type: integer
+      itemID:
+        type: integer
+    required:
+    - catched
+    - gameID
+    - itemID
+    type: object
+  dto.AdjustGachaPlayerCoinRequest:
+    properties:
+      amount:
+        type: integer
+      playerID:
+        type: integer
+      type:
+        enum:
+        - plus
+        - minus
+        type: string
+    required:
+    - amount
+    - playerID
+    - type
+    type: object
+  dto.AdjustGachaPlayerDiamondRequest:
+    properties:
+      amount:
+        type: integer
+      playerID:
+        type: integer
+      type:
+        enum:
+        - plus
+        - minus
+        type: string
+    required:
+    - amount
+    - playerID
+    - type
+    type: object
+  dto.AdjustPlayerCoinRequest:
+    properties:
+      amount:
+        type: integer
+      playerID:
+        type: integer
+      type:
+        enum:
+        - plus
+        - minus
+        type: string
+    required:
+    - amount
+    - playerID
+    - type
+    type: object
+  dto.AdjustPlayerDiamondRequest:
+    properties:
+      amount:
+        type: integer
+      playerID:
+        type: integer
+      type:
+        enum:
+        - plus
+        - minus
+        type: string
+    required:
+    - amount
+    - playerID
+    - type
+    type: object
+  dto.CreateClawItemRequest:
+    properties:
+      catchPercentage:
+        type: number
+      maxItemSpawned:
+        type: integer
+      name:
+        type: string
+      rarity:
+        type: string
+      spawnPercentage:
+        type: number
+    required:
+    - catchPercentage
+    - maxItemSpawned
+    - name
+    - rarity
+    - spawnPercentage
+    type: object
+  dto.CreateClawItemsRequest:
+    properties:
+      clawItems:
+        items:
+          $ref: '#/definitions/dto.CreateClawItemRequest'
+        type: array
+    required:
+    - clawItems
+    type: object
+  dto.CreateClawMachineItemRequest:
+    properties:
+      itemID:
+        type: integer
+    required:
+    - itemID
+    type: object
+  dto.CreateClawMachineRequest:
+    properties:
+      items:
+        items:
+          $ref: '#/definitions/dto.CreateClawMachineItemRequest'
+        type: array
+      maxItem:
+        type: integer
+      name:
+        type: string
+      price:
+        type: integer
+    required:
+    - maxItem
+    - name
+    - price
+    type: object
+  dto.CreateClawPlayerRequest:
+    properties:
+      coin:
+        minimum: 0
+        type: integer
+      diamond:
+        minimum: 0
+        type: integer
+      playerID:
+        type: integer
+      userName:
+        type: string
+    required:
+    - coin
+    - diamond
+    - playerID
+    - userName
+    type: object
+  dto.CreateGachaItemRequest:
+    properties:
+      name:
+        type: string
+      pullWeight:
+        type: integer
+      rarity:
+        type: string
+    required:
+    - name
+    - pullWeight
+    - rarity
+    type: object
+  dto.CreateGachaItemsRequest:
+    properties:
+      gachaItems:
+        items:
+          $ref: '#/definitions/dto.CreateGachaItemRequest'
+        type: array
+    required:
+    - gachaItems
+    type: object
+  dto.CreateGachaMachineItemRequest:
+    properties:
+      itemID:
+        type: integer
+    required:
+    - itemID
+    type: object
+  dto.CreateGachaMachineRequest:
+    properties:
+      gachaItems:
+        items:
+          $ref: '#/definitions/dto.CreateGachaMachineItemRequest'
+        type: array
+      name:
+        type: string
+      price:
+        type: integer
+      priceTimesTen:
+        type: integer
+      superRarePity:
+        type: integer
+      ultraRarePity:
+        type: integer
+    required:
+    - name
+    - price
+    - priceTimesTen
+    - superRarePity
+    - ultraRarePity
+    type: object
+  dto.CreateGachaPlayerReq:
+    properties:
+      coin:
+        minimum: 0
+        type: integer
+      diamond:
+        minimum: 0
+        type: integer
+      playerID:
+        type: integer
+      userName:
+        type: string
+    required:
+    - coin
+    - diamond
+    - playerID
+    - userName
+    type: object
+  dto.CreateMoleWeightConfigRequest:
+    properties:
+      moleType:
+        type: string
+      weight:
+        type: integer
+    required:
+    - moleType
+    - weight
+    type: object
+  dto.CreatePlayerRequest:
+    properties:
+      userName:
+        type: string
+    required:
+    - userName
+    type: object
+  dto.CreateWhackAMolePlayerRequest:
+    properties:
+      playerId:
+        type: integer
+      username:
+        type: string
+    required:
+    - playerId
+    - username
+    type: object
+  dto.GetPullResultRequest:
+    properties:
+      machineID:
+        type: integer
+      playerID:
+        type: integer
+      pullCount:
+        enum:
+        - 1
+        - 10
+        type: integer
+    required:
+    - machineID
+    - playerID
+    - pullCount
+    type: object
+  dto.StartClawGameRequest:
+    properties:
+      machineID:
+        type: integer
+      playerID:
+        type: integer
+    required:
+    - machineID
+    - playerID
+    type: object
+  dto.UpdateMoleWeightConfigRequest:
+    properties:
+      id:
+        type: integer
+      moleType:
+        type: string
+      weight:
+        type: integer
+    required:
+    - id
+    type: object
+  dto.UpdateScoreRequest:
+    properties:
+      playerID:
+        type: integer
+      score:
+        type: integer
+    required:
+    - playerID
+    - score
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: This is the API documentation for the Game Service including Player,
+    ClawMachine, GachaMachine, and WhackAMole endpoints.
+  title: Game Service API
+  version: "1.0"
+paths:
+  /clawMachine/addTouchedItemRecord:
+    post:
+      consumes:
+      - application/json
+      description: Record an item that was touched during a claw game
+      parameters:
+      - description: Add touched item record request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.AddTouchedItemRecordRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Touched item record added successfully
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Invalid request body
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Add touched item record
+      tags:
+      - ClawMachine
+  /clawMachine/adjustPlayerCoin:
+    post:
+      consumes:
+      - application/json
+      description: Add or subtract coins from a player's balance
+      parameters:
+      - description: Adjust coin request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.AdjustPlayerCoinRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Player coin adjusted successfully
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Invalid request body
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Adjust player coin balance
+      tags:
+      - ClawMachine
+  /clawMachine/adjustPlayerDiamond:
+    post:
+      consumes:
+      - application/json
+      description: Add or subtract diamonds from a player's balance
+      parameters:
+      - description: Adjust diamond request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.AdjustPlayerDiamondRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Player diamond adjusted successfully
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Invalid request body
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Adjust player diamond balance
+      tags:
+      - ClawMachine
+  /clawMachine/createClawItems:
+    post:
+      consumes:
+      - application/json
+      description: Create multiple claw items with their properties
+      parameters:
+      - description: Claw items creation request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateClawItemsRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Claw items created successfully
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Invalid request body
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Create claw items
+      tags:
+      - ClawMachine
+  /clawMachine/createClawMachine:
+    post:
+      consumes:
+      - application/json
+      description: Create a new claw machine with the provided details
+      parameters:
+      - description: Claw machine creation request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateClawMachineRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Claw machine created successfully
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Invalid request body
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Create a new claw machine
+      tags:
+      - ClawMachine
+  /clawMachine/createClawPlayer:
+    post:
+      consumes:
+      - application/json
+      description: Create a new claw player with initial coin and diamond balance
+      parameters:
+      - description: Claw player creation request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateClawPlayerRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Claw player created successfully
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Invalid request body
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Create a new claw player
+      tags:
+      - ClawMachine
+  /clawMachine/getClawMachineInfo/{machineID}:
+    get:
+      consumes:
+      - application/json
+      description: Get claw machine information by machine ID
+      parameters:
+      - description: Machine ID
+        format: int64
+        in: path
+        name: machineID
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Claw machine info retrieved successfully
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Invalid machine ID
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Get claw machine information
+      tags:
+      - ClawMachine
+  /clawMachine/getClawPlayerInfo/{playerID}:
+    get:
+      consumes:
+      - application/json
+      description: Get claw player information by player ID
+      parameters:
+      - description: Player ID
+        format: int64
+        in: path
+        name: playerID
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Claw player info retrieved successfully
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Invalid player ID
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Get claw player information
+      tags:
+      - ClawMachine
+  /clawMachine/startClawGame:
+    post:
+      consumes:
+      - application/json
+      description: Start a new claw game session for a player
+      parameters:
+      - description: Start game request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.StartClawGameRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Claw game started successfully
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Invalid request body
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Start a claw game
+      tags:
+      - ClawMachine
+  /gachaMachine/adjustPlayerCoin:
+    post:
+      consumes:
+      - application/json
+      description: Add or subtract coins from a gacha player's balance
+      parameters:
+      - description: Adjust coin request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.AdjustGachaPlayerCoinRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Player coin adjusted successfully
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Invalid request body
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Adjust gacha player coin balance
+      tags:
+      - GachaMachine
+  /gachaMachine/adjustPlayerDiamond:
+    post:
+      consumes:
+      - application/json
+      description: Add or subtract diamonds from a gacha player's balance
+      parameters:
+      - description: Adjust diamond request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.AdjustGachaPlayerDiamondRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Player diamond adjusted successfully
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Invalid request body
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Adjust gacha player diamond balance
+      tags:
+      - GachaMachine
+  /gachaMachine/createGachaItems:
+    post:
+      consumes:
+      - application/json
+      description: Create multiple gacha items with their properties
+      parameters:
+      - description: Gacha items creation request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateGachaItemsRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Gacha items created successfully
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Invalid request body
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Create gacha items
+      tags:
+      - GachaMachine
+  /gachaMachine/createGachaMachine:
+    post:
+      consumes:
+      - application/json
+      description: Create a new gacha machine with the provided details
+      parameters:
+      - description: Gacha machine creation request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateGachaMachineRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Gacha machine created successfully
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Invalid request body
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Create a new gacha machine
+      tags:
+      - GachaMachine
+  /gachaMachine/createGachaPlayer:
+    post:
+      consumes:
+      - application/json
+      description: Create a new gacha player with initial coin and diamond balance
+      parameters:
+      - description: Gacha player creation request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateGachaPlayerReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Gacha player created successfully
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Invalid request body
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Create a new gacha player
+      tags:
+      - GachaMachine
+  /gachaMachine/getGachaMachineInfo/{machineID}:
+    get:
+      consumes:
+      - application/json
+      description: Get gacha machine information by machine ID
+      parameters:
+      - description: Machine ID
+        format: int64
+        in: path
+        name: machineID
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Gacha machine info retrieved successfully
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Invalid machine ID
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Get gacha machine information
+      tags:
+      - GachaMachine
+  /gachaMachine/getGachaPlayerInfo/{playerID}:
+    get:
+      consumes:
+      - application/json
+      description: Get gacha player information by player ID
+      parameters:
+      - description: Player ID
+        format: int64
+        in: path
+        name: playerID
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Gacha player info retrieved successfully
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Invalid player ID
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Get gacha player information
+      tags:
+      - GachaMachine
+  /gachaMachine/getPullResult:
+    post:
+      consumes:
+      - application/json
+      description: Execute a gacha pull and get the result
+      parameters:
+      - description: Pull result request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.GetPullResultRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Pull result retrieved successfully
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Invalid request body
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Get gacha pull result
+      tags:
+      - GachaMachine
+  /player/create:
+    post:
+      consumes:
+      - application/json
+      description: Create a new player with the provided username
+      parameters:
+      - description: Player creation request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreatePlayerRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Player created successfully
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Invalid request body
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Create a new player
+      tags:
+      - Player
+  /player/info/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get player information by player ID
+      parameters:
+      - description: Player ID
+        format: int64
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Player info retrieved successfully
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Invalid player ID
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Get player information
+      tags:
+      - Player
+  /whackAMole/createMoleWeightConfig:
+    post:
+      consumes:
+      - application/json
+      description: Create a new mole weight configuration
+      parameters:
+      - description: Mole weight config creation request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateMoleWeightConfigRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Mole weight config created successfully
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Invalid request body
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Create mole weight configuration
+      tags:
+      - WhackAMole
+  /whackAMole/createWhackAMolePlayer:
+    post:
+      consumes:
+      - application/json
+      description: Create a new Whack-A-Mole player with username
+      parameters:
+      - description: Whack-A-Mole player creation request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateWhackAMolePlayerRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Whack-A-Mole player created successfully
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Invalid request body
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Create a new Whack-A-Mole player
+      tags:
+      - WhackAMole
+  /whackAMole/getMoleWeightConfig/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get mole weight configuration by config ID
+      parameters:
+      - description: Config ID
+        format: int64
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Mole weight config retrieved successfully
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Invalid config ID
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Get mole weight configuration
+      tags:
+      - WhackAMole
+  /whackAMole/getWhackAMolePlayer/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get Whack-A-Mole player information by player ID
+      parameters:
+      - description: Player ID
+        format: int64
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Player info retrieved successfully
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Invalid player ID
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Get Whack-A-Mole player information
+      tags:
+      - WhackAMole
+  /whackAMole/leaderboard/{limit}:
+    get:
+      consumes:
+      - application/json
+      description: Get the top players leaderboard
+      parameters:
+      - description: Limit of entries to return
+        in: path
+        name: limit
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Leaderboard retrieved successfully
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Invalid limit parameter
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Get Whack-A-Mole leaderboard
+      tags:
+      - WhackAMole
+  /whackAMole/updateMoleWeightConfig:
+    post:
+      consumes:
+      - application/json
+      description: Update an existing mole weight configuration
+      parameters:
+      - description: Mole weight config update request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UpdateMoleWeightConfigRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Mole weight config updated successfully
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Invalid request body
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Update mole weight configuration
+      tags:
+      - WhackAMole
+  /whackAMole/updateScore:
+    post:
+      consumes:
+      - application/json
+      description: Update a player's score in Whack-A-Mole
+      parameters:
+      - description: Update score request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UpdateScoreRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Player score updated successfully
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Invalid request body
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Update player score
+      tags:
+      - WhackAMole
+swagger: "2.0"

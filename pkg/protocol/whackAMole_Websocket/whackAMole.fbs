@@ -1,0 +1,62 @@
+namespace whackAMole;
+
+enum MessageType : byte {
+  GetMoleWeightReq = 0,
+  GetMoleWeightResp = 1,
+  GetLeaderboardReq = 2,
+  GetLeaderboardResp = 3,
+  ErrorResp = 100
+}
+
+/***************
+ * Requests
+ ***************/
+table GetMoleWeightReq {
+}
+
+table GetLeaderboardReq {
+    player_id:long;
+}
+
+/***************
+ * Responses
+ ***************/
+table GetMoleWeightResp {
+    mole:[MoleWeight];
+}
+
+table MoleWeight {
+    mole_type:string;
+    weight:int;
+}
+
+table GetLeaderboardResp {
+    top_player:[LeaderboardPlayer];
+    your_rank:int;
+    your_score:long;
+}
+
+table LeaderboardPlayer {
+    rank:int;
+    player_id:long;
+    username:string;
+    score:long;
+}
+
+/***************
+ * Error
+ ***************/
+table ErrorResp {
+  code:int;
+  message:string;
+}
+
+/***************
+ * Envelope
+ ***************/
+table Envelope {
+  type:MessageType;
+  payload:[ubyte];
+}
+
+root_type Envelope;

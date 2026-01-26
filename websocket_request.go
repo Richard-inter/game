@@ -232,3 +232,5 @@
 // 	fmt.Println("Message:", string(resp.Message()))
 // 	fmt.Println("==================")
 // }
+
+package main

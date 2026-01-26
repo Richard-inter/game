@@ -27,6 +27,15 @@ gachamachine_database:
   name: "game"
   charset: "utf8mb4"
 
+# WhackAMole service database  
+whackamole_database:
+  host: "localhost"
+  port: 3309
+  user: "gameuser"
+  password: "gamepass"
+  name: "game"
+  charset: "utf8mb4"
+
 redis:
   host: "localhost"
   port: 6380

@@ -1,0 +1,40 @@
+# WhackAMole Runtime Service Configuration (gRPC WebSocket)
+
+service:
+  name: "whackamole-runtime-service"
+  host: "0.0.0.0"
+  port: 9098
+  mode: "debug"
+  read_timeout: 30
+  write_timeout: 30
+
+# Database Configuration
+whackamole_database:
+  host: "localhost"
+  port: 3309
+  user: "gameuser"
+  password: "gamepass"
+  name: "game"
+  charset: "utf8mb4"
+
+# Service Discovery Configuration
+discovery:
+  etcd:
+    endpoints: ["localhost:2379"]
+    timeout: "5s"
+  enabled: false
+
+# Stream Consumer Configuration
+stream_consumer:
+  enabled: false
+  stream_key: "whackamole_stream"
+  consumer_group: "whackamole_runtime_group"
+  batch_size: 10
+  timeout: "5s"
+
+# Import shared configurations
+shared:
+  redis: "shared.yaml"
+  logging: "shared.yaml"
+  jwt: "shared.yaml"
+  tracing: "shared.yaml"

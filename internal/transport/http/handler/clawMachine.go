@@ -33,6 +33,17 @@ func NewClawMachineHandler(
 	}, nil
 }
 
+// HandleCreateClawMachine godoc
+// @Summary Create a new claw machine
+// @Description Create a new claw machine with the provided details
+// @Tags ClawMachine
+// @Accept json
+// @Produce json
+// @Param request body dto.CreateClawMachineRequest true "Claw machine creation request"
+// @Success 201 {object} map[string]interface{} "Claw machine created successfully"
+// @Failure 400 {object} map[string]interface{} "Invalid request body"
+// @Failure 500 {object} map[string]interface{} "Internal server error"
+// @Router /clawMachine/createClawMachine [post]
 func (h *ClawMachineHandler) HandleCreateClawMachine(c *gin.Context) {
 	var req dto.CreateClawMachineRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -65,6 +76,17 @@ func (h *ClawMachineHandler) HandleCreateClawMachine(c *gin.Context) {
 	common.SendCreated(c, resp)
 }
 
+// HandleGetClawMachineInfo godoc
+// @Summary Get claw machine information
+// @Description Get claw machine information by machine ID
+// @Tags ClawMachine
+// @Accept json
+// @Produce json
+// @Param machineID path int64 true "Machine ID"
+// @Success 200 {object} map[string]interface{} "Claw machine info retrieved successfully"
+// @Failure 400 {object} map[string]interface{} "Invalid machine ID"
+// @Failure 500 {object} map[string]interface{} "Internal server error"
+// @Router /clawMachine/getClawMachineInfo/{machineID} [get]
 func (h *ClawMachineHandler) HandleGetClawMachineInfo(c *gin.Context) {
 	machineIDParam := c.Param("machineID")
 	var machineID int64
@@ -90,6 +112,17 @@ func (h *ClawMachineHandler) HandleGetClawMachineInfo(c *gin.Context) {
 	common.SendSuccess(c, resp)
 }
 
+// HandleCreateClawItems godoc
+// @Summary Create claw items
+// @Description Create multiple claw items with their properties
+// @Tags ClawMachine
+// @Accept json
+// @Produce json
+// @Param request body dto.CreateClawItemsRequest true "Claw items creation request"
+// @Success 201 {object} map[string]interface{} "Claw items created successfully"
+// @Failure 400 {object} map[string]interface{} "Invalid request body"
+// @Failure 500 {object} map[string]interface{} "Internal server error"
+// @Router /clawMachine/createClawItems [post]
 func (h *ClawMachineHandler) HandleCreateClawItems(c *gin.Context) {
 	var req dto.CreateClawItemsRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -123,6 +156,17 @@ func (h *ClawMachineHandler) HandleCreateClawItems(c *gin.Context) {
 	common.SendCreated(c, resp)
 }
 
+// HandleGetClawPlayerInfo godoc
+// @Summary Get claw player information
+// @Description Get claw player information by player ID
+// @Tags ClawMachine
+// @Accept json
+// @Produce json
+// @Param playerID path int64 true "Player ID"
+// @Success 200 {object} map[string]interface{} "Claw player info retrieved successfully"
+// @Failure 400 {object} map[string]interface{} "Invalid player ID"
+// @Failure 500 {object} map[string]interface{} "Internal server error"
+// @Router /clawMachine/getClawPlayerInfo/{playerID} [get]
 func (h *ClawMachineHandler) HandleGetClawPlayerInfo(c *gin.Context) {
 	playerIDParam := c.Param("playerID")
 	var playerID int64
@@ -148,6 +192,17 @@ func (h *ClawMachineHandler) HandleGetClawPlayerInfo(c *gin.Context) {
 	common.SendSuccess(c, resp)
 }
 
+// HandleCreateClawPlayer godoc
+// @Summary Create a new claw player
+// @Description Create a new claw player with initial coin and diamond balance
+// @Tags ClawMachine
+// @Accept json
+// @Produce json
+// @Param request body dto.CreateClawPlayerRequest true "Claw player creation request"
+// @Success 201 {object} map[string]interface{} "Claw player created successfully"
+// @Failure 400 {object} map[string]interface{} "Invalid request body"
+// @Failure 500 {object} map[string]interface{} "Internal server error"
+// @Router /clawMachine/createClawPlayer [post]
 func (h *ClawMachineHandler) HandleCreateClawPlayer(c *gin.Context) {
 	var req dto.CreateClawPlayerRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -179,6 +234,17 @@ func (h *ClawMachineHandler) HandleCreateClawPlayer(c *gin.Context) {
 	common.SendCreated(c, resp)
 }
 
+// HandleAdjustPlayerCoin godoc
+// @Summary Adjust player coin balance
+// @Description Add or subtract coins from a player's balance
+// @Tags ClawMachine
+// @Accept json
+// @Produce json
+// @Param request body dto.AdjustPlayerCoinRequest true "Adjust coin request"
+// @Success 200 {object} map[string]interface{} "Player coin adjusted successfully"
+// @Failure 400 {object} map[string]interface{} "Invalid request body"
+// @Failure 500 {object} map[string]interface{} "Internal server error"
+// @Router /clawMachine/adjustPlayerCoin [post]
 func (h *ClawMachineHandler) HandleAdjustPlayerCoin(c *gin.Context) {
 	var req dto.AdjustPlayerCoinRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -204,6 +270,17 @@ func (h *ClawMachineHandler) HandleAdjustPlayerCoin(c *gin.Context) {
 	common.SendSuccess(c, resp)
 }
 
+// HandleAdjustPlayerDiamond godoc
+// @Summary Adjust player diamond balance
+// @Description Add or subtract diamonds from a player's balance
+// @Tags ClawMachine
+// @Accept json
+// @Produce json
+// @Param request body dto.AdjustPlayerDiamondRequest true "Adjust diamond request"
+// @Success 200 {object} map[string]interface{} "Player diamond adjusted successfully"
+// @Failure 400 {object} map[string]interface{} "Invalid request body"
+// @Failure 500 {object} map[string]interface{} "Internal server error"
+// @Router /clawMachine/adjustPlayerDiamond [post]
 func (h *ClawMachineHandler) HandleAdjustPlayerDiamond(c *gin.Context) {
 	var req dto.AdjustPlayerDiamondRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -229,6 +306,17 @@ func (h *ClawMachineHandler) HandleAdjustPlayerDiamond(c *gin.Context) {
 	common.SendSuccess(c, resp)
 }
 
+// HandleStartClawGame godoc
+// @Summary Start a claw game
+// @Description Start a new claw game session for a player
+// @Tags ClawMachine
+// @Accept json
+// @Produce json
+// @Param request body dto.StartClawGameRequest true "Start game request"
+// @Success 200 {object} map[string]interface{} "Claw game started successfully"
+// @Failure 400 {object} map[string]interface{} "Invalid request body"
+// @Failure 500 {object} map[string]interface{} "Internal server error"
+// @Router /clawMachine/startClawGame [post]
 func (h *ClawMachineHandler) HandleStartClawGame(c *gin.Context) {
 	var req dto.StartClawGameRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -252,6 +340,17 @@ func (h *ClawMachineHandler) HandleStartClawGame(c *gin.Context) {
 	common.SendSuccess(c, resp)
 }
 
+// HandleAddTouchedItemRecord godoc
+// @Summary Add touched item record
+// @Description Record an item that was touched during a claw game
+// @Tags ClawMachine
+// @Accept json
+// @Produce json
+// @Param request body dto.AddTouchedItemRecordRequest true "Add touched item record request"
+// @Success 200 {object} map[string]interface{} "Touched item record added successfully"
+// @Failure 400 {object} map[string]interface{} "Invalid request body"
+// @Failure 500 {object} map[string]interface{} "Internal server error"
+// @Router /clawMachine/addTouchedItemRecord [post]
 func (h *ClawMachineHandler) HandleAddTouchedItemRecord(c *gin.Context) {
 	var req dto.AddTouchedItemRecordRequest
 	if err := c.ShouldBindJSON(&req); err != nil {

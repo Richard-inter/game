@@ -33,6 +33,17 @@ func NewPlayerHandler(
 	}, nil
 }
 
+// HandleCreatePlayer godoc
+// @Summary Create a new player
+// @Description Create a new player with the provided username
+// @Tags Player
+// @Accept json
+// @Produce json
+// @Param request body dto.CreatePlayerRequest true "Player creation request"
+// @Success 201 {object} map[string]interface{} "Player created successfully"
+// @Failure 400 {object} map[string]interface{} "Invalid request body"
+// @Failure 500 {object} map[string]interface{} "Internal server error"
+// @Router /player/create [post]
 func (h *PlayerHandler) HandleCreatePlayer(c *gin.Context) {
 	var req dto.CreatePlayerRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -57,6 +68,17 @@ func (h *PlayerHandler) HandleCreatePlayer(c *gin.Context) {
 	common.SendCreated(c, resp.Player)
 }
 
+// HandleGetPlayerInfo godoc
+// @Summary Get player information
+// @Description Get player information by player ID
+// @Tags Player
+// @Accept json
+// @Produce json
+// @Param id path int64 true "Player ID"
+// @Success 200 {object} map[string]interface{} "Player info retrieved successfully"
+// @Failure 400 {object} map[string]interface{} "Invalid player ID"
+// @Failure 500 {object} map[string]interface{} "Internal server error"
+// @Router /player/info/{id} [get]
 func (h *PlayerHandler) HandleGetPlayerInfo(c *gin.Context) {
 	playerIDStr := c.Param("id")
 	var playerID int64

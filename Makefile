@@ -24,6 +24,7 @@ build:
 	go build $(LDFLAGS) -o bin/rpc-player-service ./cmd/rpc/rpc-player-service
 	go build $(LDFLAGS) -o bin/rpc-gachamachine-service ./cmd/rpc/rpc-gachamachine-service
 	go build $(LDFLAGS) -o bin/rpc-gachamachine-runtime-service ./cmd/rpc/rpc-gachamachine-runtime-service
+	go build $(LDFLAGS) -o bin/rpc-whackamole-service ./cmd/rpc/rpc-whackamole-service
 
 # Build individual services
 build-game:
@@ -58,6 +59,18 @@ build-gachamachine-runtime:
 	@echo "Building RPC GachaMachine Runtime service..."
 	go build $(LDFLAGS) -o bin/rpc-gachamachine-runtime-service ./cmd/rpc/rpc-gachamachine-runtime-service
 
+build-whackamole:
+	@echo "Building RPC WhackAMole service..."
+	go build $(LDFLAGS) -o bin/rpc-whackamole-service ./cmd/rpc/rpc-whackamole-service
+
+build-whackamole-runtime:
+	@echo "Building RPC WhackAMole Runtime service..."
+	go build $(LDFLAGS) -o bin/rpc-whackamole-runtime-service ./cmd/rpc/rpc-whackamole-runtime-service
+
+build-recalculate-leaderboard:
+	@echo "Building leaderboard recalculation utility..."
+	go build $(LDFLAGS) -o bin/recalculate-leaderboard ./cmd/recalculate-leaderboard
+
 # Run individual services
 run-game:
 	@echo "Running game service..."
@@ -90,6 +103,22 @@ run-gachamachine:
 run-gachamachine-runtime:
 	@echo "Running RPC GachaMachine Runtime service..."
 	go run $(LDFLAGS) ./cmd/rpc/rpc-gachamachine-runtime-service
+
+run-whackamole:
+	@echo "Running RPC WhackAMole service..."
+	go run $(LDFLAGS) ./cmd/rpc/rpc-whackamole-service
+
+run-whackamole-runtime:
+	@echo "Running RPC WhackAMole Runtime service..."
+	go run $(LDFLAGS) ./cmd/rpc/rpc-whackamole-runtime-service
+
+run-recalculate-leaderboard:
+	@echo "Running leaderboard recalculation utility..."
+	go run $(LDFLAGS) ./cmd/recalculate-leaderboard
+
+test-whackamole-runtime:
+	@echo "Testing WhackAMole runtime service..."
+	go run $(LDFLAGS) test_whackamole_runtime.go
 
 # Run the application (all services)
 run:
@@ -225,6 +254,13 @@ init:
 	go mod tidy
 	mkdir -p bin cmd internal pkg config data docs deployments scripts
 
+# Generate Swagger documentation
+swagger:
+	@echo "Generating Swagger documentation..."
+	~/go/bin/swag init -g internal/transport/http/server.go -o docs --parseDependency --parseInternal
+	@echo "Swagger documentation generated successfully!"
+	@echo "Access it at: http://localhost:8080/swagger/index.html"
+
 # Help
 help:
 	@echo "Available targets:"
@@ -236,6 +272,7 @@ help:
 	@echo "  generate       - Generate code"
 	@echo "  proto          - Generate protobuf files"
 	@echo "  flatbuffers    - Generate flatbuffer files"
+	@echo "  swagger        - Generate Swagger documentation"
 	@echo "  docker-build   - Build Docker image"
 	@echo "  docker-run     - Run Docker container"
 	@echo "  deps           - Install dependencies"
