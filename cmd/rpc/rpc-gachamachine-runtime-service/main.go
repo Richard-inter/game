@@ -14,6 +14,8 @@ import (
 	"github.com/Richard-inter/game/internal/cache"
 	"github.com/Richard-inter/game/internal/config"
 	"github.com/Richard-inter/game/internal/db"
+	"github.com/Richard-inter/game/internal/discovery"
+	"github.com/Richard-inter/game/internal/registry"
 	"github.com/Richard-inter/game/internal/repository"
 	c "github.com/Richard-inter/game/internal/service/rpc/gachaMachine_runtime"
 	"github.com/Richard-inter/game/internal/worker"
@@ -87,6 +89,21 @@ func main() {
 	reflection.Register(s)
 
 	log.Infow("GachaMachine Runtime gRPC server starting", "address", lis.Addr().String())
+
+	// Register service with etcd
+	if cfg.Discovery.Enabled {
+		etcdDiscovery, err := discovery.NewEtcdDiscovery(cfg.Discovery.Etcd.Endpoints)
+		if err != nil {
+			log.Warnw("Failed to connect to etcd, service discovery disabled", "error", err)
+		} else {
+			serviceRegistry := registry.NewServiceRegistry(etcdDiscovery, log)
+			err = serviceRegistry.RegisterService("gachamachine-runtime-service", cfg.Service.Host, cfg.Service.Port)
+			if err != nil {
+				log.Errorw("Failed to register service with etcd", "error", err)
+			}
+			defer etcdDiscovery.Close()
+		}
+	}
 
 	// Start server in a goroutine
 	go func() {

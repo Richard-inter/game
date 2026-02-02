@@ -11,6 +11,13 @@ grpc:
   port: 9091
   reflection: true
 
+discovery:
+  enabled: true
+  etcd:
+    endpoints:
+      - "localhost:2379"
+    timeout: "5s"
+
 # Import shared configurations
 shared:
   clawmachine_database: "shared.yaml"

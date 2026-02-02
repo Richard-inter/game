@@ -75,17 +75,27 @@ func (d *EtcdDiscovery) RegisterService(serviceName, address string) error {
 		return fmt.Errorf("failed to create lease: %w", err)
 	}
 
-	// Keep lease alive
-	_, err = d.client.KeepAlive(ctx, lease.ID)
-	if err != nil {
-		return fmt.Errorf("failed to keep lease alive: %w", err)
-	}
-
 	// Register service
 	_, err = d.client.Put(ctx, serviceName, address, clientv3.WithLease(lease.ID))
 	if err != nil {
 		return fmt.Errorf("failed to register service: %w", err)
 	}
+
+	// Start keep-alive for the lease in a separate goroutine
+	go func() {
+		ch, kaerr := d.client.KeepAlive(context.Background(), lease.ID)
+		if kaerr != nil {
+			return
+		}
+		for {
+			select {
+			case <-ch:
+				// Keep alive response received
+			case <-context.Background().Done():
+				return
+			}
+		}
+	}()
 
 	d.services[serviceName] = address
 	return nil

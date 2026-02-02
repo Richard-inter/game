@@ -20,6 +20,13 @@ whackamole_database:
   name: "game"
   charset: "utf8mb4"
 
+discovery:
+  enabled: true
+  etcd:
+    endpoints:
+      - "localhost:2379"
+    timeout: "5s"
+
 # Import shared configurations
 shared:
   redis: "shared.yaml"

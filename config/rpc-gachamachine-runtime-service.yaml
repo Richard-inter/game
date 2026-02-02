@@ -19,6 +19,13 @@ stream_consumer:
   batch_size: 50
   block_timeout: "5s"
 
+discovery:
+  enabled: true
+  etcd:
+    endpoints:
+      - "localhost:2379"
+    timeout: "5s"
+
 # Import shared configurations
 shared:
   gachamachine_database: "shared.yaml"

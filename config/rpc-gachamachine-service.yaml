@@ -20,7 +20,7 @@ stream_consumer:
   block_timeout: "5s"
 
 discovery:
-  enabled: false
+  enabled: true
   etcd:
     endpoints:
       - "localhost:2379"

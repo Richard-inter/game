@@ -36,6 +36,17 @@ func (r *ServiceRegistry) RegisterService(serviceName, host string, port int) er
 	return nil
 }
 
+func (r *ServiceRegistry) GetService(serviceName string) (string, error) {
+	address, err := r.discovery.GetService(serviceName)
+	if err != nil {
+		r.logger.Errorw("Failed to get service from etcd", "service", serviceName, "error", err)
+		return "", fmt.Errorf("failed to get service %s: %w", serviceName, err)
+	}
+
+	r.logger.Debugw("Retrieved service from etcd", "service", serviceName, "address", address)
+	return address, nil
+}
+
 // Helper function to get service address from environment
 func GetServiceAddress(serviceName string) (string, int, error) {
 	host := os.Getenv(fmt.Sprintf("%s_HOST", serviceName))

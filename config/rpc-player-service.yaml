@@ -12,7 +12,7 @@ grpc:
   reflection: true
 
 discovery:
-  enabled: false
+  enabled: true
   etcd:
     endpoints:
       - "localhost:2379"

@@ -13,6 +13,8 @@ import (
 
 	"github.com/Richard-inter/game/internal/config"
 	"github.com/Richard-inter/game/internal/db"
+	"github.com/Richard-inter/game/internal/discovery"
+	"github.com/Richard-inter/game/internal/registry"
 	"github.com/Richard-inter/game/internal/repository"
 	whackAMole "github.com/Richard-inter/game/internal/service/rpc/whackAMole"
 	"github.com/Richard-inter/game/pkg/logger"
@@ -75,6 +77,21 @@ func main() {
 	reflection.Register(s)
 
 	log.Infow("WhackAMole gRPC server starting", "address", lis.Addr().String())
+
+	// Register service with etcd
+	if cfg.Discovery.Enabled {
+		etcdDiscovery, err := discovery.NewEtcdDiscovery(cfg.Discovery.Etcd.Endpoints)
+		if err != nil {
+			log.Warnw("Failed to connect to etcd, service discovery disabled", "error", err)
+		} else {
+			serviceRegistry := registry.NewServiceRegistry(etcdDiscovery, log)
+			err = serviceRegistry.RegisterService("whackamole-service", cfg.Service.Host, cfg.Service.Port)
+			if err != nil {
+				log.Errorw("Failed to register service with etcd", "error", err)
+			}
+			defer etcdDiscovery.Close()
+		}
+	}
 
 	// Start server in a goroutine
 	go func() {

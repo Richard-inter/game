@@ -22,7 +22,7 @@ discovery:
   etcd:
     endpoints: ["localhost:2379"]
     timeout: "5s"
-  enabled: false
+  enabled: true
 
 # Stream Consumer Configuration
 stream_consumer:
