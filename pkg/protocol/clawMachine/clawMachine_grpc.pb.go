@@ -19,15 +19,20 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	ClawMachineService_CreateClawPlayer_FullMethodName     = "/clawMachine.ClawMachineService/CreateClawPlayer"
-	ClawMachineService_GetClawPlayerInfo_FullMethodName    = "/clawMachine.ClawMachineService/GetClawPlayerInfo"
-	ClawMachineService_AdjustPlayerCoin_FullMethodName     = "/clawMachine.ClawMachineService/AdjustPlayerCoin"
-	ClawMachineService_AdjustPlayerDiamond_FullMethodName  = "/clawMachine.ClawMachineService/AdjustPlayerDiamond"
-	ClawMachineService_CreateClawMachine_FullMethodName    = "/clawMachine.ClawMachineService/CreateClawMachine"
-	ClawMachineService_GetClawMachineInfo_FullMethodName   = "/clawMachine.ClawMachineService/GetClawMachineInfo"
-	ClawMachineService_StartClawGame_FullMethodName        = "/clawMachine.ClawMachineService/StartClawGame"
-	ClawMachineService_AddTouchedItemRecord_FullMethodName = "/clawMachine.ClawMachineService/AddTouchedItemRecord"
-	ClawMachineService_CreateClawItems_FullMethodName      = "/clawMachine.ClawMachineService/CreateClawItems"
+	ClawMachineService_CreateClawPlayer_FullMethodName       = "/clawMachine.ClawMachineService/CreateClawPlayer"
+	ClawMachineService_GetClawPlayerInfo_FullMethodName      = "/clawMachine.ClawMachineService/GetClawPlayerInfo"
+	ClawMachineService_DeleteClawPlayer_FullMethodName       = "/clawMachine.ClawMachineService/DeleteClawPlayer"
+	ClawMachineService_AdjustPlayerCoin_FullMethodName       = "/clawMachine.ClawMachineService/AdjustPlayerCoin"
+	ClawMachineService_AdjustPlayerDiamond_FullMethodName    = "/clawMachine.ClawMachineService/AdjustPlayerDiamond"
+	ClawMachineService_GetGameHistory_FullMethodName         = "/clawMachine.ClawMachineService/GetGameHistory"
+	ClawMachineService_CreateClawMachine_FullMethodName      = "/clawMachine.ClawMachineService/CreateClawMachine"
+	ClawMachineService_GetClawMachineInfo_FullMethodName     = "/clawMachine.ClawMachineService/GetClawMachineInfo"
+	ClawMachineService_UpdateClawMachineItems_FullMethodName = "/clawMachine.ClawMachineService/UpdateClawMachineItems"
+	ClawMachineService_DeleteClawMachine_FullMethodName      = "/clawMachine.ClawMachineService/DeleteClawMachine"
+	ClawMachineService_StartClawGame_FullMethodName          = "/clawMachine.ClawMachineService/StartClawGame"
+	ClawMachineService_AddTouchedItemRecord_FullMethodName   = "/clawMachine.ClawMachineService/AddTouchedItemRecord"
+	ClawMachineService_CreateClawItems_FullMethodName        = "/clawMachine.ClawMachineService/CreateClawItems"
+	ClawMachineService_DeleteClawItems_FullMethodName        = "/clawMachine.ClawMachineService/DeleteClawItems"
 )
 
 // ClawMachineServiceClient is the client API for ClawMachineService service.
@@ -37,16 +42,21 @@ type ClawMachineServiceClient interface {
 	// player
 	CreateClawPlayer(ctx context.Context, in *CreateClawPlayerReq, opts ...grpc.CallOption) (*CreateClawPlayerResp, error)
 	GetClawPlayerInfo(ctx context.Context, in *GetClawPlayerInfoReq, opts ...grpc.CallOption) (*GetClawPlayerInfoResp, error)
+	DeleteClawPlayer(ctx context.Context, in *DeleteClawPlayerReq, opts ...grpc.CallOption) (*DeleteClawPlayerResp, error)
 	AdjustPlayerCoin(ctx context.Context, in *AdjustPlayerCoinReq, opts ...grpc.CallOption) (*AdjustPlayerCoinResp, error)
 	AdjustPlayerDiamond(ctx context.Context, in *AdjustPlayerDiamondReq, opts ...grpc.CallOption) (*AdjustPlayerDiamondResp, error)
+	GetGameHistory(ctx context.Context, in *GetGameHistoryReq, opts ...grpc.CallOption) (*GetGameHistoryResp, error)
 	// machine
 	CreateClawMachine(ctx context.Context, in *CreateClawMachineReq, opts ...grpc.CallOption) (*CreateClawMachineResp, error)
 	GetClawMachineInfo(ctx context.Context, in *GetClawMachineInfoReq, opts ...grpc.CallOption) (*GetClawMachineInfoResp, error)
+	UpdateClawMachineItems(ctx context.Context, in *UpdateClawMachineItemsReq, opts ...grpc.CallOption) (*UpdateClawMachineItemsResp, error)
+	DeleteClawMachine(ctx context.Context, in *DeleteClawMachineReq, opts ...grpc.CallOption) (*DeleteClawMachineResp, error)
 	// game
 	StartClawGame(ctx context.Context, in *StartClawGameReq, opts ...grpc.CallOption) (*StartClawGameResp, error)
 	AddTouchedItemRecord(ctx context.Context, in *AddTouchedItemRecordReq, opts ...grpc.CallOption) (*AddTouchedItemRecordResp, error)
 	// items
 	CreateClawItems(ctx context.Context, in *CreateClawItemsReq, opts ...grpc.CallOption) (*CreateClawItemsResp, error)
+	DeleteClawItems(ctx context.Context, in *DeleteClawItemsReq, opts ...grpc.CallOption) (*DeleteClawItemsResp, error)
 }
 
 type clawMachineServiceClient struct {
@@ -77,6 +87,16 @@ func (c *clawMachineServiceClient) GetClawPlayerInfo(ctx context.Context, in *Ge
 	return out, nil
 }
 
+func (c *clawMachineServiceClient) DeleteClawPlayer(ctx context.Context, in *DeleteClawPlayerReq, opts ...grpc.CallOption) (*DeleteClawPlayerResp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(DeleteClawPlayerResp)
+	err := c.cc.Invoke(ctx, ClawMachineService_DeleteClawPlayer_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *clawMachineServiceClient) AdjustPlayerCoin(ctx context.Context, in *AdjustPlayerCoinReq, opts ...grpc.CallOption) (*AdjustPlayerCoinResp, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(AdjustPlayerCoinResp)
@@ -97,6 +117,16 @@ func (c *clawMachineServiceClient) AdjustPlayerDiamond(ctx context.Context, in *
 	return out, nil
 }
 
+func (c *clawMachineServiceClient) GetGameHistory(ctx context.Context, in *GetGameHistoryReq, opts ...grpc.CallOption) (*GetGameHistoryResp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetGameHistoryResp)
+	err := c.cc.Invoke(ctx, ClawMachineService_GetGameHistory_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *clawMachineServiceClient) CreateClawMachine(ctx context.Context, in *CreateClawMachineReq, opts ...grpc.CallOption) (*CreateClawMachineResp, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(CreateClawMachineResp)
@@ -111,6 +141,26 @@ func (c *clawMachineServiceClient) GetClawMachineInfo(ctx context.Context, in *G
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(GetClawMachineInfoResp)
 	err := c.cc.Invoke(ctx, ClawMachineService_GetClawMachineInfo_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *clawMachineServiceClient) UpdateClawMachineItems(ctx context.Context, in *UpdateClawMachineItemsReq, opts ...grpc.CallOption) (*UpdateClawMachineItemsResp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UpdateClawMachineItemsResp)
+	err := c.cc.Invoke(ctx, ClawMachineService_UpdateClawMachineItems_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *clawMachineServiceClient) DeleteClawMachine(ctx context.Context, in *DeleteClawMachineReq, opts ...grpc.CallOption) (*DeleteClawMachineResp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(DeleteClawMachineResp)
+	err := c.cc.Invoke(ctx, ClawMachineService_DeleteClawMachine_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -147,6 +197,16 @@ func (c *clawMachineServiceClient) CreateClawItems(ctx context.Context, in *Crea
 	return out, nil
 }
 
+func (c *clawMachineServiceClient) DeleteClawItems(ctx context.Context, in *DeleteClawItemsReq, opts ...grpc.CallOption) (*DeleteClawItemsResp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(DeleteClawItemsResp)
+	err := c.cc.Invoke(ctx, ClawMachineService_DeleteClawItems_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ClawMachineServiceServer is the server API for ClawMachineService service.
 // All implementations must embed UnimplementedClawMachineServiceServer
 // for forward compatibility.
@@ -154,16 +214,21 @@ type ClawMachineServiceServer interface {
 	// player
 	CreateClawPlayer(context.Context, *CreateClawPlayerReq) (*CreateClawPlayerResp, error)
 	GetClawPlayerInfo(context.Context, *GetClawPlayerInfoReq) (*GetClawPlayerInfoResp, error)
+	DeleteClawPlayer(context.Context, *DeleteClawPlayerReq) (*DeleteClawPlayerResp, error)
 	AdjustPlayerCoin(context.Context, *AdjustPlayerCoinReq) (*AdjustPlayerCoinResp, error)
 	AdjustPlayerDiamond(context.Context, *AdjustPlayerDiamondReq) (*AdjustPlayerDiamondResp, error)
+	GetGameHistory(context.Context, *GetGameHistoryReq) (*GetGameHistoryResp, error)
 	// machine
 	CreateClawMachine(context.Context, *CreateClawMachineReq) (*CreateClawMachineResp, error)
 	GetClawMachineInfo(context.Context, *GetClawMachineInfoReq) (*GetClawMachineInfoResp, error)
+	UpdateClawMachineItems(context.Context, *UpdateClawMachineItemsReq) (*UpdateClawMachineItemsResp, error)
+	DeleteClawMachine(context.Context, *DeleteClawMachineReq) (*DeleteClawMachineResp, error)
 	// game
 	StartClawGame(context.Context, *StartClawGameReq) (*StartClawGameResp, error)
 	AddTouchedItemRecord(context.Context, *AddTouchedItemRecordReq) (*AddTouchedItemRecordResp, error)
 	// items
 	CreateClawItems(context.Context, *CreateClawItemsReq) (*CreateClawItemsResp, error)
+	DeleteClawItems(context.Context, *DeleteClawItemsReq) (*DeleteClawItemsResp, error)
 	mustEmbedUnimplementedClawMachineServiceServer()
 }
 
@@ -180,17 +245,29 @@ func (UnimplementedClawMachineServiceServer) CreateClawPlayer(context.Context, *
 func (UnimplementedClawMachineServiceServer) GetClawPlayerInfo(context.Context, *GetClawPlayerInfoReq) (*GetClawPlayerInfoResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetClawPlayerInfo not implemented")
 }
+func (UnimplementedClawMachineServiceServer) DeleteClawPlayer(context.Context, *DeleteClawPlayerReq) (*DeleteClawPlayerResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteClawPlayer not implemented")
+}
 func (UnimplementedClawMachineServiceServer) AdjustPlayerCoin(context.Context, *AdjustPlayerCoinReq) (*AdjustPlayerCoinResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AdjustPlayerCoin not implemented")
 }
 func (UnimplementedClawMachineServiceServer) AdjustPlayerDiamond(context.Context, *AdjustPlayerDiamondReq) (*AdjustPlayerDiamondResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AdjustPlayerDiamond not implemented")
 }
+func (UnimplementedClawMachineServiceServer) GetGameHistory(context.Context, *GetGameHistoryReq) (*GetGameHistoryResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetGameHistory not implemented")
+}
 func (UnimplementedClawMachineServiceServer) CreateClawMachine(context.Context, *CreateClawMachineReq) (*CreateClawMachineResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateClawMachine not implemented")
 }
 func (UnimplementedClawMachineServiceServer) GetClawMachineInfo(context.Context, *GetClawMachineInfoReq) (*GetClawMachineInfoResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetClawMachineInfo not implemented")
+}
+func (UnimplementedClawMachineServiceServer) UpdateClawMachineItems(context.Context, *UpdateClawMachineItemsReq) (*UpdateClawMachineItemsResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateClawMachineItems not implemented")
+}
+func (UnimplementedClawMachineServiceServer) DeleteClawMachine(context.Context, *DeleteClawMachineReq) (*DeleteClawMachineResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteClawMachine not implemented")
 }
 func (UnimplementedClawMachineServiceServer) StartClawGame(context.Context, *StartClawGameReq) (*StartClawGameResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method StartClawGame not implemented")
@@ -200,6 +277,9 @@ func (UnimplementedClawMachineServiceServer) AddTouchedItemRecord(context.Contex
 }
 func (UnimplementedClawMachineServiceServer) CreateClawItems(context.Context, *CreateClawItemsReq) (*CreateClawItemsResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateClawItems not implemented")
+}
+func (UnimplementedClawMachineServiceServer) DeleteClawItems(context.Context, *DeleteClawItemsReq) (*DeleteClawItemsResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteClawItems not implemented")
 }
 func (UnimplementedClawMachineServiceServer) mustEmbedUnimplementedClawMachineServiceServer() {}
 func (UnimplementedClawMachineServiceServer) testEmbeddedByValue()                            {}
@@ -258,6 +338,24 @@ func _ClawMachineService_GetClawPlayerInfo_Handler(srv interface{}, ctx context.
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ClawMachineService_DeleteClawPlayer_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteClawPlayerReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ClawMachineServiceServer).DeleteClawPlayer(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ClawMachineService_DeleteClawPlayer_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ClawMachineServiceServer).DeleteClawPlayer(ctx, req.(*DeleteClawPlayerReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _ClawMachineService_AdjustPlayerCoin_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(AdjustPlayerCoinReq)
 	if err := dec(in); err != nil {
@@ -294,6 +392,24 @@ func _ClawMachineService_AdjustPlayerDiamond_Handler(srv interface{}, ctx contex
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ClawMachineService_GetGameHistory_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetGameHistoryReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ClawMachineServiceServer).GetGameHistory(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ClawMachineService_GetGameHistory_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ClawMachineServiceServer).GetGameHistory(ctx, req.(*GetGameHistoryReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _ClawMachineService_CreateClawMachine_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(CreateClawMachineReq)
 	if err := dec(in); err != nil {
@@ -326,6 +442,42 @@ func _ClawMachineService_GetClawMachineInfo_Handler(srv interface{}, ctx context
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ClawMachineServiceServer).GetClawMachineInfo(ctx, req.(*GetClawMachineInfoReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ClawMachineService_UpdateClawMachineItems_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateClawMachineItemsReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ClawMachineServiceServer).UpdateClawMachineItems(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ClawMachineService_UpdateClawMachineItems_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ClawMachineServiceServer).UpdateClawMachineItems(ctx, req.(*UpdateClawMachineItemsReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ClawMachineService_DeleteClawMachine_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteClawMachineReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ClawMachineServiceServer).DeleteClawMachine(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ClawMachineService_DeleteClawMachine_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ClawMachineServiceServer).DeleteClawMachine(ctx, req.(*DeleteClawMachineReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -384,6 +536,24 @@ func _ClawMachineService_CreateClawItems_Handler(srv interface{}, ctx context.Co
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ClawMachineService_DeleteClawItems_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteClawItemsReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ClawMachineServiceServer).DeleteClawItems(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ClawMachineService_DeleteClawItems_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ClawMachineServiceServer).DeleteClawItems(ctx, req.(*DeleteClawItemsReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // ClawMachineService_ServiceDesc is the grpc.ServiceDesc for ClawMachineService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -400,6 +570,10 @@ var ClawMachineService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _ClawMachineService_GetClawPlayerInfo_Handler,
 		},
 		{
+			MethodName: "DeleteClawPlayer",
+			Handler:    _ClawMachineService_DeleteClawPlayer_Handler,
+		},
+		{
 			MethodName: "AdjustPlayerCoin",
 			Handler:    _ClawMachineService_AdjustPlayerCoin_Handler,
 		},
@@ -408,12 +582,24 @@ var ClawMachineService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _ClawMachineService_AdjustPlayerDiamond_Handler,
 		},
 		{
+			MethodName: "GetGameHistory",
+			Handler:    _ClawMachineService_GetGameHistory_Handler,
+		},
+		{
 			MethodName: "CreateClawMachine",
 			Handler:    _ClawMachineService_CreateClawMachine_Handler,
 		},
 		{
 			MethodName: "GetClawMachineInfo",
 			Handler:    _ClawMachineService_GetClawMachineInfo_Handler,
+		},
+		{
+			MethodName: "UpdateClawMachineItems",
+			Handler:    _ClawMachineService_UpdateClawMachineItems_Handler,
+		},
+		{
+			MethodName: "DeleteClawMachine",
+			Handler:    _ClawMachineService_DeleteClawMachine_Handler,
 		},
 		{
 			MethodName: "StartClawGame",
@@ -426,6 +612,10 @@ var ClawMachineService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CreateClawItems",
 			Handler:    _ClawMachineService_CreateClawItems_Handler,
+		},
+		{
+			MethodName: "DeleteClawItems",
+			Handler:    _ClawMachineService_DeleteClawItems_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

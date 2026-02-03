@@ -16,6 +16,7 @@ type clawMachineRepository struct {
 type ClawMachineRepository interface {
 	// player
 	CreateClawPlayer(ctx context.Context, clawPlayer *domain.ClawPlayer) (*domain.ClawPlayer, error)
+	DeleteClawPlayer(ctx context.Context, playerID int64) error
 	GetClawPlayerInfo(ctx context.Context, playerID int64) (*domain.ClawPlayer, error)
 	AdjustPlayerCoin(ctx context.Context, playerID int64, amount int64, adjustmentType string) (*domain.ClawPlayer, error)
 	AdjustPlayerDiamond(ctx context.Context, playerID int64, amount int64, adjustmentType string) (*domain.ClawPlayer, error)
@@ -23,19 +24,27 @@ type ClawMachineRepository interface {
 	// game
 	AddGameHistory(ctx context.Context, playerID int64, gameRecord *domain.ClawMachineGameRecord) (int64, error)
 	AddTouchedItemRecord(ctx context.Context, gameID int64, itemID int64, catched bool) error
+	GetGameHistory(ctx context.Context, playerID int64) ([]*domain.ClawMachineGameRecord, error)
 
 	// machine
 	CreateClawMachine(ctx context.Context, clawMachine *domain.ClawMachine) (*domain.ClawMachine, error)
 	UpdateClawMachineItems(ctx context.Context, clawMachineID int64, items []domain.ClawMachineItem) error
 	GetClawMachineInfo(ctx context.Context, machineID int64) (*domain.ClawMachine, error)
 	GetAllClawMachines(ctx context.Context) ([]*domain.ClawMachine, error)
+	DeleteClawMachine(ctx context.Context, machineID int64) error
 
 	// items
 	CreateClawItems(ctx context.Context, items *[]domain.ClawItem) (*[]domain.ClawItem, error)
+	GetClawItems(ctx context.Context) (*[]domain.ClawItem, error)
+	DeleteClawItems(ctx context.Context, itemIDs []int64) error
 }
 
 func NewClawMachineRepository(db *gorm.DB) ClawMachineRepository {
 	return &clawMachineRepository{db: db}
+}
+
+func activeQuery(db *gorm.DB) *gorm.DB {
+	return db.Where("is_active = ? && deleted_at IS NULL", true)
 }
 
 func (r *clawMachineRepository) CreateClawPlayer(ctx context.Context, clawPlayer *domain.ClawPlayer) (*domain.ClawPlayer, error) {
@@ -46,9 +55,20 @@ func (r *clawMachineRepository) CreateClawPlayer(ctx context.Context, clawPlayer
 	return clawPlayer, nil
 }
 
+func (r *clawMachineRepository) DeleteClawPlayer(ctx context.Context, playerID int64) error {
+	return r.db.WithContext(ctx).
+		Model(&domain.ClawPlayer{}).
+		Where("player_id = ?", playerID).
+		Updates(map[string]interface{}{
+			"is_active":  false,
+			"deleted_by": "admin",
+		}).
+		Delete(&domain.ClawPlayer{}).Error
+}
+
 func (r *clawMachineRepository) GetClawPlayerInfo(ctx context.Context, playerID int64) (*domain.ClawPlayer, error) {
 	var clawPlayer domain.ClawPlayer
-	err := r.db.WithContext(ctx).Where("player_id = ?", playerID).First(&clawPlayer).Error
+	err := activeQuery(r.db.WithContext(ctx)).Where("player_id = ?", playerID).First(&clawPlayer).Error
 	if err != nil {
 		return nil, err
 	}
@@ -64,7 +84,7 @@ func (r *clawMachineRepository) adjustPlayerBalance(ctx context.Context, playerI
 		amount = -amount
 	}
 
-	tx := r.db.WithContext(ctx).Model(&domain.ClawPlayer{}).
+	tx := activeQuery(r.db.WithContext(ctx)).Model(&domain.ClawPlayer{}).
 		Where("player_id = ?", playerID).
 		Where(fmt.Sprintf("%s + ? >= 0", field), amount).
 		UpdateColumn(field, gorm.Expr(fmt.Sprintf("%s + ?", field), amount))
@@ -75,7 +95,7 @@ func (r *clawMachineRepository) adjustPlayerBalance(ctx context.Context, playerI
 
 	if tx.RowsAffected == 0 {
 		var exists bool
-		if err := r.db.WithContext(ctx).Model(&domain.ClawPlayer{}).
+		if err := activeQuery(r.db.WithContext(ctx)).Model(&domain.ClawPlayer{}).
 			Select("1").
 			Where("player_id = ?", playerID).
 			Limit(1).
@@ -90,7 +110,7 @@ func (r *clawMachineRepository) adjustPlayerBalance(ctx context.Context, playerI
 	}
 
 	var updatedPlayer domain.ClawPlayer
-	if err := r.db.WithContext(ctx).First(&updatedPlayer, "player_id = ?", playerID).Error; err != nil {
+	if err := activeQuery(r.db.WithContext(ctx)).First(&updatedPlayer, "player_id = ?", playerID).Error; err != nil {
 		return nil, err
 	}
 
@@ -134,6 +154,17 @@ func (r *clawMachineRepository) AddTouchedItemRecord(ctx context.Context, gameID
 	return nil
 }
 
+func (r *clawMachineRepository) GetGameHistory(ctx context.Context, playerID int64) ([]*domain.ClawMachineGameRecord, error) {
+	var gameRecords []*domain.ClawMachineGameRecord
+	err := activeQuery(r.db.WithContext(ctx)).
+		Where("player_id = ?", playerID).
+		Find(&gameRecords).Error
+	if err != nil {
+		return nil, err
+	}
+	return gameRecords, nil
+}
+
 func (r *clawMachineRepository) CreateClawMachine(
 	ctx context.Context,
 	clawMachine *domain.ClawMachine,
@@ -171,8 +202,13 @@ func (r *clawMachineRepository) UpdateClawMachineItems(ctx context.Context, claw
 	// Start a transaction
 	tx := r.db.WithContext(ctx).Begin()
 
-	// Delete existing items
-	if err := tx.Where("claw_machine_id = ?", clawMachineID).Delete(&domain.ClawMachineItem{}).Error; err != nil {
+	// Soft delete existing items
+	if err := tx.Where("claw_machine_id = ?", clawMachineID).
+		Updates(map[string]interface{}{
+			"is_active":  false,
+			"deleted_by": "admin",
+		}).
+		Delete(&domain.ClawMachineItem{}).Error; err != nil {
 		tx.Rollback()
 		return err
 	}
@@ -192,7 +228,7 @@ func (r *clawMachineRepository) UpdateClawMachineItems(ctx context.Context, claw
 
 func (r *clawMachineRepository) GetClawMachineInfo(ctx context.Context, machineID int64) (*domain.ClawMachine, error) {
 	var clawMachine domain.ClawMachine
-	err := r.db.WithContext(ctx).Preload("Items.Item").Where("id = ?", machineID).First(&clawMachine).Error
+	err := activeQuery(r.db.WithContext(ctx)).Preload("Items.Item").Where("id = ?", machineID).First(&clawMachine).Error
 	if err != nil {
 		return nil, err
 	}
@@ -201,11 +237,22 @@ func (r *clawMachineRepository) GetClawMachineInfo(ctx context.Context, machineI
 
 func (r *clawMachineRepository) GetAllClawMachines(ctx context.Context) ([]*domain.ClawMachine, error) {
 	var clawMachines []*domain.ClawMachine
-	err := r.db.WithContext(ctx).Preload("Items.Item").Find(&clawMachines).Error
+	err := activeQuery(r.db.WithContext(ctx)).Preload("Items.Item").Find(&clawMachines).Error
 	if err != nil {
 		return nil, err
 	}
 	return clawMachines, nil
+}
+
+func (r *clawMachineRepository) DeleteClawMachine(ctx context.Context, machineID int64) error {
+	return r.db.WithContext(ctx).
+		Model(&domain.ClawMachine{}).
+		Where("id = ?", machineID).
+		Updates(map[string]interface{}{
+			"is_active":  false,
+			"deleted_by": "admin",
+		}).
+		Delete(&domain.ClawMachine{}).Error
 }
 
 func (r *clawMachineRepository) CreateClawItems(ctx context.Context, items *[]domain.ClawItem) (*[]domain.ClawItem, error) {
@@ -214,4 +261,24 @@ func (r *clawMachineRepository) CreateClawItems(ctx context.Context, items *[]do
 		return nil, err
 	}
 	return items, nil
+}
+
+func (r *clawMachineRepository) GetClawItems(ctx context.Context) (*[]domain.ClawItem, error) {
+	var items []domain.ClawItem
+	err := activeQuery(r.db.WithContext(ctx)).Find(&items).Error
+	if err != nil {
+		return nil, err
+	}
+	return &items, nil
+}
+
+func (r *clawMachineRepository) DeleteClawItems(ctx context.Context, itemIDs []int64) error {
+	return r.db.WithContext(ctx).
+		Model(&domain.ClawItem{}).
+		Where("id IN ?", itemIDs).
+		Updates(map[string]interface{}{
+			"is_active":  false,
+			"deleted_by": "admin",
+		}).
+		Delete(&domain.ClawItem{}).Error
 }

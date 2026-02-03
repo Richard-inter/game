@@ -63,6 +63,26 @@ func (c *ClawMachineClient) AddTouchedItemRecord(ctx context.Context, req *clawm
 	return c.client.AddTouchedItemRecord(ctx, req)
 }
 
+func (c *ClawMachineClient) DeleteClawPlayer(ctx context.Context, req *clawmachinepb.DeleteClawPlayerReq) (*clawmachinepb.DeleteClawPlayerResp, error) {
+	return c.client.DeleteClawPlayer(ctx, req)
+}
+
+func (c *ClawMachineClient) GetGameHistory(ctx context.Context, req *clawmachinepb.GetGameHistoryReq) (*clawmachinepb.GetGameHistoryResp, error) {
+	return c.client.GetGameHistory(ctx, req)
+}
+
+func (c *ClawMachineClient) UpdateClawMachineItems(ctx context.Context, req *clawmachinepb.UpdateClawMachineItemsReq) (*clawmachinepb.UpdateClawMachineItemsResp, error) {
+	return c.client.UpdateClawMachineItems(ctx, req)
+}
+
+func (c *ClawMachineClient) DeleteClawMachine(ctx context.Context, req *clawmachinepb.DeleteClawMachineReq) (*clawmachinepb.DeleteClawMachineResp, error) {
+	return c.client.DeleteClawMachine(ctx, req)
+}
+
+func (c *ClawMachineClient) DeleteClawItems(ctx context.Context, req *clawmachinepb.DeleteClawItemsReq) (*clawmachinepb.DeleteClawItemsResp, error) {
+	return c.client.DeleteClawItems(ctx, req)
+}
+
 func (c *ClawMachineClient) Close() error {
 	return c.conn.Close()
 }

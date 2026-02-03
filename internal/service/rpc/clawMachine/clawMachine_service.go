@@ -327,3 +327,81 @@ func (s *ClawMachineGRPCServices) AddTouchedItemRecord(ctx context.Context, req 
 		Catched: req.Catched,
 	}, nil
 }
+
+func (s *ClawMachineGRPCServices) DeleteClawPlayer(ctx context.Context, req *pb.DeleteClawPlayerReq) (*pb.DeleteClawPlayerResp, error) {
+	err := s.repo.DeleteClawPlayer(ctx, req.PlayerID)
+	if err != nil {
+		return nil, err
+	}
+
+	return &pb.DeleteClawPlayerResp{
+		PlayerID: req.PlayerID,
+		Success:  true,
+	}, nil
+}
+
+func (s *ClawMachineGRPCServices) GetGameHistory(ctx context.Context, req *pb.GetGameHistoryReq) (*pb.GetGameHistoryResp, error) {
+	gameRecords, err := s.repo.GetGameHistory(ctx, req.PlayerID)
+	if err != nil {
+		return nil, err
+	}
+
+	protoRecords := make([]*pb.ClawMachineGameRecord, 0, len(gameRecords))
+	for _, record := range gameRecords {
+		protoRecords = append(protoRecords, &pb.ClawMachineGameRecord{
+			GameID:        record.ID,
+			ClawMachineID: record.ClawMachineID,
+			PlayerID:      record.PlayerID,
+			TouchedItemID: record.TouchedItemID,
+			Catched:       record.Catched,
+			CreatedAt:     record.CreatedAt.Format("2006-01-02 15:04:05"),
+		})
+	}
+
+	return &pb.GetGameHistoryResp{
+		GameRecords: protoRecords,
+	}, nil
+}
+
+func (s *ClawMachineGRPCServices) UpdateClawMachineItems(ctx context.Context, req *pb.UpdateClawMachineItemsReq) (*pb.UpdateClawMachineItemsResp, error) {
+	items := make([]domain.ClawMachineItem, 0, len(req.Items))
+	for _, item := range req.Items {
+		items = append(items, domain.ClawMachineItem{
+			ItemID: item.ItemID,
+		})
+	}
+
+	err := s.repo.UpdateClawMachineItems(ctx, req.MachineID, items)
+	if err != nil {
+		return nil, err
+	}
+
+	return &pb.UpdateClawMachineItemsResp{
+		MachineID: req.MachineID,
+		Success:   true,
+	}, nil
+}
+
+func (s *ClawMachineGRPCServices) DeleteClawMachine(ctx context.Context, req *pb.DeleteClawMachineReq) (*pb.DeleteClawMachineResp, error) {
+	err := s.repo.DeleteClawMachine(ctx, req.MachineID)
+	if err != nil {
+		return nil, err
+	}
+
+	return &pb.DeleteClawMachineResp{
+		MachineID: req.MachineID,
+		Success:   true,
+	}, nil
+}
+
+func (s *ClawMachineGRPCServices) DeleteClawItems(ctx context.Context, req *pb.DeleteClawItemsReq) (*pb.DeleteClawItemsResp, error) {
+	err := s.repo.DeleteClawItems(ctx, req.ItemIDs)
+	if err != nil {
+		return nil, err
+	}
+
+	return &pb.DeleteClawItemsResp{
+		ItemIDs: req.ItemIDs,
+		Success: true,
+	}, nil
+}

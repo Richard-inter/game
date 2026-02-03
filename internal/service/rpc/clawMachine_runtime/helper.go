@@ -117,7 +117,7 @@ func (s *ClawMachineWebsocketService) PreDetermineCatchResults(
 		catchSuccess := Roll(int(catchWeight))
 
 		results = append(results, &CatchResult{
-			ItemID:  item.ID,
+			ItemID:  item.Item.ID,
 			Name:    item.Item.Name,
 			Success: catchSuccess,
 		})

@@ -159,6 +159,10 @@ func (s *ClawMachineWebsocketService) AddTouchedItemRecordWs(
 		}
 	}
 
+	if foundItem == nil {
+		return nil, fmt.Errorf("item ID %d not found in stored game results", itemID)
+	}
+
 	if foundItem.Success != catched {
 		err := s.redis.DeleteGameResults(ctx, int64(gameID))
 		if err != nil {

@@ -1327,6 +1327,570 @@ func (x *AddTouchedItemRecordResp) GetCatched() bool {
 	return false
 }
 
+type DeleteClawPlayerReq struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	PlayerID      int64                  `protobuf:"varint,1,opt,name=playerID,proto3" json:"playerID,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DeleteClawPlayerReq) Reset() {
+	*x = DeleteClawPlayerReq{}
+	mi := &file_clawMachine_clawMachine_proto_msgTypes[24]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DeleteClawPlayerReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteClawPlayerReq) ProtoMessage() {}
+
+func (x *DeleteClawPlayerReq) ProtoReflect() protoreflect.Message {
+	mi := &file_clawMachine_clawMachine_proto_msgTypes[24]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteClawPlayerReq.ProtoReflect.Descriptor instead.
+func (*DeleteClawPlayerReq) Descriptor() ([]byte, []int) {
+	return file_clawMachine_clawMachine_proto_rawDescGZIP(), []int{24}
+}
+
+func (x *DeleteClawPlayerReq) GetPlayerID() int64 {
+	if x != nil {
+		return x.PlayerID
+	}
+	return 0
+}
+
+type DeleteClawPlayerResp struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	PlayerID      int64                  `protobuf:"varint,1,opt,name=playerID,proto3" json:"playerID,omitempty"`
+	Success       bool                   `protobuf:"varint,2,opt,name=success,proto3" json:"success,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DeleteClawPlayerResp) Reset() {
+	*x = DeleteClawPlayerResp{}
+	mi := &file_clawMachine_clawMachine_proto_msgTypes[25]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DeleteClawPlayerResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteClawPlayerResp) ProtoMessage() {}
+
+func (x *DeleteClawPlayerResp) ProtoReflect() protoreflect.Message {
+	mi := &file_clawMachine_clawMachine_proto_msgTypes[25]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteClawPlayerResp.ProtoReflect.Descriptor instead.
+func (*DeleteClawPlayerResp) Descriptor() ([]byte, []int) {
+	return file_clawMachine_clawMachine_proto_rawDescGZIP(), []int{25}
+}
+
+func (x *DeleteClawPlayerResp) GetPlayerID() int64 {
+	if x != nil {
+		return x.PlayerID
+	}
+	return 0
+}
+
+func (x *DeleteClawPlayerResp) GetSuccess() bool {
+	if x != nil {
+		return x.Success
+	}
+	return false
+}
+
+type GetGameHistoryReq struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	PlayerID      int64                  `protobuf:"varint,1,opt,name=playerID,proto3" json:"playerID,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetGameHistoryReq) Reset() {
+	*x = GetGameHistoryReq{}
+	mi := &file_clawMachine_clawMachine_proto_msgTypes[26]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetGameHistoryReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetGameHistoryReq) ProtoMessage() {}
+
+func (x *GetGameHistoryReq) ProtoReflect() protoreflect.Message {
+	mi := &file_clawMachine_clawMachine_proto_msgTypes[26]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetGameHistoryReq.ProtoReflect.Descriptor instead.
+func (*GetGameHistoryReq) Descriptor() ([]byte, []int) {
+	return file_clawMachine_clawMachine_proto_rawDescGZIP(), []int{26}
+}
+
+func (x *GetGameHistoryReq) GetPlayerID() int64 {
+	if x != nil {
+		return x.PlayerID
+	}
+	return 0
+}
+
+type ClawMachineGameRecord struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	GameID        int64                  `protobuf:"varint,1,opt,name=gameID,proto3" json:"gameID,omitempty"`
+	ClawMachineID int64                  `protobuf:"varint,2,opt,name=clawMachineID,proto3" json:"clawMachineID,omitempty"`
+	PlayerID      int64                  `protobuf:"varint,3,opt,name=playerID,proto3" json:"playerID,omitempty"`
+	TouchedItemID int64                  `protobuf:"varint,4,opt,name=touchedItemID,proto3" json:"touchedItemID,omitempty"`
+	Catched       bool                   `protobuf:"varint,5,opt,name=catched,proto3" json:"catched,omitempty"`
+	CreatedAt     string                 `protobuf:"bytes,6,opt,name=createdAt,proto3" json:"createdAt,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ClawMachineGameRecord) Reset() {
+	*x = ClawMachineGameRecord{}
+	mi := &file_clawMachine_clawMachine_proto_msgTypes[27]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ClawMachineGameRecord) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ClawMachineGameRecord) ProtoMessage() {}
+
+func (x *ClawMachineGameRecord) ProtoReflect() protoreflect.Message {
+	mi := &file_clawMachine_clawMachine_proto_msgTypes[27]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ClawMachineGameRecord.ProtoReflect.Descriptor instead.
+func (*ClawMachineGameRecord) Descriptor() ([]byte, []int) {
+	return file_clawMachine_clawMachine_proto_rawDescGZIP(), []int{27}
+}
+
+func (x *ClawMachineGameRecord) GetGameID() int64 {
+	if x != nil {
+		return x.GameID
+	}
+	return 0
+}
+
+func (x *ClawMachineGameRecord) GetClawMachineID() int64 {
+	if x != nil {
+		return x.ClawMachineID
+	}
+	return 0
+}
+
+func (x *ClawMachineGameRecord) GetPlayerID() int64 {
+	if x != nil {
+		return x.PlayerID
+	}
+	return 0
+}
+
+func (x *ClawMachineGameRecord) GetTouchedItemID() int64 {
+	if x != nil {
+		return x.TouchedItemID
+	}
+	return 0
+}
+
+func (x *ClawMachineGameRecord) GetCatched() bool {
+	if x != nil {
+		return x.Catched
+	}
+	return false
+}
+
+func (x *ClawMachineGameRecord) GetCreatedAt() string {
+	if x != nil {
+		return x.CreatedAt
+	}
+	return ""
+}
+
+type GetGameHistoryResp struct {
+	state         protoimpl.MessageState   `protogen:"open.v1"`
+	GameRecords   []*ClawMachineGameRecord `protobuf:"bytes,1,rep,name=gameRecords,proto3" json:"gameRecords,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetGameHistoryResp) Reset() {
+	*x = GetGameHistoryResp{}
+	mi := &file_clawMachine_clawMachine_proto_msgTypes[28]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetGameHistoryResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetGameHistoryResp) ProtoMessage() {}
+
+func (x *GetGameHistoryResp) ProtoReflect() protoreflect.Message {
+	mi := &file_clawMachine_clawMachine_proto_msgTypes[28]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetGameHistoryResp.ProtoReflect.Descriptor instead.
+func (*GetGameHistoryResp) Descriptor() ([]byte, []int) {
+	return file_clawMachine_clawMachine_proto_rawDescGZIP(), []int{28}
+}
+
+func (x *GetGameHistoryResp) GetGameRecords() []*ClawMachineGameRecord {
+	if x != nil {
+		return x.GameRecords
+	}
+	return nil
+}
+
+type UpdateClawMachineItemsReq struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	MachineID     int64                  `protobuf:"varint,1,opt,name=machineID,proto3" json:"machineID,omitempty"`
+	Items         []*Items               `protobuf:"bytes,2,rep,name=items,proto3" json:"items,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *UpdateClawMachineItemsReq) Reset() {
+	*x = UpdateClawMachineItemsReq{}
+	mi := &file_clawMachine_clawMachine_proto_msgTypes[29]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UpdateClawMachineItemsReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateClawMachineItemsReq) ProtoMessage() {}
+
+func (x *UpdateClawMachineItemsReq) ProtoReflect() protoreflect.Message {
+	mi := &file_clawMachine_clawMachine_proto_msgTypes[29]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdateClawMachineItemsReq.ProtoReflect.Descriptor instead.
+func (*UpdateClawMachineItemsReq) Descriptor() ([]byte, []int) {
+	return file_clawMachine_clawMachine_proto_rawDescGZIP(), []int{29}
+}
+
+func (x *UpdateClawMachineItemsReq) GetMachineID() int64 {
+	if x != nil {
+		return x.MachineID
+	}
+	return 0
+}
+
+func (x *UpdateClawMachineItemsReq) GetItems() []*Items {
+	if x != nil {
+		return x.Items
+	}
+	return nil
+}
+
+type UpdateClawMachineItemsResp struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	MachineID     int64                  `protobuf:"varint,1,opt,name=machineID,proto3" json:"machineID,omitempty"`
+	Success       bool                   `protobuf:"varint,2,opt,name=success,proto3" json:"success,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *UpdateClawMachineItemsResp) Reset() {
+	*x = UpdateClawMachineItemsResp{}
+	mi := &file_clawMachine_clawMachine_proto_msgTypes[30]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UpdateClawMachineItemsResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateClawMachineItemsResp) ProtoMessage() {}
+
+func (x *UpdateClawMachineItemsResp) ProtoReflect() protoreflect.Message {
+	mi := &file_clawMachine_clawMachine_proto_msgTypes[30]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdateClawMachineItemsResp.ProtoReflect.Descriptor instead.
+func (*UpdateClawMachineItemsResp) Descriptor() ([]byte, []int) {
+	return file_clawMachine_clawMachine_proto_rawDescGZIP(), []int{30}
+}
+
+func (x *UpdateClawMachineItemsResp) GetMachineID() int64 {
+	if x != nil {
+		return x.MachineID
+	}
+	return 0
+}
+
+func (x *UpdateClawMachineItemsResp) GetSuccess() bool {
+	if x != nil {
+		return x.Success
+	}
+	return false
+}
+
+type DeleteClawMachineReq struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	MachineID     int64                  `protobuf:"varint,1,opt,name=machineID,proto3" json:"machineID,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DeleteClawMachineReq) Reset() {
+	*x = DeleteClawMachineReq{}
+	mi := &file_clawMachine_clawMachine_proto_msgTypes[31]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DeleteClawMachineReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteClawMachineReq) ProtoMessage() {}
+
+func (x *DeleteClawMachineReq) ProtoReflect() protoreflect.Message {
+	mi := &file_clawMachine_clawMachine_proto_msgTypes[31]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteClawMachineReq.ProtoReflect.Descriptor instead.
+func (*DeleteClawMachineReq) Descriptor() ([]byte, []int) {
+	return file_clawMachine_clawMachine_proto_rawDescGZIP(), []int{31}
+}
+
+func (x *DeleteClawMachineReq) GetMachineID() int64 {
+	if x != nil {
+		return x.MachineID
+	}
+	return 0
+}
+
+type DeleteClawMachineResp struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	MachineID     int64                  `protobuf:"varint,1,opt,name=machineID,proto3" json:"machineID,omitempty"`
+	Success       bool                   `protobuf:"varint,2,opt,name=success,proto3" json:"success,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DeleteClawMachineResp) Reset() {
+	*x = DeleteClawMachineResp{}
+	mi := &file_clawMachine_clawMachine_proto_msgTypes[32]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DeleteClawMachineResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteClawMachineResp) ProtoMessage() {}
+
+func (x *DeleteClawMachineResp) ProtoReflect() protoreflect.Message {
+	mi := &file_clawMachine_clawMachine_proto_msgTypes[32]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteClawMachineResp.ProtoReflect.Descriptor instead.
+func (*DeleteClawMachineResp) Descriptor() ([]byte, []int) {
+	return file_clawMachine_clawMachine_proto_rawDescGZIP(), []int{32}
+}
+
+func (x *DeleteClawMachineResp) GetMachineID() int64 {
+	if x != nil {
+		return x.MachineID
+	}
+	return 0
+}
+
+func (x *DeleteClawMachineResp) GetSuccess() bool {
+	if x != nil {
+		return x.Success
+	}
+	return false
+}
+
+type DeleteClawItemsReq struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	ItemIDs       []int64                `protobuf:"varint,1,rep,packed,name=itemIDs,proto3" json:"itemIDs,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DeleteClawItemsReq) Reset() {
+	*x = DeleteClawItemsReq{}
+	mi := &file_clawMachine_clawMachine_proto_msgTypes[33]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DeleteClawItemsReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteClawItemsReq) ProtoMessage() {}
+
+func (x *DeleteClawItemsReq) ProtoReflect() protoreflect.Message {
+	mi := &file_clawMachine_clawMachine_proto_msgTypes[33]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteClawItemsReq.ProtoReflect.Descriptor instead.
+func (*DeleteClawItemsReq) Descriptor() ([]byte, []int) {
+	return file_clawMachine_clawMachine_proto_rawDescGZIP(), []int{33}
+}
+
+func (x *DeleteClawItemsReq) GetItemIDs() []int64 {
+	if x != nil {
+		return x.ItemIDs
+	}
+	return nil
+}
+
+type DeleteClawItemsResp struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	ItemIDs       []int64                `protobuf:"varint,1,rep,packed,name=itemIDs,proto3" json:"itemIDs,omitempty"`
+	Success       bool                   `protobuf:"varint,2,opt,name=success,proto3" json:"success,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DeleteClawItemsResp) Reset() {
+	*x = DeleteClawItemsResp{}
+	mi := &file_clawMachine_clawMachine_proto_msgTypes[34]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DeleteClawItemsResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteClawItemsResp) ProtoMessage() {}
+
+func (x *DeleteClawItemsResp) ProtoReflect() protoreflect.Message {
+	mi := &file_clawMachine_clawMachine_proto_msgTypes[34]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteClawItemsResp.ProtoReflect.Descriptor instead.
+func (*DeleteClawItemsResp) Descriptor() ([]byte, []int) {
+	return file_clawMachine_clawMachine_proto_rawDescGZIP(), []int{34}
+}
+
+func (x *DeleteClawItemsResp) GetItemIDs() []int64 {
+	if x != nil {
+		return x.ItemIDs
+	}
+	return nil
+}
+
+func (x *DeleteClawItemsResp) GetSuccess() bool {
+	if x != nil {
+		return x.Success
+	}
+	return false
+}
+
 var File_clawMachine_clawMachine_proto protoreflect.FileDescriptor
 
 const file_clawMachine_clawMachine_proto_rawDesc = "" +
@@ -1420,17 +1984,55 @@ const file_clawMachine_clawMachine_proto_rawDesc = "" +
 	"\x06itemID\x18\x02 \x01(\x03R\x06itemID\x12\x1d\n" +
 	"\acatched\x18\x03 \x01(\bH\x00R\acatched\x88\x01\x01B\n" +
 	"\n" +
-	"\b_catched2\xca\x06\n" +
+	"\b_catched\"1\n" +
+	"\x13DeleteClawPlayerReq\x12\x1a\n" +
+	"\bplayerID\x18\x01 \x01(\x03R\bplayerID\"L\n" +
+	"\x14DeleteClawPlayerResp\x12\x1a\n" +
+	"\bplayerID\x18\x01 \x01(\x03R\bplayerID\x12\x18\n" +
+	"\asuccess\x18\x02 \x01(\bR\asuccess\"/\n" +
+	"\x11GetGameHistoryReq\x12\x1a\n" +
+	"\bplayerID\x18\x01 \x01(\x03R\bplayerID\"\xcf\x01\n" +
+	"\x15ClawMachineGameRecord\x12\x16\n" +
+	"\x06gameID\x18\x01 \x01(\x03R\x06gameID\x12$\n" +
+	"\rclawMachineID\x18\x02 \x01(\x03R\rclawMachineID\x12\x1a\n" +
+	"\bplayerID\x18\x03 \x01(\x03R\bplayerID\x12$\n" +
+	"\rtouchedItemID\x18\x04 \x01(\x03R\rtouchedItemID\x12\x18\n" +
+	"\acatched\x18\x05 \x01(\bR\acatched\x12\x1c\n" +
+	"\tcreatedAt\x18\x06 \x01(\tR\tcreatedAt\"Z\n" +
+	"\x12GetGameHistoryResp\x12D\n" +
+	"\vgameRecords\x18\x01 \x03(\v2\".clawMachine.ClawMachineGameRecordR\vgameRecords\"c\n" +
+	"\x19UpdateClawMachineItemsReq\x12\x1c\n" +
+	"\tmachineID\x18\x01 \x01(\x03R\tmachineID\x12(\n" +
+	"\x05items\x18\x02 \x03(\v2\x12.clawMachine.ItemsR\x05items\"T\n" +
+	"\x1aUpdateClawMachineItemsResp\x12\x1c\n" +
+	"\tmachineID\x18\x01 \x01(\x03R\tmachineID\x12\x18\n" +
+	"\asuccess\x18\x02 \x01(\bR\asuccess\"4\n" +
+	"\x14DeleteClawMachineReq\x12\x1c\n" +
+	"\tmachineID\x18\x01 \x01(\x03R\tmachineID\"O\n" +
+	"\x15DeleteClawMachineResp\x12\x1c\n" +
+	"\tmachineID\x18\x01 \x01(\x03R\tmachineID\x12\x18\n" +
+	"\asuccess\x18\x02 \x01(\bR\asuccess\".\n" +
+	"\x12DeleteClawItemsReq\x12\x18\n" +
+	"\aitemIDs\x18\x01 \x03(\x03R\aitemIDs\"I\n" +
+	"\x13DeleteClawItemsResp\x12\x18\n" +
+	"\aitemIDs\x18\x01 \x03(\x03R\aitemIDs\x12\x18\n" +
+	"\asuccess\x18\x02 \x01(\bR\asuccess2\x93\n" +
+	"\n" +
 	"\x12ClawMachineService\x12W\n" +
 	"\x10CreateClawPlayer\x12 .clawMachine.CreateClawPlayerReq\x1a!.clawMachine.CreateClawPlayerResp\x12Z\n" +
 	"\x11GetClawPlayerInfo\x12!.clawMachine.GetClawPlayerInfoReq\x1a\".clawMachine.GetClawPlayerInfoResp\x12W\n" +
+	"\x10DeleteClawPlayer\x12 .clawMachine.DeleteClawPlayerReq\x1a!.clawMachine.DeleteClawPlayerResp\x12W\n" +
 	"\x10AdjustPlayerCoin\x12 .clawMachine.AdjustPlayerCoinReq\x1a!.clawMachine.AdjustPlayerCoinResp\x12`\n" +
-	"\x13AdjustPlayerDiamond\x12#.clawMachine.AdjustPlayerDiamondReq\x1a$.clawMachine.AdjustPlayerDiamondResp\x12Z\n" +
+	"\x13AdjustPlayerDiamond\x12#.clawMachine.AdjustPlayerDiamondReq\x1a$.clawMachine.AdjustPlayerDiamondResp\x12Q\n" +
+	"\x0eGetGameHistory\x12\x1e.clawMachine.GetGameHistoryReq\x1a\x1f.clawMachine.GetGameHistoryResp\x12Z\n" +
 	"\x11CreateClawMachine\x12!.clawMachine.CreateClawMachineReq\x1a\".clawMachine.CreateClawMachineResp\x12]\n" +
-	"\x12GetClawMachineInfo\x12\".clawMachine.GetClawMachineInfoReq\x1a#.clawMachine.GetClawMachineInfoResp\x12N\n" +
+	"\x12GetClawMachineInfo\x12\".clawMachine.GetClawMachineInfoReq\x1a#.clawMachine.GetClawMachineInfoResp\x12i\n" +
+	"\x16UpdateClawMachineItems\x12&.clawMachine.UpdateClawMachineItemsReq\x1a'.clawMachine.UpdateClawMachineItemsResp\x12Z\n" +
+	"\x11DeleteClawMachine\x12!.clawMachine.DeleteClawMachineReq\x1a\".clawMachine.DeleteClawMachineResp\x12N\n" +
 	"\rStartClawGame\x12\x1d.clawMachine.StartClawGameReq\x1a\x1e.clawMachine.StartClawGameResp\x12c\n" +
 	"\x14AddTouchedItemRecord\x12$.clawMachine.AddTouchedItemRecordReq\x1a%.clawMachine.AddTouchedItemRecordResp\x12T\n" +
-	"\x0fCreateClawItems\x12\x1f.clawMachine.CreateClawItemsReq\x1a .clawMachine.CreateClawItemsRespB8Z6github.com/Richard-inter/game/pkg/protocol/clawMachineb\x06proto3"
+	"\x0fCreateClawItems\x12\x1f.clawMachine.CreateClawItemsReq\x1a .clawMachine.CreateClawItemsResp\x12T\n" +
+	"\x0fDeleteClawItems\x12\x1f.clawMachine.DeleteClawItemsReq\x1a .clawMachine.DeleteClawItemsRespB8Z6github.com/Richard-inter/game/pkg/protocol/clawMachineb\x06proto3"
 
 var (
 	file_clawMachine_clawMachine_proto_rawDescOnce sync.Once
@@ -1444,37 +2046,48 @@ func file_clawMachine_clawMachine_proto_rawDescGZIP() []byte {
 	return file_clawMachine_clawMachine_proto_rawDescData
 }
 
-var file_clawMachine_clawMachine_proto_msgTypes = make([]protoimpl.MessageInfo, 24)
+var file_clawMachine_clawMachine_proto_msgTypes = make([]protoimpl.MessageInfo, 35)
 var file_clawMachine_clawMachine_proto_goTypes = []any{
-	(*Item)(nil),                     // 0: clawMachine.Item
-	(*ClawMachine)(nil),              // 1: clawMachine.ClawMachine
-	(*ClawPlayer)(nil),               // 2: clawMachine.ClawPlayer
-	(*Items)(nil),                    // 3: clawMachine.Items
-	(*CreateClawMachineReq)(nil),     // 4: clawMachine.CreateClawMachineReq
-	(*CreateClawMachineResp)(nil),    // 5: clawMachine.CreateClawMachineResp
-	(*StartClawGameReq)(nil),         // 6: clawMachine.StartClawGameReq
-	(*ClawResult)(nil),               // 7: clawMachine.ClawResult
-	(*StartClawGameResp)(nil),        // 8: clawMachine.StartClawGameResp
-	(*GetClawPlayerInfoReq)(nil),     // 9: clawMachine.GetClawPlayerInfoReq
-	(*GetClawPlayerInfoResp)(nil),    // 10: clawMachine.GetClawPlayerInfoResp
-	(*GetClawMachineInfoReq)(nil),    // 11: clawMachine.GetClawMachineInfoReq
-	(*GetClawMachineInfoResp)(nil),   // 12: clawMachine.GetClawMachineInfoResp
-	(*CreateItemReq)(nil),            // 13: clawMachine.CreateItemReq
-	(*CreateClawItemsReq)(nil),       // 14: clawMachine.CreateClawItemsReq
-	(*CreateClawItemsResp)(nil),      // 15: clawMachine.CreateClawItemsResp
-	(*CreateClawPlayerReq)(nil),      // 16: clawMachine.CreateClawPlayerReq
-	(*CreateClawPlayerResp)(nil),     // 17: clawMachine.CreateClawPlayerResp
-	(*AdjustPlayerCoinReq)(nil),      // 18: clawMachine.AdjustPlayerCoinReq
-	(*AdjustPlayerCoinResp)(nil),     // 19: clawMachine.AdjustPlayerCoinResp
-	(*AdjustPlayerDiamondReq)(nil),   // 20: clawMachine.AdjustPlayerDiamondReq
-	(*AdjustPlayerDiamondResp)(nil),  // 21: clawMachine.AdjustPlayerDiamondResp
-	(*AddTouchedItemRecordReq)(nil),  // 22: clawMachine.AddTouchedItemRecordReq
-	(*AddTouchedItemRecordResp)(nil), // 23: clawMachine.AddTouchedItemRecordResp
-	(*player.Player)(nil),            // 24: player.Player
+	(*Item)(nil),                       // 0: clawMachine.Item
+	(*ClawMachine)(nil),                // 1: clawMachine.ClawMachine
+	(*ClawPlayer)(nil),                 // 2: clawMachine.ClawPlayer
+	(*Items)(nil),                      // 3: clawMachine.Items
+	(*CreateClawMachineReq)(nil),       // 4: clawMachine.CreateClawMachineReq
+	(*CreateClawMachineResp)(nil),      // 5: clawMachine.CreateClawMachineResp
+	(*StartClawGameReq)(nil),           // 6: clawMachine.StartClawGameReq
+	(*ClawResult)(nil),                 // 7: clawMachine.ClawResult
+	(*StartClawGameResp)(nil),          // 8: clawMachine.StartClawGameResp
+	(*GetClawPlayerInfoReq)(nil),       // 9: clawMachine.GetClawPlayerInfoReq
+	(*GetClawPlayerInfoResp)(nil),      // 10: clawMachine.GetClawPlayerInfoResp
+	(*GetClawMachineInfoReq)(nil),      // 11: clawMachine.GetClawMachineInfoReq
+	(*GetClawMachineInfoResp)(nil),     // 12: clawMachine.GetClawMachineInfoResp
+	(*CreateItemReq)(nil),              // 13: clawMachine.CreateItemReq
+	(*CreateClawItemsReq)(nil),         // 14: clawMachine.CreateClawItemsReq
+	(*CreateClawItemsResp)(nil),        // 15: clawMachine.CreateClawItemsResp
+	(*CreateClawPlayerReq)(nil),        // 16: clawMachine.CreateClawPlayerReq
+	(*CreateClawPlayerResp)(nil),       // 17: clawMachine.CreateClawPlayerResp
+	(*AdjustPlayerCoinReq)(nil),        // 18: clawMachine.AdjustPlayerCoinReq
+	(*AdjustPlayerCoinResp)(nil),       // 19: clawMachine.AdjustPlayerCoinResp
+	(*AdjustPlayerDiamondReq)(nil),     // 20: clawMachine.AdjustPlayerDiamondReq
+	(*AdjustPlayerDiamondResp)(nil),    // 21: clawMachine.AdjustPlayerDiamondResp
+	(*AddTouchedItemRecordReq)(nil),    // 22: clawMachine.AddTouchedItemRecordReq
+	(*AddTouchedItemRecordResp)(nil),   // 23: clawMachine.AddTouchedItemRecordResp
+	(*DeleteClawPlayerReq)(nil),        // 24: clawMachine.DeleteClawPlayerReq
+	(*DeleteClawPlayerResp)(nil),       // 25: clawMachine.DeleteClawPlayerResp
+	(*GetGameHistoryReq)(nil),          // 26: clawMachine.GetGameHistoryReq
+	(*ClawMachineGameRecord)(nil),      // 27: clawMachine.ClawMachineGameRecord
+	(*GetGameHistoryResp)(nil),         // 28: clawMachine.GetGameHistoryResp
+	(*UpdateClawMachineItemsReq)(nil),  // 29: clawMachine.UpdateClawMachineItemsReq
+	(*UpdateClawMachineItemsResp)(nil), // 30: clawMachine.UpdateClawMachineItemsResp
+	(*DeleteClawMachineReq)(nil),       // 31: clawMachine.DeleteClawMachineReq
+	(*DeleteClawMachineResp)(nil),      // 32: clawMachine.DeleteClawMachineResp
+	(*DeleteClawItemsReq)(nil),         // 33: clawMachine.DeleteClawItemsReq
+	(*DeleteClawItemsResp)(nil),        // 34: clawMachine.DeleteClawItemsResp
+	(*player.Player)(nil),              // 35: player.Player
 }
 var file_clawMachine_clawMachine_proto_depIdxs = []int32{
 	0,  // 0: clawMachine.ClawMachine.items:type_name -> clawMachine.Item
-	24, // 1: clawMachine.ClawPlayer.basePlayer:type_name -> player.Player
+	35, // 1: clawMachine.ClawPlayer.basePlayer:type_name -> player.Player
 	3,  // 2: clawMachine.CreateClawMachineReq.items:type_name -> clawMachine.Items
 	1,  // 3: clawMachine.CreateClawMachineResp.machine:type_name -> clawMachine.ClawMachine
 	7,  // 4: clawMachine.StartClawGameResp.results:type_name -> clawMachine.ClawResult
@@ -1484,29 +2097,41 @@ var file_clawMachine_clawMachine_proto_depIdxs = []int32{
 	0,  // 8: clawMachine.CreateClawItemsResp.clawItems:type_name -> clawMachine.Item
 	2,  // 9: clawMachine.CreateClawPlayerReq.player:type_name -> clawMachine.ClawPlayer
 	2,  // 10: clawMachine.CreateClawPlayerResp.player:type_name -> clawMachine.ClawPlayer
-	16, // 11: clawMachine.ClawMachineService.CreateClawPlayer:input_type -> clawMachine.CreateClawPlayerReq
-	9,  // 12: clawMachine.ClawMachineService.GetClawPlayerInfo:input_type -> clawMachine.GetClawPlayerInfoReq
-	18, // 13: clawMachine.ClawMachineService.AdjustPlayerCoin:input_type -> clawMachine.AdjustPlayerCoinReq
-	20, // 14: clawMachine.ClawMachineService.AdjustPlayerDiamond:input_type -> clawMachine.AdjustPlayerDiamondReq
-	4,  // 15: clawMachine.ClawMachineService.CreateClawMachine:input_type -> clawMachine.CreateClawMachineReq
-	11, // 16: clawMachine.ClawMachineService.GetClawMachineInfo:input_type -> clawMachine.GetClawMachineInfoReq
-	6,  // 17: clawMachine.ClawMachineService.StartClawGame:input_type -> clawMachine.StartClawGameReq
-	22, // 18: clawMachine.ClawMachineService.AddTouchedItemRecord:input_type -> clawMachine.AddTouchedItemRecordReq
-	14, // 19: clawMachine.ClawMachineService.CreateClawItems:input_type -> clawMachine.CreateClawItemsReq
-	17, // 20: clawMachine.ClawMachineService.CreateClawPlayer:output_type -> clawMachine.CreateClawPlayerResp
-	10, // 21: clawMachine.ClawMachineService.GetClawPlayerInfo:output_type -> clawMachine.GetClawPlayerInfoResp
-	19, // 22: clawMachine.ClawMachineService.AdjustPlayerCoin:output_type -> clawMachine.AdjustPlayerCoinResp
-	21, // 23: clawMachine.ClawMachineService.AdjustPlayerDiamond:output_type -> clawMachine.AdjustPlayerDiamondResp
-	5,  // 24: clawMachine.ClawMachineService.CreateClawMachine:output_type -> clawMachine.CreateClawMachineResp
-	12, // 25: clawMachine.ClawMachineService.GetClawMachineInfo:output_type -> clawMachine.GetClawMachineInfoResp
-	8,  // 26: clawMachine.ClawMachineService.StartClawGame:output_type -> clawMachine.StartClawGameResp
-	23, // 27: clawMachine.ClawMachineService.AddTouchedItemRecord:output_type -> clawMachine.AddTouchedItemRecordResp
-	15, // 28: clawMachine.ClawMachineService.CreateClawItems:output_type -> clawMachine.CreateClawItemsResp
-	20, // [20:29] is the sub-list for method output_type
-	11, // [11:20] is the sub-list for method input_type
-	11, // [11:11] is the sub-list for extension type_name
-	11, // [11:11] is the sub-list for extension extendee
-	0,  // [0:11] is the sub-list for field type_name
+	27, // 11: clawMachine.GetGameHistoryResp.gameRecords:type_name -> clawMachine.ClawMachineGameRecord
+	3,  // 12: clawMachine.UpdateClawMachineItemsReq.items:type_name -> clawMachine.Items
+	16, // 13: clawMachine.ClawMachineService.CreateClawPlayer:input_type -> clawMachine.CreateClawPlayerReq
+	9,  // 14: clawMachine.ClawMachineService.GetClawPlayerInfo:input_type -> clawMachine.GetClawPlayerInfoReq
+	24, // 15: clawMachine.ClawMachineService.DeleteClawPlayer:input_type -> clawMachine.DeleteClawPlayerReq
+	18, // 16: clawMachine.ClawMachineService.AdjustPlayerCoin:input_type -> clawMachine.AdjustPlayerCoinReq
+	20, // 17: clawMachine.ClawMachineService.AdjustPlayerDiamond:input_type -> clawMachine.AdjustPlayerDiamondReq
+	26, // 18: clawMachine.ClawMachineService.GetGameHistory:input_type -> clawMachine.GetGameHistoryReq
+	4,  // 19: clawMachine.ClawMachineService.CreateClawMachine:input_type -> clawMachine.CreateClawMachineReq
+	11, // 20: clawMachine.ClawMachineService.GetClawMachineInfo:input_type -> clawMachine.GetClawMachineInfoReq
+	29, // 21: clawMachine.ClawMachineService.UpdateClawMachineItems:input_type -> clawMachine.UpdateClawMachineItemsReq
+	31, // 22: clawMachine.ClawMachineService.DeleteClawMachine:input_type -> clawMachine.DeleteClawMachineReq
+	6,  // 23: clawMachine.ClawMachineService.StartClawGame:input_type -> clawMachine.StartClawGameReq
+	22, // 24: clawMachine.ClawMachineService.AddTouchedItemRecord:input_type -> clawMachine.AddTouchedItemRecordReq
+	14, // 25: clawMachine.ClawMachineService.CreateClawItems:input_type -> clawMachine.CreateClawItemsReq
+	33, // 26: clawMachine.ClawMachineService.DeleteClawItems:input_type -> clawMachine.DeleteClawItemsReq
+	17, // 27: clawMachine.ClawMachineService.CreateClawPlayer:output_type -> clawMachine.CreateClawPlayerResp
+	10, // 28: clawMachine.ClawMachineService.GetClawPlayerInfo:output_type -> clawMachine.GetClawPlayerInfoResp
+	25, // 29: clawMachine.ClawMachineService.DeleteClawPlayer:output_type -> clawMachine.DeleteClawPlayerResp
+	19, // 30: clawMachine.ClawMachineService.AdjustPlayerCoin:output_type -> clawMachine.AdjustPlayerCoinResp
+	21, // 31: clawMachine.ClawMachineService.AdjustPlayerDiamond:output_type -> clawMachine.AdjustPlayerDiamondResp
+	28, // 32: clawMachine.ClawMachineService.GetGameHistory:output_type -> clawMachine.GetGameHistoryResp
+	5,  // 33: clawMachine.ClawMachineService.CreateClawMachine:output_type -> clawMachine.CreateClawMachineResp
+	12, // 34: clawMachine.ClawMachineService.GetClawMachineInfo:output_type -> clawMachine.GetClawMachineInfoResp
+	30, // 35: clawMachine.ClawMachineService.UpdateClawMachineItems:output_type -> clawMachine.UpdateClawMachineItemsResp
+	32, // 36: clawMachine.ClawMachineService.DeleteClawMachine:output_type -> clawMachine.DeleteClawMachineResp
+	8,  // 37: clawMachine.ClawMachineService.StartClawGame:output_type -> clawMachine.StartClawGameResp
+	23, // 38: clawMachine.ClawMachineService.AddTouchedItemRecord:output_type -> clawMachine.AddTouchedItemRecordResp
+	15, // 39: clawMachine.ClawMachineService.CreateClawItems:output_type -> clawMachine.CreateClawItemsResp
+	34, // 40: clawMachine.ClawMachineService.DeleteClawItems:output_type -> clawMachine.DeleteClawItemsResp
+	27, // [27:41] is the sub-list for method output_type
+	13, // [13:27] is the sub-list for method input_type
+	13, // [13:13] is the sub-list for extension type_name
+	13, // [13:13] is the sub-list for extension extendee
+	0,  // [0:13] is the sub-list for field type_name
 }
 
 func init() { file_clawMachine_clawMachine_proto_init() }
@@ -1523,7 +2148,7 @@ func file_clawMachine_clawMachine_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_clawMachine_clawMachine_proto_rawDesc), len(file_clawMachine_clawMachine_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   24,
+			NumMessages:   35,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
