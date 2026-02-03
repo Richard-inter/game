@@ -67,6 +67,8 @@ func (s *ClawMachineGRPCServices) StartClawGame(ctx context.Context, req *pb.Sta
 	gameID, err := s.repo.AddGameHistory(ctx, req.PlayerID, &domain.ClawMachineGameRecord{
 		PlayerID:      req.PlayerID,
 		ClawMachineID: req.MachineID,
+		CreatedBy:     fmt.Sprintf("%d", req.PlayerID),
+		UpdatedBy:     fmt.Sprintf("%d", req.PlayerID),
 	})
 	if err != nil {
 		return nil, fmt.Errorf("failed to create game history: %w", err)

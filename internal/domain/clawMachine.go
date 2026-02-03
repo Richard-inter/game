@@ -13,11 +13,11 @@ type ClawMachine struct {
 	MaxItem   int32          `gorm:"column:max_item" json:"maxItem"`
 	IsActive  bool           `gorm:"column:is_active;default:true" json:"isActive"`
 	CreatedAt time.Time      `gorm:"column:created_at;autoCreateTime" json:"createdAt"`
-	CreatedBy string          `gorm:"column:created_by" json:"createdBy"`
+	CreatedBy string         `gorm:"column:created_by" json:"createdBy"`
 	UpdatedAt time.Time      `gorm:"column:updated_at;autoUpdateTime" json:"updatedAt"`
-	UpdatedBy string          `gorm:"column:updated_by" json:"updatedBy"`
+	UpdatedBy string         `gorm:"column:updated_by" json:"updatedBy"`
 	DeletedAt gorm.DeletedAt `gorm:"column:deleted_at;index" json:"deletedAt"`
-	DeletedBy *string         `gorm:"column:deleted_by" json:"deletedBy"`
+	DeletedBy *string        `gorm:"column:deleted_by" json:"deletedBy"`
 
 	Items []ClawMachineItem `gorm:"foreignKey:ClawMachineID;constraint:OnDelete:CASCADE"`
 }
@@ -28,11 +28,11 @@ type ClawMachineItem struct {
 	ItemID        int64          `gorm:"column:item_id" json:"itemID"`
 	IsActive      bool           `gorm:"column:is_active;default:true" json:"isActive"`
 	CreatedAt     time.Time      `gorm:"column:created_at;autoCreateTime" json:"createdAt"`
-	CreatedBy     string          `gorm:"column:created_by" json:"createdBy"`
+	CreatedBy     string         `gorm:"column:created_by" json:"createdBy"`
 	UpdatedAt     time.Time      `gorm:"column:updated_at;autoUpdateTime" json:"updatedAt"`
-	UpdatedBy     string          `gorm:"column:updated_by" json:"updatedBy"`
+	UpdatedBy     string         `gorm:"column:updated_by" json:"updatedBy"`
 	DeletedAt     gorm.DeletedAt `gorm:"column:deleted_at;index" json:"deletedAt"`
-	DeletedBy     *string         `gorm:"column:deleted_by" json:"deletedBy"`
+	DeletedBy     *string        `gorm:"column:deleted_by" json:"deletedBy"`
 
 	Item ClawItem `gorm:"foreignKey:ItemID;references:ID"`
 }
@@ -46,11 +46,11 @@ type ClawItem struct {
 	MaxItemSpawned  int64          `gorm:"column:max_item_spawned" json:"maxItemSpawned"`
 	IsActive        bool           `gorm:"column:is_active;default:true" json:"isActive"`
 	CreatedAt       time.Time      `gorm:"column:created_at;autoCreateTime" json:"createdAt"`
-	CreatedBy       string          `gorm:"column:created_by" json:"createdBy"`
+	CreatedBy       string         `gorm:"column:created_by" json:"createdBy"`
 	UpdatedAt       time.Time      `gorm:"column:updated_at;autoUpdateTime" json:"updatedAt"`
-	UpdatedBy       string          `gorm:"column:updated_by" json:"updatedBy"`
+	UpdatedBy       string         `gorm:"column:updated_by" json:"updatedBy"`
 	DeletedAt       gorm.DeletedAt `gorm:"column:deleted_at;index" json:"deletedAt"`
-	DeletedBy       *string         `gorm:"column:deleted_by" json:"deletedBy"`
+	DeletedBy       *string        `gorm:"column:deleted_by" json:"deletedBy"`
 }
 
 type ClawPlayer struct {
@@ -59,7 +59,7 @@ type ClawPlayer struct {
 	Diamond   int64          `gorm:"column:diamond;not null" json:"diamond"`
 	IsActive  bool           `gorm:"column:is_active;default:true" json:"isActive"`
 	CreatedAt time.Time      `gorm:"column:created_at;autoCreateTime" json:"createdAt"`
-	CreatedBy string          `gorm:"column:created_by" json:"createdBy"`
+	CreatedBy string         `gorm:"column:created_by" json:"createdBy"`
 	UpdatedAt time.Time      `gorm:"column:updated_at;autoUpdateTime" json:"updatedAt"`
 	UpdatedBy string         `gorm:"column:updated_by" json:"updatedBy"`
 	DeletedAt gorm.DeletedAt `gorm:"column:deleted_at;index" json:"deletedAt"`

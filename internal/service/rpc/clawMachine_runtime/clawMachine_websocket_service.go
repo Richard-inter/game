@@ -70,6 +70,8 @@ func (s *ClawMachineWebsocketService) StartClawGameWs(
 	gameID, err := s.repo.AddGameHistory(ctx, int64(playerID), &domain.ClawMachineGameRecord{
 		PlayerID:      int64(playerID),
 		ClawMachineID: int64(machineID),
+		CreatedBy:     fmt.Sprintf("%d", playerID),
+		UpdatedBy:     fmt.Sprintf("%d", playerID),
 	})
 	if err != nil {
 		return nil, fmt.Errorf("failed to create game history: %w", err)
