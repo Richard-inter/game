@@ -244,7 +244,7 @@ func (c *ServiceConfig) GetTCPAddr() string {
 
 // GetDSN returns database connection string
 func (c *ServiceConfig) GetDSN() string {
-	return fmt.Sprintf("%s:%s@tcp(%s:%d)/%s",
+	return fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?parseTime=true",
 		c.Database.User,
 		c.Database.Password,
 		c.Database.Host,
@@ -255,7 +255,7 @@ func (c *ServiceConfig) GetDSN() string {
 
 // GetPlayerDSN returns player database connection string
 func (c *ServiceConfig) GetPlayerDSN() string {
-	return fmt.Sprintf("%s:%s@tcp(%s:%d)/%s",
+	return fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?parseTime=true",
 		c.PlayerDatabase.User,
 		c.PlayerDatabase.Password,
 		c.PlayerDatabase.Host,
@@ -266,7 +266,7 @@ func (c *ServiceConfig) GetPlayerDSN() string {
 
 // GetClawmachineDSN returns clawmachine database connection string
 func (c *ServiceConfig) GetClawmachineDSN() string {
-	return fmt.Sprintf("%s:%s@tcp(%s:%d)/%s",
+	return fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?parseTime=true",
 		c.ClawmachineDatabase.User,
 		c.ClawmachineDatabase.Password,
 		c.ClawmachineDatabase.Host,
@@ -277,7 +277,7 @@ func (c *ServiceConfig) GetClawmachineDSN() string {
 
 // GetGachaMachineDSN returns gacha machine database connection string
 func (c *ServiceConfig) GetGachaMachineDSN() string {
-	return fmt.Sprintf("%s:%s@tcp(%s:%d)/%s",
+	return fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?parseTime=true",
 		c.GachaMachineDatabase.User,
 		c.GachaMachineDatabase.Password,
 		c.GachaMachineDatabase.Host,
@@ -288,7 +288,7 @@ func (c *ServiceConfig) GetGachaMachineDSN() string {
 
 // GetWhackAMoleDSN returns whack a mole database connection string
 func (c *ServiceConfig) GetWhackAMoleDSN() string {
-	return fmt.Sprintf("%s:%s@tcp(%s:%d)/%s",
+	return fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?parseTime=true",
 		c.WhackAMoleDatabase.User,
 		c.WhackAMoleDatabase.Password,
 		c.WhackAMoleDatabase.Host,

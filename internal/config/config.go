@@ -207,7 +207,7 @@ func validateConfig(config *Config) error {
 
 // GetDSN returns database connection string
 func (c *Config) GetDSN() string {
-	return fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=%s&parseTime=True&loc=Local",
+	return fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=%s&parseTime=true&loc=Local",
 		c.Database.User,
 		c.Database.Password,
 		c.Database.Host,
