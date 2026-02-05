@@ -53,9 +53,9 @@ type StartClawGameRequest struct {
 }
 
 type AddTouchedItemRecordRequest struct {
-	GameID  int64 `json:"gameID" binding:"required"`
-	ItemID  int64 `json:"itemID" binding:"required"`
-	Catched *bool `json:"catched" binding:"required"`
+	GameID  int64  `json:"gameID" binding:"required"`
+	ItemID  *int64 `json:"itemID" binding:"required"`
+	Catched *bool  `json:"catched" binding:"required"`
 }
 
 type UpdateClawMachineItemsRequest struct {

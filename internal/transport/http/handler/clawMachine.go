@@ -359,7 +359,7 @@ func (h *ClawMachineHandler) HandleAddTouchedItemRecord(c *gin.Context) {
 
 	grpcReq := &clawMachine.AddTouchedItemRecordReq{
 		GameID:  req.GameID,
-		ItemID:  req.ItemID,
+		ItemID:  *req.ItemID,
 		Catched: req.Catched,
 	}
 
@@ -370,7 +370,7 @@ func (h *ClawMachineHandler) HandleAddTouchedItemRecord(c *gin.Context) {
 		return
 	}
 
-	h.logger.Infow("Successfully added touched item record", "game_id", req.GameID, "item_id", req.ItemID, "catched", req.Catched)
+	h.logger.Infow("Successfully added touched item record", "game_id", req.GameID, "item_id", *req.ItemID, "catched", *req.Catched)
 	common.SendSuccess(c, resp)
 }
 

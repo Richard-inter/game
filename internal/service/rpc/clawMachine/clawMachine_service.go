@@ -299,31 +299,34 @@ func (s *ClawMachineGRPCServices) AddTouchedItemRecord(
 		return nil, fmt.Errorf("failed to load game results: %w", err)
 	}
 
-	var serverResult *CatchResult
-	for i := range storedResults {
-		if storedResults[i].ItemID == req.ItemID {
-			serverResult = &storedResults[i]
-			break
+	var catched bool
+	if req.ItemID != 0 {
+		var serverResult *CatchResult
+		for i := range storedResults {
+			if storedResults[i].ItemID == req.ItemID {
+				serverResult = &storedResults[i]
+				break
+			}
+		}
+
+		if serverResult == nil {
+			return nil, fmt.Errorf("item %d not found in game %d", req.ItemID, req.GameID)
+		}
+
+		catched = serverResult.Success
+
+		if req.Catched != nil && *req.Catched != catched {
+			logger.GetSugar().Warnf(
+				"client desync - game=%d item=%d client=%t server=%t",
+				req.GameID, req.ItemID, *req.Catched, catched,
+			)
 		}
 	}
-
-	if serverResult == nil {
-		return nil, fmt.Errorf("item %d not found in game %d", req.ItemID, req.GameID)
-	}
-
-	catched := serverResult.Success
-
-	if req.Catched != nil && *req.Catched != catched {
-		logger.GetSugar().Warnf(
-			"client desync - game=%d item=%d client=%t server=%t",
-			req.GameID, req.ItemID, *req.Catched, catched,
-		)
-	}
-
 	var itemID *int64
 	itemID = &req.ItemID
 	if req.ItemID == 0 {
 		itemID = nil
+		catched = false
 	}
 
 	game, err := s.repo.AddTouchedItemRecord(ctx, req.GameID, itemID, catched)

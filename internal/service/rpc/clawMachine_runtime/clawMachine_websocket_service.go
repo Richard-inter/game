@@ -154,31 +154,35 @@ func (s *ClawMachineWebsocketService) AddTouchedItemRecordWs(
 		return nil, fmt.Errorf("failed to load game results: %w", err)
 	}
 
-	var serverResult *CatchResult
-	for i := range storedResults {
+	var serverCatched bool
+	if itemID != 0 {
+		var serverResult *CatchResult
+		for i := range storedResults {
 		if storedResults[i].ItemID == int64(itemID) {
-			serverResult = &storedResults[i]
-			break
+					serverResult = &storedResults[i]
+				break
+			}
 		}
-	}
 
-	if serverResult == nil {
-		return nil, fmt.Errorf("item %d not found in game %d", itemID, gameID)
-	}
+		if serverResult == nil {
+			return nil, fmt.Errorf("item %d not found in game %d", itemID, gameID)
+		}
 
-	serverCatched := serverResult.Success
+		serverCatched = serverResult.Success
 
-	if serverCatched != catched {
-		logger.GetSugar().Warnf(
-			"client desync - game=%d item=%d client=%t server=%t",
-			gameID, itemID, catched, serverCatched,
-		)
+		if serverCatched != catched {
+			logger.GetSugar().Warnf(
+				"client desync - game=%d item=%d client=%t server=%t",
+				gameID, itemID, catched, serverCatched,
+			)
+		}
 	}
 
 	var itemIDPtr *int64
 	itemIDPtr = &itemID
 	if itemID == 0 {
 		itemIDPtr = nil
+		serverCatched = false
 	}
 
 	game, err := s.repo.AddTouchedItemRecord(ctx, int64(gameID), itemIDPtr, serverCatched)
