@@ -4,7 +4,19 @@ import (
 	"context"
 	"fmt"
 	"math/rand/v2"
+
+	"github.com/Richard-inter/game/internal/domain"
 )
+
+// Rarity value multipliers
+var BaseRarityMultiplier = map[string]float64{
+	"common":    0.05,
+	"uncommon":  0.10,
+	"rare":      0.25,
+	"very rare": 0.50,
+	"epic":      1.20,
+	"legend":    2.50,
+}
 
 type SpawnConfig struct {
 	MaxOutput int // max items in machine output
@@ -18,8 +30,22 @@ type CatchResult struct {
 
 type SpawnItem struct {
 	ID           int64
-	SpawnPercent int // absolute probability (0-100)
-	MaxPerRound  int // soft cap to prevent RNG spikes
+	SpawnPercent int   // absolute probability (0-100)
+	MaxPerRound  int   // soft cap to prevent RNG spikes
+	Value        int64 // RTP value based on rarity
+}
+
+type RTPState struct {
+	TotalSpent   int64
+	TotalPayout  int64
+	TargetRTP    float64
+	TotalWagered int64
+	TotalWon     int64
+}
+
+// GetRarityValue returns the value for a given rarity
+func GetRarityValue(rarity string, price int64) int64 {
+	return int64(BaseRarityMultiplier[rarity] * float64(price))
 }
 
 func Roll(percent int) bool {
@@ -31,27 +57,7 @@ func Roll(percent int) bool {
 	}
 	return rand.IntN(100) < percent
 }
-
-// AdjustForPity slightly increases chances for very rare items
-// after multiple failed passes
-// NOTE: Commented out for future use - currently not using pity system
-/*
-func AdjustForPity(item SpawnItem, pass int) int {
-	// Example rule:
-	// Items <= 5% get a boost after pass 1
-	if item.SpawnPercent <= 5 && pass >= 1 {
-		boost := pass * 5 // +5% per extra pass
-		adjusted := item.SpawnPercent + boost
-		if adjusted > 100 {
-			return 100
-		}
-		return adjusted
-	}
-	return item.SpawnPercent
-}
-*/
-
-func SpawnWithControls(items []SpawnItem, config SpawnConfig) []SpawnItem {
+func SpawnWithControls(items []SpawnItem, config SpawnConfig, rtpState *domain.ClawMachineRTPState) []SpawnItem {
 	result := make([]SpawnItem, 0, config.MaxOutput)
 	counts := make(map[int64]int)
 
@@ -66,8 +72,13 @@ func SpawnWithControls(items []SpawnItem, config SpawnConfig) []SpawnItem {
 			}
 
 			availableItems = append(availableItems, item)
-			weights = append(weights, item.SpawnPercent)
-			totalWeight += item.SpawnPercent
+			adjusted := AdjustSpawnWeight(
+				item.SpawnPercent,
+				item.Value,
+				CalculateRTPDelta(rtpState),
+			)
+			weights = append(weights, adjusted)
+			totalWeight += adjusted
 		}
 
 		if len(availableItems) == 0 {
@@ -91,10 +102,51 @@ func SpawnWithControls(items []SpawnItem, config SpawnConfig) []SpawnItem {
 	return result
 }
 
+func (s *ClawMachineWebsocketService) SpawnMachineItems(
+	ctx context.Context,
+	machineID int64,
+) ([]int64, error) {
+	clawMachine, err := s.repo.GetClawMachineInfo(ctx, machineID)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get machine info: %w", err)
+	}
+	config := SpawnConfig{
+		MaxOutput: int(clawMachine.MaxItem), // Use machine's MaxItem as output cap
+	}
+
+	spawnItems := make([]SpawnItem, 0, len(clawMachine.Items))
+	for _, item := range clawMachine.Items {
+		spawnItems = append(spawnItems, SpawnItem{
+			ID:           item.Item.ID,
+			SpawnPercent: int(item.Item.SpawnPercentage),
+			MaxPerRound:  int(item.Item.MaxItemSpawned),
+			Value:        GetRarityValue(item.Item.Rarity, clawMachine.Price),
+		})
+	}
+
+	// Get RTP state for this machine
+	rtpState, err := s.repo.GetClawMachineRTPState(ctx, machineID)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get machine RTP state: %w", err)
+	}
+
+	spawnedItems := SpawnWithControls(spawnItems, config, rtpState)
+
+	// Convert SpawnItem results to item IDs
+	spawnedIDs := make([]int64, 0, len(spawnedItems))
+	for _, spawnedItem := range spawnedItems {
+		spawnedIDs = append(spawnedIDs, spawnedItem.ID)
+	}
+
+	return spawnedIDs, nil
+}
+
+// PreDetermineCatchResults generates a list of pre-determined catch results for all items
 func (s *ClawMachineWebsocketService) PreDetermineCatchResults(
 	ctx context.Context,
 	machineID int64,
 ) ([]*CatchResult, error) {
+	// Get machine info to access items and their catch percentages
 	clawMachine, err := s.repo.GetClawMachineInfo(ctx, machineID)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get machine info: %w", err)
@@ -106,15 +158,23 @@ func (s *ClawMachineWebsocketService) PreDetermineCatchResults(
 
 	results := make([]*CatchResult, 0, len(clawMachine.Items))
 
-	// Generate pre-determined result for each item in the machine
+	rtpState, err := s.repo.GetClawMachineRTPState(ctx, machineID)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get machine RTP state: %w", err)
+	}
+	expectedRevenue := rtpState.TotalRevenue + clawMachine.Price
+	maxPayout := int64(float64(expectedRevenue) * rtpState.TargetRTP)
 	for _, item := range clawMachine.Items {
 		catchWeight := item.Item.CatchPercentage
 		if catchWeight == 0 {
 			return nil, fmt.Errorf("database error: item %s (ID: %d) has zero catch percentage", item.Item.Name, item.Item.ID)
 		}
 
-		// Determine if catch is successful based on the item's catch percentage
 		catchSuccess := Roll(int(catchWeight))
+
+		if catchSuccess && rtpState.TotalPayout+GetRarityValue(item.Item.Rarity, clawMachine.Price) > maxPayout {
+			catchSuccess = false
+		}
 
 		results = append(results, &CatchResult{
 			ItemID:  item.Item.ID,
@@ -144,34 +204,28 @@ func (s *ClawMachineWebsocketService) PlayMachine(
 	return nil
 }
 
-func (s *ClawMachineWebsocketService) SpawnMachineItems(
-	ctx context.Context,
-	machineID int64,
-) ([]int64, error) {
-	clawMachine, err := s.repo.GetClawMachineInfo(ctx, machineID)
-	if err != nil {
-		return nil, fmt.Errorf("failed to get machine info: %w", err)
-	}
-	config := SpawnConfig{
-		MaxOutput: int(clawMachine.MaxItem), // Use machine's MaxItem as output cap
+func AdjustSpawnWeight(
+	base int,
+	itemValue int64,
+	rtpDelta float64,
+) int {
+	if rtpDelta > 0 && itemValue > 0 {
+		penalty := int(float64(base) * rtpDelta)
+		return max(1, base-penalty)
 	}
 
-	spawnItems := make([]SpawnItem, 0, len(clawMachine.Items))
-	for _, item := range clawMachine.Items {
-		spawnItems = append(spawnItems, SpawnItem{
-			ID:           item.Item.ID,
-			SpawnPercent: int(item.Item.SpawnPercentage),
-			MaxPerRound:  int(item.Item.MaxItemSpawned),
-		})
+	if rtpDelta < 0 {
+		boost := int(float64(base) * -rtpDelta * 0.5)
+		return base + boost
 	}
 
-	spawnedItems := SpawnWithControls(spawnItems, config)
+	return base
+}
 
-	// Convert SpawnItem results to item IDs
-	spawnedIDs := make([]int64, 0, len(spawnedItems))
-	for _, spawnedItem := range spawnedItems {
-		spawnedIDs = append(spawnedIDs, spawnedItem.ID)
+func CalculateRTPDelta(state *domain.ClawMachineRTPState) float64 {
+	if state == nil || state.TotalRevenue == 0 {
+		return 0
 	}
-
-	return spawnedIDs, nil
+	currentRTP := (float64(state.TotalPayout) / float64(state.TotalRevenue)) * 100.0
+	return (currentRTP - state.TargetRTP) / 100.0
 }

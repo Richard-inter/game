@@ -1891,6 +1891,110 @@ func (x *DeleteClawItemsResp) GetSuccess() bool {
 	return false
 }
 
+type UpdateClawMachineTargetRTPReq struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	MachineID     int64                  `protobuf:"varint,1,opt,name=machineID,proto3" json:"machineID,omitempty"`
+	TargetRTP     float64                `protobuf:"fixed64,2,opt,name=targetRTP,proto3" json:"targetRTP,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *UpdateClawMachineTargetRTPReq) Reset() {
+	*x = UpdateClawMachineTargetRTPReq{}
+	mi := &file_clawMachine_clawMachine_proto_msgTypes[35]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UpdateClawMachineTargetRTPReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateClawMachineTargetRTPReq) ProtoMessage() {}
+
+func (x *UpdateClawMachineTargetRTPReq) ProtoReflect() protoreflect.Message {
+	mi := &file_clawMachine_clawMachine_proto_msgTypes[35]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdateClawMachineTargetRTPReq.ProtoReflect.Descriptor instead.
+func (*UpdateClawMachineTargetRTPReq) Descriptor() ([]byte, []int) {
+	return file_clawMachine_clawMachine_proto_rawDescGZIP(), []int{35}
+}
+
+func (x *UpdateClawMachineTargetRTPReq) GetMachineID() int64 {
+	if x != nil {
+		return x.MachineID
+	}
+	return 0
+}
+
+func (x *UpdateClawMachineTargetRTPReq) GetTargetRTP() float64 {
+	if x != nil {
+		return x.TargetRTP
+	}
+	return 0
+}
+
+type UpdateClawMachineTargetRTPResp struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	MachineID     int64                  `protobuf:"varint,1,opt,name=machineID,proto3" json:"machineID,omitempty"`
+	Success       bool                   `protobuf:"varint,2,opt,name=success,proto3" json:"success,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *UpdateClawMachineTargetRTPResp) Reset() {
+	*x = UpdateClawMachineTargetRTPResp{}
+	mi := &file_clawMachine_clawMachine_proto_msgTypes[36]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UpdateClawMachineTargetRTPResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateClawMachineTargetRTPResp) ProtoMessage() {}
+
+func (x *UpdateClawMachineTargetRTPResp) ProtoReflect() protoreflect.Message {
+	mi := &file_clawMachine_clawMachine_proto_msgTypes[36]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdateClawMachineTargetRTPResp.ProtoReflect.Descriptor instead.
+func (*UpdateClawMachineTargetRTPResp) Descriptor() ([]byte, []int) {
+	return file_clawMachine_clawMachine_proto_rawDescGZIP(), []int{36}
+}
+
+func (x *UpdateClawMachineTargetRTPResp) GetMachineID() int64 {
+	if x != nil {
+		return x.MachineID
+	}
+	return 0
+}
+
+func (x *UpdateClawMachineTargetRTPResp) GetSuccess() bool {
+	if x != nil {
+		return x.Success
+	}
+	return false
+}
+
 var File_clawMachine_clawMachine_proto protoreflect.FileDescriptor
 
 const file_clawMachine_clawMachine_proto_rawDesc = "" +
@@ -2016,8 +2120,13 @@ const file_clawMachine_clawMachine_proto_rawDesc = "" +
 	"\aitemIDs\x18\x01 \x03(\x03R\aitemIDs\"I\n" +
 	"\x13DeleteClawItemsResp\x12\x18\n" +
 	"\aitemIDs\x18\x01 \x03(\x03R\aitemIDs\x12\x18\n" +
-	"\asuccess\x18\x02 \x01(\bR\asuccess2\x93\n" +
-	"\n" +
+	"\asuccess\x18\x02 \x01(\bR\asuccess\"[\n" +
+	"\x1dUpdateClawMachineTargetRTPReq\x12\x1c\n" +
+	"\tmachineID\x18\x01 \x01(\x03R\tmachineID\x12\x1c\n" +
+	"\ttargetRTP\x18\x02 \x01(\x01R\ttargetRTP\"X\n" +
+	"\x1eUpdateClawMachineTargetRTPResp\x12\x1c\n" +
+	"\tmachineID\x18\x01 \x01(\x03R\tmachineID\x12\x18\n" +
+	"\asuccess\x18\x02 \x01(\bR\asuccess2\x8a\v\n" +
 	"\x12ClawMachineService\x12W\n" +
 	"\x10CreateClawPlayer\x12 .clawMachine.CreateClawPlayerReq\x1a!.clawMachine.CreateClawPlayerResp\x12Z\n" +
 	"\x11GetClawPlayerInfo\x12!.clawMachine.GetClawPlayerInfoReq\x1a\".clawMachine.GetClawPlayerInfoResp\x12W\n" +
@@ -2032,7 +2141,8 @@ const file_clawMachine_clawMachine_proto_rawDesc = "" +
 	"\rStartClawGame\x12\x1d.clawMachine.StartClawGameReq\x1a\x1e.clawMachine.StartClawGameResp\x12c\n" +
 	"\x14AddTouchedItemRecord\x12$.clawMachine.AddTouchedItemRecordReq\x1a%.clawMachine.AddTouchedItemRecordResp\x12T\n" +
 	"\x0fCreateClawItems\x12\x1f.clawMachine.CreateClawItemsReq\x1a .clawMachine.CreateClawItemsResp\x12T\n" +
-	"\x0fDeleteClawItems\x12\x1f.clawMachine.DeleteClawItemsReq\x1a .clawMachine.DeleteClawItemsRespB8Z6github.com/Richard-inter/game/pkg/protocol/clawMachineb\x06proto3"
+	"\x0fDeleteClawItems\x12\x1f.clawMachine.DeleteClawItemsReq\x1a .clawMachine.DeleteClawItemsResp\x12u\n" +
+	"\x1aUpdateClawMachineTargetRTP\x12*.clawMachine.UpdateClawMachineTargetRTPReq\x1a+.clawMachine.UpdateClawMachineTargetRTPRespB8Z6github.com/Richard-inter/game/pkg/protocol/clawMachineb\x06proto3"
 
 var (
 	file_clawMachine_clawMachine_proto_rawDescOnce sync.Once
@@ -2046,48 +2156,50 @@ func file_clawMachine_clawMachine_proto_rawDescGZIP() []byte {
 	return file_clawMachine_clawMachine_proto_rawDescData
 }
 
-var file_clawMachine_clawMachine_proto_msgTypes = make([]protoimpl.MessageInfo, 35)
+var file_clawMachine_clawMachine_proto_msgTypes = make([]protoimpl.MessageInfo, 37)
 var file_clawMachine_clawMachine_proto_goTypes = []any{
-	(*Item)(nil),                       // 0: clawMachine.Item
-	(*ClawMachine)(nil),                // 1: clawMachine.ClawMachine
-	(*ClawPlayer)(nil),                 // 2: clawMachine.ClawPlayer
-	(*Items)(nil),                      // 3: clawMachine.Items
-	(*CreateClawMachineReq)(nil),       // 4: clawMachine.CreateClawMachineReq
-	(*CreateClawMachineResp)(nil),      // 5: clawMachine.CreateClawMachineResp
-	(*StartClawGameReq)(nil),           // 6: clawMachine.StartClawGameReq
-	(*ClawResult)(nil),                 // 7: clawMachine.ClawResult
-	(*StartClawGameResp)(nil),          // 8: clawMachine.StartClawGameResp
-	(*GetClawPlayerInfoReq)(nil),       // 9: clawMachine.GetClawPlayerInfoReq
-	(*GetClawPlayerInfoResp)(nil),      // 10: clawMachine.GetClawPlayerInfoResp
-	(*GetClawMachineInfoReq)(nil),      // 11: clawMachine.GetClawMachineInfoReq
-	(*GetClawMachineInfoResp)(nil),     // 12: clawMachine.GetClawMachineInfoResp
-	(*CreateItemReq)(nil),              // 13: clawMachine.CreateItemReq
-	(*CreateClawItemsReq)(nil),         // 14: clawMachine.CreateClawItemsReq
-	(*CreateClawItemsResp)(nil),        // 15: clawMachine.CreateClawItemsResp
-	(*CreateClawPlayerReq)(nil),        // 16: clawMachine.CreateClawPlayerReq
-	(*CreateClawPlayerResp)(nil),       // 17: clawMachine.CreateClawPlayerResp
-	(*AdjustPlayerCoinReq)(nil),        // 18: clawMachine.AdjustPlayerCoinReq
-	(*AdjustPlayerCoinResp)(nil),       // 19: clawMachine.AdjustPlayerCoinResp
-	(*AdjustPlayerDiamondReq)(nil),     // 20: clawMachine.AdjustPlayerDiamondReq
-	(*AdjustPlayerDiamondResp)(nil),    // 21: clawMachine.AdjustPlayerDiamondResp
-	(*AddTouchedItemRecordReq)(nil),    // 22: clawMachine.AddTouchedItemRecordReq
-	(*AddTouchedItemRecordResp)(nil),   // 23: clawMachine.AddTouchedItemRecordResp
-	(*DeleteClawPlayerReq)(nil),        // 24: clawMachine.DeleteClawPlayerReq
-	(*DeleteClawPlayerResp)(nil),       // 25: clawMachine.DeleteClawPlayerResp
-	(*GetGameHistoryReq)(nil),          // 26: clawMachine.GetGameHistoryReq
-	(*ClawMachineGameRecord)(nil),      // 27: clawMachine.ClawMachineGameRecord
-	(*GetGameHistoryResp)(nil),         // 28: clawMachine.GetGameHistoryResp
-	(*UpdateClawMachineItemsReq)(nil),  // 29: clawMachine.UpdateClawMachineItemsReq
-	(*UpdateClawMachineItemsResp)(nil), // 30: clawMachine.UpdateClawMachineItemsResp
-	(*DeleteClawMachineReq)(nil),       // 31: clawMachine.DeleteClawMachineReq
-	(*DeleteClawMachineResp)(nil),      // 32: clawMachine.DeleteClawMachineResp
-	(*DeleteClawItemsReq)(nil),         // 33: clawMachine.DeleteClawItemsReq
-	(*DeleteClawItemsResp)(nil),        // 34: clawMachine.DeleteClawItemsResp
-	(*player.Player)(nil),              // 35: player.Player
+	(*Item)(nil),                           // 0: clawMachine.Item
+	(*ClawMachine)(nil),                    // 1: clawMachine.ClawMachine
+	(*ClawPlayer)(nil),                     // 2: clawMachine.ClawPlayer
+	(*Items)(nil),                          // 3: clawMachine.Items
+	(*CreateClawMachineReq)(nil),           // 4: clawMachine.CreateClawMachineReq
+	(*CreateClawMachineResp)(nil),          // 5: clawMachine.CreateClawMachineResp
+	(*StartClawGameReq)(nil),               // 6: clawMachine.StartClawGameReq
+	(*ClawResult)(nil),                     // 7: clawMachine.ClawResult
+	(*StartClawGameResp)(nil),              // 8: clawMachine.StartClawGameResp
+	(*GetClawPlayerInfoReq)(nil),           // 9: clawMachine.GetClawPlayerInfoReq
+	(*GetClawPlayerInfoResp)(nil),          // 10: clawMachine.GetClawPlayerInfoResp
+	(*GetClawMachineInfoReq)(nil),          // 11: clawMachine.GetClawMachineInfoReq
+	(*GetClawMachineInfoResp)(nil),         // 12: clawMachine.GetClawMachineInfoResp
+	(*CreateItemReq)(nil),                  // 13: clawMachine.CreateItemReq
+	(*CreateClawItemsReq)(nil),             // 14: clawMachine.CreateClawItemsReq
+	(*CreateClawItemsResp)(nil),            // 15: clawMachine.CreateClawItemsResp
+	(*CreateClawPlayerReq)(nil),            // 16: clawMachine.CreateClawPlayerReq
+	(*CreateClawPlayerResp)(nil),           // 17: clawMachine.CreateClawPlayerResp
+	(*AdjustPlayerCoinReq)(nil),            // 18: clawMachine.AdjustPlayerCoinReq
+	(*AdjustPlayerCoinResp)(nil),           // 19: clawMachine.AdjustPlayerCoinResp
+	(*AdjustPlayerDiamondReq)(nil),         // 20: clawMachine.AdjustPlayerDiamondReq
+	(*AdjustPlayerDiamondResp)(nil),        // 21: clawMachine.AdjustPlayerDiamondResp
+	(*AddTouchedItemRecordReq)(nil),        // 22: clawMachine.AddTouchedItemRecordReq
+	(*AddTouchedItemRecordResp)(nil),       // 23: clawMachine.AddTouchedItemRecordResp
+	(*DeleteClawPlayerReq)(nil),            // 24: clawMachine.DeleteClawPlayerReq
+	(*DeleteClawPlayerResp)(nil),           // 25: clawMachine.DeleteClawPlayerResp
+	(*GetGameHistoryReq)(nil),              // 26: clawMachine.GetGameHistoryReq
+	(*ClawMachineGameRecord)(nil),          // 27: clawMachine.ClawMachineGameRecord
+	(*GetGameHistoryResp)(nil),             // 28: clawMachine.GetGameHistoryResp
+	(*UpdateClawMachineItemsReq)(nil),      // 29: clawMachine.UpdateClawMachineItemsReq
+	(*UpdateClawMachineItemsResp)(nil),     // 30: clawMachine.UpdateClawMachineItemsResp
+	(*DeleteClawMachineReq)(nil),           // 31: clawMachine.DeleteClawMachineReq
+	(*DeleteClawMachineResp)(nil),          // 32: clawMachine.DeleteClawMachineResp
+	(*DeleteClawItemsReq)(nil),             // 33: clawMachine.DeleteClawItemsReq
+	(*DeleteClawItemsResp)(nil),            // 34: clawMachine.DeleteClawItemsResp
+	(*UpdateClawMachineTargetRTPReq)(nil),  // 35: clawMachine.UpdateClawMachineTargetRTPReq
+	(*UpdateClawMachineTargetRTPResp)(nil), // 36: clawMachine.UpdateClawMachineTargetRTPResp
+	(*player.Player)(nil),                  // 37: player.Player
 }
 var file_clawMachine_clawMachine_proto_depIdxs = []int32{
 	0,  // 0: clawMachine.ClawMachine.items:type_name -> clawMachine.Item
-	35, // 1: clawMachine.ClawPlayer.basePlayer:type_name -> player.Player
+	37, // 1: clawMachine.ClawPlayer.basePlayer:type_name -> player.Player
 	3,  // 2: clawMachine.CreateClawMachineReq.items:type_name -> clawMachine.Items
 	1,  // 3: clawMachine.CreateClawMachineResp.machine:type_name -> clawMachine.ClawMachine
 	7,  // 4: clawMachine.StartClawGameResp.results:type_name -> clawMachine.ClawResult
@@ -2113,22 +2225,24 @@ var file_clawMachine_clawMachine_proto_depIdxs = []int32{
 	22, // 24: clawMachine.ClawMachineService.AddTouchedItemRecord:input_type -> clawMachine.AddTouchedItemRecordReq
 	14, // 25: clawMachine.ClawMachineService.CreateClawItems:input_type -> clawMachine.CreateClawItemsReq
 	33, // 26: clawMachine.ClawMachineService.DeleteClawItems:input_type -> clawMachine.DeleteClawItemsReq
-	17, // 27: clawMachine.ClawMachineService.CreateClawPlayer:output_type -> clawMachine.CreateClawPlayerResp
-	10, // 28: clawMachine.ClawMachineService.GetClawPlayerInfo:output_type -> clawMachine.GetClawPlayerInfoResp
-	25, // 29: clawMachine.ClawMachineService.DeleteClawPlayer:output_type -> clawMachine.DeleteClawPlayerResp
-	19, // 30: clawMachine.ClawMachineService.AdjustPlayerCoin:output_type -> clawMachine.AdjustPlayerCoinResp
-	21, // 31: clawMachine.ClawMachineService.AdjustPlayerDiamond:output_type -> clawMachine.AdjustPlayerDiamondResp
-	28, // 32: clawMachine.ClawMachineService.GetGameHistory:output_type -> clawMachine.GetGameHistoryResp
-	5,  // 33: clawMachine.ClawMachineService.CreateClawMachine:output_type -> clawMachine.CreateClawMachineResp
-	12, // 34: clawMachine.ClawMachineService.GetClawMachineInfo:output_type -> clawMachine.GetClawMachineInfoResp
-	30, // 35: clawMachine.ClawMachineService.UpdateClawMachineItems:output_type -> clawMachine.UpdateClawMachineItemsResp
-	32, // 36: clawMachine.ClawMachineService.DeleteClawMachine:output_type -> clawMachine.DeleteClawMachineResp
-	8,  // 37: clawMachine.ClawMachineService.StartClawGame:output_type -> clawMachine.StartClawGameResp
-	23, // 38: clawMachine.ClawMachineService.AddTouchedItemRecord:output_type -> clawMachine.AddTouchedItemRecordResp
-	15, // 39: clawMachine.ClawMachineService.CreateClawItems:output_type -> clawMachine.CreateClawItemsResp
-	34, // 40: clawMachine.ClawMachineService.DeleteClawItems:output_type -> clawMachine.DeleteClawItemsResp
-	27, // [27:41] is the sub-list for method output_type
-	13, // [13:27] is the sub-list for method input_type
+	35, // 27: clawMachine.ClawMachineService.UpdateClawMachineTargetRTP:input_type -> clawMachine.UpdateClawMachineTargetRTPReq
+	17, // 28: clawMachine.ClawMachineService.CreateClawPlayer:output_type -> clawMachine.CreateClawPlayerResp
+	10, // 29: clawMachine.ClawMachineService.GetClawPlayerInfo:output_type -> clawMachine.GetClawPlayerInfoResp
+	25, // 30: clawMachine.ClawMachineService.DeleteClawPlayer:output_type -> clawMachine.DeleteClawPlayerResp
+	19, // 31: clawMachine.ClawMachineService.AdjustPlayerCoin:output_type -> clawMachine.AdjustPlayerCoinResp
+	21, // 32: clawMachine.ClawMachineService.AdjustPlayerDiamond:output_type -> clawMachine.AdjustPlayerDiamondResp
+	28, // 33: clawMachine.ClawMachineService.GetGameHistory:output_type -> clawMachine.GetGameHistoryResp
+	5,  // 34: clawMachine.ClawMachineService.CreateClawMachine:output_type -> clawMachine.CreateClawMachineResp
+	12, // 35: clawMachine.ClawMachineService.GetClawMachineInfo:output_type -> clawMachine.GetClawMachineInfoResp
+	30, // 36: clawMachine.ClawMachineService.UpdateClawMachineItems:output_type -> clawMachine.UpdateClawMachineItemsResp
+	32, // 37: clawMachine.ClawMachineService.DeleteClawMachine:output_type -> clawMachine.DeleteClawMachineResp
+	8,  // 38: clawMachine.ClawMachineService.StartClawGame:output_type -> clawMachine.StartClawGameResp
+	23, // 39: clawMachine.ClawMachineService.AddTouchedItemRecord:output_type -> clawMachine.AddTouchedItemRecordResp
+	15, // 40: clawMachine.ClawMachineService.CreateClawItems:output_type -> clawMachine.CreateClawItemsResp
+	34, // 41: clawMachine.ClawMachineService.DeleteClawItems:output_type -> clawMachine.DeleteClawItemsResp
+	36, // 42: clawMachine.ClawMachineService.UpdateClawMachineTargetRTP:output_type -> clawMachine.UpdateClawMachineTargetRTPResp
+	28, // [28:43] is the sub-list for method output_type
+	13, // [13:28] is the sub-list for method input_type
 	13, // [13:13] is the sub-list for extension type_name
 	13, // [13:13] is the sub-list for extension extendee
 	0,  // [0:13] is the sub-list for field type_name
@@ -2148,7 +2262,7 @@ func file_clawMachine_clawMachine_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_clawMachine_clawMachine_proto_rawDesc), len(file_clawMachine_clawMachine_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   35,
+			NumMessages:   37,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

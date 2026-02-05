@@ -83,6 +83,10 @@ func (c *ClawMachineClient) DeleteClawItems(ctx context.Context, req *clawmachin
 	return c.client.DeleteClawItems(ctx, req)
 }
 
+func (c *ClawMachineClient) UpdateClawMachineTargetRTP(ctx context.Context, req *clawmachinepb.UpdateClawMachineTargetRTPReq) (*clawmachinepb.UpdateClawMachineTargetRTPResp, error) {
+	return c.client.UpdateClawMachineTargetRTP(ctx, req)
+}
+
 func (c *ClawMachineClient) Close() error {
 	return c.conn.Close()
 }

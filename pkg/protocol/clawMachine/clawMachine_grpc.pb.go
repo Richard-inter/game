@@ -19,20 +19,21 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	ClawMachineService_CreateClawPlayer_FullMethodName       = "/clawMachine.ClawMachineService/CreateClawPlayer"
-	ClawMachineService_GetClawPlayerInfo_FullMethodName      = "/clawMachine.ClawMachineService/GetClawPlayerInfo"
-	ClawMachineService_DeleteClawPlayer_FullMethodName       = "/clawMachine.ClawMachineService/DeleteClawPlayer"
-	ClawMachineService_AdjustPlayerCoin_FullMethodName       = "/clawMachine.ClawMachineService/AdjustPlayerCoin"
-	ClawMachineService_AdjustPlayerDiamond_FullMethodName    = "/clawMachine.ClawMachineService/AdjustPlayerDiamond"
-	ClawMachineService_GetGameHistory_FullMethodName         = "/clawMachine.ClawMachineService/GetGameHistory"
-	ClawMachineService_CreateClawMachine_FullMethodName      = "/clawMachine.ClawMachineService/CreateClawMachine"
-	ClawMachineService_GetClawMachineInfo_FullMethodName     = "/clawMachine.ClawMachineService/GetClawMachineInfo"
-	ClawMachineService_UpdateClawMachineItems_FullMethodName = "/clawMachine.ClawMachineService/UpdateClawMachineItems"
-	ClawMachineService_DeleteClawMachine_FullMethodName      = "/clawMachine.ClawMachineService/DeleteClawMachine"
-	ClawMachineService_StartClawGame_FullMethodName          = "/clawMachine.ClawMachineService/StartClawGame"
-	ClawMachineService_AddTouchedItemRecord_FullMethodName   = "/clawMachine.ClawMachineService/AddTouchedItemRecord"
-	ClawMachineService_CreateClawItems_FullMethodName        = "/clawMachine.ClawMachineService/CreateClawItems"
-	ClawMachineService_DeleteClawItems_FullMethodName        = "/clawMachine.ClawMachineService/DeleteClawItems"
+	ClawMachineService_CreateClawPlayer_FullMethodName           = "/clawMachine.ClawMachineService/CreateClawPlayer"
+	ClawMachineService_GetClawPlayerInfo_FullMethodName          = "/clawMachine.ClawMachineService/GetClawPlayerInfo"
+	ClawMachineService_DeleteClawPlayer_FullMethodName           = "/clawMachine.ClawMachineService/DeleteClawPlayer"
+	ClawMachineService_AdjustPlayerCoin_FullMethodName           = "/clawMachine.ClawMachineService/AdjustPlayerCoin"
+	ClawMachineService_AdjustPlayerDiamond_FullMethodName        = "/clawMachine.ClawMachineService/AdjustPlayerDiamond"
+	ClawMachineService_GetGameHistory_FullMethodName             = "/clawMachine.ClawMachineService/GetGameHistory"
+	ClawMachineService_CreateClawMachine_FullMethodName          = "/clawMachine.ClawMachineService/CreateClawMachine"
+	ClawMachineService_GetClawMachineInfo_FullMethodName         = "/clawMachine.ClawMachineService/GetClawMachineInfo"
+	ClawMachineService_UpdateClawMachineItems_FullMethodName     = "/clawMachine.ClawMachineService/UpdateClawMachineItems"
+	ClawMachineService_DeleteClawMachine_FullMethodName          = "/clawMachine.ClawMachineService/DeleteClawMachine"
+	ClawMachineService_StartClawGame_FullMethodName              = "/clawMachine.ClawMachineService/StartClawGame"
+	ClawMachineService_AddTouchedItemRecord_FullMethodName       = "/clawMachine.ClawMachineService/AddTouchedItemRecord"
+	ClawMachineService_CreateClawItems_FullMethodName            = "/clawMachine.ClawMachineService/CreateClawItems"
+	ClawMachineService_DeleteClawItems_FullMethodName            = "/clawMachine.ClawMachineService/DeleteClawItems"
+	ClawMachineService_UpdateClawMachineTargetRTP_FullMethodName = "/clawMachine.ClawMachineService/UpdateClawMachineTargetRTP"
 )
 
 // ClawMachineServiceClient is the client API for ClawMachineService service.
@@ -57,6 +58,8 @@ type ClawMachineServiceClient interface {
 	// items
 	CreateClawItems(ctx context.Context, in *CreateClawItemsReq, opts ...grpc.CallOption) (*CreateClawItemsResp, error)
 	DeleteClawItems(ctx context.Context, in *DeleteClawItemsReq, opts ...grpc.CallOption) (*DeleteClawItemsResp, error)
+	// RTP
+	UpdateClawMachineTargetRTP(ctx context.Context, in *UpdateClawMachineTargetRTPReq, opts ...grpc.CallOption) (*UpdateClawMachineTargetRTPResp, error)
 }
 
 type clawMachineServiceClient struct {
@@ -207,6 +210,16 @@ func (c *clawMachineServiceClient) DeleteClawItems(ctx context.Context, in *Dele
 	return out, nil
 }
 
+func (c *clawMachineServiceClient) UpdateClawMachineTargetRTP(ctx context.Context, in *UpdateClawMachineTargetRTPReq, opts ...grpc.CallOption) (*UpdateClawMachineTargetRTPResp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UpdateClawMachineTargetRTPResp)
+	err := c.cc.Invoke(ctx, ClawMachineService_UpdateClawMachineTargetRTP_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ClawMachineServiceServer is the server API for ClawMachineService service.
 // All implementations must embed UnimplementedClawMachineServiceServer
 // for forward compatibility.
@@ -229,6 +242,8 @@ type ClawMachineServiceServer interface {
 	// items
 	CreateClawItems(context.Context, *CreateClawItemsReq) (*CreateClawItemsResp, error)
 	DeleteClawItems(context.Context, *DeleteClawItemsReq) (*DeleteClawItemsResp, error)
+	// RTP
+	UpdateClawMachineTargetRTP(context.Context, *UpdateClawMachineTargetRTPReq) (*UpdateClawMachineTargetRTPResp, error)
 	mustEmbedUnimplementedClawMachineServiceServer()
 }
 
@@ -280,6 +295,9 @@ func (UnimplementedClawMachineServiceServer) CreateClawItems(context.Context, *C
 }
 func (UnimplementedClawMachineServiceServer) DeleteClawItems(context.Context, *DeleteClawItemsReq) (*DeleteClawItemsResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteClawItems not implemented")
+}
+func (UnimplementedClawMachineServiceServer) UpdateClawMachineTargetRTP(context.Context, *UpdateClawMachineTargetRTPReq) (*UpdateClawMachineTargetRTPResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateClawMachineTargetRTP not implemented")
 }
 func (UnimplementedClawMachineServiceServer) mustEmbedUnimplementedClawMachineServiceServer() {}
 func (UnimplementedClawMachineServiceServer) testEmbeddedByValue()                            {}
@@ -554,6 +572,24 @@ func _ClawMachineService_DeleteClawItems_Handler(srv interface{}, ctx context.Co
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ClawMachineService_UpdateClawMachineTargetRTP_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateClawMachineTargetRTPReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ClawMachineServiceServer).UpdateClawMachineTargetRTP(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ClawMachineService_UpdateClawMachineTargetRTP_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ClawMachineServiceServer).UpdateClawMachineTargetRTP(ctx, req.(*UpdateClawMachineTargetRTPReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // ClawMachineService_ServiceDesc is the grpc.ServiceDesc for ClawMachineService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -616,6 +652,10 @@ var ClawMachineService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteClawItems",
 			Handler:    _ClawMachineService_DeleteClawItems_Handler,
+		},
+		{
+			MethodName: "UpdateClawMachineTargetRTP",
+			Handler:    _ClawMachineService_UpdateClawMachineTargetRTP_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

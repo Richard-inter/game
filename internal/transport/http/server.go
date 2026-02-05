@@ -159,12 +159,12 @@ func (s *Server) setupRoutes() {
 
 			// machine
 			clawMachine.POST("/createClawMachine", clawMachineHandler.HandleCreateClawMachine)
-			clawMachine.POST("/getClawMachineInfo", clawMachineHandler.HandleGetClawMachineInfo)
+			clawMachine.GET("/getClawMachineInfo/:machineID", clawMachineHandler.HandleGetClawMachineInfo)
 			clawMachine.POST("/updateClawMachineItems", clawMachineHandler.HandleUpdateClawMachineItems)
 			clawMachine.POST("/deleteClawMachine", clawMachineHandler.HandleDeleteClawMachine)
 
 			// player
-			clawMachine.POST("/getClawPlayerInfo", clawMachineHandler.HandleGetClawPlayerInfo)
+			clawMachine.GET("/getClawPlayerInfo/:playerID", clawMachineHandler.HandleGetClawPlayerInfo)
 			clawMachine.POST("/createClawPlayer", clawMachineHandler.HandleCreateClawPlayer)
 			clawMachine.POST("/deleteClawPlayer", clawMachineHandler.HandleDeleteClawPlayer)
 			clawMachine.POST("/adjustPlayerCoin", clawMachineHandler.HandleAdjustPlayerCoin)
@@ -174,6 +174,9 @@ func (s *Server) setupRoutes() {
 			clawMachine.POST("/startClawGame", clawMachineHandler.HandleStartClawGame)
 			clawMachine.POST("/addTouchedItemRecord", clawMachineHandler.HandleAddTouchedItemRecord)
 			clawMachine.GET("/getGameHistory/:playerID", clawMachineHandler.HandleGetGameHistory)
+
+			// RTP
+			clawMachine.POST("/updateClawMachineTargetRTP", clawMachineHandler.HandleUpdateClawMachineTargetRTP)
 		}
 
 		gachaMachine := v1.Group("/gachaMachine")

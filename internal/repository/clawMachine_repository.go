@@ -23,12 +23,12 @@ type ClawMachineRepository interface {
 
 	// game
 	AddGameHistory(ctx context.Context, playerID int64, gameRecord *domain.ClawMachineGameRecord) (int64, error)
-	AddTouchedItemRecord(ctx context.Context, gameID int64, itemID int64, catched bool) error
+	AddTouchedItemRecord(ctx context.Context, gameID int64, itemID *int64, catched bool) (*domain.ClawMachineGameRecord, error)
 	GetGameHistory(ctx context.Context, playerID int64) ([]*domain.ClawMachineGameRecord, error)
 
 	// machine
 	CreateClawMachine(ctx context.Context, clawMachine *domain.ClawMachine) (*domain.ClawMachine, error)
-	UpdateClawMachineItems(ctx context.Context, clawMachineID int64, items []domain.ClawMachineItem) error
+	UpdateClawMachineItems(ctx context.Context, clawMachineID int64, items []domain.ClawMachineItem) (*domain.ClawMachine, error)
 	GetClawMachineInfo(ctx context.Context, machineID int64) (*domain.ClawMachine, error)
 	GetAllClawMachines(ctx context.Context) ([]*domain.ClawMachine, error)
 	DeleteClawMachine(ctx context.Context, machineID int64) error
@@ -37,6 +37,17 @@ type ClawMachineRepository interface {
 	CreateClawItems(ctx context.Context, items *[]domain.ClawItem) (*[]domain.ClawItem, error)
 	GetClawItems(ctx context.Context) (*[]domain.ClawItem, error)
 	DeleteClawItems(ctx context.Context, itemIDs []int64) error
+
+	// rtp
+	GetClawMachineRTPState(ctx context.Context, machineID int64) (*domain.ClawMachineRTPState, error)
+	InitClawMachineRTPState(ctx context.Context, machineID int64, targetRTP float64) error
+	UpdateClawMachineRTP(
+		ctx context.Context,
+		machineID int64,
+		price int64,
+		payout int64,
+	) error
+	UpdateClawMachineTargetRTP(ctx context.Context, machineID int64, targetRTP float64) error
 }
 
 func NewClawMachineRepository(db *gorm.DB) ClawMachineRepository {
@@ -141,7 +152,7 @@ func (r *clawMachineRepository) AddGameHistory(ctx context.Context, playerID int
 	return createdRecord.ID, nil
 }
 
-func (r *clawMachineRepository) AddTouchedItemRecord(ctx context.Context, gameID int64, itemID int64, catched bool) error {
+func (r *clawMachineRepository) AddTouchedItemRecord(ctx context.Context, gameID int64, itemID *int64, catched bool) (*domain.ClawMachineGameRecord, error) {
 	err := r.db.WithContext(ctx).Model(&domain.ClawMachineGameRecord{}).
 		Where("id = ?", gameID).
 		Updates(map[string]any{
@@ -149,9 +160,20 @@ func (r *clawMachineRepository) AddTouchedItemRecord(ctx context.Context, gameID
 			"catched":         catched,
 		}).Error
 	if err != nil {
-		return err
+		return nil, err
 	}
-	return nil
+
+	var gameRecord domain.ClawMachineGameRecord
+	err = r.db.WithContext(ctx).
+		Preload("TouchedItem").
+		Preload("Machine").
+		Where("id = ?", gameID).
+		First(&gameRecord).Error
+	if err != nil {
+		return nil, err
+	}
+
+	return &gameRecord, nil
 }
 
 func (r *clawMachineRepository) GetGameHistory(ctx context.Context, playerID int64) ([]*domain.ClawMachineGameRecord, error) {
@@ -189,6 +211,10 @@ func (r *clawMachineRepository) CreateClawMachine(
 		return nil, err
 	}
 
+	if err := r.InitClawMachineRTPState(ctx, clawMachine.ID, 85); err != nil {
+		return nil, err
+	}
+
 	if err := r.db.WithContext(ctx).
 		Preload("Items.Item").
 		First(clawMachine, clawMachine.ID).Error; err != nil {
@@ -198,19 +224,15 @@ func (r *clawMachineRepository) CreateClawMachine(
 	return clawMachine, nil
 }
 
-func (r *clawMachineRepository) UpdateClawMachineItems(ctx context.Context, clawMachineID int64, items []domain.ClawMachineItem) error {
+func (r *clawMachineRepository) UpdateClawMachineItems(ctx context.Context, clawMachineID int64, items []domain.ClawMachineItem) (*domain.ClawMachine, error) {
 	// Start a transaction
-	tx := r.db.WithContext(ctx).Begin()
+	tx := activeQuery(r.db.WithContext(ctx)).Begin()
 
 	// Soft delete existing items
 	if err := tx.Where("claw_machine_id = ?", clawMachineID).
-		Updates(map[string]interface{}{
-			"is_active":  false,
-			"deleted_by": "admin",
-		}).
 		Delete(&domain.ClawMachineItem{}).Error; err != nil {
 		tx.Rollback()
-		return err
+		return nil, err
 	}
 
 	// Insert new items
@@ -218,12 +240,17 @@ func (r *clawMachineRepository) UpdateClawMachineItems(ctx context.Context, claw
 		item.ClawMachineID = clawMachineID
 		if err := tx.Create(&item).Error; err != nil {
 			tx.Rollback()
-			return err
+			return nil, err
 		}
 	}
 
 	// Commit the transaction
-	return tx.Commit().Error
+	if err := tx.Commit().Error; err != nil {
+		return nil, err
+	}
+
+	// Return the updated claw machine with its items
+	return r.GetClawMachineInfo(ctx, clawMachineID)
 }
 
 func (r *clawMachineRepository) GetClawMachineInfo(ctx context.Context, machineID int64) (*domain.ClawMachine, error) {
@@ -248,7 +275,7 @@ func (r *clawMachineRepository) DeleteClawMachine(ctx context.Context, machineID
 	return r.db.WithContext(ctx).
 		Model(&domain.ClawMachine{}).
 		Where("id = ?", machineID).
-		Updates(map[string]interface{}{
+		Updates(map[string]any{
 			"is_active":  false,
 			"deleted_by": "admin",
 		}).
@@ -276,9 +303,63 @@ func (r *clawMachineRepository) DeleteClawItems(ctx context.Context, itemIDs []i
 	return r.db.WithContext(ctx).
 		Model(&domain.ClawItem{}).
 		Where("id IN ?", itemIDs).
-		Updates(map[string]interface{}{
+		Updates(map[string]any{
 			"is_active":  false,
 			"deleted_by": "admin",
 		}).
 		Delete(&domain.ClawItem{}).Error
+}
+
+func (r *clawMachineRepository) GetClawMachineRTPState(
+	ctx context.Context,
+	machineID int64,
+) (*domain.ClawMachineRTPState, error) {
+	var state domain.ClawMachineRTPState
+	err := activeQuery(r.db.WithContext(ctx)).
+		Where("claw_machine_id = ?", machineID).
+		First(&state).Error
+
+	if err != nil {
+		return nil, err
+	}
+	return &state, nil
+}
+
+func (r *clawMachineRepository) InitClawMachineRTPState(
+	ctx context.Context,
+	machineID int64,
+	targetRTP float64,
+) error {
+	return r.db.WithContext(ctx).
+		Create(&domain.ClawMachineRTPState{
+			ClawMachineID: machineID,
+			TargetRTP:     targetRTP,
+		}).Error
+}
+
+func (r *clawMachineRepository) UpdateClawMachineRTP(
+	ctx context.Context,
+	machineID int64,
+	price int64,
+	payout int64,
+) error {
+	return activeQuery(r.db.WithContext(ctx)).
+		Model(&domain.ClawMachineRTPState{}).
+		Where("claw_machine_id = ?", machineID).
+		Updates(map[string]any{
+			"total_plays":   gorm.Expr("total_plays + 1"),
+			"total_revenue": gorm.Expr("total_revenue + ?", price),
+			"total_payout":  gorm.Expr("total_payout + ?", payout),
+		}).Error
+}
+
+func (r *clawMachineRepository) UpdateClawMachineTargetRTP(
+	ctx context.Context,
+	machineID int64,
+	targetRTP float64,
+) error {
+	return activeQuery(r.db.WithContext(ctx)).
+		Model(&domain.ClawMachineRTPState{}).
+		Where("claw_machine_id = ?", machineID).
+		Update("target_rtp", targetRTP).Error
 }

@@ -9,6 +9,7 @@ import (
 	"github.com/Richard-inter/game/internal/cache"
 	"github.com/Richard-inter/game/internal/domain"
 	"github.com/Richard-inter/game/internal/repository"
+	"github.com/Richard-inter/game/pkg/logger"
 	pb "github.com/Richard-inter/game/pkg/protocol/clawMachine_Websocket"
 	fbs "github.com/Richard-inter/game/pkg/protocol/clawMachine_Websocket/clawMachine"
 )
@@ -70,6 +71,7 @@ func (s *ClawMachineWebsocketService) StartClawGameWs(
 	gameID, err := s.repo.AddGameHistory(ctx, int64(playerID), &domain.ClawMachineGameRecord{
 		PlayerID:      int64(playerID),
 		ClawMachineID: int64(machineID),
+		TouchedItemID: nil,
 		CreatedBy:     fmt.Sprintf("%d", playerID),
 		UpdatedBy:     fmt.Sprintf("%d", playerID),
 	})
@@ -80,7 +82,7 @@ func (s *ClawMachineWebsocketService) StartClawGameWs(
 	err = s.redis.StoreGameResults(ctx, gameID, results)
 	if err != nil {
 		// Log error but don't fail the request
-		fmt.Printf("Warning: failed to store game results in Redis: %v\n", err)
+		logger.GetSugar().Warnf("failed to store game results in Redis: %v", err)
 	}
 
 	builder := flatbuffers.NewBuilder(1024)
@@ -148,48 +150,60 @@ func (s *ClawMachineWebsocketService) AddTouchedItemRecordWs(
 	catched := startReq.Catched()
 
 	var storedResults []CatchResult
-	err := s.redis.GetGameResults(ctx, int64(gameID), &storedResults)
-	if err != nil {
-		return nil, fmt.Errorf("failed to load game results from Redis: %w", err)
+	if err := s.redis.GetGameResults(ctx, int64(gameID), &storedResults); err != nil {
+		return nil, fmt.Errorf("failed to load game results: %w", err)
 	}
 
-	var foundItem *CatchResult
+	var serverResult *CatchResult
 	for i := range storedResults {
 		if storedResults[i].ItemID == int64(itemID) {
-			foundItem = &storedResults[i]
+			serverResult = &storedResults[i]
 			break
 		}
 	}
 
-	if foundItem == nil {
-		return nil, fmt.Errorf("item ID %d not found in stored game results", itemID)
+	if serverResult == nil {
+		return nil, fmt.Errorf("item %d not found in game %d", itemID, gameID)
 	}
 
-	if foundItem.Success != catched {
-		err := s.redis.DeleteGameResults(ctx, int64(gameID))
-		if err != nil {
-			fmt.Printf("Warning: failed to delete game results from Redis: %v\n", err)
-		}
-		return nil, fmt.Errorf("catched value mismatch: expected %t, got %t", foundItem.Success, catched)
+	serverCatched := serverResult.Success
+
+	if serverCatched != catched {
+		logger.GetSugar().Warnf(
+			"client desync - game=%d item=%d client=%t server=%t",
+			gameID, itemID, catched, serverCatched,
+		)
 	}
 
-	err = s.repo.AddTouchedItemRecord(ctx, int64(gameID), int64(itemID), catched)
+	var itemIDPtr *int64
+	itemIDPtr = &itemID
+	if itemID == 0 {
+		itemIDPtr = nil
+	}
+
+	game, err := s.repo.AddTouchedItemRecord(ctx, int64(gameID), itemIDPtr, serverCatched)
 	if err != nil {
-		return nil, fmt.Errorf("failed to update touched item record: %w", err)
+		return nil, fmt.Errorf("failed to persist record: %w", err)
 	}
 
-	err = s.redis.DeleteGameResults(ctx, int64(gameID))
-	if err != nil {
-		// Log error but don't fail the request since validation passed
-		fmt.Printf("Warning: failed to delete game results from Redis: %v\n", err)
+	payout := int64(0)
+	if serverCatched {
+		payout = GetRarityValue(game.TouchedItem.Rarity, game.Machine.Price)
 	}
+
+	err = s.repo.UpdateClawMachineRTP(ctx, game.ClawMachineID, game.TouchedItem.MaxItemSpawned, payout)
+	if err != nil {
+		return nil, fmt.Errorf("failed to update claw machine RTP: %w", err)
+	}
+
+	_ = s.redis.DeleteGameResults(ctx, int64(gameID))
 
 	builder := flatbuffers.NewBuilder(256)
 
 	fbs.AddTouchedItemRecordRespStart(builder)
 	fbs.AddTouchedItemRecordRespAddGameId(builder, gameID)
 	fbs.AddTouchedItemRecordRespAddItemId(builder, itemID)
-	fbs.AddTouchedItemRecordRespAddCatched(builder, catched)
+	fbs.AddTouchedItemRecordRespAddCatched(builder, serverCatched)
 	respOffset := fbs.AddTouchedItemRecordRespEnd(builder)
 	builder.Finish(respOffset)
 	respBytes := builder.FinishedBytes()

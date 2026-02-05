@@ -7,6 +7,7 @@ import (
 	"github.com/Richard-inter/game/internal/cache"
 	"github.com/Richard-inter/game/internal/domain"
 	"github.com/Richard-inter/game/internal/repository"
+	"github.com/Richard-inter/game/pkg/logger"
 	pb "github.com/Richard-inter/game/pkg/protocol/clawMachine"
 	"github.com/Richard-inter/game/pkg/protocol/player"
 )
@@ -86,7 +87,7 @@ func (s *ClawMachineGRPCServices) StartClawGame(ctx context.Context, req *pb.Sta
 	err = s.redis.StoreGameResults(ctx, gameID, results)
 	if err != nil {
 		// Log error but don't fail the request
-		fmt.Printf("Warning: failed to store game results in Redis: %v\n", err)
+		logger.GetSugar().Warnf("failed to store game results in Redis: %v", err)
 	}
 
 	return &pb.StartClawGameResp{
@@ -289,44 +290,63 @@ func (s *ClawMachineGRPCServices) AdjustPlayerDiamond(ctx context.Context, req *
 	}, nil
 }
 
-func (s *ClawMachineGRPCServices) AddTouchedItemRecord(ctx context.Context, req *pb.AddTouchedItemRecordReq) (*pb.AddTouchedItemRecordResp, error) {
+func (s *ClawMachineGRPCServices) AddTouchedItemRecord(
+	ctx context.Context,
+	req *pb.AddTouchedItemRecordReq,
+) (*pb.AddTouchedItemRecordResp, error) {
 	var storedResults []CatchResult
-	err := s.redis.GetGameResults(ctx, req.GameID, &storedResults)
-	if err != nil {
-		return nil, fmt.Errorf("failed to load game results from Redis: %w", err)
+	if err := s.redis.GetGameResults(ctx, req.GameID, &storedResults); err != nil {
+		return nil, fmt.Errorf("failed to load game results: %w", err)
 	}
 
-	var foundItem *CatchResult
-	for _, result := range storedResults {
-		if result.ItemID == req.ItemID {
-			foundItem = &result
+	var serverResult *CatchResult
+	for i := range storedResults {
+		if storedResults[i].ItemID == req.ItemID {
+			serverResult = &storedResults[i]
 			break
 		}
 	}
 
-	if foundItem.Success != *req.Catched {
-		err := s.redis.DeleteGameResults(ctx, req.GameID)
-		if err != nil {
-			fmt.Printf("Warning: failed to delete game results from Redis: %v\n", err)
-		}
-		return nil, fmt.Errorf("catched value mismatch: expected %t, got %t", foundItem.Success, *req.Catched)
+	if serverResult == nil {
+		return nil, fmt.Errorf("item %d not found in game %d", req.ItemID, req.GameID)
 	}
 
-	err = s.repo.AddTouchedItemRecord(ctx, req.GameID, req.ItemID, *req.Catched)
-	if err != nil {
-		return nil, fmt.Errorf("failed to update touched item record: %w", err)
+	catched := serverResult.Success
+
+	if req.Catched != nil && *req.Catched != catched {
+		logger.GetSugar().Warnf(
+			"client desync - game=%d item=%d client=%t server=%t",
+			req.GameID, req.ItemID, *req.Catched, catched,
+		)
 	}
 
-	err = s.redis.DeleteGameResults(ctx, req.GameID)
-	if err != nil {
-		// Log error but don't fail the request since validation passed
-		fmt.Printf("Warning: failed to delete game results from Redis: %v\n", err)
+	var itemID *int64
+	itemID = &req.ItemID
+	if req.ItemID == 0 {
+		itemID = nil
 	}
+
+	game, err := s.repo.AddTouchedItemRecord(ctx, req.GameID, itemID, catched)
+	if err != nil {
+		return nil, fmt.Errorf("failed to persist record: %w", err)
+	}
+
+	payout := int64(0)
+	if catched {
+		payout = GetRarityValue(game.TouchedItem.Rarity, game.Machine.Price)
+	}
+
+	err = s.repo.UpdateClawMachineRTP(ctx, game.Machine.ID, game.Machine.Price, payout)
+	if err != nil {
+		return nil, fmt.Errorf("failed to update claw machine RTP: %w", err)
+	}
+
+	_ = s.redis.DeleteGameResults(ctx, req.GameID)
 
 	return &pb.AddTouchedItemRecordResp{
 		GameID:  req.GameID,
 		ItemID:  req.ItemID,
-		Catched: req.Catched,
+		Catched: &catched,
 	}, nil
 }
 
@@ -354,7 +374,7 @@ func (s *ClawMachineGRPCServices) GetGameHistory(ctx context.Context, req *pb.Ge
 			GameID:        record.ID,
 			ClawMachineID: record.ClawMachineID,
 			PlayerID:      record.PlayerID,
-			TouchedItemID: record.TouchedItemID,
+			TouchedItemID: *record.TouchedItemID,
 			Catched:       record.Catched,
 			CreatedAt:     record.CreatedAt.Format("2006-01-02 15:04:05"),
 		})
@@ -373,9 +393,14 @@ func (s *ClawMachineGRPCServices) UpdateClawMachineItems(ctx context.Context, re
 		})
 	}
 
-	err := s.repo.UpdateClawMachineItems(ctx, req.MachineID, items)
+	updatedMachine, err := s.repo.UpdateClawMachineItems(ctx, req.MachineID, items)
 	if err != nil {
 		return nil, err
+	}
+
+	// Validate that the machine was updated successfully
+	if updatedMachine == nil {
+		return nil, fmt.Errorf("failed to update machine items: machine not found")
 	}
 
 	return &pb.UpdateClawMachineItemsResp{
@@ -405,5 +430,17 @@ func (s *ClawMachineGRPCServices) DeleteClawItems(ctx context.Context, req *pb.D
 	return &pb.DeleteClawItemsResp{
 		ItemIDs: req.ItemIDs,
 		Success: true,
+	}, nil
+}
+
+func (s *ClawMachineGRPCServices) UpdateClawMachineTargetRTP(ctx context.Context, req *pb.UpdateClawMachineTargetRTPReq) (*pb.UpdateClawMachineTargetRTPResp, error) {
+	err := s.repo.UpdateClawMachineTargetRTP(ctx, req.MachineID, req.TargetRTP)
+	if err != nil {
+		return nil, err
+	}
+
+	return &pb.UpdateClawMachineTargetRTPResp{
+		MachineID: req.MachineID,
+		Success:   true,
 	}, nil
 }
