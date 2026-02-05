@@ -189,6 +189,17 @@ message DeleteClawItemsResp {
     bool success = 2;
 }
 
+
+message UpdateClawMachineTargetRTPReq {
+    int64 machineID = 1;
+    double targetRTP = 2;
+}
+
+message UpdateClawMachineTargetRTPResp {
+    int64 machineID = 1;
+    bool success = 2;
+}
+
 service ClawMachineService {
     // player
     rpc CreateClawPlayer (CreateClawPlayerReq) returns (CreateClawPlayerResp);
@@ -211,4 +222,7 @@ service ClawMachineService {
     // items
     rpc CreateClawItems (CreateClawItemsReq) returns (CreateClawItemsResp);
     rpc DeleteClawItems (DeleteClawItemsReq) returns (DeleteClawItemsResp);
+    
+    // RTP
+    rpc UpdateClawMachineTargetRTP (UpdateClawMachineTargetRTPReq) returns (UpdateClawMachineTargetRTPResp);
 }

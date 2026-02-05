@@ -70,8 +70,26 @@ type ClawMachineGameRecord struct {
 	ID            int64          `gorm:"column:id;primaryKey" json:"gameID"`
 	ClawMachineID int64          `gorm:"column:claw_machine_id" json:"clawMachineID"`
 	PlayerID      int64          `gorm:"column:player_id" json:"playerID"`
-	TouchedItemID int64          `gorm:"column:touched_item_id" json:"touchedItemID"`
+	TouchedItemID *int64         `gorm:"column:touched_item_id" json:"touchedItemID"`
 	Catched       bool           `gorm:"column:catched" json:"catched"`
+	IsActive      bool           `gorm:"column:is_active;default:true" json:"isActive"`
+	CreatedAt     time.Time      `gorm:"column:created_at;autoCreateTime" json:"createdAt"`
+	CreatedBy     string         `gorm:"column:created_by" json:"createdBy"`
+	UpdatedAt     time.Time      `gorm:"column:updated_at;autoUpdateTime" json:"updatedAt"`
+	UpdatedBy     string         `gorm:"column:updated_by" json:"updatedBy"`
+	DeletedAt     gorm.DeletedAt `gorm:"column:deleted_at;index" json:"deletedAt"`
+	DeletedBy     *string        `gorm:"column:deleted_by" json:"deletedBy"`
+
+	Machine     ClawMachine `gorm:"foreignKey:ClawMachineID;references:ID"`
+	TouchedItem ClawItem    `gorm:"foreignKey:TouchedItemID;references:ID"`
+}
+
+type ClawMachineRTPState struct {
+	ClawMachineID int64          `gorm:"column:claw_machine_id;primaryKey"`
+	TargetRTP     float64        `gorm:"column:target_rtp"`
+	TotalPlays    int64          `gorm:"column:total_plays"`
+	TotalRevenue  int64          `gorm:"column:total_revenue"`
+	TotalPayout   int64          `gorm:"column:total_payout"`
 	IsActive      bool           `gorm:"column:is_active;default:true" json:"isActive"`
 	CreatedAt     time.Time      `gorm:"column:created_at;autoCreateTime" json:"createdAt"`
 	CreatedBy     string         `gorm:"column:created_by" json:"createdBy"`
@@ -99,4 +117,8 @@ func (ClawPlayer) TableName() string {
 
 func (ClawMachineGameRecord) TableName() string {
 	return "claw_machine_game_record"
+}
+
+func (ClawMachineRTPState) TableName() string {
+	return "claw_machine_rtp_state"
 }

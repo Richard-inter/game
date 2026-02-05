@@ -53,9 +53,9 @@ type StartClawGameRequest struct {
 }
 
 type AddTouchedItemRecordRequest struct {
-	GameID  int64 `json:"gameID" binding:"required"`
-	ItemID  int64 `json:"itemID" binding:"required"`
-	Catched *bool `json:"catched" binding:"required"`
+	GameID  int64  `json:"gameID" binding:"required"`
+	ItemID  *int64 `json:"itemID" binding:"required"`
+	Catched *bool  `json:"catched" binding:"required"`
 }
 
 type UpdateClawMachineItemsRequest struct {
@@ -67,22 +67,15 @@ type DeleteClawItemsRequest struct {
 	ItemIDs []int64 `json:"itemIDs" binding:"required"`
 }
 
-type GetClawMachineInfoRequest struct {
-	MachineID int64 `json:"machineID" binding:"required"`
-}
-
-type GetClawPlayerInfoRequest struct {
-	PlayerID int64 `json:"playerID" binding:"required"`
-}
-
 type DeleteClawPlayerRequest struct {
-	PlayerID int64 `json:"playerID" binding:"required"`
-}
-
-type GetGameHistoryRequest struct {
 	PlayerID int64 `json:"playerID" binding:"required"`
 }
 
 type DeleteClawMachineRequest struct {
 	MachineID int64 `json:"machineID" binding:"required"`
+}
+
+type UpdateClawMachineTargetRTPRequest struct {
+	MachineID int64   `json:"machineID" binding:"required"`
+	TargetRTP float64 `json:"targetRTP" binding:"required"`
 }

@@ -309,9 +309,9 @@ const docTemplate = `{
                 }
             }
         },
-        "/clawMachine/getClawMachineInfo/{machineID}": {
-            "get": {
-                "description": "Get claw machine information by machine ID",
+        "/clawMachine/deleteClawItems": {
+            "delete": {
+                "description": "Delete multiple claw items by their IDs",
                 "consumes": [
                     "application/json"
                 ],
@@ -321,27 +321,28 @@ const docTemplate = `{
                 "tags": [
                     "ClawMachine"
                 ],
-                "summary": "Get claw machine information",
+                "summary": "Delete claw items",
                 "parameters": [
                     {
-                        "type": "integer",
-                        "format": "int64",
-                        "description": "Machine ID",
-                        "name": "machineID",
-                        "in": "path",
-                        "required": true
+                        "description": "Delete claw items request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.DeleteClawItemsRequest"
+                        }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "Claw machine info retrieved successfully",
+                        "description": "Claw items deleted successfully",
                         "schema": {
                             "type": "object",
                             "additionalProperties": true
                         }
                     },
                     "400": {
-                        "description": "Invalid machine ID",
+                        "description": "Invalid request body",
                         "schema": {
                             "type": "object",
                             "additionalProperties": true
@@ -357,7 +358,152 @@ const docTemplate = `{
                 }
             }
         },
-        "/clawMachine/getClawPlayerInfo/{playerID}": {
+        "/clawMachine/deleteClawMachine": {
+            "post": {
+                "description": "Delete a claw machine by machine ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ClawMachine"
+                ],
+                "summary": "Delete a claw machine",
+                "parameters": [
+                    {
+                        "description": "Delete machine request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.DeleteClawMachineRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Claw machine deleted successfully",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request body",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/clawMachine/deleteClawPlayer": {
+            "post": {
+                "description": "Delete a claw player by player ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ClawMachine"
+                ],
+                "summary": "Delete a claw player",
+                "parameters": [
+                    {
+                        "description": "Delete player request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.DeleteClawPlayerRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Claw player deleted successfully",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request body",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/clawMachine/getClawMachineInfo/:machineID": {
+            "get": {
+                "description": "Get claw machine information by machine ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ClawMachine"
+                ],
+                "summary": "Get claw machine information",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Machine ID",
+                        "name": "machineID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Claw machine info retrieved successfully",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request body",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/clawMachine/getClawPlayerInfo/:playerID": {
             "get": {
                 "description": "Get claw player information by player ID",
                 "consumes": [
@@ -373,7 +519,6 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "integer",
-                        "format": "int64",
                         "description": "Player ID",
                         "name": "playerID",
                         "in": "path",
@@ -389,7 +534,54 @@ const docTemplate = `{
                         }
                     },
                     "400": {
-                        "description": "Invalid player ID",
+                        "description": "Invalid request body",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/clawMachine/getGameHistory": {
+            "get": {
+                "description": "Get game history for a claw player",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ClawMachine"
+                ],
+                "summary": "Get player game history",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Player ID",
+                        "name": "playerID",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Game history retrieved successfully",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request body",
                         "schema": {
                             "type": "object",
                             "additionalProperties": true
@@ -432,6 +624,104 @@ const docTemplate = `{
                 "responses": {
                     "200": {
                         "description": "Claw game started successfully",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request body",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/clawMachine/updateClawMachineItems": {
+            "post": {
+                "description": "Update items in a claw machine",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ClawMachine"
+                ],
+                "summary": "Update claw machine items",
+                "parameters": [
+                    {
+                        "description": "Update machine items request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.UpdateClawMachineItemsRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Claw machine items updated successfully",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request body",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/clawMachine/updateClawMachineTargetRTP": {
+            "post": {
+                "description": "Update the target RTP for a claw machine",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ClawMachine"
+                ],
+                "summary": "Update claw machine target RTP",
+                "parameters": [
+                    {
+                        "description": "Update target RTP request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.UpdateClawMachineTargetRTPRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Target RTP updated successfully",
                         "schema": {
                             "type": "object",
                             "additionalProperties": true
@@ -1638,6 +1928,42 @@ const docTemplate = `{
                 }
             }
         },
+        "dto.DeleteClawItemsRequest": {
+            "type": "object",
+            "required": [
+                "itemIDs"
+            ],
+            "properties": {
+                "itemIDs": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                }
+            }
+        },
+        "dto.DeleteClawMachineRequest": {
+            "type": "object",
+            "required": [
+                "machineID"
+            ],
+            "properties": {
+                "machineID": {
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.DeleteClawPlayerRequest": {
+            "type": "object",
+            "required": [
+                "playerID"
+            ],
+            "properties": {
+                "playerID": {
+                    "type": "integer"
+                }
+            }
+        },
         "dto.GetPullResultRequest": {
             "type": "object",
             "required": [
@@ -1673,6 +1999,39 @@ const docTemplate = `{
                 },
                 "playerID": {
                     "type": "integer"
+                }
+            }
+        },
+        "dto.UpdateClawMachineItemsRequest": {
+            "type": "object",
+            "required": [
+                "items",
+                "machineID"
+            ],
+            "properties": {
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.CreateClawMachineItemRequest"
+                    }
+                },
+                "machineID": {
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.UpdateClawMachineTargetRTPRequest": {
+            "type": "object",
+            "required": [
+                "machineID",
+                "targetRTP"
+            ],
+            "properties": {
+                "machineID": {
+                    "type": "integer"
+                },
+                "targetRTP": {
+                    "type": "number"
                 }
             }
         },

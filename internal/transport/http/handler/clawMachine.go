@@ -83,21 +83,21 @@ func (h *ClawMachineHandler) HandleCreateClawMachine(c *gin.Context) {
 // @Tags ClawMachine
 // @Accept json
 // @Produce json
-// @Param request body dto.GetClawMachineInfoRequest true "Get machine info request"
+// @Param machineID path int true "Machine ID"
 // @Success 200 {object} map[string]interface{} "Claw machine info retrieved successfully"
 // @Failure 400 {object} map[string]interface{} "Invalid request body"
 // @Failure 500 {object} map[string]interface{} "Internal server error"
-// @Router /clawMachine/getClawMachineInfo [post]
+// @Router /clawMachine/getClawMachineInfo/:machineID [get]
 func (h *ClawMachineHandler) HandleGetClawMachineInfo(c *gin.Context) {
-	var req dto.GetClawMachineInfoRequest
-	if err := c.ShouldBindJSON(&req); err != nil {
-		h.logger.Errorw("Invalid request body", "error", err)
-		common.SendError(c, 400, "Invalid request body")
+	machineIDStr := c.Param("machineID")
+	machineID, err := strconv.ParseInt(machineIDStr, 10, 64)
+	if err != nil {
+		h.logger.Errorw("Invalid machine ID", "error", err)
+		common.SendError(c, 400, "Invalid machine ID")
 		return
 	}
-
 	grpcReq := &clawMachine.GetClawMachineInfoReq{
-		MachineID: req.MachineID,
+		MachineID: machineID,
 	}
 
 	resp, err := h.clawMachineClient.GetClawMachineInfo(c, grpcReq)
@@ -107,7 +107,7 @@ func (h *ClawMachineHandler) HandleGetClawMachineInfo(c *gin.Context) {
 		return
 	}
 
-	h.logger.Infow("Successfully retrieved claw machine info", "machine_id", req.MachineID)
+	h.logger.Infow("Successfully retrieved claw machine info", "machine_id", machineID)
 	common.SendSuccess(c, resp)
 }
 
@@ -161,21 +161,22 @@ func (h *ClawMachineHandler) HandleCreateClawItems(c *gin.Context) {
 // @Tags ClawMachine
 // @Accept json
 // @Produce json
-// @Param request body dto.GetClawPlayerInfoRequest true "Get player info request"
+// @Param playerID path int true "Player ID"
 // @Success 200 {object} map[string]interface{} "Claw player info retrieved successfully"
 // @Failure 400 {object} map[string]interface{} "Invalid request body"
 // @Failure 500 {object} map[string]interface{} "Internal server error"
-// @Router /clawMachine/getClawPlayerInfo [post]
+// @Router /clawMachine/getClawPlayerInfo/:playerID [get]
 func (h *ClawMachineHandler) HandleGetClawPlayerInfo(c *gin.Context) {
-	var req dto.GetClawPlayerInfoRequest
-	if err := c.ShouldBindJSON(&req); err != nil {
-		h.logger.Errorw("Invalid request body", "error", err)
-		common.SendError(c, 400, "Invalid request body")
+	playerIDStr := c.Param("playerID")
+	playerID, err := strconv.ParseInt(playerIDStr, 10, 64)
+	if err != nil {
+		h.logger.Errorw("Invalid player ID", "error", err)
+		common.SendError(c, 400, "Invalid player ID")
 		return
 	}
 
 	grpcReq := &clawMachine.GetClawPlayerInfoReq{
-		PlayerID: req.PlayerID,
+		PlayerID: playerID,
 	}
 
 	resp, err := h.clawMachineClient.GetClawPlayerInfo(c, grpcReq)
@@ -185,7 +186,7 @@ func (h *ClawMachineHandler) HandleGetClawPlayerInfo(c *gin.Context) {
 		return
 	}
 
-	h.logger.Infow("Successfully retrieved claw player info", "player_id", req.PlayerID)
+	h.logger.Infow("Successfully retrieved claw player info", "player_id", playerID)
 	common.SendSuccess(c, resp)
 }
 
@@ -358,7 +359,7 @@ func (h *ClawMachineHandler) HandleAddTouchedItemRecord(c *gin.Context) {
 
 	grpcReq := &clawMachine.AddTouchedItemRecordReq{
 		GameID:  req.GameID,
-		ItemID:  req.ItemID,
+		ItemID:  *req.ItemID,
 		Catched: req.Catched,
 	}
 
@@ -369,7 +370,7 @@ func (h *ClawMachineHandler) HandleAddTouchedItemRecord(c *gin.Context) {
 		return
 	}
 
-	h.logger.Infow("Successfully added touched item record", "game_id", req.GameID, "item_id", req.ItemID, "catched", req.Catched)
+	h.logger.Infow("Successfully added touched item record", "game_id", req.GameID, "item_id", *req.ItemID, "catched", *req.Catched)
 	common.SendSuccess(c, resp)
 }
 
@@ -413,7 +414,7 @@ func (h *ClawMachineHandler) HandleDeleteClawPlayer(c *gin.Context) {
 // @Tags ClawMachine
 // @Accept json
 // @Produce json
-// @Param request body dto.GetGameHistoryRequest true "Get game history request"
+// @Param playerID query int true "Player ID"
 // @Success 200 {object} map[string]interface{} "Game history retrieved successfully"
 // @Failure 400 {object} map[string]interface{} "Invalid request body"
 // @Failure 500 {object} map[string]interface{} "Internal server error"
@@ -547,5 +548,40 @@ func (h *ClawMachineHandler) HandleDeleteClawItems(c *gin.Context) {
 	}
 
 	h.logger.Infow("Successfully deleted claw items", "item_count", len(req.ItemIDs))
+	common.SendSuccess(c, resp)
+}
+
+// HandleUpdateClawMachineTargetRTP godoc
+// @Summary Update claw machine target RTP
+// @Description Update the target RTP for a claw machine
+// @Tags ClawMachine
+// @Accept json
+// @Produce json
+// @Param request body dto.UpdateClawMachineTargetRTPRequest true "Update target RTP request"
+// @Success 200 {object} map[string]interface{} "Target RTP updated successfully"
+// @Failure 400 {object} map[string]interface{} "Invalid request body"
+// @Failure 500 {object} map[string]interface{} "Internal server error"
+// @Router /clawMachine/updateClawMachineTargetRTP [post]
+func (h *ClawMachineHandler) HandleUpdateClawMachineTargetRTP(c *gin.Context) {
+	var req dto.UpdateClawMachineTargetRTPRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		h.logger.Errorw("Invalid request body", "error", err)
+		common.SendError(c, 400, "Invalid request body")
+		return
+	}
+
+	grpcReq := &clawMachine.UpdateClawMachineTargetRTPReq{
+		MachineID: req.MachineID,
+		TargetRTP: req.TargetRTP,
+	}
+
+	resp, err := h.clawMachineClient.UpdateClawMachineTargetRTP(c, grpcReq)
+	if err != nil {
+		h.logger.Errorw("Failed to update claw machine target RTP", "error", err)
+		common.SendError(c, 500, err.Error())
+		return
+	}
+
+	h.logger.Infow("Successfully updated claw machine target RTP", "machine_id", req.MachineID, "target_rtp", req.TargetRTP)
 	common.SendSuccess(c, resp)
 }
