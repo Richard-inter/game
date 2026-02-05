@@ -244,6 +244,29 @@ definitions:
     - playerId
     - username
     type: object
+  dto.DeleteClawItemsRequest:
+    properties:
+      itemIDs:
+        items:
+          type: integer
+        type: array
+    required:
+    - itemIDs
+    type: object
+  dto.DeleteClawMachineRequest:
+    properties:
+      machineID:
+        type: integer
+    required:
+    - machineID
+    type: object
+  dto.DeleteClawPlayerRequest:
+    properties:
+      playerID:
+        type: integer
+    required:
+    - playerID
+    type: object
   dto.GetPullResultRequest:
     properties:
       machineID:
@@ -269,6 +292,28 @@ definitions:
     required:
     - machineID
     - playerID
+    type: object
+  dto.UpdateClawMachineItemsRequest:
+    properties:
+      items:
+        items:
+          $ref: '#/definitions/dto.CreateClawMachineItemRequest'
+        type: array
+      machineID:
+        type: integer
+    required:
+    - items
+    - machineID
+    type: object
+  dto.UpdateClawMachineTargetRTPRequest:
+    properties:
+      machineID:
+        type: integer
+      targetRTP:
+        type: number
+    required:
+    - machineID
+    - targetRTP
     type: object
   dto.UpdateMoleWeightConfigRequest:
     properties:
@@ -497,14 +542,112 @@ paths:
       summary: Create a new claw player
       tags:
       - ClawMachine
-  /clawMachine/getClawMachineInfo/{machineID}:
+  /clawMachine/deleteClawItems:
+    delete:
+      consumes:
+      - application/json
+      description: Delete multiple claw items by their IDs
+      parameters:
+      - description: Delete claw items request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.DeleteClawItemsRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Claw items deleted successfully
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Invalid request body
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Delete claw items
+      tags:
+      - ClawMachine
+  /clawMachine/deleteClawMachine:
+    post:
+      consumes:
+      - application/json
+      description: Delete a claw machine by machine ID
+      parameters:
+      - description: Delete machine request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.DeleteClawMachineRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Claw machine deleted successfully
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Invalid request body
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Delete a claw machine
+      tags:
+      - ClawMachine
+  /clawMachine/deleteClawPlayer:
+    post:
+      consumes:
+      - application/json
+      description: Delete a claw player by player ID
+      parameters:
+      - description: Delete player request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.DeleteClawPlayerRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Claw player deleted successfully
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Invalid request body
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Delete a claw player
+      tags:
+      - ClawMachine
+  /clawMachine/getClawMachineInfo/:machineID:
     get:
       consumes:
       - application/json
       description: Get claw machine information by machine ID
       parameters:
       - description: Machine ID
-        format: int64
         in: path
         name: machineID
         required: true
@@ -518,7 +661,7 @@ paths:
             additionalProperties: true
             type: object
         "400":
-          description: Invalid machine ID
+          description: Invalid request body
           schema:
             additionalProperties: true
             type: object
@@ -530,14 +673,13 @@ paths:
       summary: Get claw machine information
       tags:
       - ClawMachine
-  /clawMachine/getClawPlayerInfo/{playerID}:
+  /clawMachine/getClawPlayerInfo/:playerID:
     get:
       consumes:
       - application/json
       description: Get claw player information by player ID
       parameters:
       - description: Player ID
-        format: int64
         in: path
         name: playerID
         required: true
@@ -551,7 +693,7 @@ paths:
             additionalProperties: true
             type: object
         "400":
-          description: Invalid player ID
+          description: Invalid request body
           schema:
             additionalProperties: true
             type: object
@@ -561,6 +703,38 @@ paths:
             additionalProperties: true
             type: object
       summary: Get claw player information
+      tags:
+      - ClawMachine
+  /clawMachine/getGameHistory:
+    get:
+      consumes:
+      - application/json
+      description: Get game history for a claw player
+      parameters:
+      - description: Player ID
+        in: query
+        name: playerID
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Game history retrieved successfully
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Invalid request body
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Get player game history
       tags:
       - ClawMachine
   /clawMachine/startClawGame:
@@ -594,6 +768,72 @@ paths:
             additionalProperties: true
             type: object
       summary: Start a claw game
+      tags:
+      - ClawMachine
+  /clawMachine/updateClawMachineItems:
+    post:
+      consumes:
+      - application/json
+      description: Update items in a claw machine
+      parameters:
+      - description: Update machine items request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UpdateClawMachineItemsRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Claw machine items updated successfully
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Invalid request body
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Update claw machine items
+      tags:
+      - ClawMachine
+  /clawMachine/updateClawMachineTargetRTP:
+    post:
+      consumes:
+      - application/json
+      description: Update the target RTP for a claw machine
+      parameters:
+      - description: Update target RTP request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UpdateClawMachineTargetRTPRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Target RTP updated successfully
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Invalid request body
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Update claw machine target RTP
       tags:
       - ClawMachine
   /gachaMachine/adjustPlayerCoin:

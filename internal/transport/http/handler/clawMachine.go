@@ -414,7 +414,7 @@ func (h *ClawMachineHandler) HandleDeleteClawPlayer(c *gin.Context) {
 // @Tags ClawMachine
 // @Accept json
 // @Produce json
-// @Param request body dto.GetGameHistoryRequest true "Get game history request"
+// @Param playerID query int true "Player ID"
 // @Success 200 {object} map[string]interface{} "Game history retrieved successfully"
 // @Failure 400 {object} map[string]interface{} "Invalid request body"
 // @Failure 500 {object} map[string]interface{} "Internal server error"
