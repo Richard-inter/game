@@ -71,7 +71,7 @@ func main() {
 	s := grpc.NewServer()
 
 	// Initialize and register gacha machine service
-	gachaMachineRepo := repository.NewGachaMachineRepository(database)
+	gachaMachineRepo := repository.NewGachaMachineRepository(database, cfg.GachaMachine.DefaultTargetRTP)
 
 	// Initialize Redis client
 	redisClient := cache.NewRedisClient(cfg.GetRedisAddr(), cfg.GetRedisPassword())

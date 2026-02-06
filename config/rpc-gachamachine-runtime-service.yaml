@@ -26,6 +26,10 @@ discovery:
       - "localhost:2379"
     timeout: "5s"
 
+# Gacha machine specific configuration
+gacha_machine:
+  default_target_rtp: 85.0
+
 # Import shared configurations
 shared:
   gachamachine_database: "shared.yaml"

@@ -28,6 +28,7 @@ type ServiceConfig struct {
 	Discovery            DiscoveryConfig      `mapstructure:"discovery"`
 	StreamConsumer       StreamConsumerConfig `mapstructure:"stream_consumer"`
 	ClawMachine          ClawMachineConfig    `mapstructure:"claw_machine"`
+	GachaMachine         GachaMachineConfig   `mapstructure:"gacha_machine"`
 }
 
 // Service filenames for loading multiple service configs
@@ -68,6 +69,10 @@ type SharedConfig struct {
 	Logging              string `mapstructure:"logging"`
 	JWT                  string `mapstructure:"jwt"`
 	Tracing              string `mapstructure:"tracing"`
+}
+
+type GachaMachineConfig struct {
+	DefaultTargetRTP float64 `mapstructure:"default_target_rtp"`
 }
 
 type CORSConfig struct {
