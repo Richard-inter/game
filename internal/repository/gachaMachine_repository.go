@@ -9,7 +9,8 @@ import (
 )
 
 type gachaMachineRepository struct {
-	db *gorm.DB
+	db         *gorm.DB
+	defaultRTP float64
 }
 
 type GachaMachineRepository interface {
@@ -36,11 +37,18 @@ type GachaMachineRepository interface {
 	// pity state
 	GetGachaPityState(ctx context.Context, playerID int64, machineID int64) (*domain.GachaPityState, error)
 	SetGachaPityState(ctx context.Context, pityState *domain.GachaPityState) error
+
+	// rtp
+	GetGachaMachineRTPState(ctx context.Context, machineID int64) (*domain.GachaMachineRTPState, error)
+	InitGachaMachineRTPState(ctx context.Context, machineID int64, targetRTP float64) error
+	UpdateGachaMachineRTP(ctx context.Context, machineID int64, price int64, payout int64) error
+	UpdateGachaMachineTargetRTP(ctx context.Context, machineID int64, targetRTP float64) error
 }
 
-func NewGachaMachineRepository(db *gorm.DB) GachaMachineRepository {
+func NewGachaMachineRepository(db *gorm.DB, defaultRTP float64) GachaMachineRepository {
 	return &gachaMachineRepository{
-		db: db,
+		db:         db,
+		defaultRTP: defaultRTP,
 	}
 }
 
@@ -240,6 +248,60 @@ func (r *gachaMachineRepository) GetGachaPityState(
 	}
 
 	return &pityState, nil
+}
+
+func (r *gachaMachineRepository) GetGachaMachineRTPState(
+	ctx context.Context,
+	machineID int64,
+) (*domain.GachaMachineRTPState, error) {
+	var state domain.GachaMachineRTPState
+	err := activeQuery(r.db.WithContext(ctx)).
+		Where("gacha_machine_id = ?", machineID).
+		First(&state).Error
+
+	if err != nil {
+		return nil, err
+	}
+	return &state, nil
+}
+
+func (r *gachaMachineRepository) InitGachaMachineRTPState(
+	ctx context.Context,
+	machineID int64,
+	targetRTP float64,
+) error {
+	return r.db.WithContext(ctx).
+		Create(&domain.GachaMachineRTPState{
+			GachaMachineID: machineID,
+			TargetRTP:      targetRTP,
+		}).Error
+}
+
+func (r *gachaMachineRepository) UpdateGachaMachineRTP(
+	ctx context.Context,
+	machineID int64,
+	price int64,
+	payout int64,
+) error {
+	return activeQuery(r.db.WithContext(ctx)).
+		Model(&domain.GachaMachineRTPState{}).
+		Where("gacha_machine_id = ?", machineID).
+		Updates(map[string]any{
+			"total_plays":   gorm.Expr("total_plays + 1"),
+			"total_revenue": gorm.Expr("total_revenue + ?", price),
+			"total_payout":  gorm.Expr("total_payout + ?", payout),
+		}).Error
+}
+
+func (r *gachaMachineRepository) UpdateGachaMachineTargetRTP(
+	ctx context.Context,
+	machineID int64,
+	targetRTP float64,
+) error {
+	return activeQuery(r.db.WithContext(ctx)).
+		Model(&domain.GachaMachineRTPState{}).
+		Where("gacha_machine_id = ?", machineID).
+		Update("target_rtp", targetRTP).Error
 }
 
 func (r *gachaMachineRepository) SetGachaPityState(ctx context.Context, pityState *domain.GachaPityState) error {

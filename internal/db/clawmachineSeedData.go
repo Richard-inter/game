@@ -119,10 +119,10 @@ func SeedClawMachineData(db *gorm.DB) error {
 			}
 		}
 
-		// 5️⃣ RTP State
+		// 5️⃣ RTP State - use configurable default RTP
 		rtp := domain.ClawMachineRTPState{
 			ClawMachineID: machine.ID,
-			TargetRTP:     60.0,
+			TargetRTP:     85.0, // Default target RTP - will be configurable via service config
 			IsActive:      true,
 			CreatedAt:     now,
 			CreatedBy:     createdBy,
