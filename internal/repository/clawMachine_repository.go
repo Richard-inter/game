@@ -10,7 +10,8 @@ import (
 )
 
 type clawMachineRepository struct {
-	db *gorm.DB
+	db         *gorm.DB
+	defaultRTP float64
 }
 
 type ClawMachineRepository interface {
@@ -50,8 +51,11 @@ type ClawMachineRepository interface {
 	UpdateClawMachineTargetRTP(ctx context.Context, machineID int64, targetRTP float64) error
 }
 
-func NewClawMachineRepository(db *gorm.DB) ClawMachineRepository {
-	return &clawMachineRepository{db: db}
+func NewClawMachineRepository(db *gorm.DB, defaultRTP float64) ClawMachineRepository {
+	return &clawMachineRepository{
+		db:         db,
+		defaultRTP: defaultRTP,
+	}
 }
 
 func activeQuery(db *gorm.DB) *gorm.DB {
@@ -211,7 +215,7 @@ func (r *clawMachineRepository) CreateClawMachine(
 		return nil, err
 	}
 
-	if err := r.InitClawMachineRTPState(ctx, clawMachine.ID, 85); err != nil {
+	if err := r.InitClawMachineRTPState(ctx, clawMachine.ID, r.defaultRTP); err != nil {
 		return nil, err
 	}
 

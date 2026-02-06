@@ -339,7 +339,8 @@ func (s *ClawMachineGRPCServices) AddTouchedItemRecord(
 		payout = GetRarityValue(game.TouchedItem.Rarity, game.Machine.Price)
 	}
 
-	err = s.repo.UpdateClawMachineRTP(ctx, game.Machine.ID, game.Machine.Price, payout)
+	// Update RTP state for payout only (revenue already tracked in PlayMachine)
+	err = s.repo.UpdateClawMachineRTP(ctx, game.Machine.ID, 0, payout)
 	if err != nil {
 		return nil, fmt.Errorf("failed to update claw machine RTP: %w", err)
 	}

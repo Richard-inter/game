@@ -50,6 +50,7 @@ type Config struct {
 	JWT         JWTConfig         `mapstructure:"jwt"`
 	Logging     LoggingConfig     `mapstructure:"logging"`
 	Tracing     TracingConfig     `mapstructure:"tracing"`
+	ClawMachine ClawMachineConfig `mapstructure:"claw_machine"`
 }
 
 type ServerConfig struct {
@@ -112,6 +113,10 @@ type TracingConfig struct {
 	Enabled     bool   `mapstructure:"enabled"`
 	ServiceName string `mapstructure:"service_name"`
 	JaegerURL   string `mapstructure:"jaeger_url"`
+}
+
+type ClawMachineConfig struct {
+	DefaultTargetRTP float64 `mapstructure:"default_target_rtp"`
 }
 
 type StreamConsumerConfig struct {
@@ -200,6 +205,11 @@ func validateConfig(config *Config) error {
 
 	if config.JWT.Secret == "" {
 		return fmt.Errorf("jwt secret cannot be empty")
+	}
+
+	// Validate claw machine configuration only if it's set (non-zero)
+	if config.ClawMachine.DefaultTargetRTP != 0 && (config.ClawMachine.DefaultTargetRTP <= 0 || config.ClawMachine.DefaultTargetRTP > 100) {
+		return fmt.Errorf("claw machine default target RTP must be between 0 and 100")
 	}
 
 	return nil

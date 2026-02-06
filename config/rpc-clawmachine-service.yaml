@@ -18,6 +18,10 @@ discovery:
       - "localhost:2379"
     timeout: "5s"
 
+# Claw machine specific configuration
+claw_machine:
+  default_target_rtp: 85.0
+
 # Import shared configurations
 shared:
   clawmachine_database: "shared.yaml"
