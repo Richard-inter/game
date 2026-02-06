@@ -70,7 +70,7 @@ func main() {
 	s := grpc.NewServer()
 
 	// Initialize and register claw machine runtime service
-	clawMachineRepo := repository.NewClawMachineRepository(database)
+	clawMachineRepo := repository.NewClawMachineRepository(database, cfg.ClawMachine.DefaultTargetRTP)
 
 	// Initialize Redis client
 	redisClient := cache.NewRedisClient(cfg.GetRedisAddr(), cfg.GetRedisPassword())

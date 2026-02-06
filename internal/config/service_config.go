@@ -27,6 +27,7 @@ type ServiceConfig struct {
 	Tracing              TracingConfig        `mapstructure:"tracing"`
 	Discovery            DiscoveryConfig      `mapstructure:"discovery"`
 	StreamConsumer       StreamConsumerConfig `mapstructure:"stream_consumer"`
+	ClawMachine          ClawMachineConfig    `mapstructure:"claw_machine"`
 }
 
 // Service filenames for loading multiple service configs
@@ -392,6 +393,11 @@ func validateServiceConfig(config *ServiceConfig) error {
 		if config.JWT.ExpirationTime < 300 || config.JWT.ExpirationTime > 86400*30 {
 			return fmt.Errorf("jwt expiration time must be between 300 seconds and 30 days")
 		}
+	}
+
+	// Validate claw machine configuration only if it's set (non-zero)
+	if config.ClawMachine.DefaultTargetRTP != 0 && (config.ClawMachine.DefaultTargetRTP <= 0 || config.ClawMachine.DefaultTargetRTP > 100) {
+		return fmt.Errorf("claw machine default target RTP must be between 0 and 100")
 	}
 
 	return nil

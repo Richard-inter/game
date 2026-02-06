@@ -6,6 +6,7 @@ import (
 	"math/rand/v2"
 
 	"github.com/Richard-inter/game/internal/domain"
+	"github.com/Richard-inter/game/pkg/logger"
 	pb "github.com/Richard-inter/game/pkg/protocol/clawMachine"
 )
 
@@ -187,18 +188,27 @@ func (s *ClawMachineGRPCServices) PreDetermineCatchResults(
 	if err != nil {
 		return nil, fmt.Errorf("failed to get machine RTP state: %w", err)
 	}
-	expectedRevenue := rtpState.TotalRevenue + clawMachine.Price
-	maxPayout := int64(float64(expectedRevenue) * rtpState.TargetRTP)
+
+	rtpDelta := CalculateRTPDelta(rtpState)
+
 	for _, item := range clawMachine.Items {
 		catchWeight := item.Item.CatchPercentage
 		if catchWeight == 0 {
 			return nil, fmt.Errorf("database error: item %s (ID: %d) has zero catch percentage", item.Item.Name, item.Item.ID)
 		}
 
-		catchSuccess := Roll(int(catchWeight))
+		// Apply RTP-based adjustment to catch probability
+		adjustedCatchWeight := adjustCatchProbability(int(catchWeight), rtpDelta)
+		catchSuccess := Roll(adjustedCatchWeight)
 
-		if catchSuccess && rtpState.TotalPayout+GetRarityValue(item.Item.Rarity, clawMachine.Price) > maxPayout {
-			catchSuccess = false
+		// Additional safety check to prevent extreme overpayout
+		if catchSuccess {
+			expectedRevenue := rtpState.TotalRevenue + clawMachine.Price
+			maxPayout := int64(float64(expectedRevenue) * (rtpState.TargetRTP + 10.0)) // Allow 10% buffer
+			itemValue := GetRarityValue(item.Item.Rarity, clawMachine.Price)
+			if rtpState.TotalPayout+itemValue > maxPayout {
+				catchSuccess = false
+			}
 		}
 
 		results = append(results, &CatchResult{
@@ -226,7 +236,32 @@ func (s *ClawMachineGRPCServices) PlayMachine(
 		return fmt.Errorf("failed to adjust player coin: %w", err)
 	}
 
+	// Update RTP state to track revenue for this play (regardless of outcome)
+	err = s.repo.UpdateClawMachineRTP(ctx, machineID, clawMachine.Price, 0)
+	if err != nil {
+		// Log error but don't fail the play since revenue tracking is secondary
+		logger.GetSugar().Warnf("failed to update RTP state for revenue tracking: %v", err)
+	}
+
 	return nil
+}
+
+func adjustCatchProbability(baseProbability int, rtpDelta float64) int {
+	if rtpDelta > 0 {
+		// When RTP is too high, reduce catch probability
+		// Use a conservative adjustment factor
+		penalty := int(float64(baseProbability) * rtpDelta * 0.02) // 2% adjustment per percentage point
+		return max(1, baseProbability-penalty)
+	}
+
+	if rtpDelta < 0 {
+		// When RTP is too low, increase catch probability
+		// Use a conservative boost factor
+		boost := int(float64(baseProbability) * -rtpDelta * 0.01) // 1% boost per percentage point
+		return min(100, baseProbability+boost)
+	}
+
+	return baseProbability
 }
 
 func AdjustSpawnWeight(
@@ -235,12 +270,16 @@ func AdjustSpawnWeight(
 	rtpDelta float64,
 ) int {
 	if rtpDelta > 0 && itemValue > 0 {
-		penalty := int(float64(base) * rtpDelta)
+		// When RTP is too high, reduce spawn probability
+		// Use a more moderate penalty factor (0.5 instead of 1.0)
+		penalty := int(float64(base) * rtpDelta * 0.5)
 		return max(1, base-penalty)
 	}
 
 	if rtpDelta < 0 {
-		boost := int(float64(base) * -rtpDelta * 0.5)
+		// When RTP is too low, increase spawn probability
+		// Use a moderate boost factor (0.3 instead of 0.5)
+		boost := int(float64(base) * -rtpDelta * 0.3)
 		return base + boost
 	}
 
@@ -252,5 +291,6 @@ func CalculateRTPDelta(state *domain.ClawMachineRTPState) float64 {
 		return 0
 	}
 	currentRTP := (float64(state.TotalPayout) / float64(state.TotalRevenue)) * 100.0
-	return (currentRTP - state.TargetRTP) / 100.0
+	// Return the percentage difference (no extra division by 100)
+	return currentRTP - state.TargetRTP
 }

@@ -5,7 +5,6 @@ import (
 	"time"
 
 	"gorm.io/gorm"
-	"gorm.io/gorm/clause"
 
 	"github.com/Richard-inter/game/internal/domain"
 )
@@ -61,7 +60,7 @@ func SeedClawMachineData(db *gorm.DB) error {
 			return err
 		}
 
-		// 3️⃣ Claw Items (NO manual IDs)
+		// 3️⃣ Claw Items (NO manual IDs) - create each individually with FirstOrCreate
 		rarityDistribution := []struct {
 			Rarity string
 			Count  int
@@ -79,7 +78,7 @@ func SeedClawMachineData(db *gorm.DB) error {
 
 		for _, r := range rarityDistribution {
 			for i := 0; i < r.Count; i++ {
-				items = append(items, domain.ClawItem{
+				item := domain.ClawItem{
 					Name:            fmt.Sprintf("%s Item %d", r.Rarity, i+1),
 					Rarity:          r.Rarity,
 					SpawnPercentage: r.Spawn,
@@ -90,26 +89,19 @@ func SeedClawMachineData(db *gorm.DB) error {
 					CreatedBy:       createdBy,
 					UpdatedAt:       now,
 					UpdatedBy:       createdBy,
-				})
+				}
+
+				// Create item with FirstOrCreate to prevent duplicates
+				if err := tx.Where("name = ?", item.Name).FirstOrCreate(&item).Error; err != nil {
+					return err
+				}
+
+				items = append(items, item)
 			}
 		}
 
-		// Insert items safely (no duplicates on restart)
-		if err := tx.Clauses(clause.OnConflict{
-			Columns:   []clause.Column{{Name: "name"}},
-			DoNothing: true,
-		}).Create(&items).Error; err != nil {
-			return err
-		}
-
-		// Reload items to get their IDs
-		var storedItems []domain.ClawItem
-		if err := tx.Find(&storedItems).Error; err != nil {
-			return err
-		}
-
-		// 4️⃣ Machine ↔ Items mapping
-		for _, item := range storedItems {
+		// 4️⃣ Machine ↔ Items mapping (use FirstOrCreate to prevent duplicates)
+		for _, item := range items {
 			machineItem := domain.ClawMachineItem{
 				ClawMachineID: machine.ID,
 				ItemID:        item.ID,
