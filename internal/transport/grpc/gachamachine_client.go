@@ -59,6 +59,10 @@ func (c *GachaMachineClient) GetPullResult(ctx context.Context, req *gachamachin
 	return c.client.GetPullResult(ctx, req)
 }
 
+func (c *GachaMachineClient) UpdateGachaMachineTargetRTP(ctx context.Context, req *gachamachinepb.UpdateGachaMachineTargetRTPReq) (*gachamachinepb.UpdateGachaMachineTargetRTPResp, error) {
+	return c.client.UpdateGachaMachineTargetRTP(ctx, req)
+}
+
 func (c *GachaMachineClient) Close() error {
 	return c.conn.Close()
 }

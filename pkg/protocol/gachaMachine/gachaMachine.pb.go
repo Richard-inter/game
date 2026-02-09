@@ -1251,6 +1251,110 @@ func (x *GetPullTimesTenResultResp) GetItemIDs() []int64 {
 	return nil
 }
 
+type UpdateGachaMachineTargetRTPReq struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	MachineID     int64                  `protobuf:"varint,1,opt,name=machineID,proto3" json:"machineID,omitempty"`
+	TargetRTP     float64                `protobuf:"fixed64,2,opt,name=targetRTP,proto3" json:"targetRTP,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *UpdateGachaMachineTargetRTPReq) Reset() {
+	*x = UpdateGachaMachineTargetRTPReq{}
+	mi := &file_gachaMachine_gachaMachine_proto_msgTypes[23]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UpdateGachaMachineTargetRTPReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateGachaMachineTargetRTPReq) ProtoMessage() {}
+
+func (x *UpdateGachaMachineTargetRTPReq) ProtoReflect() protoreflect.Message {
+	mi := &file_gachaMachine_gachaMachine_proto_msgTypes[23]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdateGachaMachineTargetRTPReq.ProtoReflect.Descriptor instead.
+func (*UpdateGachaMachineTargetRTPReq) Descriptor() ([]byte, []int) {
+	return file_gachaMachine_gachaMachine_proto_rawDescGZIP(), []int{23}
+}
+
+func (x *UpdateGachaMachineTargetRTPReq) GetMachineID() int64 {
+	if x != nil {
+		return x.MachineID
+	}
+	return 0
+}
+
+func (x *UpdateGachaMachineTargetRTPReq) GetTargetRTP() float64 {
+	if x != nil {
+		return x.TargetRTP
+	}
+	return 0
+}
+
+type UpdateGachaMachineTargetRTPResp struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	MachineID     int64                  `protobuf:"varint,1,opt,name=machineID,proto3" json:"machineID,omitempty"`
+	Success       bool                   `protobuf:"varint,2,opt,name=success,proto3" json:"success,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *UpdateGachaMachineTargetRTPResp) Reset() {
+	*x = UpdateGachaMachineTargetRTPResp{}
+	mi := &file_gachaMachine_gachaMachine_proto_msgTypes[24]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UpdateGachaMachineTargetRTPResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateGachaMachineTargetRTPResp) ProtoMessage() {}
+
+func (x *UpdateGachaMachineTargetRTPResp) ProtoReflect() protoreflect.Message {
+	mi := &file_gachaMachine_gachaMachine_proto_msgTypes[24]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdateGachaMachineTargetRTPResp.ProtoReflect.Descriptor instead.
+func (*UpdateGachaMachineTargetRTPResp) Descriptor() ([]byte, []int) {
+	return file_gachaMachine_gachaMachine_proto_rawDescGZIP(), []int{24}
+}
+
+func (x *UpdateGachaMachineTargetRTPResp) GetMachineID() int64 {
+	if x != nil {
+		return x.MachineID
+	}
+	return 0
+}
+
+func (x *UpdateGachaMachineTargetRTPResp) GetSuccess() bool {
+	if x != nil {
+		return x.Success
+	}
+	return false
+}
+
 var File_gachaMachine_gachaMachine_proto protoreflect.FileDescriptor
 
 const file_gachaMachine_gachaMachine_proto_rawDesc = "" +
@@ -1338,7 +1442,13 @@ const file_gachaMachine_gachaMachine_proto_rawDesc = "" +
 	"\bplayerID\x18\x01 \x01(\x03R\bplayerID\x12\x1c\n" +
 	"\tmachineID\x18\x02 \x01(\x03R\tmachineID\"5\n" +
 	"\x19GetPullTimesTenResultResp\x12\x18\n" +
-	"\aitemIDs\x18\x01 \x03(\x03R\aitemIDs2\x85\x06\n" +
+	"\aitemIDs\x18\x01 \x03(\x03R\aitemIDs\"\\\n" +
+	"\x1eUpdateGachaMachineTargetRTPReq\x12\x1c\n" +
+	"\tmachineID\x18\x01 \x01(\x03R\tmachineID\x12\x1c\n" +
+	"\ttargetRTP\x18\x02 \x01(\x01R\ttargetRTP\"Y\n" +
+	"\x1fUpdateGachaMachineTargetRTPResp\x12\x1c\n" +
+	"\tmachineID\x18\x01 \x01(\x03R\tmachineID\x12\x18\n" +
+	"\asuccess\x18\x02 \x01(\bR\asuccess2\x81\a\n" +
 	"\x13GachaMachineService\x12_\n" +
 	"\x12CreateGachaMachine\x12#.gachaMachine.CreateGachaMachineReq\x1a$.gachaMachine.CreateGachaMachineResp\x12b\n" +
 	"\x13GetGachaMachineInfo\x12$.gachaMachine.GetGachaMachineInfoReq\x1a%.gachaMachine.GetGachaMachineInfoResp\x12Y\n" +
@@ -1347,7 +1457,8 @@ const file_gachaMachine_gachaMachine_proto_rawDesc = "" +
 	"\x12GetGachaPlayerInfo\x12#.gachaMachine.GetGachaPlayerInfoReq\x1a$.gachaMachine.GetGachaPlayerInfoResp\x12Y\n" +
 	"\x10AdjustPlayerCoin\x12!.gachaMachine.AdjustPlayerCoinReq\x1a\".gachaMachine.AdjustPlayerCoinResp\x12b\n" +
 	"\x13AdjustPlayerDiamond\x12$.gachaMachine.AdjustPlayerDiamondReq\x1a%.gachaMachine.AdjustPlayerDiamondResp\x12P\n" +
-	"\rGetPullResult\x12\x1e.gachaMachine.GetPullResultReq\x1a\x1f.gachaMachine.GetPullResultRespB9Z7github.com/Richard-inter/game/pkg/protocol/gachaMachineb\x06proto3"
+	"\rGetPullResult\x12\x1e.gachaMachine.GetPullResultReq\x1a\x1f.gachaMachine.GetPullResultResp\x12z\n" +
+	"\x1bUpdateGachaMachineTargetRTP\x12,.gachaMachine.UpdateGachaMachineTargetRTPReq\x1a-.gachaMachine.UpdateGachaMachineTargetRTPRespB9Z7github.com/Richard-inter/game/pkg/protocol/gachaMachineb\x06proto3"
 
 var (
 	file_gachaMachine_gachaMachine_proto_rawDescOnce sync.Once
@@ -1361,36 +1472,38 @@ func file_gachaMachine_gachaMachine_proto_rawDescGZIP() []byte {
 	return file_gachaMachine_gachaMachine_proto_rawDescData
 }
 
-var file_gachaMachine_gachaMachine_proto_msgTypes = make([]protoimpl.MessageInfo, 23)
+var file_gachaMachine_gachaMachine_proto_msgTypes = make([]protoimpl.MessageInfo, 25)
 var file_gachaMachine_gachaMachine_proto_goTypes = []any{
-	(*Item)(nil),                      // 0: gachaMachine.Item
-	(*GachaMachine)(nil),              // 1: gachaMachine.GachaMachine
-	(*GachaPlayer)(nil),               // 2: gachaMachine.GachaPlayer
-	(*Items)(nil),                     // 3: gachaMachine.Items
-	(*CreateGachaMachineReq)(nil),     // 4: gachaMachine.CreateGachaMachineReq
-	(*CreateGachaMachineResp)(nil),    // 5: gachaMachine.CreateGachaMachineResp
-	(*CreateGachaItemReq)(nil),        // 6: gachaMachine.CreateGachaItemReq
-	(*CreateGachaItemsReq)(nil),       // 7: gachaMachine.CreateGachaItemsReq
-	(*CreateGachaItemsResp)(nil),      // 8: gachaMachine.CreateGachaItemsResp
-	(*CreateGachaPlayerReq)(nil),      // 9: gachaMachine.CreateGachaPlayerReq
-	(*CreateGachaPlayerResp)(nil),     // 10: gachaMachine.CreateGachaPlayerResp
-	(*AdjustPlayerCoinReq)(nil),       // 11: gachaMachine.AdjustPlayerCoinReq
-	(*AdjustPlayerCoinResp)(nil),      // 12: gachaMachine.AdjustPlayerCoinResp
-	(*AdjustPlayerDiamondReq)(nil),    // 13: gachaMachine.AdjustPlayerDiamondReq
-	(*AdjustPlayerDiamondResp)(nil),   // 14: gachaMachine.AdjustPlayerDiamondResp
-	(*GetGachaPlayerInfoReq)(nil),     // 15: gachaMachine.GetGachaPlayerInfoReq
-	(*GetGachaPlayerInfoResp)(nil),    // 16: gachaMachine.GetGachaPlayerInfoResp
-	(*GetGachaMachineInfoReq)(nil),    // 17: gachaMachine.GetGachaMachineInfoReq
-	(*GetGachaMachineInfoResp)(nil),   // 18: gachaMachine.GetGachaMachineInfoResp
-	(*GetPullResultReq)(nil),          // 19: gachaMachine.GetPullResultReq
-	(*GetPullResultResp)(nil),         // 20: gachaMachine.GetPullResultResp
-	(*GetPullTimesTenResultReq)(nil),  // 21: gachaMachine.GetPullTimesTenResultReq
-	(*GetPullTimesTenResultResp)(nil), // 22: gachaMachine.GetPullTimesTenResultResp
-	(*player.Player)(nil),             // 23: player.Player
+	(*Item)(nil),                            // 0: gachaMachine.Item
+	(*GachaMachine)(nil),                    // 1: gachaMachine.GachaMachine
+	(*GachaPlayer)(nil),                     // 2: gachaMachine.GachaPlayer
+	(*Items)(nil),                           // 3: gachaMachine.Items
+	(*CreateGachaMachineReq)(nil),           // 4: gachaMachine.CreateGachaMachineReq
+	(*CreateGachaMachineResp)(nil),          // 5: gachaMachine.CreateGachaMachineResp
+	(*CreateGachaItemReq)(nil),              // 6: gachaMachine.CreateGachaItemReq
+	(*CreateGachaItemsReq)(nil),             // 7: gachaMachine.CreateGachaItemsReq
+	(*CreateGachaItemsResp)(nil),            // 8: gachaMachine.CreateGachaItemsResp
+	(*CreateGachaPlayerReq)(nil),            // 9: gachaMachine.CreateGachaPlayerReq
+	(*CreateGachaPlayerResp)(nil),           // 10: gachaMachine.CreateGachaPlayerResp
+	(*AdjustPlayerCoinReq)(nil),             // 11: gachaMachine.AdjustPlayerCoinReq
+	(*AdjustPlayerCoinResp)(nil),            // 12: gachaMachine.AdjustPlayerCoinResp
+	(*AdjustPlayerDiamondReq)(nil),          // 13: gachaMachine.AdjustPlayerDiamondReq
+	(*AdjustPlayerDiamondResp)(nil),         // 14: gachaMachine.AdjustPlayerDiamondResp
+	(*GetGachaPlayerInfoReq)(nil),           // 15: gachaMachine.GetGachaPlayerInfoReq
+	(*GetGachaPlayerInfoResp)(nil),          // 16: gachaMachine.GetGachaPlayerInfoResp
+	(*GetGachaMachineInfoReq)(nil),          // 17: gachaMachine.GetGachaMachineInfoReq
+	(*GetGachaMachineInfoResp)(nil),         // 18: gachaMachine.GetGachaMachineInfoResp
+	(*GetPullResultReq)(nil),                // 19: gachaMachine.GetPullResultReq
+	(*GetPullResultResp)(nil),               // 20: gachaMachine.GetPullResultResp
+	(*GetPullTimesTenResultReq)(nil),        // 21: gachaMachine.GetPullTimesTenResultReq
+	(*GetPullTimesTenResultResp)(nil),       // 22: gachaMachine.GetPullTimesTenResultResp
+	(*UpdateGachaMachineTargetRTPReq)(nil),  // 23: gachaMachine.UpdateGachaMachineTargetRTPReq
+	(*UpdateGachaMachineTargetRTPResp)(nil), // 24: gachaMachine.UpdateGachaMachineTargetRTPResp
+	(*player.Player)(nil),                   // 25: player.Player
 }
 var file_gachaMachine_gachaMachine_proto_depIdxs = []int32{
 	0,  // 0: gachaMachine.GachaMachine.items:type_name -> gachaMachine.Item
-	23, // 1: gachaMachine.GachaPlayer.basePlayer:type_name -> player.Player
+	25, // 1: gachaMachine.GachaPlayer.basePlayer:type_name -> player.Player
 	3,  // 2: gachaMachine.CreateGachaMachineReq.items:type_name -> gachaMachine.Items
 	1,  // 3: gachaMachine.CreateGachaMachineResp.machine:type_name -> gachaMachine.GachaMachine
 	6,  // 4: gachaMachine.CreateGachaItemsReq.gachaItems:type_name -> gachaMachine.CreateGachaItemReq
@@ -1407,16 +1520,18 @@ var file_gachaMachine_gachaMachine_proto_depIdxs = []int32{
 	11, // 15: gachaMachine.GachaMachineService.AdjustPlayerCoin:input_type -> gachaMachine.AdjustPlayerCoinReq
 	13, // 16: gachaMachine.GachaMachineService.AdjustPlayerDiamond:input_type -> gachaMachine.AdjustPlayerDiamondReq
 	19, // 17: gachaMachine.GachaMachineService.GetPullResult:input_type -> gachaMachine.GetPullResultReq
-	5,  // 18: gachaMachine.GachaMachineService.CreateGachaMachine:output_type -> gachaMachine.CreateGachaMachineResp
-	18, // 19: gachaMachine.GachaMachineService.GetGachaMachineInfo:output_type -> gachaMachine.GetGachaMachineInfoResp
-	8,  // 20: gachaMachine.GachaMachineService.CreateGachaItems:output_type -> gachaMachine.CreateGachaItemsResp
-	10, // 21: gachaMachine.GachaMachineService.CreateGachaPlayer:output_type -> gachaMachine.CreateGachaPlayerResp
-	16, // 22: gachaMachine.GachaMachineService.GetGachaPlayerInfo:output_type -> gachaMachine.GetGachaPlayerInfoResp
-	12, // 23: gachaMachine.GachaMachineService.AdjustPlayerCoin:output_type -> gachaMachine.AdjustPlayerCoinResp
-	14, // 24: gachaMachine.GachaMachineService.AdjustPlayerDiamond:output_type -> gachaMachine.AdjustPlayerDiamondResp
-	20, // 25: gachaMachine.GachaMachineService.GetPullResult:output_type -> gachaMachine.GetPullResultResp
-	18, // [18:26] is the sub-list for method output_type
-	10, // [10:18] is the sub-list for method input_type
+	23, // 18: gachaMachine.GachaMachineService.UpdateGachaMachineTargetRTP:input_type -> gachaMachine.UpdateGachaMachineTargetRTPReq
+	5,  // 19: gachaMachine.GachaMachineService.CreateGachaMachine:output_type -> gachaMachine.CreateGachaMachineResp
+	18, // 20: gachaMachine.GachaMachineService.GetGachaMachineInfo:output_type -> gachaMachine.GetGachaMachineInfoResp
+	8,  // 21: gachaMachine.GachaMachineService.CreateGachaItems:output_type -> gachaMachine.CreateGachaItemsResp
+	10, // 22: gachaMachine.GachaMachineService.CreateGachaPlayer:output_type -> gachaMachine.CreateGachaPlayerResp
+	16, // 23: gachaMachine.GachaMachineService.GetGachaPlayerInfo:output_type -> gachaMachine.GetGachaPlayerInfoResp
+	12, // 24: gachaMachine.GachaMachineService.AdjustPlayerCoin:output_type -> gachaMachine.AdjustPlayerCoinResp
+	14, // 25: gachaMachine.GachaMachineService.AdjustPlayerDiamond:output_type -> gachaMachine.AdjustPlayerDiamondResp
+	20, // 26: gachaMachine.GachaMachineService.GetPullResult:output_type -> gachaMachine.GetPullResultResp
+	24, // 27: gachaMachine.GachaMachineService.UpdateGachaMachineTargetRTP:output_type -> gachaMachine.UpdateGachaMachineTargetRTPResp
+	19, // [19:28] is the sub-list for method output_type
+	10, // [10:19] is the sub-list for method input_type
 	10, // [10:10] is the sub-list for extension type_name
 	10, // [10:10] is the sub-list for extension extendee
 	0,  // [0:10] is the sub-list for field type_name
@@ -1433,7 +1548,7 @@ func file_gachaMachine_gachaMachine_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_gachaMachine_gachaMachine_proto_rawDesc), len(file_gachaMachine_gachaMachine_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   23,
+			NumMessages:   25,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

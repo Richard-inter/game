@@ -315,6 +315,16 @@ definitions:
     - machineID
     - targetRTP
     type: object
+  dto.UpdateGachaMachineTargetRTPRequest:
+    properties:
+      machineID:
+        type: integer
+      targetRTP:
+        type: number
+    required:
+    - machineID
+    - targetRTP
+    type: object
   dto.UpdateMoleWeightConfigRequest:
     properties:
       id:
@@ -1098,6 +1108,39 @@ paths:
             additionalProperties: true
             type: object
       summary: Get gacha pull result
+      tags:
+      - GachaMachine
+  /gachaMachine/updateGachaMachineTargetRTP:
+    post:
+      consumes:
+      - application/json
+      description: Update the target RTP for a gacha machine
+      parameters:
+      - description: Gacha machine target RTP update request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UpdateGachaMachineTargetRTPRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Gacha machine target RTP updated successfully
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Invalid request body
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Update gacha machine target RTP
       tags:
       - GachaMachine
   /player/create:

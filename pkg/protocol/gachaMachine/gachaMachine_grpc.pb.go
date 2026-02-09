@@ -19,14 +19,15 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	GachaMachineService_CreateGachaMachine_FullMethodName  = "/gachaMachine.GachaMachineService/CreateGachaMachine"
-	GachaMachineService_GetGachaMachineInfo_FullMethodName = "/gachaMachine.GachaMachineService/GetGachaMachineInfo"
-	GachaMachineService_CreateGachaItems_FullMethodName    = "/gachaMachine.GachaMachineService/CreateGachaItems"
-	GachaMachineService_CreateGachaPlayer_FullMethodName   = "/gachaMachine.GachaMachineService/CreateGachaPlayer"
-	GachaMachineService_GetGachaPlayerInfo_FullMethodName  = "/gachaMachine.GachaMachineService/GetGachaPlayerInfo"
-	GachaMachineService_AdjustPlayerCoin_FullMethodName    = "/gachaMachine.GachaMachineService/AdjustPlayerCoin"
-	GachaMachineService_AdjustPlayerDiamond_FullMethodName = "/gachaMachine.GachaMachineService/AdjustPlayerDiamond"
-	GachaMachineService_GetPullResult_FullMethodName       = "/gachaMachine.GachaMachineService/GetPullResult"
+	GachaMachineService_CreateGachaMachine_FullMethodName          = "/gachaMachine.GachaMachineService/CreateGachaMachine"
+	GachaMachineService_GetGachaMachineInfo_FullMethodName         = "/gachaMachine.GachaMachineService/GetGachaMachineInfo"
+	GachaMachineService_CreateGachaItems_FullMethodName            = "/gachaMachine.GachaMachineService/CreateGachaItems"
+	GachaMachineService_CreateGachaPlayer_FullMethodName           = "/gachaMachine.GachaMachineService/CreateGachaPlayer"
+	GachaMachineService_GetGachaPlayerInfo_FullMethodName          = "/gachaMachine.GachaMachineService/GetGachaPlayerInfo"
+	GachaMachineService_AdjustPlayerCoin_FullMethodName            = "/gachaMachine.GachaMachineService/AdjustPlayerCoin"
+	GachaMachineService_AdjustPlayerDiamond_FullMethodName         = "/gachaMachine.GachaMachineService/AdjustPlayerDiamond"
+	GachaMachineService_GetPullResult_FullMethodName               = "/gachaMachine.GachaMachineService/GetPullResult"
+	GachaMachineService_UpdateGachaMachineTargetRTP_FullMethodName = "/gachaMachine.GachaMachineService/UpdateGachaMachineTargetRTP"
 )
 
 // GachaMachineServiceClient is the client API for GachaMachineService service.
@@ -45,6 +46,8 @@ type GachaMachineServiceClient interface {
 	AdjustPlayerDiamond(ctx context.Context, in *AdjustPlayerDiamondReq, opts ...grpc.CallOption) (*AdjustPlayerDiamondResp, error)
 	// game
 	GetPullResult(ctx context.Context, in *GetPullResultReq, opts ...grpc.CallOption) (*GetPullResultResp, error)
+	// RTP
+	UpdateGachaMachineTargetRTP(ctx context.Context, in *UpdateGachaMachineTargetRTPReq, opts ...grpc.CallOption) (*UpdateGachaMachineTargetRTPResp, error)
 }
 
 type gachaMachineServiceClient struct {
@@ -135,6 +138,16 @@ func (c *gachaMachineServiceClient) GetPullResult(ctx context.Context, in *GetPu
 	return out, nil
 }
 
+func (c *gachaMachineServiceClient) UpdateGachaMachineTargetRTP(ctx context.Context, in *UpdateGachaMachineTargetRTPReq, opts ...grpc.CallOption) (*UpdateGachaMachineTargetRTPResp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UpdateGachaMachineTargetRTPResp)
+	err := c.cc.Invoke(ctx, GachaMachineService_UpdateGachaMachineTargetRTP_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // GachaMachineServiceServer is the server API for GachaMachineService service.
 // All implementations must embed UnimplementedGachaMachineServiceServer
 // for forward compatibility.
@@ -151,6 +164,8 @@ type GachaMachineServiceServer interface {
 	AdjustPlayerDiamond(context.Context, *AdjustPlayerDiamondReq) (*AdjustPlayerDiamondResp, error)
 	// game
 	GetPullResult(context.Context, *GetPullResultReq) (*GetPullResultResp, error)
+	// RTP
+	UpdateGachaMachineTargetRTP(context.Context, *UpdateGachaMachineTargetRTPReq) (*UpdateGachaMachineTargetRTPResp, error)
 	mustEmbedUnimplementedGachaMachineServiceServer()
 }
 
@@ -184,6 +199,9 @@ func (UnimplementedGachaMachineServiceServer) AdjustPlayerDiamond(context.Contex
 }
 func (UnimplementedGachaMachineServiceServer) GetPullResult(context.Context, *GetPullResultReq) (*GetPullResultResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetPullResult not implemented")
+}
+func (UnimplementedGachaMachineServiceServer) UpdateGachaMachineTargetRTP(context.Context, *UpdateGachaMachineTargetRTPReq) (*UpdateGachaMachineTargetRTPResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateGachaMachineTargetRTP not implemented")
 }
 func (UnimplementedGachaMachineServiceServer) mustEmbedUnimplementedGachaMachineServiceServer() {}
 func (UnimplementedGachaMachineServiceServer) testEmbeddedByValue()                             {}
@@ -350,6 +368,24 @@ func _GachaMachineService_GetPullResult_Handler(srv interface{}, ctx context.Con
 	return interceptor(ctx, in, info, handler)
 }
 
+func _GachaMachineService_UpdateGachaMachineTargetRTP_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateGachaMachineTargetRTPReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(GachaMachineServiceServer).UpdateGachaMachineTargetRTP(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: GachaMachineService_UpdateGachaMachineTargetRTP_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(GachaMachineServiceServer).UpdateGachaMachineTargetRTP(ctx, req.(*UpdateGachaMachineTargetRTPReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // GachaMachineService_ServiceDesc is the grpc.ServiceDesc for GachaMachineService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -388,6 +424,10 @@ var GachaMachineService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetPullResult",
 			Handler:    _GachaMachineService_GetPullResult_Handler,
+		},
+		{
+			MethodName: "UpdateGachaMachineTargetRTP",
+			Handler:    _GachaMachineService_UpdateGachaMachineTargetRTP_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

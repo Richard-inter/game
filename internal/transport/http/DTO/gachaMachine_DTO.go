@@ -47,3 +47,8 @@ type GetPullResultRequest struct {
 	PlayerID  int64 `json:"playerID" binding:"required"`
 	PullCount int32 `json:"pullCount" binding:"required,oneof=1 10"`
 }
+
+type UpdateGachaMachineTargetRTPRequest struct {
+	MachineID int64   `json:"machineID" binding:"required"`
+	TargetRTP float64 `json:"targetRTP" binding:"required"`
+}

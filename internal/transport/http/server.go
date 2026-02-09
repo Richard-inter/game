@@ -196,6 +196,9 @@ func (s *Server) setupRoutes() {
 
 			// game
 			gachaMachine.POST("/getPullResult", gachaMachineHandler.HandleGetPullResult)
+
+			// RTP
+			gachaMachine.POST("/updateGachaMachineTargetRTP", gachaMachineHandler.HandleUpdateGachaMachineTargetRTP)
 		}
 
 		whackAMole := v1.Group("/whackAMole")

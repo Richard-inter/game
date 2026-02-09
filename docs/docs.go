@@ -1134,6 +1134,55 @@ const docTemplate = `{
                 }
             }
         },
+        "/gachaMachine/updateGachaMachineTargetRTP": {
+            "post": {
+                "description": "Update the target RTP for a gacha machine",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "GachaMachine"
+                ],
+                "summary": "Update gacha machine target RTP",
+                "parameters": [
+                    {
+                        "description": "Gacha machine target RTP update request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.UpdateGachaMachineTargetRTPRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Gacha machine target RTP updated successfully",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request body",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
         "/player/create": {
             "post": {
                 "description": "Create a new player with the provided username",
@@ -2021,6 +2070,21 @@ const docTemplate = `{
             }
         },
         "dto.UpdateClawMachineTargetRTPRequest": {
+            "type": "object",
+            "required": [
+                "machineID",
+                "targetRTP"
+            ],
+            "properties": {
+                "machineID": {
+                    "type": "integer"
+                },
+                "targetRTP": {
+                    "type": "number"
+                }
+            }
+        },
+        "dto.UpdateGachaMachineTargetRTPRequest": {
             "type": "object",
             "required": [
                 "machineID",

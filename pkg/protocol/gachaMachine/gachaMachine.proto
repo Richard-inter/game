@@ -127,6 +127,16 @@ message GetPullTimesTenResultResp {
     repeated int64 itemIDs = 1;
 }
 
+message UpdateGachaMachineTargetRTPReq {
+    int64 machineID = 1;
+    double targetRTP = 2;
+}
+
+message UpdateGachaMachineTargetRTPResp {
+    int64 machineID = 1;
+    bool success = 2;
+}
+
 service GachaMachineService {
     // machine
     rpc CreateGachaMachine (CreateGachaMachineReq) returns (CreateGachaMachineResp);
@@ -143,4 +153,7 @@ service GachaMachineService {
 
     // game
     rpc GetPullResult (GetPullResultReq) returns (GetPullResultResp);
+
+    // RTP
+    rpc UpdateGachaMachineTargetRTP (UpdateGachaMachineTargetRTPReq) returns (UpdateGachaMachineTargetRTPResp);
 }

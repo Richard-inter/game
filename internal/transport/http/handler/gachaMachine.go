@@ -341,3 +341,38 @@ func (h *GachaMachineHandler) HandleGetPullResult(c *gin.Context) {
 	h.logger.Infow("Successfully retrieved pull result", "machine_id", req.MachineID, "player_id", req.PlayerID)
 	common.SendSuccess(c, resp)
 }
+
+// HandleUpdateGachaMachineTargetRTP godoc
+// @Summary Update gacha machine target RTP
+// @Description Update the target RTP for a gacha machine
+// @Tags GachaMachine
+// @Accept json
+// @Produce json
+// @Param request body dto.UpdateGachaMachineTargetRTPRequest true "Gacha machine target RTP update request"
+// @Success 200 {object} map[string]interface{} "Gacha machine target RTP updated successfully"
+// @Failure 400 {object} map[string]interface{} "Invalid request body"
+// @Failure 500 {object} map[string]interface{} "Internal server error"
+// @Router /gachaMachine/updateGachaMachineTargetRTP [post]
+func (h *GachaMachineHandler) HandleUpdateGachaMachineTargetRTP(c *gin.Context) {
+	var req dto.UpdateGachaMachineTargetRTPRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		h.logger.Errorw("Invalid request body", "error", err)
+		common.SendError(c, 400, "Invalid request body")
+		return
+	}
+
+	grpcReq := &gachaMachine.UpdateGachaMachineTargetRTPReq{
+		MachineID: req.MachineID,
+		TargetRTP: req.TargetRTP,
+	}
+
+	resp, err := h.gachaMachineClient.UpdateGachaMachineTargetRTP(c, grpcReq)
+	if err != nil {
+		h.logger.Errorw("Failed to update gacha machine target RTP", "error", err)
+		common.SendError(c, 500, err.Error())
+		return
+	}
+
+	h.logger.Infow("Successfully updated gacha machine target RTP", "machine_id", req.MachineID, "target_rtp", req.TargetRTP)
+	common.SendSuccess(c, resp)
+}
