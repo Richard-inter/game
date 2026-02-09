@@ -68,10 +68,8 @@ func SeedGachaMachineData(db *gorm.DB) error {
 			Count  int
 			Weight int32
 		}{
-			{"common", 4, 30},
-			{"uncommon", 2, 20},
-			{"rare", 2, 15},
-			{"very_rare", 1, 8},
+			{"normal", 6, 25},
+			{"rare", 3, 15},
 			{"super_rare", 1, 5},
 			{"ultra_rare", 1, 2},
 		}
