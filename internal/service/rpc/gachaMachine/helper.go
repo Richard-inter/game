@@ -29,12 +29,10 @@ type Entry struct {
 
 // RTP helper functions
 func GetGachaRarityValue(rarity string, price int64) int64 {
-	// Similar to claw machine but for gacha rarity values
+	// Gacha rarity values
 	rarityMultipliers := map[string]float64{
-		"common":     0.05,
-		"uncommon":   0.10,
-		"rare":       0.25,
-		"very_rare":  0.50,
+		"normal":     0.10,
+		"rare":       0.40,
 		"super_rare": 1.20,
 		"ultra_rare": 2.50,
 	}
@@ -42,7 +40,9 @@ func GetGachaRarityValue(rarity string, price int64) int64 {
 	if multiplier, exists := rarityMultipliers[rarity]; exists {
 		return int64(multiplier * float64(price))
 	}
-	return int64(0.05 * float64(price)) // default to common value
+
+	// default to normal
+	return int64(0.10 * float64(price))
 }
 
 func CalculateGachaRTPDelta(state *domain.GachaMachineRTPState) float64 {
