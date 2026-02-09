@@ -2,6 +2,7 @@ package gachaMachine_runtime
 
 import (
 	"context"
+	"fmt"
 	"math/rand"
 	"sync"
 	"time"
@@ -24,6 +25,54 @@ func getGlobalRand() *rand.Rand {
 type Entry struct {
 	ID     int64
 	Weight int32
+}
+
+// RTP helper functions
+func GetGachaRarityValue(rarity string, price int64) int64 {
+	// Similar to claw machine but for gacha rarity values
+	rarityMultipliers := map[string]float64{
+		"common":     0.05,
+		"uncommon":   0.10,
+		"rare":       0.25,
+		"very_rare":  0.50,
+		"super_rare": 1.20,
+		"ultra_rare": 2.50,
+	}
+
+	if multiplier, exists := rarityMultipliers[rarity]; exists {
+		return int64(multiplier * float64(price))
+	}
+	return int64(0.05 * float64(price)) // default to common value
+}
+
+func CalculateGachaRTPDelta(state *domain.GachaMachineRTPState) float64 {
+	if state == nil || state.TotalRevenue == 0 {
+		return 0
+	}
+	currentRTP := (float64(state.TotalPayout) / float64(state.TotalRevenue)) * 100.0
+	// Return the percentage difference (no extra division by 100)
+	return currentRTP - state.TargetRTP
+}
+
+func AdjustGachaPullWeight(base int32, itemValue int64, rtpDelta float64) int32 {
+	if rtpDelta > 0 && itemValue > 0 {
+		// When RTP is too high, reduce pull probability
+		// Use a more moderate penalty factor (0.5 instead of 1.0)
+		penalty := int32(float64(base) * rtpDelta * 0.5)
+		if base-penalty < 1 {
+			return 1
+		}
+		return base - penalty
+	}
+
+	if rtpDelta < 0 {
+		// When RTP is too low, increase pull probability
+		// Use a moderate boost factor (0.3 instead of 0.5)
+		boost := int32(float64(base) * -rtpDelta * 0.3)
+		return base + boost
+	}
+
+	return base
 }
 
 func PullGachaByEntries(entries []Entry) int64 {
@@ -63,27 +112,39 @@ func (s *GachaMachineWebsocketService) PullGachaByMachineID(
 	pityState *domain.GachaPityState,
 	resp *domain.GachaMachine,
 ) int64 {
+	// Get RTP state for this machine
+	rtpState, err := s.repo.GetGachaMachineRTPState(ctx, resp.ID)
+	if err != nil {
+		// If RTP state doesn't exist, use nil (no adjustment)
+		rtpState = nil
+	}
+
 	if pityState.UltraRarePityCount >= resp.UltraRarePity {
-		return s.pullByRarity(resp, "ultra_rare")
+		return s.pullByRarity(resp, "ultra_rare", rtpState)
 	}
 
 	if pityState.SuperRarePityCount >= resp.SuperRarePity {
-		return s.pullByRarity(resp, "super_rare")
+		return s.pullByRarity(resp, "super_rare", rtpState)
 	}
 
-	return s.pullFromAll(resp)
+	return s.pullFromAll(resp, rtpState)
 }
 
 func (s *GachaMachineWebsocketService) pullByRarity(
 	resp *domain.GachaMachine,
 	rarity string,
+	rtpState *domain.GachaMachineRTPState,
 ) int64 {
 	entries := make([]Entry, 0)
+	rtpDelta := CalculateGachaRTPDelta(rtpState)
+
 	for _, item := range resp.Items {
 		if item.Item.Rarity == rarity {
+			itemValue := GetGachaRarityValue(item.Item.Rarity, resp.Price)
+			adjustedWeight := AdjustGachaPullWeight(item.Item.PullWeight, itemValue, rtpDelta)
 			entries = append(entries, Entry{
 				ID:     item.Item.ID,
-				Weight: item.Item.PullWeight,
+				Weight: adjustedWeight,
 			})
 		}
 	}
@@ -92,12 +153,17 @@ func (s *GachaMachineWebsocketService) pullByRarity(
 
 func (s *GachaMachineWebsocketService) pullFromAll(
 	resp *domain.GachaMachine,
+	rtpState *domain.GachaMachineRTPState,
 ) int64 {
 	entries := make([]Entry, 0, len(resp.Items))
+	rtpDelta := CalculateGachaRTPDelta(rtpState)
+
 	for _, item := range resp.Items {
+		itemValue := GetGachaRarityValue(item.Item.Rarity, resp.Price)
+		adjustedWeight := AdjustGachaPullWeight(item.Item.PullWeight, itemValue, rtpDelta)
 		entries = append(entries, Entry{
 			ID:     item.Item.ID,
-			Weight: item.Item.PullWeight,
+			Weight: adjustedWeight,
 		})
 	}
 	return PullGachaByEntries(entries)
@@ -202,12 +268,23 @@ func (s *GachaMachineWebsocketService) PlayMachine(ctx context.Context, playerID
 		if err != nil {
 			return err
 		}
+
+		err = s.repo.UpdateGachaMachineRTP(ctx, machineID, resp.Price, 0)
+		if err != nil {
+			// Log error but don't fail the play since revenue tracking is secondary
+			fmt.Printf("failed to update gacha machine RTP state: %v", err)
+		}
 	}
 
 	if pullCount == 10 {
 		_, err = s.repo.AdjustPlayerCoin(ctx, playerID, int64(resp.PriceTimesTen), "minus")
 		if err != nil {
 			return err
+		}
+
+		err = s.repo.UpdateGachaMachineRTP(ctx, machineID, resp.PriceTimesTen, 0)
+		if err != nil {
+			fmt.Printf("failed to update gacha machine RTP state: %v", err)
 		}
 	}
 
