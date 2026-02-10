@@ -1,0 +1,177 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Launch RPC ClawMachine Service",
+            "type": "go",
+            "request": "launch",
+            "mode": "auto",
+            "program": "${workspaceFolder}/cmd/rpc/rpc-clawmachine-service",
+            "env": {
+                "CONFIG_PATH": "${workspaceFolder}/config/rpc-clawmachine-service.yaml"
+            },
+            "cwd": "${workspaceFolder}",
+            "args": [],
+            "showLog": true
+        },
+        {
+            "name": "Launch RPC Player Service",
+            "type": "go",
+            "request": "launch",
+            "mode": "auto",
+            "program": "${workspaceFolder}/cmd/rpc/rpc-player-service",
+            "env": {
+                "CONFIG_PATH": "${workspaceFolder}/config/rpc-player-service.yaml"
+            },
+            "cwd": "${workspaceFolder}",
+            "args": [],
+            "showLog": true
+        },
+        {
+            "name": "Launch RPC GachaMachine Service",
+            "type": "go",
+            "request": "launch",
+            "mode": "auto",
+            "program": "${workspaceFolder}/cmd/rpc/rpc-gachamachine-service",
+            "env": {
+                "CONFIG_PATH": "${workspaceFolder}/config/rpc-gachamachine-service.yaml",
+            },
+            "cwd": "${workspaceFolder}",
+            "args": [],
+            "showLog": true
+        },
+        {
+            "name": "Launch RPC GachaMachine Runtime Service",
+            "type": "go",
+            "request": "launch",
+            "mode": "auto",
+            "program": "${workspaceFolder}/cmd/rpc/rpc-gachamachine-runtime-service",
+            "env": {
+                "CONFIG_PATH": "${workspaceFolder}/config/rpc-gachamachine-runtime-service.yaml",
+            },
+            "cwd": "${workspaceFolder}",
+            "args": [],
+            "showLog": true
+        },
+        {
+            "name": "Launch API Service (HTTP)",
+            "type": "go",
+            "request": "launch",
+            "mode": "auto",
+            "program": "${workspaceFolder}/cmd/api-service",
+            "env": {
+                "CONFIG_PATH": "${workspaceFolder}/config/api-service.yaml"
+            },
+            "cwd": "${workspaceFolder}",
+            "args": [],
+            "showLog": true
+        },
+        {
+            "name": "Launch WebSocket Service",
+            "type": "go",
+            "request": "launch",
+            "mode": "auto",
+            "program": "${workspaceFolder}/cmd/websocket-service",
+            "env": {
+                "CONFIG_PATH": "${workspaceFolder}/config/websocket-service.yaml"
+            },
+            "cwd": "${workspaceFolder}",
+            "args": [],
+            "showLog": true
+        },
+        {
+            "name": "Launch RPC ClawMachine Runtime Service",
+            "type": "go",
+            "request": "launch",
+            "mode": "auto",
+            "program": "${workspaceFolder}/cmd/rpc/rpc-clawmachine-runtime-service",
+            "env": {
+                "CONFIG_PATH": "${workspaceFolder}/config/rpc-clawmachine-runtime-service.yaml"
+            },
+            "cwd": "${workspaceFolder}",
+            "args": [],
+            "showLog": true
+        },
+        {
+            "name": "Launch RPC WhackAMole Service",
+            "type": "go",
+            "request": "launch",
+            "mode": "auto",
+            "program": "${workspaceFolder}/cmd/rpc/rpc-whackamole-service",
+            "env": {
+                "CONFIG_PATH": "${workspaceFolder}/config/rpc-whackamole-service.yaml"
+            },
+            "cwd": "${workspaceFolder}",
+            "args": [],
+            "showLog": true
+        },
+        {
+            "name": "Launch Leaderboard Scheduler",
+            "type": "go",
+            "request": "launch",
+            "mode": "auto",
+            "program": "${workspaceFolder}/cmd/recalculate-leaderboard",
+            "env": {
+                "CONFIG_PATH": "${workspaceFolder}/config/rpc-whackamole-service.yaml"
+            },
+            "cwd": "${workspaceFolder}",
+            "args": [],
+            "showLog": true
+        },
+        {
+            "name": "Launch RPC WhackAMole Runtime Service",
+            "type": "go",
+            "request": "launch",
+            "mode": "auto",
+            "program": "${workspaceFolder}/cmd/rpc/rpc-whackamole-runtime-service",
+            "env": {
+                "CONFIG_PATH": "${workspaceFolder}/config/rpc-whackamole-runtime-service.yaml"
+            },
+            "cwd": "${workspaceFolder}",
+            "args": [],
+            "showLog": true
+        },
+        {
+            "name": "Launch TCP Service",
+            "type": "go",
+            "request": "launch",
+            "mode": "auto",
+            "program": "${workspaceFolder}/cmd/tcp-service",
+            "env": {
+                "CONFIG_PATH": "${workspaceFolder}/config/tcp-service.yaml"
+            },
+            "cwd": "${workspaceFolder}",
+            "args": [],
+            "showLog": true
+        }
+    ],
+    "compounds": [
+        {
+            "name": "Launch All Services",
+            "configurations": [
+                "Launch RPC Player Service",
+                "Launch RPC ClawMachine Service",
+                "Launch RPC ClawMachine Runtime Service",
+                "Launch RPC GachaMachine Service",
+                "Launch RPC GachaMachine Runtime Service",
+                "Launch RPC WhackAMole Service",
+                "Launch RPC WhackAMole Runtime Service",
+                "Launch API Service (HTTP)",
+                "Launch WebSocket Service",
+                "Launch TCP Service"
+            ]
+        },
+        {
+            "name": "Launch RPC Services Only",
+            "configurations": [
+                "Launch RPC ClawMachine Service",
+                "Launch RPC ClawMachine Runtime Service",
+                "Launch RPC Player Service",
+                "Launch RPC GachaMachine Service",
+                "Launch RPC GachaMachine Runtime Service",
+                "Launch RPC WhackAMole Service",
+                "Launch RPC WhackAMole Runtime Service",
+            ]
+        }
+    ]
+}
