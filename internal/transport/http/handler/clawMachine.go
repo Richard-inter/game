@@ -527,7 +527,7 @@ func (h *ClawMachineHandler) HandleDeleteClawMachine(c *gin.Context) {
 // @Success 200 {object} map[string]interface{} "Claw items deleted successfully"
 // @Failure 400 {object} map[string]interface{} "Invalid request body"
 // @Failure 500 {object} map[string]interface{} "Internal server error"
-// @Router /clawMachine/deleteClawItems [delete]
+// @Router /clawMachine/deleteClawItems [post]
 func (h *ClawMachineHandler) HandleDeleteClawItems(c *gin.Context) {
 	var req dto.DeleteClawItemsRequest
 	if err := c.ShouldBindJSON(&req); err != nil {

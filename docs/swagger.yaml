@@ -553,7 +553,7 @@ paths:
       tags:
       - ClawMachine
   /clawMachine/deleteClawItems:
-    delete:
+    post:
       consumes:
       - application/json
       description: Delete multiple claw items by their IDs

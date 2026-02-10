@@ -310,7 +310,7 @@ const docTemplate = `{
             }
         },
         "/clawMachine/deleteClawItems": {
-            "delete": {
+            "post": {
                 "description": "Delete multiple claw items by their IDs",
                 "consumes": [
                     "application/json"
