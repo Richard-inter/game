@@ -7,16 +7,14 @@ import "strconv"
 type MessageType int8
 
 const (
-	MessageTypeNone               MessageType = 0
-	MessageTypeGetMoleWeightReq   MessageType = 1
-	MessageTypeGetMoleWeightResp  MessageType = 2
-	MessageTypeGetLeaderboardReq  MessageType = 3
-	MessageTypeGetLeaderboardResp MessageType = 4
+	MessageTypeGetMoleWeightReq   MessageType = 0
+	MessageTypeGetMoleWeightResp  MessageType = 1
+	MessageTypeGetLeaderboardReq  MessageType = 2
+	MessageTypeGetLeaderboardResp MessageType = 3
 	MessageTypeErrorResp          MessageType = 100
 )
 
 var EnumNamesMessageType = map[MessageType]string{
-	MessageTypeNone:               "None",
 	MessageTypeGetMoleWeightReq:   "GetMoleWeightReq",
 	MessageTypeGetMoleWeightResp:  "GetMoleWeightResp",
 	MessageTypeGetLeaderboardReq:  "GetLeaderboardReq",
@@ -25,7 +23,6 @@ var EnumNamesMessageType = map[MessageType]string{
 }
 
 var EnumValuesMessageType = map[string]MessageType{
-	"None":               MessageTypeNone,
 	"GetMoleWeightReq":   MessageTypeGetMoleWeightReq,
 	"GetMoleWeightResp":  MessageTypeGetMoleWeightResp,
 	"GetLeaderboardReq":  MessageTypeGetLeaderboardReq,

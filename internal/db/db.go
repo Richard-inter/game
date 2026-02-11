@@ -88,7 +88,11 @@ func InitGachaMachineDB(cfg *config.ServiceConfig) (*gorm.DB, error) {
 	}
 
 	// Auto migrate the schema
-	err = db.AutoMigrate(&domain.GachaMachine{}, &domain.GachaMachineItem{}, &domain.GachaItem{}, &domain.GachaPlayer{}, &domain.GachaPullSession{}, &domain.GachaPullHistory{}, &domain.GachaPityState{}, &domain.GachaMachineRTPState{})
+	err = db.AutoMigrate(&domain.GachaMachine{},
+		&domain.GachaMachineItem{}, &domain.GachaItem{},
+		&domain.GachaPlayer{}, &domain.GachaPullSession{},
+		&domain.GachaPullHistory{}, &domain.GachaPityState{},
+		&domain.GachaMachineRTPState{}, &domain.GachaPlayerInventory{})
 	if err != nil {
 		return nil, fmt.Errorf("failed to migrate gacha machine database: %w", err)
 	}

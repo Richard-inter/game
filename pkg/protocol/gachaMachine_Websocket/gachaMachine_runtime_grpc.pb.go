@@ -19,9 +19,11 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	GachaMachineRuntimeService_GetPullResultWs_FullMethodName  = "/gachaMachine.runtime.GachaMachineRuntimeService/GetPullResultWs"
-	GachaMachineRuntimeService_GetPlayerInfoWs_FullMethodName  = "/gachaMachine.runtime.GachaMachineRuntimeService/GetPlayerInfoWs"
-	GachaMachineRuntimeService_GetMachineInfoWs_FullMethodName = "/gachaMachine.runtime.GachaMachineRuntimeService/GetMachineInfoWs"
+	GachaMachineRuntimeService_GetPullResultWs_FullMethodName        = "/gachaMachine.runtime.GachaMachineRuntimeService/GetPullResultWs"
+	GachaMachineRuntimeService_GetPlayerInfoWs_FullMethodName        = "/gachaMachine.runtime.GachaMachineRuntimeService/GetPlayerInfoWs"
+	GachaMachineRuntimeService_GetMachineInfoWs_FullMethodName       = "/gachaMachine.runtime.GachaMachineRuntimeService/GetMachineInfoWs"
+	GachaMachineRuntimeService_GetPlayerInventoryWs_FullMethodName   = "/gachaMachine.runtime.GachaMachineRuntimeService/GetPlayerInventoryWs"
+	GachaMachineRuntimeService_GetPlayerPullHistoryWs_FullMethodName = "/gachaMachine.runtime.GachaMachineRuntimeService/GetPlayerPullHistoryWs"
 )
 
 // GachaMachineRuntimeServiceClient is the client API for GachaMachineRuntimeService service.
@@ -31,6 +33,8 @@ type GachaMachineRuntimeServiceClient interface {
 	GetPullResultWs(ctx context.Context, in *RuntimeRequest, opts ...grpc.CallOption) (*RuntimeResponse, error)
 	GetPlayerInfoWs(ctx context.Context, in *RuntimeRequest, opts ...grpc.CallOption) (*RuntimeResponse, error)
 	GetMachineInfoWs(ctx context.Context, in *RuntimeRequest, opts ...grpc.CallOption) (*RuntimeResponse, error)
+	GetPlayerInventoryWs(ctx context.Context, in *RuntimeRequest, opts ...grpc.CallOption) (*RuntimeResponse, error)
+	GetPlayerPullHistoryWs(ctx context.Context, in *RuntimeRequest, opts ...grpc.CallOption) (*RuntimeResponse, error)
 }
 
 type gachaMachineRuntimeServiceClient struct {
@@ -71,6 +75,26 @@ func (c *gachaMachineRuntimeServiceClient) GetMachineInfoWs(ctx context.Context,
 	return out, nil
 }
 
+func (c *gachaMachineRuntimeServiceClient) GetPlayerInventoryWs(ctx context.Context, in *RuntimeRequest, opts ...grpc.CallOption) (*RuntimeResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(RuntimeResponse)
+	err := c.cc.Invoke(ctx, GachaMachineRuntimeService_GetPlayerInventoryWs_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *gachaMachineRuntimeServiceClient) GetPlayerPullHistoryWs(ctx context.Context, in *RuntimeRequest, opts ...grpc.CallOption) (*RuntimeResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(RuntimeResponse)
+	err := c.cc.Invoke(ctx, GachaMachineRuntimeService_GetPlayerPullHistoryWs_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // GachaMachineRuntimeServiceServer is the server API for GachaMachineRuntimeService service.
 // All implementations must embed UnimplementedGachaMachineRuntimeServiceServer
 // for forward compatibility.
@@ -78,6 +102,8 @@ type GachaMachineRuntimeServiceServer interface {
 	GetPullResultWs(context.Context, *RuntimeRequest) (*RuntimeResponse, error)
 	GetPlayerInfoWs(context.Context, *RuntimeRequest) (*RuntimeResponse, error)
 	GetMachineInfoWs(context.Context, *RuntimeRequest) (*RuntimeResponse, error)
+	GetPlayerInventoryWs(context.Context, *RuntimeRequest) (*RuntimeResponse, error)
+	GetPlayerPullHistoryWs(context.Context, *RuntimeRequest) (*RuntimeResponse, error)
 	mustEmbedUnimplementedGachaMachineRuntimeServiceServer()
 }
 
@@ -96,6 +122,12 @@ func (UnimplementedGachaMachineRuntimeServiceServer) GetPlayerInfoWs(context.Con
 }
 func (UnimplementedGachaMachineRuntimeServiceServer) GetMachineInfoWs(context.Context, *RuntimeRequest) (*RuntimeResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetMachineInfoWs not implemented")
+}
+func (UnimplementedGachaMachineRuntimeServiceServer) GetPlayerInventoryWs(context.Context, *RuntimeRequest) (*RuntimeResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetPlayerInventoryWs not implemented")
+}
+func (UnimplementedGachaMachineRuntimeServiceServer) GetPlayerPullHistoryWs(context.Context, *RuntimeRequest) (*RuntimeResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetPlayerPullHistoryWs not implemented")
 }
 func (UnimplementedGachaMachineRuntimeServiceServer) mustEmbedUnimplementedGachaMachineRuntimeServiceServer() {
 }
@@ -173,6 +205,42 @@ func _GachaMachineRuntimeService_GetMachineInfoWs_Handler(srv interface{}, ctx c
 	return interceptor(ctx, in, info, handler)
 }
 
+func _GachaMachineRuntimeService_GetPlayerInventoryWs_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RuntimeRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(GachaMachineRuntimeServiceServer).GetPlayerInventoryWs(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: GachaMachineRuntimeService_GetPlayerInventoryWs_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(GachaMachineRuntimeServiceServer).GetPlayerInventoryWs(ctx, req.(*RuntimeRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _GachaMachineRuntimeService_GetPlayerPullHistoryWs_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RuntimeRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(GachaMachineRuntimeServiceServer).GetPlayerPullHistoryWs(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: GachaMachineRuntimeService_GetPlayerPullHistoryWs_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(GachaMachineRuntimeServiceServer).GetPlayerPullHistoryWs(ctx, req.(*RuntimeRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // GachaMachineRuntimeService_ServiceDesc is the grpc.ServiceDesc for GachaMachineRuntimeService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -191,6 +259,14 @@ var GachaMachineRuntimeService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetMachineInfoWs",
 			Handler:    _GachaMachineRuntimeService_GetMachineInfoWs_Handler,
+		},
+		{
+			MethodName: "GetPlayerInventoryWs",
+			Handler:    _GachaMachineRuntimeService_GetPlayerInventoryWs_Handler,
+		},
+		{
+			MethodName: "GetPlayerPullHistoryWs",
+			Handler:    _GachaMachineRuntimeService_GetPlayerPullHistoryWs_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

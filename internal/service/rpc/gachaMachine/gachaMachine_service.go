@@ -111,6 +111,65 @@ func (s *GachaMachineGRPCService) GetGachaPlayerInfo(ctx context.Context, req *p
 	}, nil
 }
 
+func (s *GachaMachineGRPCService) GetPlayerInventory(ctx context.Context, req *pb.GetPlayerInventoryReq) (*pb.GetPlayerInventoryResp, error) {
+	inventory, err := s.repo.GetPlayerInventory(ctx, req.PlayerID)
+	if err != nil {
+		s.log.Errorf("Failed to get player inventory: %v", err)
+		return nil, fmt.Errorf("failed to get player inventory: %w", err)
+	}
+
+	pbInventory := make([]*pb.GachaPlayerInventory, len(inventory))
+	for i, item := range inventory {
+		pbInventory[i] = &pb.GachaPlayerInventory{
+			ItemID:   item.ItemID,
+			Quantity: item.Quantity,
+		}
+	}
+
+	return &pb.GetPlayerInventoryResp{
+		PlayerID:  req.PlayerID,
+		Inventory: pbInventory,
+	}, nil
+}
+
+func (s *GachaMachineGRPCService) GetPlayerPullHistory(ctx context.Context, req *pb.GetPlayerPullHistoryReq) (*pb.GetPlayerPullHistoryResp, error) {
+	sessions, err := s.repo.GetPlayerPullHistory(ctx, req.PlayerID)
+	if err != nil {
+		s.log.Errorf("Failed to get player pull history: %v", err)
+		return nil, fmt.Errorf("failed to get player pull history: %w", err)
+	}
+
+	pbSessions := make([]*pb.GachaPullSession, len(sessions))
+	for i, session := range sessions {
+		// Get pull histories for this session separately
+		histories, err := s.repo.GetGachaPullHistoriesBySessionID(ctx, session.ID)
+		if err != nil {
+			s.log.Errorf("Failed to get pull histories for session %d: %v", session.ID, err)
+			// Continue with empty items if we can't get histories
+			histories = []*domain.GachaPullHistory{}
+		}
+
+		// Convert pull histories to items
+		itemsPulled := make([]*pb.GachaPullHistoryItem, len(histories))
+		for j, history := range histories {
+			itemsPulled[j] = &pb.GachaPullHistoryItem{
+				ItemID: history.ItemID,
+			}
+		}
+
+		pbSessions[i] = &pb.GachaPullSession{
+			SessionID:   session.ID,
+			MachineID:   session.GachaMachineID,
+			PullCount:   int64(session.PullCount), // Convert int32 to int64
+			ItemsPulled: itemsPulled,
+		}
+	}
+
+	return &pb.GetPlayerPullHistoryResp{
+		GameSessions: pbSessions,
+	}, nil
+}
+
 func (s *GachaMachineGRPCService) AdjustPlayerCoin(ctx context.Context, req *pb.AdjustPlayerCoinReq) (*pb.AdjustPlayerCoinResp, error) {
 	updated, err := s.repo.AdjustPlayerCoin(ctx, req.PlayerID, req.Amount, req.Type)
 	if err != nil {

@@ -193,6 +193,8 @@ func (s *Server) setupRoutes() {
 			gachaMachine.POST("/createGachaPlayer", gachaMachineHandler.HandleCreateGachaPlayer)
 			gachaMachine.POST("/adjustPlayerCoin", gachaMachineHandler.HandleAdjustPlayerCoin)
 			gachaMachine.POST("/adjustPlayerDiamond", gachaMachineHandler.HandleAdjustPlayerDiamond)
+			gachaMachine.GET("/getPlayerInventory/:playerID", gachaMachineHandler.HandleGetPlayerInventory)
+			gachaMachine.GET("/getPlayerPullHistory/:playerID", gachaMachineHandler.HandleGetPlayerPullHistory)
 
 			// game
 			gachaMachine.POST("/getPullResult", gachaMachineHandler.HandleGetPullResult)

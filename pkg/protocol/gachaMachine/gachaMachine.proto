@@ -137,6 +137,39 @@ message UpdateGachaMachineTargetRTPResp {
     bool success = 2;
 }
 
+message GetPlayerInventoryReq {
+    int64 playerID = 1;
+}
+
+message GachaPlayerInventory {
+    int64 itemID = 1;
+    int32 quantity = 2;
+}
+
+message GetPlayerInventoryResp {
+    int64 playerID = 1;
+    repeated GachaPlayerInventory inventory = 2;
+}
+
+message GachaPullHistoryItem {
+    int64 itemID = 1;
+}
+
+message GachaPullSession {
+    int64 sessionID = 1;
+    int64 machineID = 2;
+    int64 pullCount = 3;
+    repeated GachaPullHistoryItem itemsPulled = 4;
+}
+
+message GetPlayerPullHistoryReq {
+    int64 playerID = 1;
+}
+
+message GetPlayerPullHistoryResp {
+    repeated GachaPullSession gameSessions = 1;
+}
+
 service GachaMachineService {
     // machine
     rpc CreateGachaMachine (CreateGachaMachineReq) returns (CreateGachaMachineResp);
@@ -148,6 +181,8 @@ service GachaMachineService {
     // player
     rpc CreateGachaPlayer (CreateGachaPlayerReq) returns (CreateGachaPlayerResp);
     rpc GetGachaPlayerInfo (GetGachaPlayerInfoReq) returns (GetGachaPlayerInfoResp);
+    rpc GetPlayerInventory (GetPlayerInventoryReq) returns (GetPlayerInventoryResp);
+    rpc GetPlayerPullHistory (GetPlayerPullHistoryReq) returns (GetPlayerPullHistoryResp);
     rpc AdjustPlayerCoin (AdjustPlayerCoinReq) returns (AdjustPlayerCoinResp);
     rpc AdjustPlayerDiamond (AdjustPlayerDiamondReq) returns (AdjustPlayerDiamondResp);
 

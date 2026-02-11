@@ -34,6 +34,8 @@ func NewGachaMachineWebSocketHandler(logger *zap.SugaredLogger, grpcManager *grp
 	h.handlers[fbs.MessageTypeGetPullResultWsReq] = h.handleGetPullResult
 	h.handlers[fbs.MessageTypeGetPlayerInfoWsReq] = h.handleGetPlayerInfo
 	h.handlers[fbs.MessageTypeGetMachineInfoWsReq] = h.handleGetMachineInfo
+	h.handlers[fbs.MessageTypeGetPlayerInventoryWsReq] = h.handleGetPlayerInventory
+	h.handlers[fbs.MessageTypeGetPlayerPullHistoryWsReq] = h.handleGetPlayerPullHistory
 
 	return h, nil
 }
@@ -131,6 +133,36 @@ func (h *GachaMachineWebSocketHandler) handleGetMachineInfo(
 	})
 	if err != nil {
 		h.logger.Errorw("GetMachineInfoWs failed", "error", err)
+		return h.buildErrorResp(500, err.Error()), nil
+	}
+
+	return resp.Payload, nil
+}
+
+func (h *GachaMachineWebSocketHandler) handleGetPlayerInventory(
+	ctx context.Context,
+	payload []byte,
+) ([]byte, error) {
+	resp, err := h.gachaRuntime.GetPlayerInventoryWs(ctx, &runtimepb.RuntimeRequest{
+		Payload: payload,
+	})
+	if err != nil {
+		h.logger.Errorw("GetPlayerInventoryWs failed", "error", err)
+		return h.buildErrorResp(500, err.Error()), nil
+	}
+
+	return resp.Payload, nil
+}
+
+func (h *GachaMachineWebSocketHandler) handleGetPlayerPullHistory(
+	ctx context.Context,
+	payload []byte,
+) ([]byte, error) {
+	resp, err := h.gachaRuntime.GetPlayerPullHistoryWs(ctx, &runtimepb.RuntimeRequest{
+		Payload: payload,
+	})
+	if err != nil {
+		h.logger.Errorw("GetPlayerPullHistoryWs failed", "error", err)
 		return h.buildErrorResp(500, err.Error()), nil
 	}
 

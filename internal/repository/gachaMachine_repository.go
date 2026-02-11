@@ -19,6 +19,8 @@ type GachaMachineRepository interface {
 	GetGachaPlayerInfo(ctx context.Context, playerID int64) (*domain.GachaPlayer, error)
 	AdjustPlayerCoin(ctx context.Context, playerID int64, amount int64, adjustmentType string) (*domain.GachaPlayer, error)
 	AdjustPlayerDiamond(ctx context.Context, playerID int64, amount int64, adjustmentType string) (*domain.GachaPlayer, error)
+	GetPlayerInventory(ctx context.Context, playerID int64) ([]domain.GachaPlayerInventory, error)
+	AddItemInventory(ctx context.Context, playerID int64, itemID int64, quantity int32) error
 
 	// machine
 	CreateGachaMachine(ctx context.Context, gachaMachine *domain.GachaMachine) (*domain.GachaMachine, error)
@@ -33,6 +35,8 @@ type GachaMachineRepository interface {
 	CreateGachaPullSession(ctx context.Context, session *domain.GachaPullSession) (*domain.GachaPullSession, error)
 	CreateGachaPullHistories(ctx context.Context, histories *[]domain.GachaPullHistory) (*[]domain.GachaPullHistory, error)
 	GetGachaPullSession(ctx context.Context, sessionID int64) (*domain.GachaPullSession, error)
+	GetGachaPullHistoriesBySessionID(ctx context.Context, sessionID int64) ([]*domain.GachaPullHistory, error)
+	GetPlayerPullHistory(ctx context.Context, playerID int64) ([]*domain.GachaPullSession, error)
 
 	// pity state
 	GetGachaPityState(ctx context.Context, playerID int64, machineID int64) (*domain.GachaPityState, error)
@@ -117,6 +121,39 @@ func (r *gachaMachineRepository) AdjustPlayerCoin(ctx context.Context, playerID 
 
 func (r *gachaMachineRepository) AdjustPlayerDiamond(ctx context.Context, playerID int64, amount int64, adjustmentType string) (*domain.GachaPlayer, error) {
 	return r.adjustPlayerBalance(ctx, playerID, amount, adjustmentType, "diamond")
+}
+
+func (r *gachaMachineRepository) GetPlayerInventory(ctx context.Context, playerID int64) ([]domain.GachaPlayerInventory, error) {
+	var inventory []domain.GachaPlayerInventory
+	err := activeQuery(r.db.WithContext(ctx)).
+		Where("player_id = ? AND is_active = ?", playerID, true).
+		Find(&inventory).Error
+	if err != nil {
+		return nil, err
+	}
+	return inventory, nil
+}
+
+func (r *gachaMachineRepository) AddItemInventory(ctx context.Context, playerID int64, itemID int64, quantity int32) error {
+	var inventory domain.GachaPlayerInventory
+	err := activeQuery(r.db.WithContext(ctx)).
+		Where("player_id = ? AND item_id = ?", playerID, itemID).
+		First(&inventory).Error
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			inventory = domain.GachaPlayerInventory{
+				PlayerID: playerID,
+				ItemID:   itemID,
+				Quantity: quantity,
+				IsActive: true,
+			}
+			return r.db.WithContext(ctx).Create(&inventory).Error
+		}
+		return err
+	}
+
+	inventory.Quantity += quantity
+	return r.db.WithContext(ctx).Save(&inventory).Error
 }
 
 func (r *gachaMachineRepository) CreateGachaMachine(
@@ -226,6 +263,32 @@ func (r *gachaMachineRepository) GetGachaPullSession(ctx context.Context, sessio
 		return nil, err
 	}
 	return &session, nil
+}
+
+func (r *gachaMachineRepository) GetPlayerPullHistory(ctx context.Context, playerID int64) ([]*domain.GachaPullSession, error) {
+	var sessions []*domain.GachaPullSession
+	err := activeQuery(r.db.WithContext(ctx)).
+		Preload("GachaPullHistories.Item").
+		Where("player_id = ?", playerID).
+		Order("created_at DESC").
+		Find(&sessions).Error
+	if err != nil {
+		return nil, err
+	}
+	return sessions, nil
+}
+
+func (r *gachaMachineRepository) GetGachaPullHistoriesBySessionID(ctx context.Context, sessionID int64) ([]*domain.GachaPullHistory, error) {
+	var histories []*domain.GachaPullHistory
+	err := activeQuery(r.db.WithContext(ctx)).
+		Preload("Item").
+		Where("gacha_pull_session_id = ?", sessionID).
+		Order("created_at ASC").
+		Find(&histories).Error
+	if err != nil {
+		return nil, err
+	}
+	return histories, nil
 }
 
 func (r *gachaMachineRepository) GetGachaPityState(
