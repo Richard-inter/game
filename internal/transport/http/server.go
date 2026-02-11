@@ -169,6 +169,7 @@ func (s *Server) setupRoutes() {
 			clawMachine.POST("/deleteClawPlayer", clawMachineHandler.HandleDeleteClawPlayer)
 			clawMachine.POST("/adjustPlayerCoin", clawMachineHandler.HandleAdjustPlayerCoin)
 			clawMachine.POST("/adjustPlayerDiamond", clawMachineHandler.HandleAdjustPlayerDiamond)
+			clawMachine.GET("/getPlayerInventory/:playerID", clawMachineHandler.HandleGetPlayerInventory)
 
 			// game
 			clawMachine.POST("/startClawGame", clawMachineHandler.HandleStartClawGame)

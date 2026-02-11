@@ -51,6 +51,8 @@ func NewClawMachineWebSocketHandler(logger *zap.SugaredLogger, grpcManager *grpc
 	h.handlers[fbs.MessageTypeGetPlayerInfoWsReq] = h.handleGetPlayerInfo
 	h.handlers[fbs.MessageTypeAddTouchedItemRecordReq] = h.handleAddTouchedItemRecord
 	h.handlers[fbs.MessageTypeSpawnItemReq] = h.handleSpawnItem
+	h.handlers[fbs.MessageTypeGetPlayerInventoryWsReq] = h.handleGetPlayerInventory
+	h.handlers[fbs.MessageTypeGetGameHistoryWsReq] = h.handleGetGameHistory
 
 	return h, nil
 }
@@ -163,6 +165,36 @@ func (h *ClawMachineWebSocketHandler) handleSpawnItem(
 	})
 	if err != nil {
 		h.logger.Errorw("SpawnItemWs failed", "error", err)
+		return h.buildErrorResp(500, err.Error()), nil
+	}
+
+	return resp.Payload, nil
+}
+
+func (h *ClawMachineWebSocketHandler) handleGetPlayerInventory(
+	ctx context.Context,
+	payload []byte,
+) ([]byte, error) {
+	resp, err := h.wsClient.GetPlayerInventoryWs(ctx, &runtimepb.RuntimeRequest{
+		Payload: payload,
+	})
+	if err != nil {
+		h.logger.Errorw("GetPlayerInventoryWs failed", "error", err)
+		return h.buildErrorResp(500, err.Error()), nil
+	}
+
+	return resp.Payload, nil
+}
+
+func (h *ClawMachineWebSocketHandler) handleGetGameHistory(
+	ctx context.Context,
+	payload []byte,
+) ([]byte, error) {
+	resp, err := h.wsClient.GetGameHistoryWs(ctx, &runtimepb.RuntimeRequest{
+		Payload: payload,
+	})
+	if err != nil {
+		h.logger.Errorw("GetGameHistoryWs failed", "error", err)
 		return h.buildErrorResp(500, err.Error()), nil
 	}
 

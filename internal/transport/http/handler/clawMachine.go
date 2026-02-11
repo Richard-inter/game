@@ -602,3 +602,52 @@ func (h *ClawMachineHandler) HandleUpdateClawMachineTargetRTP(c *gin.Context) {
 	h.logger.Infow("Successfully updated claw machine target RTP", "machine_id", req.MachineID, "target_rtp", req.TargetRTP)
 	common.SendSuccess(c, resp)
 }
+
+// HandleGetPlayerInventory godoc
+// @Summary Get claw machine player inventory
+// @Description Get inventory for a claw machine player
+// @Tags ClawMachine
+// @Accept json
+// @Produce json
+// @Param playerID path int true "Player ID"
+// @Success 200 {object} dto.GetClawPlayerInventoryResponse "Player inventory retrieved successfully"
+// @Failure 400 {object} map[string]interface{} "Invalid player ID"
+// @Failure 500 {object} map[string]interface{} "Internal server error"
+// @Router /clawMachine/getPlayerInventory/{playerID} [get]
+func (h *ClawMachineHandler) HandleGetPlayerInventory(c *gin.Context) {
+	playerIDStr := c.Param("playerID")
+	playerID, err := strconv.ParseInt(playerIDStr, 10, 64)
+	if err != nil {
+		h.logger.Errorw("Invalid player ID", "error", err)
+		common.SendError(c, 400, "Invalid player ID")
+		return
+	}
+
+	grpcReq := &clawMachine.GetPlayerInventoryReq{
+		PlayerID: playerID,
+	}
+
+	resp, err := h.clawMachineClient.GetPlayerInventory(c, grpcReq)
+	if err != nil {
+		h.logger.Errorw("Failed to get player inventory", "error", err)
+		common.SendError(c, 500, err.Error())
+		return
+	}
+
+	// Convert protobuf response to custom DTO
+	inventory := make([]dto.ClawPlayerInventoryResponse, len(resp.Inventory))
+	for i, item := range resp.Inventory {
+		inventory[i] = dto.ClawPlayerInventoryResponse{
+			ItemID:   item.ItemID,
+			Quantity: item.Quantity,
+		}
+	}
+
+	response := dto.GetClawPlayerInventoryResponse{
+		PlayerID:  resp.PlayerID,
+		Inventory: inventory,
+	}
+
+	h.logger.Infow("Successfully retrieved player inventory", "player_id", playerID, "item_count", len(resp.Inventory))
+	common.SendSuccess(c, response)
+}

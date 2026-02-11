@@ -9,6 +9,10 @@ enum MessageType : byte {
   GetPlayerInfoWsResp = 5,
   SpawnItemReq = 6,
   SpawnItemResp = 7,
+  GetPlayerInventoryWsReq = 8,
+  GetPlayerInventoryWsResp = 9,
+  GetGameHistoryWsReq = 10,
+  GetGameHistoryWsResp = 11,
   ErrorResp = 100
 }
 
@@ -32,6 +36,14 @@ table GetPlayerInfoWsReq {
 
 table SpawnItemReq {
   machine_id:long;
+}
+
+table GetPlayerInventoryWsReq {
+  player_id:long;
+}
+
+table GetGameHistoryWsReq {
+  player_id:long;
 }
 
 /***************
@@ -62,6 +74,30 @@ table GetPlayerInfoWsResp {
 
 table SpawnItemResp {
   items:[long];
+}
+
+table PlayerInventoryItem {
+  item_id:long;
+  quantity:int;
+}
+
+table GetPlayerInventoryWsResp {
+  player_id:long;
+  items:[PlayerInventoryItem];
+}
+
+table GameRecord {
+  game_id:long;
+  player_id:long;
+  machine_id:long;
+  touched_item_id:long;
+  catched:bool;
+  created_at:string;
+}
+
+table GetGameHistoryWsResp {
+  player_id:long;
+  records:[GameRecord];
 }
 
 /***************

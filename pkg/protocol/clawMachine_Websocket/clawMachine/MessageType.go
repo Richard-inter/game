@@ -15,6 +15,10 @@ const (
 	MessageTypeGetPlayerInfoWsResp      MessageType = 5
 	MessageTypeSpawnItemReq             MessageType = 6
 	MessageTypeSpawnItemResp            MessageType = 7
+	MessageTypeGetPlayerInventoryWsReq  MessageType = 8
+	MessageTypeGetPlayerInventoryWsResp MessageType = 9
+	MessageTypeGetGameHistoryWsReq      MessageType = 10
+	MessageTypeGetGameHistoryWsResp     MessageType = 11
 	MessageTypeErrorResp                MessageType = 100
 )
 
@@ -27,6 +31,10 @@ var EnumNamesMessageType = map[MessageType]string{
 	MessageTypeGetPlayerInfoWsResp:      "GetPlayerInfoWsResp",
 	MessageTypeSpawnItemReq:             "SpawnItemReq",
 	MessageTypeSpawnItemResp:            "SpawnItemResp",
+	MessageTypeGetPlayerInventoryWsReq:  "GetPlayerInventoryWsReq",
+	MessageTypeGetPlayerInventoryWsResp: "GetPlayerInventoryWsResp",
+	MessageTypeGetGameHistoryWsReq:      "GetGameHistoryWsReq",
+	MessageTypeGetGameHistoryWsResp:     "GetGameHistoryWsResp",
 	MessageTypeErrorResp:                "ErrorResp",
 }
 
@@ -39,6 +47,10 @@ var EnumValuesMessageType = map[string]MessageType{
 	"GetPlayerInfoWsResp":      MessageTypeGetPlayerInfoWsResp,
 	"SpawnItemReq":             MessageTypeSpawnItemReq,
 	"SpawnItemResp":            MessageTypeSpawnItemResp,
+	"GetPlayerInventoryWsReq":  MessageTypeGetPlayerInventoryWsReq,
+	"GetPlayerInventoryWsResp": MessageTypeGetPlayerInventoryWsResp,
+	"GetGameHistoryWsReq":      MessageTypeGetGameHistoryWsReq,
+	"GetGameHistoryWsResp":     MessageTypeGetGameHistoryWsResp,
 	"ErrorResp":                MessageTypeErrorResp,
 }
 

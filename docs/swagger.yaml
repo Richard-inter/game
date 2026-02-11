@@ -93,6 +93,13 @@ definitions:
       touchedItemID:
         type: integer
     type: object
+  dto.ClawPlayerInventoryResponse:
+    properties:
+      itemID:
+        type: integer
+      quantity:
+        type: integer
+    type: object
   dto.CreateClawItemRequest:
     properties:
       catchPercentage:
@@ -306,6 +313,15 @@ definitions:
       pullCount:
         type: integer
       sessionID:
+        type: integer
+    type: object
+  dto.GetClawPlayerInventoryResponse:
+    properties:
+      inventory:
+        items:
+          $ref: '#/definitions/dto.ClawPlayerInventoryResponse'
+        type: array
+      playerID:
         type: integer
     type: object
   dto.GetGameHistoryResponse:
@@ -808,6 +824,37 @@ paths:
             additionalProperties: true
             type: object
       summary: Get player game history
+      tags:
+      - ClawMachine
+  /clawMachine/getPlayerInventory/{playerID}:
+    get:
+      consumes:
+      - application/json
+      description: Get inventory for a claw machine player
+      parameters:
+      - description: Player ID
+        in: path
+        name: playerID
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Player inventory retrieved successfully
+          schema:
+            $ref: '#/definitions/dto.GetClawPlayerInventoryResponse'
+        "400":
+          description: Invalid player ID
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Get claw machine player inventory
       tags:
       - ClawMachine
   /clawMachine/startClawGame:

@@ -200,6 +200,20 @@ message UpdateClawMachineTargetRTPResp {
     bool success = 2;
 }
 
+message ClawPlayerInventory {
+    int64 itemID = 1;
+    int32 quantity = 2;
+}
+
+message GetPlayerInventoryReq {
+    int64 playerID = 1;
+}
+
+message GetPlayerInventoryResp {
+    int64 playerID = 1;
+    repeated ClawPlayerInventory inventory = 2;
+}
+
 service ClawMachineService {
     // player
     rpc CreateClawPlayer (CreateClawPlayerReq) returns (CreateClawPlayerResp);
@@ -208,6 +222,7 @@ service ClawMachineService {
     rpc AdjustPlayerCoin (AdjustPlayerCoinReq) returns (AdjustPlayerCoinResp);
     rpc AdjustPlayerDiamond (AdjustPlayerDiamondReq) returns (AdjustPlayerDiamondResp);
     rpc GetGameHistory (GetGameHistoryReq) returns (GetGameHistoryResp);
+    rpc GetPlayerInventory (GetPlayerInventoryReq) returns (GetPlayerInventoryResp);
 
     // machine 
     rpc CreateClawMachine (CreateClawMachineReq) returns (CreateClawMachineResp);

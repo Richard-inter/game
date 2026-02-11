@@ -25,6 +25,7 @@ const (
 	ClawMachineService_AdjustPlayerCoin_FullMethodName           = "/clawMachine.ClawMachineService/AdjustPlayerCoin"
 	ClawMachineService_AdjustPlayerDiamond_FullMethodName        = "/clawMachine.ClawMachineService/AdjustPlayerDiamond"
 	ClawMachineService_GetGameHistory_FullMethodName             = "/clawMachine.ClawMachineService/GetGameHistory"
+	ClawMachineService_GetPlayerInventory_FullMethodName         = "/clawMachine.ClawMachineService/GetPlayerInventory"
 	ClawMachineService_CreateClawMachine_FullMethodName          = "/clawMachine.ClawMachineService/CreateClawMachine"
 	ClawMachineService_GetClawMachineInfo_FullMethodName         = "/clawMachine.ClawMachineService/GetClawMachineInfo"
 	ClawMachineService_UpdateClawMachineItems_FullMethodName     = "/clawMachine.ClawMachineService/UpdateClawMachineItems"
@@ -47,6 +48,7 @@ type ClawMachineServiceClient interface {
 	AdjustPlayerCoin(ctx context.Context, in *AdjustPlayerCoinReq, opts ...grpc.CallOption) (*AdjustPlayerCoinResp, error)
 	AdjustPlayerDiamond(ctx context.Context, in *AdjustPlayerDiamondReq, opts ...grpc.CallOption) (*AdjustPlayerDiamondResp, error)
 	GetGameHistory(ctx context.Context, in *GetGameHistoryReq, opts ...grpc.CallOption) (*GetGameHistoryResp, error)
+	GetPlayerInventory(ctx context.Context, in *GetPlayerInventoryReq, opts ...grpc.CallOption) (*GetPlayerInventoryResp, error)
 	// machine
 	CreateClawMachine(ctx context.Context, in *CreateClawMachineReq, opts ...grpc.CallOption) (*CreateClawMachineResp, error)
 	GetClawMachineInfo(ctx context.Context, in *GetClawMachineInfoReq, opts ...grpc.CallOption) (*GetClawMachineInfoResp, error)
@@ -124,6 +126,16 @@ func (c *clawMachineServiceClient) GetGameHistory(ctx context.Context, in *GetGa
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(GetGameHistoryResp)
 	err := c.cc.Invoke(ctx, ClawMachineService_GetGameHistory_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *clawMachineServiceClient) GetPlayerInventory(ctx context.Context, in *GetPlayerInventoryReq, opts ...grpc.CallOption) (*GetPlayerInventoryResp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetPlayerInventoryResp)
+	err := c.cc.Invoke(ctx, ClawMachineService_GetPlayerInventory_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -231,6 +243,7 @@ type ClawMachineServiceServer interface {
 	AdjustPlayerCoin(context.Context, *AdjustPlayerCoinReq) (*AdjustPlayerCoinResp, error)
 	AdjustPlayerDiamond(context.Context, *AdjustPlayerDiamondReq) (*AdjustPlayerDiamondResp, error)
 	GetGameHistory(context.Context, *GetGameHistoryReq) (*GetGameHistoryResp, error)
+	GetPlayerInventory(context.Context, *GetPlayerInventoryReq) (*GetPlayerInventoryResp, error)
 	// machine
 	CreateClawMachine(context.Context, *CreateClawMachineReq) (*CreateClawMachineResp, error)
 	GetClawMachineInfo(context.Context, *GetClawMachineInfoReq) (*GetClawMachineInfoResp, error)
@@ -271,6 +284,9 @@ func (UnimplementedClawMachineServiceServer) AdjustPlayerDiamond(context.Context
 }
 func (UnimplementedClawMachineServiceServer) GetGameHistory(context.Context, *GetGameHistoryReq) (*GetGameHistoryResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetGameHistory not implemented")
+}
+func (UnimplementedClawMachineServiceServer) GetPlayerInventory(context.Context, *GetPlayerInventoryReq) (*GetPlayerInventoryResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetPlayerInventory not implemented")
 }
 func (UnimplementedClawMachineServiceServer) CreateClawMachine(context.Context, *CreateClawMachineReq) (*CreateClawMachineResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateClawMachine not implemented")
@@ -424,6 +440,24 @@ func _ClawMachineService_GetGameHistory_Handler(srv interface{}, ctx context.Con
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ClawMachineServiceServer).GetGameHistory(ctx, req.(*GetGameHistoryReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ClawMachineService_GetPlayerInventory_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetPlayerInventoryReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ClawMachineServiceServer).GetPlayerInventory(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ClawMachineService_GetPlayerInventory_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ClawMachineServiceServer).GetPlayerInventory(ctx, req.(*GetPlayerInventoryReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -620,6 +654,10 @@ var ClawMachineService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetGameHistory",
 			Handler:    _ClawMachineService_GetGameHistory_Handler,
+		},
+		{
+			MethodName: "GetPlayerInventory",
+			Handler:    _ClawMachineService_GetPlayerInventory_Handler,
 		},
 		{
 			MethodName: "CreateClawMachine",
