@@ -415,12 +415,12 @@ func (h *ClawMachineHandler) HandleDeleteClawPlayer(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param playerID query int true "Player ID"
-// @Success 200 {object} map[string]interface{} "Game history retrieved successfully"
+// @Success 200 {object} dto.GetGameHistoryResponse "Game history retrieved successfully"
 // @Failure 400 {object} map[string]interface{} "Invalid request body"
 // @Failure 500 {object} map[string]interface{} "Internal server error"
 // @Router /clawMachine/getGameHistory [get]
 func (h *ClawMachineHandler) HandleGetGameHistory(c *gin.Context) {
-	playerIDStr := c.Query("playerID")
+	playerIDStr := c.Param("playerID")
 	playerID, err := strconv.ParseInt(playerIDStr, 10, 64)
 	if err != nil {
 		h.logger.Errorw("Invalid player ID", "error", err)
@@ -439,8 +439,25 @@ func (h *ClawMachineHandler) HandleGetGameHistory(c *gin.Context) {
 		return
 	}
 
-	h.logger.Infow("Successfully retrieved game history", "player_id", playerID)
-	common.SendSuccess(c, resp)
+	// Convert protobuf response to custom DTO to ensure catched field is always included
+	gameRecords := make([]dto.ClawMachineGameRecordResponse, len(resp.GameRecords))
+	for i, record := range resp.GameRecords {
+		gameRecords[i] = dto.ClawMachineGameRecordResponse{
+			GameID:        record.GameID,
+			ClawMachineID: record.ClawMachineID,
+			PlayerID:      record.PlayerID,
+			TouchedItemID: record.TouchedItemID,
+			Catched:       record.Catched,
+			CreatedAt:     record.CreatedAt,
+		}
+	}
+
+	response := dto.GetGameHistoryResponse{
+		GameRecords: gameRecords,
+	}
+
+	h.logger.Infow("Successfully retrieved game history", "player_id", playerID, "record_count", len(resp.GameRecords))
+	common.SendSuccess(c, response)
 }
 
 // HandleUpdateClawMachineItems godoc

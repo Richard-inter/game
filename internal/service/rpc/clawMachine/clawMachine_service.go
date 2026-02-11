@@ -379,7 +379,7 @@ func (s *ClawMachineGRPCServices) GetGameHistory(ctx context.Context, req *pb.Ge
 			ClawMachineID: record.ClawMachineID,
 			PlayerID:      record.PlayerID,
 			TouchedItemID: *record.TouchedItemID,
-			Catched:       record.Catched,
+			Catched:       *record.Catched,
 			CreatedAt:     record.CreatedAt.Format("2006-01-02 15:04:05"),
 		})
 	}

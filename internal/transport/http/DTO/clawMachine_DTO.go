@@ -79,3 +79,18 @@ type UpdateClawMachineTargetRTPRequest struct {
 	MachineID int64   `json:"machineID" binding:"required"`
 	TargetRTP float64 `json:"targetRTP" binding:"required"`
 }
+
+// ClawMachineGameRecordResponse represents the HTTP response for claw machine game records
+type ClawMachineGameRecordResponse struct {
+	GameID        int64  `json:"gameID"`
+	ClawMachineID int64  `json:"clawMachineID"`
+	PlayerID      int64  `json:"playerID"`
+	TouchedItemID int64  `json:"touchedItemID"`
+	Catched       bool   `json:"catched"` // Removed omitempty to ensure false values are included
+	CreatedAt     string `json:"createdAt"`
+}
+
+// GetGameHistoryResponse represents the HTTP response for game history
+type GetGameHistoryResponse struct {
+	GameRecords []ClawMachineGameRecordResponse `json:"gameRecords"`
+}

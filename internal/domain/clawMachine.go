@@ -71,7 +71,7 @@ type ClawMachineGameRecord struct {
 	ClawMachineID int64          `gorm:"column:claw_machine_id" json:"clawMachineID"`
 	PlayerID      int64          `gorm:"column:player_id" json:"playerID"`
 	TouchedItemID *int64         `gorm:"column:touched_item_id" json:"touchedItemID"`
-	Catched       bool           `gorm:"column:catched" json:"catched"`
+	Catched       *bool          `gorm:"column:catched" json:"catched"`
 	IsActive      bool           `gorm:"column:is_active;default:true" json:"isActive"`
 	CreatedAt     time.Time      `gorm:"column:created_at;autoCreateTime" json:"createdAt"`
 	CreatedBy     string         `gorm:"column:created_by" json:"createdBy"`
