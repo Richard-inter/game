@@ -52,3 +52,33 @@ type UpdateGachaMachineTargetRTPRequest struct {
 	MachineID int64   `json:"machineID" binding:"required"`
 	TargetRTP float64 `json:"targetRTP" binding:"required"`
 }
+
+// GachaPlayerInventoryResponse represents the HTTP response for gacha player inventory items
+type GachaPlayerInventoryResponse struct {
+	ItemID   int64 `json:"itemID"`
+	Quantity int32 `json:"quantity"`
+}
+
+// GetPlayerInventoryResponse represents the HTTP response for player inventory
+type GetPlayerInventoryResponse struct {
+	PlayerID  int64                          `json:"playerID"`
+	Inventory []GachaPlayerInventoryResponse `json:"inventory"`
+}
+
+// GachaPullHistoryItemResponse represents the HTTP response for pull history items
+type GachaPullHistoryItemResponse struct {
+	ItemID int64 `json:"itemID"`
+}
+
+// GachaPullSessionResponse represents the HTTP response for pull sessions
+type GachaPullSessionResponse struct {
+	SessionID   int64                          `json:"sessionID"`
+	MachineID   int64                          `json:"machineID"`
+	PullCount   int64                          `json:"pullCount"`
+	ItemsPulled []GachaPullHistoryItemResponse `json:"itemsPulled"`
+}
+
+// GetPlayerPullHistoryResponse represents the HTTP response for player pull history
+type GetPlayerPullHistoryResponse struct {
+	GameSessions []GachaPullSessionResponse `json:"gameSession"`
+}

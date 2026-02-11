@@ -7,6 +7,10 @@ enum MessageType : byte {
   GetPlayerInfoWsResp = 3,
   GetMachineInfoWsReq = 4,
   GetMachineInfoWsResp = 5,
+  GetPlayerInventoryWsReq = 6,
+  GetPlayerInventoryWsResp = 7,
+  GetPlayerPullHistoryWsReq = 8,
+  GetPlayerPullHistoryWsResp = 9,
   ErrorResp = 100
 }
 
@@ -25,6 +29,14 @@ table GetPlayerInfoWsReq {
 
 table GetMachineInfoWsReq {
   machine_id:long;
+}
+
+table GetPlayerInventoryWsReq {
+  player_id:long;
+}
+
+table GetPlayerPullHistoryWsReq {
+  player_id:long;
 }
 
 /***************
@@ -56,6 +68,32 @@ table GetMachineInfoWsResp {
   super_rare_pity:int;
   ultra_rare_pity:int;
   items:[Items];
+}
+
+table PlayerInventoryItem {
+  item_id:long;
+  quantity:int;
+}
+
+table GetPlayerInventoryWsResp {
+  player_id:long;
+  items:[PlayerInventoryItem];
+}
+
+table PullHistoryItem {
+  item_id:long;
+}
+
+table PullSession {
+  session_id:long;
+  machine_id:long;
+  pull_count:int;
+  items_pulled:[PullHistoryItem];
+}
+
+table GetPlayerPullHistoryWsResp {
+  player_id:long;
+  sessions:[PullSession];
 }
 
 /***************

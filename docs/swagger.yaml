@@ -77,6 +77,22 @@ definitions:
     - playerID
     - type
     type: object
+  dto.ClawMachineGameRecordResponse:
+    properties:
+      catched:
+        description: Removed omitempty to ensure false values are included
+        type: boolean
+      clawMachineID:
+        type: integer
+      createdAt:
+        type: string
+      gameID:
+        type: integer
+      playerID:
+        type: integer
+      touchedItemID:
+        type: integer
+    type: object
   dto.CreateClawItemRequest:
     properties:
       catchPercentage:
@@ -266,6 +282,54 @@ definitions:
         type: integer
     required:
     - playerID
+    type: object
+  dto.GachaPlayerInventoryResponse:
+    properties:
+      itemID:
+        type: integer
+      quantity:
+        type: integer
+    type: object
+  dto.GachaPullHistoryItemResponse:
+    properties:
+      itemID:
+        type: integer
+    type: object
+  dto.GachaPullSessionResponse:
+    properties:
+      itemsPulled:
+        items:
+          $ref: '#/definitions/dto.GachaPullHistoryItemResponse'
+        type: array
+      machineID:
+        type: integer
+      pullCount:
+        type: integer
+      sessionID:
+        type: integer
+    type: object
+  dto.GetGameHistoryResponse:
+    properties:
+      gameRecords:
+        items:
+          $ref: '#/definitions/dto.ClawMachineGameRecordResponse'
+        type: array
+    type: object
+  dto.GetPlayerInventoryResponse:
+    properties:
+      inventory:
+        items:
+          $ref: '#/definitions/dto.GachaPlayerInventoryResponse'
+        type: array
+      playerID:
+        type: integer
+    type: object
+  dto.GetPlayerPullHistoryResponse:
+    properties:
+      gameSession:
+        items:
+          $ref: '#/definitions/dto.GachaPullSessionResponse'
+        type: array
     type: object
   dto.GetPullResultRequest:
     properties:
@@ -732,8 +796,7 @@ paths:
         "200":
           description: Game history retrieved successfully
           schema:
-            additionalProperties: true
-            type: object
+            $ref: '#/definitions/dto.GetGameHistoryResponse'
         "400":
           description: Invalid request body
           schema:
@@ -1075,6 +1138,68 @@ paths:
             additionalProperties: true
             type: object
       summary: Get gacha player information
+      tags:
+      - GachaMachine
+  /gachaMachine/getPlayerInventory/{playerID}:
+    get:
+      consumes:
+      - application/json
+      description: Get inventory items for a gacha player
+      parameters:
+      - description: Player ID
+        in: path
+        name: playerID
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Player inventory retrieved successfully
+          schema:
+            $ref: '#/definitions/dto.GetPlayerInventoryResponse'
+        "400":
+          description: Invalid player ID
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Get player inventory
+      tags:
+      - GachaMachine
+  /gachaMachine/getPlayerPullHistory/{playerID}:
+    get:
+      consumes:
+      - application/json
+      description: Get pull history for a gacha player
+      parameters:
+      - description: Player ID
+        in: path
+        name: playerID
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Player pull history retrieved successfully
+          schema:
+            $ref: '#/definitions/dto.GetPlayerPullHistoryResponse'
+        "400":
+          description: Invalid player ID
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Get player pull history
       tags:
       - GachaMachine
   /gachaMachine/getPullResult:

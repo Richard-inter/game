@@ -46,10 +46,10 @@ func GetGachaRarityValue(rarity string, price int64) int64 {
 }
 
 func CalculateGachaRTPDelta(state *domain.GachaMachineRTPState) float64 {
-	if state == nil || state.TotalRevenue == 0 {
+	if state == nil || state.TotalPlays == 0 {
 		return 0
 	}
-	currentRTP := (float64(state.TotalPayout) / float64(state.TotalRevenue)) * 100.0
+	currentRTP := (float64(state.TotalPayout) / float64(state.TotalPlays)) * 100.0
 	// Return the percentage difference (no extra division by 100)
 	return currentRTP - state.TargetRTP
 }
@@ -191,6 +191,11 @@ func (s *GachaMachineWebsocketService) PullGachaSingle(
 		return 0, err
 	}
 
+	err = s.repo.AddItemInventory(ctx, playerID, itemID, 1)
+	if err != nil {
+		return 0, err
+	}
+
 	return itemID, nil
 }
 
@@ -199,7 +204,8 @@ func (s *GachaMachineWebsocketService) PullGachaByMachineIDMulti(
 	machineID, playerID int64,
 	count int,
 ) ([]int64, error) {
-	results := make([]int64, 0, count)
+	resultMap := make(map[int64]int32)
+	returnResults := make([]int64, 0, count)
 
 	resp, err := s.repo.GetGachaMachineInfo(ctx, machineID)
 	if err != nil {
@@ -213,7 +219,8 @@ func (s *GachaMachineWebsocketService) PullGachaByMachineIDMulti(
 
 	for i := 0; i < count; i++ {
 		itemID := s.PullGachaByMachineID(ctx, pityState, resp)
-		results = append(results, itemID)
+		returnResults = append(returnResults, itemID)
+		resultMap[itemID]++
 
 		s.updatePityAfterPull(pityState, itemID, resp)
 
@@ -223,7 +230,14 @@ func (s *GachaMachineWebsocketService) PullGachaByMachineIDMulti(
 	_ = s.repo.SetGachaPityState(ctx, pityState)
 	_ = s.redis.DeleteGachaPityStateFromRedis(ctx, machineID, playerID)
 
-	return results, nil
+	for itemID, qty := range resultMap {
+		err := s.repo.AddItemInventory(ctx, playerID, itemID, qty)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	return returnResults, nil
 }
 
 func (s *GachaMachineWebsocketService) updatePityAfterPull(

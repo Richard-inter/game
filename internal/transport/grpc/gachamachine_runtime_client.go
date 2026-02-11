@@ -38,3 +38,11 @@ func (c *GachaMachineRuntimeClient) GetPlayerInfoWs(ctx context.Context, req *ru
 func (c *GachaMachineRuntimeClient) GetMachineInfoWs(ctx context.Context, req *runtimepb.RuntimeRequest) (*runtimepb.RuntimeResponse, error) {
 	return c.client.GetMachineInfoWs(ctx, req)
 }
+
+func (c *GachaMachineRuntimeClient) GetPlayerInventoryWs(ctx context.Context, req *runtimepb.RuntimeRequest) (*runtimepb.RuntimeResponse, error) {
+	return c.client.GetPlayerInventoryWs(ctx, req)
+}
+
+func (c *GachaMachineRuntimeClient) GetPlayerPullHistoryWs(ctx context.Context, req *runtimepb.RuntimeRequest) (*runtimepb.RuntimeResponse, error) {
+	return c.client.GetPlayerPullHistoryWs(ctx, req)
+}

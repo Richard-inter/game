@@ -239,6 +239,114 @@ func (s *GachaMachineWebsocketService) GetMachineInfoWs(
 	), nil
 }
 
+func (s *GachaMachineWebsocketService) GetPlayerInventoryWs(ctx context.Context, req *pb.RuntimeRequest) (*pb.RuntimeResponse, error) {
+	getPlayerInventoryReq := fbs.GetRootAsGetPlayerInventoryWsReq(req.Payload, 0)
+	playerID := getPlayerInventoryReq.PlayerId()
+
+	if playerID <= 0 {
+		return nil, errors.New("invalid player ID")
+	}
+
+	inventory, err := s.repo.GetPlayerInventory(ctx, playerID)
+	if err != nil {
+		s.log.Errorf("Failed to get player inventory: %v", err)
+		return s.createErrorResponse(err), nil
+	}
+
+	builder := flatbuffers.NewBuilder(2048)
+
+	// Build PlayerInventoryItem vector
+	itemOffsets := make([]flatbuffers.UOffsetT, len(inventory))
+	for i, item := range inventory {
+		fbs.PlayerInventoryItemStart(builder)
+		fbs.PlayerInventoryItemAddItemId(builder, item.ItemID)
+		fbs.PlayerInventoryItemAddQuantity(builder, item.Quantity)
+		itemOffsets[i] = fbs.PlayerInventoryItemEnd(builder)
+	}
+
+	fbs.GetPlayerInventoryWsRespStartItemsVector(builder, len(itemOffsets))
+	for i := len(itemOffsets) - 1; i >= 0; i-- {
+		builder.PrependUOffsetT(itemOffsets[i])
+	}
+	itemsVectorOffset := builder.EndVector(len(itemOffsets))
+
+	fbs.GetPlayerInventoryWsRespStart(builder)
+	fbs.GetPlayerInventoryWsRespAddPlayerId(builder, playerID)
+	fbs.GetPlayerInventoryWsRespAddItems(builder, itemsVectorOffset)
+	respOffset := fbs.GetPlayerInventoryWsRespEnd(builder)
+
+	builder.Finish(respOffset)
+	respBytes := builder.FinishedBytes()
+
+	return s.buildEnvelopeResponse(fbs.MessageTypeGetPlayerInventoryWsResp, respBytes), nil
+}
+
+func (s *GachaMachineWebsocketService) GetPlayerPullHistoryWs(ctx context.Context, req *pb.RuntimeRequest) (*pb.RuntimeResponse, error) {
+	getPlayerPullHistoryReq := fbs.GetRootAsGetPlayerPullHistoryWsReq(req.Payload, 0)
+	playerID := getPlayerPullHistoryReq.PlayerId()
+
+	if playerID <= 0 {
+		return nil, errors.New("invalid player ID")
+	}
+
+	sessions, err := s.repo.GetPlayerPullHistory(ctx, playerID)
+	if err != nil {
+		s.log.Errorf("Failed to get player pull history: %v", err)
+		return s.createErrorResponse(err), nil
+	}
+
+	builder := flatbuffers.NewBuilder(2048)
+
+	// Build PullSession vector
+	sessionOffsets := make([]flatbuffers.UOffsetT, len(sessions))
+	for i, session := range sessions {
+		// Get pull histories for this session
+		histories, err := s.repo.GetGachaPullHistoriesBySessionID(ctx, session.ID)
+		if err != nil {
+			s.log.Errorf("Failed to get pull histories for session %d: %v", session.ID, err)
+			// Continue with empty items if we can't get histories
+			histories = []*domain.GachaPullHistory{}
+		}
+
+		// Build PullHistoryItem vector
+		itemOffsets := make([]flatbuffers.UOffsetT, len(histories))
+		for j, history := range histories {
+			fbs.PullHistoryItemStart(builder)
+			fbs.PullHistoryItemAddItemId(builder, history.ItemID)
+			itemOffsets[j] = fbs.PullHistoryItemEnd(builder)
+		}
+
+		fbs.PullSessionStartItemsPulledVector(builder, len(itemOffsets))
+		for j := len(itemOffsets) - 1; j >= 0; j-- {
+			builder.PrependUOffsetT(itemOffsets[j])
+		}
+		itemsVectorOffset := builder.EndVector(len(itemOffsets))
+
+		fbs.PullSessionStart(builder)
+		fbs.PullSessionAddSessionId(builder, session.ID)
+		fbs.PullSessionAddMachineId(builder, session.GachaMachineID)
+		fbs.PullSessionAddPullCount(builder, session.PullCount)
+		fbs.PullSessionAddItemsPulled(builder, itemsVectorOffset)
+		sessionOffsets[i] = fbs.PullSessionEnd(builder)
+	}
+
+	fbs.GetPlayerPullHistoryWsRespStartSessionsVector(builder, len(sessionOffsets))
+	for i := len(sessionOffsets) - 1; i >= 0; i-- {
+		builder.PrependUOffsetT(sessionOffsets[i])
+	}
+	sessionsVectorOffset := builder.EndVector(len(sessionOffsets))
+
+	fbs.GetPlayerPullHistoryWsRespStart(builder)
+	fbs.GetPlayerPullHistoryWsRespAddPlayerId(builder, playerID)
+	fbs.GetPlayerPullHistoryWsRespAddSessions(builder, sessionsVectorOffset)
+	respOffset := fbs.GetPlayerPullHistoryWsRespEnd(builder)
+
+	builder.Finish(respOffset)
+	respBytes := builder.FinishedBytes()
+
+	return s.buildEnvelopeResponse(fbs.MessageTypeGetPlayerPullHistoryWsResp, respBytes), nil
+}
+
 func (s *GachaMachineWebsocketService) createErrorResponse(err error) *pb.RuntimeResponse {
 	builder := flatbuffers.NewBuilder(256)
 

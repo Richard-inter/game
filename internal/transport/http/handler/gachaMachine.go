@@ -2,6 +2,7 @@ package handler
 
 import (
 	"fmt"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
@@ -375,4 +376,110 @@ func (h *GachaMachineHandler) HandleUpdateGachaMachineTargetRTP(c *gin.Context) 
 
 	h.logger.Infow("Successfully updated gacha machine target RTP", "machine_id", req.MachineID, "target_rtp", req.TargetRTP)
 	common.SendSuccess(c, resp)
+}
+
+// HandleGetPlayerInventory godoc
+// @Summary Get player inventory
+// @Description Get inventory items for a gacha player
+// @Tags GachaMachine
+// @Accept json
+// @Produce json
+// @Param playerID path int true "Player ID"
+// @Success 200 {object} dto.GetPlayerInventoryResponse "Player inventory retrieved successfully"
+// @Failure 400 {object} map[string]interface{} "Invalid player ID"
+// @Failure 500 {object} map[string]interface{} "Internal server error"
+// @Router /gachaMachine/getPlayerInventory/{playerID} [get]
+func (h *GachaMachineHandler) HandleGetPlayerInventory(c *gin.Context) {
+	playerIDStr := c.Param("playerID")
+	playerID, err := strconv.ParseInt(playerIDStr, 10, 64)
+	if err != nil {
+		h.logger.Errorw("Invalid player ID", "error", err)
+		common.SendError(c, 400, "Invalid player ID")
+		return
+	}
+
+	grpcReq := &gachaMachine.GetPlayerInventoryReq{
+		PlayerID: playerID,
+	}
+
+	resp, err := h.gachaMachineClient.GetPlayerInventory(c, grpcReq)
+	if err != nil {
+		h.logger.Errorw("Failed to get player inventory", "error", err)
+		common.SendError(c, 500, err.Error())
+		return
+	}
+
+	// Convert protobuf response to custom DTO
+	inventory := make([]dto.GachaPlayerInventoryResponse, len(resp.Inventory))
+	for i, item := range resp.Inventory {
+		inventory[i] = dto.GachaPlayerInventoryResponse{
+			ItemID:   item.ItemID,
+			Quantity: item.Quantity,
+		}
+	}
+
+	response := dto.GetPlayerInventoryResponse{
+		PlayerID:  resp.PlayerID,
+		Inventory: inventory,
+	}
+
+	h.logger.Infow("Successfully retrieved player inventory", "player_id", playerID, "item_count", len(resp.Inventory))
+	common.SendSuccess(c, response)
+}
+
+// HandleGetPlayerPullHistory godoc
+// @Summary Get player pull history
+// @Description Get pull history for a gacha player
+// @Tags GachaMachine
+// @Accept json
+// @Produce json
+// @Param playerID path int true "Player ID"
+// @Success 200 {object} dto.GetPlayerPullHistoryResponse "Player pull history retrieved successfully"
+// @Failure 400 {object} map[string]interface{} "Invalid player ID"
+// @Failure 500 {object} map[string]interface{} "Internal server error"
+// @Router /gachaMachine/getPlayerPullHistory/{playerID} [get]
+func (h *GachaMachineHandler) HandleGetPlayerPullHistory(c *gin.Context) {
+	playerIDStr := c.Param("playerID")
+	playerID, err := strconv.ParseInt(playerIDStr, 10, 64)
+	if err != nil {
+		h.logger.Errorw("Invalid player ID", "error", err)
+		common.SendError(c, 400, "Invalid player ID")
+		return
+	}
+
+	grpcReq := &gachaMachine.GetPlayerPullHistoryReq{
+		PlayerID: playerID,
+	}
+
+	resp, err := h.gachaMachineClient.GetPlayerPullHistory(c, grpcReq)
+	if err != nil {
+		h.logger.Errorw("Failed to get player pull history", "error", err)
+		common.SendError(c, 500, err.Error())
+		return
+	}
+
+	// Convert protobuf response to custom DTO
+	gameSessions := make([]dto.GachaPullSessionResponse, len(resp.GameSessions))
+	for i, session := range resp.GameSessions {
+		itemsPulled := make([]dto.GachaPullHistoryItemResponse, len(session.ItemsPulled))
+		for j, item := range session.ItemsPulled {
+			itemsPulled[j] = dto.GachaPullHistoryItemResponse{
+				ItemID: item.ItemID,
+			}
+		}
+
+		gameSessions[i] = dto.GachaPullSessionResponse{
+			SessionID:   session.SessionID,
+			MachineID:   session.MachineID,
+			PullCount:   session.PullCount,
+			ItemsPulled: itemsPulled,
+		}
+	}
+
+	response := dto.GetPlayerPullHistoryResponse{
+		GameSessions: gameSessions,
+	}
+
+	h.logger.Infow("Successfully retrieved player pull history", "player_id", playerID, "session_count", len(resp.GameSessions))
+	common.SendSuccess(c, response)
 }

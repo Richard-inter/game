@@ -576,8 +576,7 @@ const docTemplate = `{
                     "200": {
                         "description": "Game history retrieved successfully",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": true
+                            "$ref": "#/definitions/dto.GetGameHistoryResponse"
                         }
                     },
                     "400": {
@@ -1066,6 +1065,98 @@ const docTemplate = `{
                         "schema": {
                             "type": "object",
                             "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid player ID",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/gachaMachine/getPlayerInventory/{playerID}": {
+            "get": {
+                "description": "Get inventory items for a gacha player",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "GachaMachine"
+                ],
+                "summary": "Get player inventory",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Player ID",
+                        "name": "playerID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Player inventory retrieved successfully",
+                        "schema": {
+                            "$ref": "#/definitions/dto.GetPlayerInventoryResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid player ID",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/gachaMachine/getPlayerPullHistory/{playerID}": {
+            "get": {
+                "description": "Get pull history for a gacha player",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "GachaMachine"
+                ],
+                "summary": "Get player pull history",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Player ID",
+                        "name": "playerID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Player pull history retrieved successfully",
+                        "schema": {
+                            "$ref": "#/definitions/dto.GetPlayerPullHistoryResponse"
                         }
                     },
                     "400": {
@@ -1732,6 +1823,30 @@ const docTemplate = `{
                 }
             }
         },
+        "dto.ClawMachineGameRecordResponse": {
+            "type": "object",
+            "properties": {
+                "catched": {
+                    "description": "Removed omitempty to ensure false values are included",
+                    "type": "boolean"
+                },
+                "clawMachineID": {
+                    "type": "integer"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "gameID": {
+                    "type": "integer"
+                },
+                "playerID": {
+                    "type": "integer"
+                },
+                "touchedItemID": {
+                    "type": "integer"
+                }
+            }
+        },
         "dto.CreateClawItemRequest": {
             "type": "object",
             "required": [
@@ -2010,6 +2125,81 @@ const docTemplate = `{
             "properties": {
                 "playerID": {
                     "type": "integer"
+                }
+            }
+        },
+        "dto.GachaPlayerInventoryResponse": {
+            "type": "object",
+            "properties": {
+                "itemID": {
+                    "type": "integer"
+                },
+                "quantity": {
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.GachaPullHistoryItemResponse": {
+            "type": "object",
+            "properties": {
+                "itemID": {
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.GachaPullSessionResponse": {
+            "type": "object",
+            "properties": {
+                "itemsPulled": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.GachaPullHistoryItemResponse"
+                    }
+                },
+                "machineID": {
+                    "type": "integer"
+                },
+                "pullCount": {
+                    "type": "integer"
+                },
+                "sessionID": {
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.GetGameHistoryResponse": {
+            "type": "object",
+            "properties": {
+                "gameRecords": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.ClawMachineGameRecordResponse"
+                    }
+                }
+            }
+        },
+        "dto.GetPlayerInventoryResponse": {
+            "type": "object",
+            "properties": {
+                "inventory": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.GachaPlayerInventoryResponse"
+                    }
+                },
+                "playerID": {
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.GetPlayerPullHistoryResponse": {
+            "type": "object",
+            "properties": {
+                "gameSession": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.GachaPullSessionResponse"
+                    }
                 }
             }
         },

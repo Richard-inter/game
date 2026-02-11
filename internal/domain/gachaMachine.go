@@ -78,6 +78,8 @@ type GachaPullSession struct {
 	UpdatedBy      string         `gorm:"column:updated_by" json:"updatedBy"`
 	DeletedAt      gorm.DeletedAt `gorm:"column:deleted_at;index" json:"deletedAt"`
 	DeletedBy      *string        `gorm:"column:deleted_by" json:"deletedBy"`
+
+	GachaPullHistories []GachaPullHistory `gorm:"foreignKey:GachaPullSessionID;references:ID"`
 }
 
 type GachaPullHistory struct {
@@ -104,11 +106,11 @@ type GachaPityState struct {
 }
 
 type GachaMachineRTPState struct {
-	GachaMachineID int64          `gorm:"column:gacha_machine_id;primaryKey"`
-	TargetRTP      float64        `gorm:"column:target_rtp"`
-	TotalPlays     int64          `gorm:"column:total_plays"`
-	TotalRevenue   int64          `gorm:"column:total_revenue"`
-	TotalPayout    int64          `gorm:"column:total_payout"`
+	GachaMachineID int64          `gorm:"column:gacha_machine_id;primaryKey" json:"gachaMachineID"`
+	TargetRTP      float64        `gorm:"column:target_rtp" json:"targetRTP"`
+	TotalRevenue   int64          `gorm:"column:total_revenue" json:"totalRevenue"`
+	TotalPlays     int64          `gorm:"column:total_plays" json:"totalPlays"`
+	TotalPayout    int64          `gorm:"column:total_payout" json:"totalPayout"`
 	IsActive       bool           `gorm:"column:is_active;default:true" json:"isActive"`
 	CreatedAt      time.Time      `gorm:"column:created_at;autoCreateTime" json:"createdAt"`
 	CreatedBy      string         `gorm:"column:created_by" json:"createdBy"`
@@ -116,6 +118,19 @@ type GachaMachineRTPState struct {
 	UpdatedBy      string         `gorm:"column:updated_by" json:"updatedBy"`
 	DeletedAt      gorm.DeletedAt `gorm:"column:deleted_at;index" json:"deletedAt"`
 	DeletedBy      *string        `gorm:"column:deleted_by" json:"deletedBy"`
+}
+
+type GachaPlayerInventory struct {
+	PlayerID  int64          `gorm:"column:player_id;primaryKey" json:"playerID"`
+	ItemID    int64          `gorm:"column:item_id;primaryKey" json:"itemID"`
+	Quantity  int32          `gorm:"column:quantity" json:"quantity"`
+	IsActive  bool           `gorm:"column:is_active;default:true" json:"isActive"`
+	CreatedAt time.Time      `gorm:"column:created_at;autoCreateTime" json:"createdAt"`
+	CreatedBy string         `gorm:"column:created_by" json:"createdBy"`
+	UpdatedAt time.Time      `gorm:"column:updated_at;autoUpdateTime" json:"updatedAt"`
+	UpdatedBy string         `gorm:"column:updated_by" json:"updatedBy"`
+	DeletedAt gorm.DeletedAt `gorm:"column:deleted_at;index" json:"deletedAt"`
+	DeletedBy *string        `gorm:"column:deleted_by" json:"deletedBy"`
 }
 
 func (GachaPlayer) TableName() string {
@@ -148,4 +163,8 @@ func (GachaPityState) TableName() string {
 
 func (GachaMachineRTPState) TableName() string {
 	return "gacha_machine_rtp_state"
+}
+
+func (GachaPlayerInventory) TableName() string {
+	return "gacha_player_inventory"
 }

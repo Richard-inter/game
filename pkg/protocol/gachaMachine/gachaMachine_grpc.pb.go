@@ -24,6 +24,8 @@ const (
 	GachaMachineService_CreateGachaItems_FullMethodName            = "/gachaMachine.GachaMachineService/CreateGachaItems"
 	GachaMachineService_CreateGachaPlayer_FullMethodName           = "/gachaMachine.GachaMachineService/CreateGachaPlayer"
 	GachaMachineService_GetGachaPlayerInfo_FullMethodName          = "/gachaMachine.GachaMachineService/GetGachaPlayerInfo"
+	GachaMachineService_GetPlayerInventory_FullMethodName          = "/gachaMachine.GachaMachineService/GetPlayerInventory"
+	GachaMachineService_GetPlayerPullHistory_FullMethodName        = "/gachaMachine.GachaMachineService/GetPlayerPullHistory"
 	GachaMachineService_AdjustPlayerCoin_FullMethodName            = "/gachaMachine.GachaMachineService/AdjustPlayerCoin"
 	GachaMachineService_AdjustPlayerDiamond_FullMethodName         = "/gachaMachine.GachaMachineService/AdjustPlayerDiamond"
 	GachaMachineService_GetPullResult_FullMethodName               = "/gachaMachine.GachaMachineService/GetPullResult"
@@ -42,6 +44,8 @@ type GachaMachineServiceClient interface {
 	// player
 	CreateGachaPlayer(ctx context.Context, in *CreateGachaPlayerReq, opts ...grpc.CallOption) (*CreateGachaPlayerResp, error)
 	GetGachaPlayerInfo(ctx context.Context, in *GetGachaPlayerInfoReq, opts ...grpc.CallOption) (*GetGachaPlayerInfoResp, error)
+	GetPlayerInventory(ctx context.Context, in *GetPlayerInventoryReq, opts ...grpc.CallOption) (*GetPlayerInventoryResp, error)
+	GetPlayerPullHistory(ctx context.Context, in *GetPlayerPullHistoryReq, opts ...grpc.CallOption) (*GetPlayerPullHistoryResp, error)
 	AdjustPlayerCoin(ctx context.Context, in *AdjustPlayerCoinReq, opts ...grpc.CallOption) (*AdjustPlayerCoinResp, error)
 	AdjustPlayerDiamond(ctx context.Context, in *AdjustPlayerDiamondReq, opts ...grpc.CallOption) (*AdjustPlayerDiamondResp, error)
 	// game
@@ -108,6 +112,26 @@ func (c *gachaMachineServiceClient) GetGachaPlayerInfo(ctx context.Context, in *
 	return out, nil
 }
 
+func (c *gachaMachineServiceClient) GetPlayerInventory(ctx context.Context, in *GetPlayerInventoryReq, opts ...grpc.CallOption) (*GetPlayerInventoryResp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetPlayerInventoryResp)
+	err := c.cc.Invoke(ctx, GachaMachineService_GetPlayerInventory_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *gachaMachineServiceClient) GetPlayerPullHistory(ctx context.Context, in *GetPlayerPullHistoryReq, opts ...grpc.CallOption) (*GetPlayerPullHistoryResp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetPlayerPullHistoryResp)
+	err := c.cc.Invoke(ctx, GachaMachineService_GetPlayerPullHistory_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *gachaMachineServiceClient) AdjustPlayerCoin(ctx context.Context, in *AdjustPlayerCoinReq, opts ...grpc.CallOption) (*AdjustPlayerCoinResp, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(AdjustPlayerCoinResp)
@@ -160,6 +184,8 @@ type GachaMachineServiceServer interface {
 	// player
 	CreateGachaPlayer(context.Context, *CreateGachaPlayerReq) (*CreateGachaPlayerResp, error)
 	GetGachaPlayerInfo(context.Context, *GetGachaPlayerInfoReq) (*GetGachaPlayerInfoResp, error)
+	GetPlayerInventory(context.Context, *GetPlayerInventoryReq) (*GetPlayerInventoryResp, error)
+	GetPlayerPullHistory(context.Context, *GetPlayerPullHistoryReq) (*GetPlayerPullHistoryResp, error)
 	AdjustPlayerCoin(context.Context, *AdjustPlayerCoinReq) (*AdjustPlayerCoinResp, error)
 	AdjustPlayerDiamond(context.Context, *AdjustPlayerDiamondReq) (*AdjustPlayerDiamondResp, error)
 	// game
@@ -190,6 +216,12 @@ func (UnimplementedGachaMachineServiceServer) CreateGachaPlayer(context.Context,
 }
 func (UnimplementedGachaMachineServiceServer) GetGachaPlayerInfo(context.Context, *GetGachaPlayerInfoReq) (*GetGachaPlayerInfoResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetGachaPlayerInfo not implemented")
+}
+func (UnimplementedGachaMachineServiceServer) GetPlayerInventory(context.Context, *GetPlayerInventoryReq) (*GetPlayerInventoryResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetPlayerInventory not implemented")
+}
+func (UnimplementedGachaMachineServiceServer) GetPlayerPullHistory(context.Context, *GetPlayerPullHistoryReq) (*GetPlayerPullHistoryResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetPlayerPullHistory not implemented")
 }
 func (UnimplementedGachaMachineServiceServer) AdjustPlayerCoin(context.Context, *AdjustPlayerCoinReq) (*AdjustPlayerCoinResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AdjustPlayerCoin not implemented")
@@ -314,6 +346,42 @@ func _GachaMachineService_GetGachaPlayerInfo_Handler(srv interface{}, ctx contex
 	return interceptor(ctx, in, info, handler)
 }
 
+func _GachaMachineService_GetPlayerInventory_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetPlayerInventoryReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(GachaMachineServiceServer).GetPlayerInventory(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: GachaMachineService_GetPlayerInventory_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(GachaMachineServiceServer).GetPlayerInventory(ctx, req.(*GetPlayerInventoryReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _GachaMachineService_GetPlayerPullHistory_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetPlayerPullHistoryReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(GachaMachineServiceServer).GetPlayerPullHistory(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: GachaMachineService_GetPlayerPullHistory_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(GachaMachineServiceServer).GetPlayerPullHistory(ctx, req.(*GetPlayerPullHistoryReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _GachaMachineService_AdjustPlayerCoin_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(AdjustPlayerCoinReq)
 	if err := dec(in); err != nil {
@@ -412,6 +480,14 @@ var GachaMachineService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetGachaPlayerInfo",
 			Handler:    _GachaMachineService_GetGachaPlayerInfo_Handler,
+		},
+		{
+			MethodName: "GetPlayerInventory",
+			Handler:    _GachaMachineService_GetPlayerInventory_Handler,
+		},
+		{
+			MethodName: "GetPlayerPullHistory",
+			Handler:    _GachaMachineService_GetPlayerPullHistory_Handler,
 		},
 		{
 			MethodName: "AdjustPlayerCoin",

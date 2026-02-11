@@ -47,6 +47,14 @@ func (c *GachaMachineClient) GetGachaPlayerInfo(ctx context.Context, req *gacham
 	return c.client.GetGachaPlayerInfo(ctx, req)
 }
 
+func (c *GachaMachineClient) GetPlayerInventory(ctx context.Context, req *gachamachinepb.GetPlayerInventoryReq) (*gachamachinepb.GetPlayerInventoryResp, error) {
+	return c.client.GetPlayerInventory(ctx, req)
+}
+
+func (c *GachaMachineClient) GetPlayerPullHistory(ctx context.Context, req *gachamachinepb.GetPlayerPullHistoryReq) (*gachamachinepb.GetPlayerPullHistoryResp, error) {
+	return c.client.GetPlayerPullHistory(ctx, req)
+}
+
 func (c *GachaMachineClient) AdjustPlayerCoin(ctx context.Context, req *gachamachinepb.AdjustPlayerCoinReq) (*gachamachinepb.AdjustPlayerCoinResp, error) {
 	return c.client.AdjustPlayerCoin(ctx, req)
 }

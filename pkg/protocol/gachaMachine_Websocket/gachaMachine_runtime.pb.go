@@ -117,11 +117,13 @@ const file_gachaMachine_Websocket_gachaMachine_runtime_proto_rawDesc = "" +
 	"\x0eRuntimeRequest\x12\x18\n" +
 	"\apayload\x18\x01 \x01(\fR\apayload\"+\n" +
 	"\x0fRuntimeResponse\x12\x18\n" +
-	"\apayload\x18\x01 \x01(\fR\apayload2\xbd\x02\n" +
+	"\apayload\x18\x01 \x01(\fR\apayload2\x89\x04\n" +
 	"\x1aGachaMachineRuntimeService\x12^\n" +
 	"\x0fGetPullResultWs\x12$.gachaMachine.runtime.RuntimeRequest\x1a%.gachaMachine.runtime.RuntimeResponse\x12^\n" +
 	"\x0fGetPlayerInfoWs\x12$.gachaMachine.runtime.RuntimeRequest\x1a%.gachaMachine.runtime.RuntimeResponse\x12_\n" +
-	"\x10GetMachineInfoWs\x12$.gachaMachine.runtime.RuntimeRequest\x1a%.gachaMachine.runtime.RuntimeResponseBCZAgithub.com/Richard-inter/game/pkg/protocol/gachaMachine_Websocketb\x06proto3"
+	"\x10GetMachineInfoWs\x12$.gachaMachine.runtime.RuntimeRequest\x1a%.gachaMachine.runtime.RuntimeResponse\x12c\n" +
+	"\x14GetPlayerInventoryWs\x12$.gachaMachine.runtime.RuntimeRequest\x1a%.gachaMachine.runtime.RuntimeResponse\x12e\n" +
+	"\x16GetPlayerPullHistoryWs\x12$.gachaMachine.runtime.RuntimeRequest\x1a%.gachaMachine.runtime.RuntimeResponseBCZAgithub.com/Richard-inter/game/pkg/protocol/gachaMachine_Websocketb\x06proto3"
 
 var (
 	file_gachaMachine_Websocket_gachaMachine_runtime_proto_rawDescOnce sync.Once
@@ -144,11 +146,15 @@ var file_gachaMachine_Websocket_gachaMachine_runtime_proto_depIdxs = []int32{
 	0, // 0: gachaMachine.runtime.GachaMachineRuntimeService.GetPullResultWs:input_type -> gachaMachine.runtime.RuntimeRequest
 	0, // 1: gachaMachine.runtime.GachaMachineRuntimeService.GetPlayerInfoWs:input_type -> gachaMachine.runtime.RuntimeRequest
 	0, // 2: gachaMachine.runtime.GachaMachineRuntimeService.GetMachineInfoWs:input_type -> gachaMachine.runtime.RuntimeRequest
-	1, // 3: gachaMachine.runtime.GachaMachineRuntimeService.GetPullResultWs:output_type -> gachaMachine.runtime.RuntimeResponse
-	1, // 4: gachaMachine.runtime.GachaMachineRuntimeService.GetPlayerInfoWs:output_type -> gachaMachine.runtime.RuntimeResponse
-	1, // 5: gachaMachine.runtime.GachaMachineRuntimeService.GetMachineInfoWs:output_type -> gachaMachine.runtime.RuntimeResponse
-	3, // [3:6] is the sub-list for method output_type
-	0, // [0:3] is the sub-list for method input_type
+	0, // 3: gachaMachine.runtime.GachaMachineRuntimeService.GetPlayerInventoryWs:input_type -> gachaMachine.runtime.RuntimeRequest
+	0, // 4: gachaMachine.runtime.GachaMachineRuntimeService.GetPlayerPullHistoryWs:input_type -> gachaMachine.runtime.RuntimeRequest
+	1, // 5: gachaMachine.runtime.GachaMachineRuntimeService.GetPullResultWs:output_type -> gachaMachine.runtime.RuntimeResponse
+	1, // 6: gachaMachine.runtime.GachaMachineRuntimeService.GetPlayerInfoWs:output_type -> gachaMachine.runtime.RuntimeResponse
+	1, // 7: gachaMachine.runtime.GachaMachineRuntimeService.GetMachineInfoWs:output_type -> gachaMachine.runtime.RuntimeResponse
+	1, // 8: gachaMachine.runtime.GachaMachineRuntimeService.GetPlayerInventoryWs:output_type -> gachaMachine.runtime.RuntimeResponse
+	1, // 9: gachaMachine.runtime.GachaMachineRuntimeService.GetPlayerPullHistoryWs:output_type -> gachaMachine.runtime.RuntimeResponse
+	5, // [5:10] is the sub-list for method output_type
+	0, // [0:5] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name
 	0, // [0:0] is the sub-list for extension extendee
 	0, // [0:0] is the sub-list for field type_name

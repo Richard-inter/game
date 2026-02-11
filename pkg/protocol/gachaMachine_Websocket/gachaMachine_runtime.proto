@@ -17,4 +17,6 @@ service GachaMachineRuntimeService {
     rpc GetPullResultWs (RuntimeRequest) returns (RuntimeResponse);
     rpc GetPlayerInfoWs (RuntimeRequest) returns (RuntimeResponse);
     rpc GetMachineInfoWs (RuntimeRequest) returns (RuntimeResponse);
+    rpc GetPlayerInventoryWs (RuntimeRequest) returns (RuntimeResponse);
+    rpc GetPlayerPullHistoryWs (RuntimeRequest) returns (RuntimeResponse);
 }

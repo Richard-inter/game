@@ -1355,6 +1355,354 @@ func (x *UpdateGachaMachineTargetRTPResp) GetSuccess() bool {
 	return false
 }
 
+type GetPlayerInventoryReq struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	PlayerID      int64                  `protobuf:"varint,1,opt,name=playerID,proto3" json:"playerID,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetPlayerInventoryReq) Reset() {
+	*x = GetPlayerInventoryReq{}
+	mi := &file_gachaMachine_gachaMachine_proto_msgTypes[25]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetPlayerInventoryReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetPlayerInventoryReq) ProtoMessage() {}
+
+func (x *GetPlayerInventoryReq) ProtoReflect() protoreflect.Message {
+	mi := &file_gachaMachine_gachaMachine_proto_msgTypes[25]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetPlayerInventoryReq.ProtoReflect.Descriptor instead.
+func (*GetPlayerInventoryReq) Descriptor() ([]byte, []int) {
+	return file_gachaMachine_gachaMachine_proto_rawDescGZIP(), []int{25}
+}
+
+func (x *GetPlayerInventoryReq) GetPlayerID() int64 {
+	if x != nil {
+		return x.PlayerID
+	}
+	return 0
+}
+
+type GachaPlayerInventory struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	ItemID        int64                  `protobuf:"varint,1,opt,name=itemID,proto3" json:"itemID,omitempty"`
+	Quantity      int32                  `protobuf:"varint,2,opt,name=quantity,proto3" json:"quantity,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GachaPlayerInventory) Reset() {
+	*x = GachaPlayerInventory{}
+	mi := &file_gachaMachine_gachaMachine_proto_msgTypes[26]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GachaPlayerInventory) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GachaPlayerInventory) ProtoMessage() {}
+
+func (x *GachaPlayerInventory) ProtoReflect() protoreflect.Message {
+	mi := &file_gachaMachine_gachaMachine_proto_msgTypes[26]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GachaPlayerInventory.ProtoReflect.Descriptor instead.
+func (*GachaPlayerInventory) Descriptor() ([]byte, []int) {
+	return file_gachaMachine_gachaMachine_proto_rawDescGZIP(), []int{26}
+}
+
+func (x *GachaPlayerInventory) GetItemID() int64 {
+	if x != nil {
+		return x.ItemID
+	}
+	return 0
+}
+
+func (x *GachaPlayerInventory) GetQuantity() int32 {
+	if x != nil {
+		return x.Quantity
+	}
+	return 0
+}
+
+type GetPlayerInventoryResp struct {
+	state         protoimpl.MessageState  `protogen:"open.v1"`
+	PlayerID      int64                   `protobuf:"varint,1,opt,name=playerID,proto3" json:"playerID,omitempty"`
+	Inventory     []*GachaPlayerInventory `protobuf:"bytes,2,rep,name=inventory,proto3" json:"inventory,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetPlayerInventoryResp) Reset() {
+	*x = GetPlayerInventoryResp{}
+	mi := &file_gachaMachine_gachaMachine_proto_msgTypes[27]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetPlayerInventoryResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetPlayerInventoryResp) ProtoMessage() {}
+
+func (x *GetPlayerInventoryResp) ProtoReflect() protoreflect.Message {
+	mi := &file_gachaMachine_gachaMachine_proto_msgTypes[27]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetPlayerInventoryResp.ProtoReflect.Descriptor instead.
+func (*GetPlayerInventoryResp) Descriptor() ([]byte, []int) {
+	return file_gachaMachine_gachaMachine_proto_rawDescGZIP(), []int{27}
+}
+
+func (x *GetPlayerInventoryResp) GetPlayerID() int64 {
+	if x != nil {
+		return x.PlayerID
+	}
+	return 0
+}
+
+func (x *GetPlayerInventoryResp) GetInventory() []*GachaPlayerInventory {
+	if x != nil {
+		return x.Inventory
+	}
+	return nil
+}
+
+type GachaPullHistoryItem struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	ItemID        int64                  `protobuf:"varint,1,opt,name=itemID,proto3" json:"itemID,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GachaPullHistoryItem) Reset() {
+	*x = GachaPullHistoryItem{}
+	mi := &file_gachaMachine_gachaMachine_proto_msgTypes[28]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GachaPullHistoryItem) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GachaPullHistoryItem) ProtoMessage() {}
+
+func (x *GachaPullHistoryItem) ProtoReflect() protoreflect.Message {
+	mi := &file_gachaMachine_gachaMachine_proto_msgTypes[28]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GachaPullHistoryItem.ProtoReflect.Descriptor instead.
+func (*GachaPullHistoryItem) Descriptor() ([]byte, []int) {
+	return file_gachaMachine_gachaMachine_proto_rawDescGZIP(), []int{28}
+}
+
+func (x *GachaPullHistoryItem) GetItemID() int64 {
+	if x != nil {
+		return x.ItemID
+	}
+	return 0
+}
+
+type GachaPullSession struct {
+	state         protoimpl.MessageState  `protogen:"open.v1"`
+	SessionID     int64                   `protobuf:"varint,1,opt,name=sessionID,proto3" json:"sessionID,omitempty"`
+	MachineID     int64                   `protobuf:"varint,2,opt,name=machineID,proto3" json:"machineID,omitempty"`
+	PullCount     int64                   `protobuf:"varint,3,opt,name=pullCount,proto3" json:"pullCount,omitempty"`
+	ItemsPulled   []*GachaPullHistoryItem `protobuf:"bytes,4,rep,name=itemsPulled,proto3" json:"itemsPulled,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GachaPullSession) Reset() {
+	*x = GachaPullSession{}
+	mi := &file_gachaMachine_gachaMachine_proto_msgTypes[29]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GachaPullSession) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GachaPullSession) ProtoMessage() {}
+
+func (x *GachaPullSession) ProtoReflect() protoreflect.Message {
+	mi := &file_gachaMachine_gachaMachine_proto_msgTypes[29]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GachaPullSession.ProtoReflect.Descriptor instead.
+func (*GachaPullSession) Descriptor() ([]byte, []int) {
+	return file_gachaMachine_gachaMachine_proto_rawDescGZIP(), []int{29}
+}
+
+func (x *GachaPullSession) GetSessionID() int64 {
+	if x != nil {
+		return x.SessionID
+	}
+	return 0
+}
+
+func (x *GachaPullSession) GetMachineID() int64 {
+	if x != nil {
+		return x.MachineID
+	}
+	return 0
+}
+
+func (x *GachaPullSession) GetPullCount() int64 {
+	if x != nil {
+		return x.PullCount
+	}
+	return 0
+}
+
+func (x *GachaPullSession) GetItemsPulled() []*GachaPullHistoryItem {
+	if x != nil {
+		return x.ItemsPulled
+	}
+	return nil
+}
+
+type GetPlayerPullHistoryReq struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	PlayerID      int64                  `protobuf:"varint,1,opt,name=playerID,proto3" json:"playerID,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetPlayerPullHistoryReq) Reset() {
+	*x = GetPlayerPullHistoryReq{}
+	mi := &file_gachaMachine_gachaMachine_proto_msgTypes[30]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetPlayerPullHistoryReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetPlayerPullHistoryReq) ProtoMessage() {}
+
+func (x *GetPlayerPullHistoryReq) ProtoReflect() protoreflect.Message {
+	mi := &file_gachaMachine_gachaMachine_proto_msgTypes[30]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetPlayerPullHistoryReq.ProtoReflect.Descriptor instead.
+func (*GetPlayerPullHistoryReq) Descriptor() ([]byte, []int) {
+	return file_gachaMachine_gachaMachine_proto_rawDescGZIP(), []int{30}
+}
+
+func (x *GetPlayerPullHistoryReq) GetPlayerID() int64 {
+	if x != nil {
+		return x.PlayerID
+	}
+	return 0
+}
+
+type GetPlayerPullHistoryResp struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	GameSessions  []*GachaPullSession    `protobuf:"bytes,1,rep,name=gameSessions,proto3" json:"gameSessions,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetPlayerPullHistoryResp) Reset() {
+	*x = GetPlayerPullHistoryResp{}
+	mi := &file_gachaMachine_gachaMachine_proto_msgTypes[31]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetPlayerPullHistoryResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetPlayerPullHistoryResp) ProtoMessage() {}
+
+func (x *GetPlayerPullHistoryResp) ProtoReflect() protoreflect.Message {
+	mi := &file_gachaMachine_gachaMachine_proto_msgTypes[31]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetPlayerPullHistoryResp.ProtoReflect.Descriptor instead.
+func (*GetPlayerPullHistoryResp) Descriptor() ([]byte, []int) {
+	return file_gachaMachine_gachaMachine_proto_rawDescGZIP(), []int{31}
+}
+
+func (x *GetPlayerPullHistoryResp) GetGameSessions() []*GachaPullSession {
+	if x != nil {
+		return x.GameSessions
+	}
+	return nil
+}
+
 var File_gachaMachine_gachaMachine_proto protoreflect.FileDescriptor
 
 const file_gachaMachine_gachaMachine_proto_rawDesc = "" +
@@ -1448,13 +1796,34 @@ const file_gachaMachine_gachaMachine_proto_rawDesc = "" +
 	"\ttargetRTP\x18\x02 \x01(\x01R\ttargetRTP\"Y\n" +
 	"\x1fUpdateGachaMachineTargetRTPResp\x12\x1c\n" +
 	"\tmachineID\x18\x01 \x01(\x03R\tmachineID\x12\x18\n" +
-	"\asuccess\x18\x02 \x01(\bR\asuccess2\x81\a\n" +
+	"\asuccess\x18\x02 \x01(\bR\asuccess\"3\n" +
+	"\x15GetPlayerInventoryReq\x12\x1a\n" +
+	"\bplayerID\x18\x01 \x01(\x03R\bplayerID\"J\n" +
+	"\x14GachaPlayerInventory\x12\x16\n" +
+	"\x06itemID\x18\x01 \x01(\x03R\x06itemID\x12\x1a\n" +
+	"\bquantity\x18\x02 \x01(\x05R\bquantity\"v\n" +
+	"\x16GetPlayerInventoryResp\x12\x1a\n" +
+	"\bplayerID\x18\x01 \x01(\x03R\bplayerID\x12@\n" +
+	"\tinventory\x18\x02 \x03(\v2\".gachaMachine.GachaPlayerInventoryR\tinventory\".\n" +
+	"\x14GachaPullHistoryItem\x12\x16\n" +
+	"\x06itemID\x18\x01 \x01(\x03R\x06itemID\"\xb2\x01\n" +
+	"\x10GachaPullSession\x12\x1c\n" +
+	"\tsessionID\x18\x01 \x01(\x03R\tsessionID\x12\x1c\n" +
+	"\tmachineID\x18\x02 \x01(\x03R\tmachineID\x12\x1c\n" +
+	"\tpullCount\x18\x03 \x01(\x03R\tpullCount\x12D\n" +
+	"\vitemsPulled\x18\x04 \x03(\v2\".gachaMachine.GachaPullHistoryItemR\vitemsPulled\"5\n" +
+	"\x17GetPlayerPullHistoryReq\x12\x1a\n" +
+	"\bplayerID\x18\x01 \x01(\x03R\bplayerID\"^\n" +
+	"\x18GetPlayerPullHistoryResp\x12B\n" +
+	"\fgameSessions\x18\x01 \x03(\v2\x1e.gachaMachine.GachaPullSessionR\fgameSessions2\xc9\b\n" +
 	"\x13GachaMachineService\x12_\n" +
 	"\x12CreateGachaMachine\x12#.gachaMachine.CreateGachaMachineReq\x1a$.gachaMachine.CreateGachaMachineResp\x12b\n" +
 	"\x13GetGachaMachineInfo\x12$.gachaMachine.GetGachaMachineInfoReq\x1a%.gachaMachine.GetGachaMachineInfoResp\x12Y\n" +
 	"\x10CreateGachaItems\x12!.gachaMachine.CreateGachaItemsReq\x1a\".gachaMachine.CreateGachaItemsResp\x12\\\n" +
 	"\x11CreateGachaPlayer\x12\".gachaMachine.CreateGachaPlayerReq\x1a#.gachaMachine.CreateGachaPlayerResp\x12_\n" +
-	"\x12GetGachaPlayerInfo\x12#.gachaMachine.GetGachaPlayerInfoReq\x1a$.gachaMachine.GetGachaPlayerInfoResp\x12Y\n" +
+	"\x12GetGachaPlayerInfo\x12#.gachaMachine.GetGachaPlayerInfoReq\x1a$.gachaMachine.GetGachaPlayerInfoResp\x12_\n" +
+	"\x12GetPlayerInventory\x12#.gachaMachine.GetPlayerInventoryReq\x1a$.gachaMachine.GetPlayerInventoryResp\x12e\n" +
+	"\x14GetPlayerPullHistory\x12%.gachaMachine.GetPlayerPullHistoryReq\x1a&.gachaMachine.GetPlayerPullHistoryResp\x12Y\n" +
 	"\x10AdjustPlayerCoin\x12!.gachaMachine.AdjustPlayerCoinReq\x1a\".gachaMachine.AdjustPlayerCoinResp\x12b\n" +
 	"\x13AdjustPlayerDiamond\x12$.gachaMachine.AdjustPlayerDiamondReq\x1a%.gachaMachine.AdjustPlayerDiamondResp\x12P\n" +
 	"\rGetPullResult\x12\x1e.gachaMachine.GetPullResultReq\x1a\x1f.gachaMachine.GetPullResultResp\x12z\n" +
@@ -1472,7 +1841,7 @@ func file_gachaMachine_gachaMachine_proto_rawDescGZIP() []byte {
 	return file_gachaMachine_gachaMachine_proto_rawDescData
 }
 
-var file_gachaMachine_gachaMachine_proto_msgTypes = make([]protoimpl.MessageInfo, 25)
+var file_gachaMachine_gachaMachine_proto_msgTypes = make([]protoimpl.MessageInfo, 32)
 var file_gachaMachine_gachaMachine_proto_goTypes = []any{
 	(*Item)(nil),                            // 0: gachaMachine.Item
 	(*GachaMachine)(nil),                    // 1: gachaMachine.GachaMachine
@@ -1499,11 +1868,18 @@ var file_gachaMachine_gachaMachine_proto_goTypes = []any{
 	(*GetPullTimesTenResultResp)(nil),       // 22: gachaMachine.GetPullTimesTenResultResp
 	(*UpdateGachaMachineTargetRTPReq)(nil),  // 23: gachaMachine.UpdateGachaMachineTargetRTPReq
 	(*UpdateGachaMachineTargetRTPResp)(nil), // 24: gachaMachine.UpdateGachaMachineTargetRTPResp
-	(*player.Player)(nil),                   // 25: player.Player
+	(*GetPlayerInventoryReq)(nil),           // 25: gachaMachine.GetPlayerInventoryReq
+	(*GachaPlayerInventory)(nil),            // 26: gachaMachine.GachaPlayerInventory
+	(*GetPlayerInventoryResp)(nil),          // 27: gachaMachine.GetPlayerInventoryResp
+	(*GachaPullHistoryItem)(nil),            // 28: gachaMachine.GachaPullHistoryItem
+	(*GachaPullSession)(nil),                // 29: gachaMachine.GachaPullSession
+	(*GetPlayerPullHistoryReq)(nil),         // 30: gachaMachine.GetPlayerPullHistoryReq
+	(*GetPlayerPullHistoryResp)(nil),        // 31: gachaMachine.GetPlayerPullHistoryResp
+	(*player.Player)(nil),                   // 32: player.Player
 }
 var file_gachaMachine_gachaMachine_proto_depIdxs = []int32{
 	0,  // 0: gachaMachine.GachaMachine.items:type_name -> gachaMachine.Item
-	25, // 1: gachaMachine.GachaPlayer.basePlayer:type_name -> player.Player
+	32, // 1: gachaMachine.GachaPlayer.basePlayer:type_name -> player.Player
 	3,  // 2: gachaMachine.CreateGachaMachineReq.items:type_name -> gachaMachine.Items
 	1,  // 3: gachaMachine.CreateGachaMachineResp.machine:type_name -> gachaMachine.GachaMachine
 	6,  // 4: gachaMachine.CreateGachaItemsReq.gachaItems:type_name -> gachaMachine.CreateGachaItemReq
@@ -1512,29 +1888,36 @@ var file_gachaMachine_gachaMachine_proto_depIdxs = []int32{
 	2,  // 7: gachaMachine.CreateGachaPlayerResp.player:type_name -> gachaMachine.GachaPlayer
 	2,  // 8: gachaMachine.GetGachaPlayerInfoResp.player:type_name -> gachaMachine.GachaPlayer
 	1,  // 9: gachaMachine.GetGachaMachineInfoResp.machine:type_name -> gachaMachine.GachaMachine
-	4,  // 10: gachaMachine.GachaMachineService.CreateGachaMachine:input_type -> gachaMachine.CreateGachaMachineReq
-	17, // 11: gachaMachine.GachaMachineService.GetGachaMachineInfo:input_type -> gachaMachine.GetGachaMachineInfoReq
-	7,  // 12: gachaMachine.GachaMachineService.CreateGachaItems:input_type -> gachaMachine.CreateGachaItemsReq
-	9,  // 13: gachaMachine.GachaMachineService.CreateGachaPlayer:input_type -> gachaMachine.CreateGachaPlayerReq
-	15, // 14: gachaMachine.GachaMachineService.GetGachaPlayerInfo:input_type -> gachaMachine.GetGachaPlayerInfoReq
-	11, // 15: gachaMachine.GachaMachineService.AdjustPlayerCoin:input_type -> gachaMachine.AdjustPlayerCoinReq
-	13, // 16: gachaMachine.GachaMachineService.AdjustPlayerDiamond:input_type -> gachaMachine.AdjustPlayerDiamondReq
-	19, // 17: gachaMachine.GachaMachineService.GetPullResult:input_type -> gachaMachine.GetPullResultReq
-	23, // 18: gachaMachine.GachaMachineService.UpdateGachaMachineTargetRTP:input_type -> gachaMachine.UpdateGachaMachineTargetRTPReq
-	5,  // 19: gachaMachine.GachaMachineService.CreateGachaMachine:output_type -> gachaMachine.CreateGachaMachineResp
-	18, // 20: gachaMachine.GachaMachineService.GetGachaMachineInfo:output_type -> gachaMachine.GetGachaMachineInfoResp
-	8,  // 21: gachaMachine.GachaMachineService.CreateGachaItems:output_type -> gachaMachine.CreateGachaItemsResp
-	10, // 22: gachaMachine.GachaMachineService.CreateGachaPlayer:output_type -> gachaMachine.CreateGachaPlayerResp
-	16, // 23: gachaMachine.GachaMachineService.GetGachaPlayerInfo:output_type -> gachaMachine.GetGachaPlayerInfoResp
-	12, // 24: gachaMachine.GachaMachineService.AdjustPlayerCoin:output_type -> gachaMachine.AdjustPlayerCoinResp
-	14, // 25: gachaMachine.GachaMachineService.AdjustPlayerDiamond:output_type -> gachaMachine.AdjustPlayerDiamondResp
-	20, // 26: gachaMachine.GachaMachineService.GetPullResult:output_type -> gachaMachine.GetPullResultResp
-	24, // 27: gachaMachine.GachaMachineService.UpdateGachaMachineTargetRTP:output_type -> gachaMachine.UpdateGachaMachineTargetRTPResp
-	19, // [19:28] is the sub-list for method output_type
-	10, // [10:19] is the sub-list for method input_type
-	10, // [10:10] is the sub-list for extension type_name
-	10, // [10:10] is the sub-list for extension extendee
-	0,  // [0:10] is the sub-list for field type_name
+	26, // 10: gachaMachine.GetPlayerInventoryResp.inventory:type_name -> gachaMachine.GachaPlayerInventory
+	28, // 11: gachaMachine.GachaPullSession.itemsPulled:type_name -> gachaMachine.GachaPullHistoryItem
+	29, // 12: gachaMachine.GetPlayerPullHistoryResp.gameSessions:type_name -> gachaMachine.GachaPullSession
+	4,  // 13: gachaMachine.GachaMachineService.CreateGachaMachine:input_type -> gachaMachine.CreateGachaMachineReq
+	17, // 14: gachaMachine.GachaMachineService.GetGachaMachineInfo:input_type -> gachaMachine.GetGachaMachineInfoReq
+	7,  // 15: gachaMachine.GachaMachineService.CreateGachaItems:input_type -> gachaMachine.CreateGachaItemsReq
+	9,  // 16: gachaMachine.GachaMachineService.CreateGachaPlayer:input_type -> gachaMachine.CreateGachaPlayerReq
+	15, // 17: gachaMachine.GachaMachineService.GetGachaPlayerInfo:input_type -> gachaMachine.GetGachaPlayerInfoReq
+	25, // 18: gachaMachine.GachaMachineService.GetPlayerInventory:input_type -> gachaMachine.GetPlayerInventoryReq
+	30, // 19: gachaMachine.GachaMachineService.GetPlayerPullHistory:input_type -> gachaMachine.GetPlayerPullHistoryReq
+	11, // 20: gachaMachine.GachaMachineService.AdjustPlayerCoin:input_type -> gachaMachine.AdjustPlayerCoinReq
+	13, // 21: gachaMachine.GachaMachineService.AdjustPlayerDiamond:input_type -> gachaMachine.AdjustPlayerDiamondReq
+	19, // 22: gachaMachine.GachaMachineService.GetPullResult:input_type -> gachaMachine.GetPullResultReq
+	23, // 23: gachaMachine.GachaMachineService.UpdateGachaMachineTargetRTP:input_type -> gachaMachine.UpdateGachaMachineTargetRTPReq
+	5,  // 24: gachaMachine.GachaMachineService.CreateGachaMachine:output_type -> gachaMachine.CreateGachaMachineResp
+	18, // 25: gachaMachine.GachaMachineService.GetGachaMachineInfo:output_type -> gachaMachine.GetGachaMachineInfoResp
+	8,  // 26: gachaMachine.GachaMachineService.CreateGachaItems:output_type -> gachaMachine.CreateGachaItemsResp
+	10, // 27: gachaMachine.GachaMachineService.CreateGachaPlayer:output_type -> gachaMachine.CreateGachaPlayerResp
+	16, // 28: gachaMachine.GachaMachineService.GetGachaPlayerInfo:output_type -> gachaMachine.GetGachaPlayerInfoResp
+	27, // 29: gachaMachine.GachaMachineService.GetPlayerInventory:output_type -> gachaMachine.GetPlayerInventoryResp
+	31, // 30: gachaMachine.GachaMachineService.GetPlayerPullHistory:output_type -> gachaMachine.GetPlayerPullHistoryResp
+	12, // 31: gachaMachine.GachaMachineService.AdjustPlayerCoin:output_type -> gachaMachine.AdjustPlayerCoinResp
+	14, // 32: gachaMachine.GachaMachineService.AdjustPlayerDiamond:output_type -> gachaMachine.AdjustPlayerDiamondResp
+	20, // 33: gachaMachine.GachaMachineService.GetPullResult:output_type -> gachaMachine.GetPullResultResp
+	24, // 34: gachaMachine.GachaMachineService.UpdateGachaMachineTargetRTP:output_type -> gachaMachine.UpdateGachaMachineTargetRTPResp
+	24, // [24:35] is the sub-list for method output_type
+	13, // [13:24] is the sub-list for method input_type
+	13, // [13:13] is the sub-list for extension type_name
+	13, // [13:13] is the sub-list for extension extendee
+	0,  // [0:13] is the sub-list for field type_name
 }
 
 func init() { file_gachaMachine_gachaMachine_proto_init() }
@@ -1548,7 +1931,7 @@ func file_gachaMachine_gachaMachine_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_gachaMachine_gachaMachine_proto_rawDesc), len(file_gachaMachine_gachaMachine_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   25,
+			NumMessages:   32,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
