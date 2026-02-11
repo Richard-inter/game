@@ -158,8 +158,8 @@ func (s *ClawMachineWebsocketService) AddTouchedItemRecordWs(
 	if itemID != 0 {
 		var serverResult *CatchResult
 		for i := range storedResults {
-		if storedResults[i].ItemID == int64(itemID) {
-					serverResult = &storedResults[i]
+			if storedResults[i].ItemID == int64(itemID) {
+				serverResult = &storedResults[i]
 				break
 			}
 		}
@@ -188,6 +188,11 @@ func (s *ClawMachineWebsocketService) AddTouchedItemRecordWs(
 	game, err := s.repo.AddTouchedItemRecord(ctx, int64(gameID), itemIDPtr, serverCatched)
 	if err != nil {
 		return nil, fmt.Errorf("failed to persist record: %w", err)
+	}
+
+	err = s.repo.AddItemInventory(ctx, game.PlayerID, itemID, 1)
+	if err != nil {
+		return nil, fmt.Errorf("failed to add item to player inventory: %w", err)
 	}
 
 	payout := int64(0)
@@ -248,4 +253,122 @@ func (s *ClawMachineWebsocketService) SpawnItemWs(
 	respBytes := builder.FinishedBytes()
 
 	return s.buildEnvelopeResponse(fbs.MessageTypeSpawnItemResp, respBytes), nil
+}
+
+func (s *ClawMachineWebsocketService) GetPlayerInventoryWs(ctx context.Context, req *pb.RuntimeRequest) (*pb.RuntimeResponse, error) {
+	getPlayerInventoryReq := fbs.GetRootAsGetPlayerInventoryWsReq(req.Payload, 0)
+	playerID := getPlayerInventoryReq.PlayerId()
+
+	if playerID <= 0 {
+		return nil, fmt.Errorf("invalid player ID")
+	}
+
+	inventory, err := s.repo.GetPlayerInventory(ctx, playerID)
+	if err != nil {
+		logger.GetSugar().Errorf("Failed to get player inventory: %v", err)
+		return s.createErrorResponse(err), nil
+	}
+
+	builder := flatbuffers.NewBuilder(2048)
+
+	// Build PlayerInventoryItem vector
+	itemOffsets := make([]flatbuffers.UOffsetT, len(inventory))
+	for i, item := range inventory {
+		fbs.PlayerInventoryItemStart(builder)
+		fbs.PlayerInventoryItemAddItemId(builder, item.ItemID)
+		fbs.PlayerInventoryItemAddQuantity(builder, item.Quantity)
+		itemOffsets[i] = fbs.PlayerInventoryItemEnd(builder)
+	}
+
+	fbs.GetPlayerInventoryWsRespStartItemsVector(builder, len(itemOffsets))
+	for i := len(itemOffsets) - 1; i >= 0; i-- {
+		builder.PrependUOffsetT(itemOffsets[i])
+	}
+	itemsVectorOffset := builder.EndVector(len(itemOffsets))
+
+	fbs.GetPlayerInventoryWsRespStart(builder)
+	fbs.GetPlayerInventoryWsRespAddPlayerId(builder, playerID)
+	fbs.GetPlayerInventoryWsRespAddItems(builder, itemsVectorOffset)
+	respOffset := fbs.GetPlayerInventoryWsRespEnd(builder)
+
+	builder.Finish(respOffset)
+	respBytes := builder.FinishedBytes()
+
+	return s.buildEnvelopeResponse(fbs.MessageTypeGetPlayerInventoryWsResp, respBytes), nil
+}
+
+func (s *ClawMachineWebsocketService) GetGameHistoryWs(ctx context.Context, req *pb.RuntimeRequest) (*pb.RuntimeResponse, error) {
+	getGameHistoryReq := fbs.GetRootAsGetGameHistoryWsReq(req.Payload, 0)
+	playerID := getGameHistoryReq.PlayerId()
+
+	if playerID <= 0 {
+		return nil, fmt.Errorf("invalid player ID")
+	}
+
+	gameRecords, err := s.repo.GetGameHistory(ctx, playerID)
+	if err != nil {
+		logger.GetSugar().Errorf("Failed to get game history: %v", err)
+		return s.createErrorResponse(err), nil
+	}
+
+	builder := flatbuffers.NewBuilder(2048)
+
+	// Build GameRecord vector
+	recordOffsets := make([]flatbuffers.UOffsetT, len(gameRecords))
+	for i, record := range gameRecords {
+		createdAtOffset := builder.CreateString(record.CreatedAt.Format("2006-01-02 15:04:05"))
+
+		fbs.GameRecordStart(builder)
+		fbs.GameRecordAddGameId(builder, record.ID)
+		fbs.GameRecordAddPlayerId(builder, record.PlayerID)
+		fbs.GameRecordAddMachineId(builder, record.ClawMachineID)
+
+		var touchedItemID int64 = 0
+		if record.TouchedItemID != nil {
+			touchedItemID = *record.TouchedItemID
+		}
+		fbs.GameRecordAddTouchedItemId(builder, touchedItemID)
+
+		var catched bool = false
+		if record.Catched != nil {
+			catched = *record.Catched
+		}
+		fbs.GameRecordAddCatched(builder, catched)
+		fbs.GameRecordAddCreatedAt(builder, createdAtOffset)
+		recordOffsets[i] = fbs.GameRecordEnd(builder)
+	}
+
+	fbs.GetGameHistoryWsRespStartRecordsVector(builder, len(recordOffsets))
+	for i := len(recordOffsets) - 1; i >= 0; i-- {
+		builder.PrependUOffsetT(recordOffsets[i])
+	}
+	recordsVectorOffset := builder.EndVector(len(recordOffsets))
+
+	fbs.GetGameHistoryWsRespStart(builder)
+	fbs.GetGameHistoryWsRespAddPlayerId(builder, playerID)
+	fbs.GetGameHistoryWsRespAddRecords(builder, recordsVectorOffset)
+	respOffset := fbs.GetGameHistoryWsRespEnd(builder)
+
+	builder.Finish(respOffset)
+	respBytes := builder.FinishedBytes()
+
+	return s.buildEnvelopeResponse(fbs.MessageTypeGetGameHistoryWsResp, respBytes), nil
+}
+
+func (s *ClawMachineWebsocketService) createErrorResponse(err error) *pb.RuntimeResponse {
+	builder := flatbuffers.NewBuilder(256)
+
+	// Create error message string
+	errorMsgOffset := builder.CreateString(err.Error())
+
+	// Create ErrorResp
+	fbs.ErrorRespStart(builder)
+	fbs.ErrorRespAddCode(builder, 1)
+	fbs.ErrorRespAddMessage(builder, errorMsgOffset)
+	errorRespOffset := fbs.ErrorRespEnd(builder)
+
+	builder.Finish(errorRespOffset)
+	respBytes := builder.FinishedBytes()
+
+	return s.buildEnvelopeResponse(fbs.MessageTypeErrorResp, respBytes)
 }

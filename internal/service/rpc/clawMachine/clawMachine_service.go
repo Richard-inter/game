@@ -334,6 +334,11 @@ func (s *ClawMachineGRPCServices) AddTouchedItemRecord(
 		return nil, fmt.Errorf("failed to persist record: %w", err)
 	}
 
+	err = s.repo.AddItemInventory(ctx, game.PlayerID, req.ItemID, 1)
+	if err != nil {
+		return nil, fmt.Errorf("failed to add item to player inventory: %w", err)
+	}
+
 	payout := int64(0)
 	if catched {
 		payout = GetRarityValue(game.TouchedItem.Rarity, game.Machine.Price)
@@ -446,5 +451,26 @@ func (s *ClawMachineGRPCServices) UpdateClawMachineTargetRTP(ctx context.Context
 	return &pb.UpdateClawMachineTargetRTPResp{
 		MachineID: req.MachineID,
 		Success:   true,
+	}, nil
+}
+
+func (s *ClawMachineGRPCServices) GetPlayerInventory(ctx context.Context, req *pb.GetPlayerInventoryReq) (*pb.GetPlayerInventoryResp, error) {
+	inventory, err := s.repo.GetPlayerInventory(ctx, req.PlayerID)
+	if err != nil {
+		logger.GetSugar().Errorf("Failed to get player inventory: %v", err)
+		return nil, fmt.Errorf("failed to get player inventory: %w", err)
+	}
+
+	pbInventory := make([]*pb.ClawPlayerInventory, len(inventory))
+	for i, item := range inventory {
+		pbInventory[i] = &pb.ClawPlayerInventory{
+			ItemID:   item.ItemID,
+			Quantity: item.Quantity,
+		}
+	}
+
+	return &pb.GetPlayerInventoryResp{
+		PlayerID:  req.PlayerID,
+		Inventory: pbInventory,
 	}, nil
 }

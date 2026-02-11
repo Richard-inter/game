@@ -63,7 +63,10 @@ func InitClawmachineDB(cfg *config.ServiceConfig) (*gorm.DB, error) {
 	}
 
 	// Auto migrate the schema
-	err = db.AutoMigrate(&domain.ClawMachine{}, &domain.ClawMachineItem{}, &domain.ClawItem{}, &domain.ClawPlayer{}, &domain.ClawMachineGameRecord{}, &domain.ClawMachineRTPState{})
+	err = db.AutoMigrate(&domain.ClawMachine{}, &domain.ClawMachineItem{},
+		&domain.ClawItem{}, &domain.ClawPlayer{},
+		&domain.ClawMachineGameRecord{}, &domain.ClawMachineRTPState{},
+		&domain.ClawPlayerInventory{})
 	if err != nil {
 		return nil, fmt.Errorf("failed to migrate clawmachine database: %w", err)
 	}

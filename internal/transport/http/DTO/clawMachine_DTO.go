@@ -94,3 +94,15 @@ type ClawMachineGameRecordResponse struct {
 type GetGameHistoryResponse struct {
 	GameRecords []ClawMachineGameRecordResponse `json:"gameRecords"`
 }
+
+// ClawPlayerInventoryResponse represents the HTTP response for claw machine player inventory items
+type ClawPlayerInventoryResponse struct {
+	ItemID   int64 `json:"itemID"`
+	Quantity int32 `json:"quantity"`
+}
+
+// GetClawPlayerInventoryResponse represents the HTTP response for claw machine player inventory
+type GetClawPlayerInventoryResponse struct {
+	PlayerID  int64                         `json:"playerID"`
+	Inventory []ClawPlayerInventoryResponse `json:"inventory"`
+}

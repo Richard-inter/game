@@ -99,6 +99,19 @@ type ClawMachineRTPState struct {
 	DeletedBy     *string        `gorm:"column:deleted_by" json:"deletedBy"`
 }
 
+type ClawPlayerInventory struct {
+	PlayerID  int64          `gorm:"column:player_id;primaryKey" json:"playerID"`
+	ItemID    int64          `gorm:"column:item_id;primaryKey" json:"itemID"`
+	Quantity  int32          `gorm:"column:quantity" json:"quantity"`
+	IsActive  bool           `gorm:"column:is_active;default:true" json:"isActive"`
+	CreatedAt time.Time      `gorm:"column:created_at;autoCreateTime" json:"createdAt"`
+	CreatedBy string         `gorm:"column:created_by" json:"createdBy"`
+	UpdatedAt time.Time      `gorm:"column:updated_at;autoUpdateTime" json:"updatedAt"`
+	UpdatedBy string         `gorm:"column:updated_by" json:"updatedBy"`
+	DeletedAt gorm.DeletedAt `gorm:"column:deleted_at;index" json:"deletedAt"`
+	DeletedBy *string        `gorm:"column:deleted_by" json:"deletedBy"`
+}
+
 func (ClawMachine) TableName() string {
 	return "claw_machine"
 }

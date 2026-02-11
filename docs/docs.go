@@ -596,6 +596,52 @@ const docTemplate = `{
                 }
             }
         },
+        "/clawMachine/getPlayerInventory/{playerID}": {
+            "get": {
+                "description": "Get inventory for a claw machine player",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ClawMachine"
+                ],
+                "summary": "Get claw machine player inventory",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Player ID",
+                        "name": "playerID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Player inventory retrieved successfully",
+                        "schema": {
+                            "$ref": "#/definitions/dto.GetClawPlayerInventoryResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid player ID",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
         "/clawMachine/startClawGame": {
             "post": {
                 "description": "Start a new claw game session for a player",
@@ -1847,6 +1893,17 @@ const docTemplate = `{
                 }
             }
         },
+        "dto.ClawPlayerInventoryResponse": {
+            "type": "object",
+            "properties": {
+                "itemID": {
+                    "type": "integer"
+                },
+                "quantity": {
+                    "type": "integer"
+                }
+            }
+        },
         "dto.CreateClawItemRequest": {
             "type": "object",
             "required": [
@@ -2163,6 +2220,20 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "sessionID": {
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.GetClawPlayerInventoryResponse": {
+            "type": "object",
+            "properties": {
+                "inventory": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.ClawPlayerInventoryResponse"
+                    }
+                },
+                "playerID": {
                     "type": "integer"
                 }
             }

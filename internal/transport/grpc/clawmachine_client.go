@@ -87,6 +87,10 @@ func (c *ClawMachineClient) UpdateClawMachineTargetRTP(ctx context.Context, req 
 	return c.client.UpdateClawMachineTargetRTP(ctx, req)
 }
 
+func (c *ClawMachineClient) GetPlayerInventory(ctx context.Context, req *clawmachinepb.GetPlayerInventoryReq) (*clawmachinepb.GetPlayerInventoryResp, error) {
+	return c.client.GetPlayerInventory(ctx, req)
+}
+
 func (c *ClawMachineClient) Close() error {
 	return c.conn.Close()
 }

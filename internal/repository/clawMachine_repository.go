@@ -21,6 +21,8 @@ type ClawMachineRepository interface {
 	GetClawPlayerInfo(ctx context.Context, playerID int64) (*domain.ClawPlayer, error)
 	AdjustPlayerCoin(ctx context.Context, playerID int64, amount int64, adjustmentType string) (*domain.ClawPlayer, error)
 	AdjustPlayerDiamond(ctx context.Context, playerID int64, amount int64, adjustmentType string) (*domain.ClawPlayer, error)
+	GetPlayerInventory(ctx context.Context, playerID int64) ([]domain.ClawPlayerInventory, error)
+	AddItemInventory(ctx context.Context, playerID int64, itemID int64, quantity int32) error
 
 	// game
 	AddGameHistory(ctx context.Context, playerID int64, gameRecord *domain.ClawMachineGameRecord) (int64, error)
@@ -138,6 +140,39 @@ func (r *clawMachineRepository) AdjustPlayerCoin(ctx context.Context, playerID i
 
 func (r *clawMachineRepository) AdjustPlayerDiamond(ctx context.Context, playerID int64, amount int64, adjustmentType string) (*domain.ClawPlayer, error) {
 	return r.adjustPlayerBalance(ctx, playerID, amount, adjustmentType, "diamond")
+}
+
+func (r *clawMachineRepository) GetPlayerInventory(ctx context.Context, playerID int64) ([]domain.ClawPlayerInventory, error) {
+	var inventory []domain.ClawPlayerInventory
+	err := activeQuery(r.db.WithContext(ctx)).
+		Where("player_id = ? AND is_active = ?", playerID, true).
+		Find(&inventory).Error
+	if err != nil {
+		return nil, err
+	}
+	return inventory, nil
+}
+
+func (r *clawMachineRepository) AddItemInventory(ctx context.Context, playerID int64, itemID int64, quantity int32) error {
+	var inventory domain.ClawPlayerInventory
+	err := activeQuery(r.db.WithContext(ctx)).
+		Where("player_id = ? AND item_id = ?", playerID, itemID).
+		First(&inventory).Error
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			inventory = domain.ClawPlayerInventory{
+				PlayerID: playerID,
+				ItemID:   itemID,
+				Quantity: quantity,
+				IsActive: true,
+			}
+			return r.db.WithContext(ctx).Create(&inventory).Error
+		}
+		return err
+	}
+
+	inventory.Quantity += quantity
+	return r.db.WithContext(ctx).Save(&inventory).Error
 }
 
 func (r *clawMachineRepository) AddGameHistory(ctx context.Context, playerID int64, gameRecord *domain.ClawMachineGameRecord) (int64, error) {
