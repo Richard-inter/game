@@ -7,8 +7,8 @@ import (
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 
-	"github.com/Richard-inter/game/internal/config"
-	"github.com/Richard-inter/game/internal/domain"
+	"github.com/1nterdigital/game/internal/config"
+	"github.com/1nterdigital/game/internal/domain"
 )
 
 // InitDB initializes a database connection

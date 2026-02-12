@@ -7,7 +7,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 
-	clawmachinepb "github.com/Richard-inter/game/pkg/protocol/clawMachine"
+	clawmachinepb "github.com/1nterdigital/game/pkg/protocol/clawMachine"
 )
 
 type ClawMachineClient struct {

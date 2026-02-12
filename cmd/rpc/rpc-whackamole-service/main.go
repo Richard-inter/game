@@ -11,14 +11,14 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 
-	"github.com/Richard-inter/game/internal/config"
-	"github.com/Richard-inter/game/internal/db"
-	"github.com/Richard-inter/game/internal/discovery"
-	"github.com/Richard-inter/game/internal/registry"
-	"github.com/Richard-inter/game/internal/repository"
-	whackAMole "github.com/Richard-inter/game/internal/service/rpc/whackAMole"
-	"github.com/Richard-inter/game/pkg/logger"
-	whackAMolepb "github.com/Richard-inter/game/pkg/protocol/whackAMole"
+	"github.com/1nterdigital/game/internal/config"
+	"github.com/1nterdigital/game/internal/db"
+	"github.com/1nterdigital/game/internal/discovery"
+	"github.com/1nterdigital/game/internal/registry"
+	"github.com/1nterdigital/game/internal/repository"
+	whackAMole "github.com/1nterdigital/game/internal/service/rpc/whackAMole"
+	"github.com/1nterdigital/game/pkg/logger"
+	whackAMolepb "github.com/1nterdigital/game/pkg/protocol/whackAMole"
 )
 
 const (

@@ -9,12 +9,12 @@ import (
 	"github.com/redis/go-redis/v9"
 	"go.uber.org/zap"
 
-	"github.com/Richard-inter/game/internal/cache"
-	"github.com/Richard-inter/game/internal/config"
-	"github.com/Richard-inter/game/internal/domain"
-	"github.com/Richard-inter/game/internal/repository"
-	g "github.com/Richard-inter/game/internal/service/rpc/gachaMachine"
-	"github.com/Richard-inter/game/pkg/logger"
+	"github.com/1nterdigital/game/internal/cache"
+	"github.com/1nterdigital/game/internal/config"
+	"github.com/1nterdigital/game/internal/domain"
+	"github.com/1nterdigital/game/internal/repository"
+	g "github.com/1nterdigital/game/internal/service/rpc/gachaMachine"
+	"github.com/1nterdigital/game/pkg/logger"
 )
 
 type GachaStreamConsumer struct {

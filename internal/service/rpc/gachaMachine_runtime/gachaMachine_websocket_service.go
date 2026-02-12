@@ -8,12 +8,12 @@ import (
 	flatbuffers "github.com/google/flatbuffers/go"
 	"go.uber.org/zap"
 
-	"github.com/Richard-inter/game/internal/cache"
-	"github.com/Richard-inter/game/internal/domain"
-	"github.com/Richard-inter/game/internal/repository"
-	"github.com/Richard-inter/game/pkg/logger"
-	pb "github.com/Richard-inter/game/pkg/protocol/gachaMachine_Websocket"
-	fbs "github.com/Richard-inter/game/pkg/protocol/gachaMachine_Websocket/gachaMachine"
+	"github.com/1nterdigital/game/internal/cache"
+	"github.com/1nterdigital/game/internal/domain"
+	"github.com/1nterdigital/game/internal/repository"
+	"github.com/1nterdigital/game/pkg/logger"
+	pb "github.com/1nterdigital/game/pkg/protocol/gachaMachine_Websocket"
+	fbs "github.com/1nterdigital/game/pkg/protocol/gachaMachine_Websocket/gachaMachine"
 )
 
 type GachaMachineWebsocketService struct {

@@ -11,15 +11,15 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 
-	"github.com/Richard-inter/game/internal/cache"
-	"github.com/Richard-inter/game/internal/config"
-	"github.com/Richard-inter/game/internal/db"
-	"github.com/Richard-inter/game/internal/discovery"
-	"github.com/Richard-inter/game/internal/registry"
-	"github.com/Richard-inter/game/internal/repository"
-	c "github.com/Richard-inter/game/internal/service/rpc/clawMachine"
-	"github.com/Richard-inter/game/pkg/logger"
-	clawMachine "github.com/Richard-inter/game/pkg/protocol/clawMachine"
+	"github.com/1nterdigital/game/internal/cache"
+	"github.com/1nterdigital/game/internal/config"
+	"github.com/1nterdigital/game/internal/db"
+	"github.com/1nterdigital/game/internal/discovery"
+	"github.com/1nterdigital/game/internal/registry"
+	"github.com/1nterdigital/game/internal/repository"
+	c "github.com/1nterdigital/game/internal/service/rpc/clawMachine"
+	"github.com/1nterdigital/game/pkg/logger"
+	clawMachine "github.com/1nterdigital/game/pkg/protocol/clawMachine"
 )
 
 const (

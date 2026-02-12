@@ -4,12 +4,12 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/Richard-inter/game/internal/cache"
-	"github.com/Richard-inter/game/internal/domain"
-	"github.com/Richard-inter/game/internal/repository"
-	"github.com/Richard-inter/game/pkg/logger"
-	pb "github.com/Richard-inter/game/pkg/protocol/clawMachine"
-	"github.com/Richard-inter/game/pkg/protocol/player"
+	"github.com/1nterdigital/game/internal/cache"
+	"github.com/1nterdigital/game/internal/domain"
+	"github.com/1nterdigital/game/internal/repository"
+	"github.com/1nterdigital/game/pkg/logger"
+	pb "github.com/1nterdigital/game/pkg/protocol/clawMachine"
+	"github.com/1nterdigital/game/pkg/protocol/player"
 )
 
 // ClawMachineGRPCService implements the ClawMachineService gRPC service

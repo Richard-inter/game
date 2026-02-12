@@ -4,9 +4,9 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/Richard-inter/game/internal/domain"
-	"github.com/Richard-inter/game/internal/repository"
-	pb "github.com/Richard-inter/game/pkg/protocol/player"
+	"github.com/1nterdigital/game/internal/domain"
+	"github.com/1nterdigital/game/internal/repository"
+	pb "github.com/1nterdigital/game/pkg/protocol/player"
 )
 
 // PlayerGRPCService implements the PlayerService gRPC service

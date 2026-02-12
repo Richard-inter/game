@@ -7,9 +7,9 @@ import (
 	"github.com/gorilla/websocket"
 	"go.uber.org/zap"
 
-	"github.com/Richard-inter/game/internal/transport/grpc"
-	runtimepb "github.com/Richard-inter/game/pkg/protocol/whackAMole_Websocket"
-	fbs "github.com/Richard-inter/game/pkg/protocol/whackAMole_Websocket/whackAMole"
+	"github.com/1nterdigital/game/internal/transport/grpc"
+	runtimepb "github.com/1nterdigital/game/pkg/protocol/whackAMole_Websocket"
+	fbs "github.com/1nterdigital/game/pkg/protocol/whackAMole_Websocket/whackAMole"
 )
 
 type WhackAMoleWebSocketHandler struct {

@@ -7,7 +7,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/Richard-inter/game/internal/domain"
+	"github.com/1nterdigital/game/internal/domain"
 )
 
 var (

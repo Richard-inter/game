@@ -4,7 +4,7 @@
 // 	"fmt"
 // 	"log"
 
-// 	fbs "github.com/Richard-inter/game/pkg/protocol/clawMachine_Websocket/clawMachine"
+// 	fbs "github.com/1nterdigital/game/pkg/protocol/clawMachine_Websocket/clawMachine"
 // 	flatbuffers "github.com/google/flatbuffers/go"
 // 	"github.com/gorilla/websocket"
 // )

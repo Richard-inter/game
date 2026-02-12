@@ -6,10 +6,10 @@ import (
 
 	"go.uber.org/zap"
 
-	"github.com/Richard-inter/game/internal/domain"
-	"github.com/Richard-inter/game/internal/repository"
-	"github.com/Richard-inter/game/pkg/logger"
-	whackAMole "github.com/Richard-inter/game/pkg/protocol/whackAMole"
+	"github.com/1nterdigital/game/internal/domain"
+	"github.com/1nterdigital/game/internal/repository"
+	"github.com/1nterdigital/game/pkg/logger"
+	whackAMole "github.com/1nterdigital/game/pkg/protocol/whackAMole"
 )
 
 type WhackAMoleGRPCService struct {

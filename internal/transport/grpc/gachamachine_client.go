@@ -7,7 +7,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 
-	gachamachinepb "github.com/Richard-inter/game/pkg/protocol/gachaMachine"
+	gachamachinepb "github.com/1nterdigital/game/pkg/protocol/gachaMachine"
 )
 
 type GachaMachineClient struct {

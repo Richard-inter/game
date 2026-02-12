@@ -7,7 +7,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 
-	playerpb "github.com/Richard-inter/game/pkg/protocol/player"
+	playerpb "github.com/1nterdigital/game/pkg/protocol/player"
 )
 
 type PlayerClient struct {

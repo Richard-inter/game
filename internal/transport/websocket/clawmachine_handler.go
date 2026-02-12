@@ -7,9 +7,9 @@ import (
 	"github.com/gorilla/websocket"
 	"go.uber.org/zap"
 
-	"github.com/Richard-inter/game/internal/transport/grpc"
-	runtimepb "github.com/Richard-inter/game/pkg/protocol/clawMachine_Websocket"
-	fbs "github.com/Richard-inter/game/pkg/protocol/clawMachine_Websocket/clawMachine"
+	"github.com/1nterdigital/game/internal/transport/grpc"
+	runtimepb "github.com/1nterdigital/game/pkg/protocol/clawMachine_Websocket"
+	fbs "github.com/1nterdigital/game/pkg/protocol/clawMachine_Websocket/clawMachine"
 )
 
 type messageHandler func(ctx context.Context, payload []byte) ([]byte, error)

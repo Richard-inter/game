@@ -3,7 +3,7 @@ package grpc
 import (
 	"fmt"
 
-	"github.com/Richard-inter/game/internal/discovery"
+	"github.com/1nterdigital/game/internal/discovery"
 )
 
 type ServiceDiscovery interface {

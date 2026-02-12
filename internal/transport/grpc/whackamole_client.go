@@ -7,7 +7,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 
-	whackAMolepb "github.com/Richard-inter/game/pkg/protocol/whackAMole"
+	whackAMolepb "github.com/1nterdigital/game/pkg/protocol/whackAMole"
 )
 
 type WhackAMoleClient struct {

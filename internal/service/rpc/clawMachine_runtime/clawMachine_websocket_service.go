@@ -6,12 +6,12 @@ import (
 
 	flatbuffers "github.com/google/flatbuffers/go"
 
-	"github.com/Richard-inter/game/internal/cache"
-	"github.com/Richard-inter/game/internal/domain"
-	"github.com/Richard-inter/game/internal/repository"
-	"github.com/Richard-inter/game/pkg/logger"
-	pb "github.com/Richard-inter/game/pkg/protocol/clawMachine_Websocket"
-	fbs "github.com/Richard-inter/game/pkg/protocol/clawMachine_Websocket/clawMachine"
+	"github.com/1nterdigital/game/internal/cache"
+	"github.com/1nterdigital/game/internal/domain"
+	"github.com/1nterdigital/game/internal/repository"
+	"github.com/1nterdigital/game/pkg/logger"
+	pb "github.com/1nterdigital/game/pkg/protocol/clawMachine_Websocket"
+	fbs "github.com/1nterdigital/game/pkg/protocol/clawMachine_Websocket/clawMachine"
 )
 
 type ClawMachineWebsocketService struct {

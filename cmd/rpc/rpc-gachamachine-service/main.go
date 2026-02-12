@@ -11,16 +11,16 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 
-	"github.com/Richard-inter/game/internal/cache"
-	"github.com/Richard-inter/game/internal/config"
-	"github.com/Richard-inter/game/internal/db"
-	"github.com/Richard-inter/game/internal/discovery"
-	"github.com/Richard-inter/game/internal/registry"
-	"github.com/Richard-inter/game/internal/repository"
-	g "github.com/Richard-inter/game/internal/service/rpc/gachaMachine"
-	"github.com/Richard-inter/game/internal/worker"
-	"github.com/Richard-inter/game/pkg/logger"
-	gachaMachine "github.com/Richard-inter/game/pkg/protocol/gachaMachine"
+	"github.com/1nterdigital/game/internal/cache"
+	"github.com/1nterdigital/game/internal/config"
+	"github.com/1nterdigital/game/internal/db"
+	"github.com/1nterdigital/game/internal/discovery"
+	"github.com/1nterdigital/game/internal/registry"
+	"github.com/1nterdigital/game/internal/repository"
+	g "github.com/1nterdigital/game/internal/service/rpc/gachaMachine"
+	"github.com/1nterdigital/game/internal/worker"
+	"github.com/1nterdigital/game/pkg/logger"
+	gachaMachine "github.com/1nterdigital/game/pkg/protocol/gachaMachine"
 )
 
 const (

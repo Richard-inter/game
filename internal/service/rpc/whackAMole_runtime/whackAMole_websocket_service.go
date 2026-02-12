@@ -8,11 +8,11 @@ import (
 	flatbuffers "github.com/google/flatbuffers/go"
 	"go.uber.org/zap"
 
-	"github.com/Richard-inter/game/internal/cache"
-	"github.com/Richard-inter/game/internal/repository"
-	"github.com/Richard-inter/game/pkg/logger"
-	pb "github.com/Richard-inter/game/pkg/protocol/whackAMole_Websocket"
-	fbs "github.com/Richard-inter/game/pkg/protocol/whackAMole_Websocket/whackAMole"
+	"github.com/1nterdigital/game/internal/cache"
+	"github.com/1nterdigital/game/internal/repository"
+	"github.com/1nterdigital/game/pkg/logger"
+	pb "github.com/1nterdigital/game/pkg/protocol/whackAMole_Websocket"
+	fbs "github.com/1nterdigital/game/pkg/protocol/whackAMole_Websocket/whackAMole"
 )
 
 type WhackAMoleWebsocketService struct {

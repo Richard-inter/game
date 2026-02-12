@@ -45,7 +45,7 @@ This project implements a distributed microservices architecture with the follow
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/Richard-inter/game.git
+git clone https://github.com/1nterdigital/game.git
 cd game
 ```
 

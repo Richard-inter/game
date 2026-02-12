@@ -9,11 +9,11 @@ import (
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 
-	"github.com/Richard-inter/game/internal/config"
-	"github.com/Richard-inter/game/internal/transport/grpc"
-	"github.com/Richard-inter/game/internal/transport/http/handler"
+	"github.com/1nterdigital/game/internal/config"
+	"github.com/1nterdigital/game/internal/transport/grpc"
+	"github.com/1nterdigital/game/internal/transport/http/handler"
 
-	_ "github.com/Richard-inter/game/docs"
+	_ "github.com/1nterdigital/game/docs"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 )

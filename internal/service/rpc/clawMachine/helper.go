@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"math/rand/v2"
 
-	"github.com/Richard-inter/game/internal/domain"
-	"github.com/Richard-inter/game/pkg/logger"
-	pb "github.com/Richard-inter/game/pkg/protocol/clawMachine"
+	"github.com/1nterdigital/game/internal/domain"
+	"github.com/1nterdigital/game/pkg/logger"
+	pb "github.com/1nterdigital/game/pkg/protocol/clawMachine"
 )
 
 // Rarity value multipliers

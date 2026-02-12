@@ -9,8 +9,8 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 
-	pb "github.com/Richard-inter/game/pkg/protocol/whackAMole_Websocket"
-	fbs "github.com/Richard-inter/game/pkg/protocol/whackAMole_Websocket/whackAMole"
+	pb "github.com/1nterdigital/game/pkg/protocol/whackAMole_Websocket"
+	fbs "github.com/1nterdigital/game/pkg/protocol/whackAMole_Websocket/whackAMole"
 	flatbuffers "github.com/google/flatbuffers/go"
 )
 

@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"math/rand/v2"
 
-	"github.com/Richard-inter/game/internal/domain"
+	"github.com/1nterdigital/game/internal/domain"
 )
 
 // Rarity value multipliers

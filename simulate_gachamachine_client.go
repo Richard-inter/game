@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"log"
 
-	fbs "github.com/Richard-inter/game/pkg/protocol/gachaMachine_Websocket/gachaMachine"
+	fbs "github.com/1nterdigital/game/pkg/protocol/gachaMachine_Websocket/gachaMachine"
 	flatbuffers "github.com/google/flatbuffers/go"
 	"github.com/gorilla/websocket"
 )

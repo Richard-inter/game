@@ -250,7 +250,7 @@ dev:
 # Initialize project
 init:
 	@echo "Initializing project..."
-	go mod init github.com/Richard-inter/game
+	go mod init github.com/1nterdigital/game
 	go mod tidy
 	mkdir -p bin cmd internal pkg config data docs deployments scripts
 

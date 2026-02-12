@@ -9,10 +9,10 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/Richard-inter/game/internal/config"
-	"github.com/Richard-inter/game/internal/transport/grpc"
-	wshandler "github.com/Richard-inter/game/internal/transport/websocket"
-	"github.com/Richard-inter/game/pkg/logger"
+	"github.com/1nterdigital/game/internal/config"
+	"github.com/1nterdigital/game/internal/transport/grpc"
+	wshandler "github.com/1nterdigital/game/internal/transport/websocket"
+	"github.com/1nterdigital/game/pkg/logger"
 	"github.com/gorilla/websocket"
 	"go.uber.org/zap"
 )

@@ -7,10 +7,10 @@ import (
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 
-	"github.com/Richard-inter/game/internal/transport/grpc"
-	dto "github.com/Richard-inter/game/internal/transport/http/DTO"
-	"github.com/Richard-inter/game/pkg/common"
-	whackAMolepb "github.com/Richard-inter/game/pkg/protocol/whackAMole"
+	"github.com/1nterdigital/game/internal/transport/grpc"
+	dto "github.com/1nterdigital/game/internal/transport/http/DTO"
+	"github.com/1nterdigital/game/pkg/common"
+	whackAMolepb "github.com/1nterdigital/game/pkg/protocol/whackAMole"
 )
 
 type WhackAMoleHandler struct {

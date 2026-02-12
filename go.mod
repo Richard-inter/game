@@ -1,4 +1,4 @@
-module github.com/Richard-inter/game
+module github.com/1nterdigital/game
 
 go 1.24.0
 

@@ -7,7 +7,7 @@
 package gachaMachine
 
 import (
-	player "github.com/Richard-inter/game/pkg/protocol/player"
+	player "github.com/1nterdigital/game/pkg/protocol/player"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -1827,7 +1827,7 @@ const file_gachaMachine_gachaMachine_proto_rawDesc = "" +
 	"\x10AdjustPlayerCoin\x12!.gachaMachine.AdjustPlayerCoinReq\x1a\".gachaMachine.AdjustPlayerCoinResp\x12b\n" +
 	"\x13AdjustPlayerDiamond\x12$.gachaMachine.AdjustPlayerDiamondReq\x1a%.gachaMachine.AdjustPlayerDiamondResp\x12P\n" +
 	"\rGetPullResult\x12\x1e.gachaMachine.GetPullResultReq\x1a\x1f.gachaMachine.GetPullResultResp\x12z\n" +
-	"\x1bUpdateGachaMachineTargetRTP\x12,.gachaMachine.UpdateGachaMachineTargetRTPReq\x1a-.gachaMachine.UpdateGachaMachineTargetRTPRespB9Z7github.com/Richard-inter/game/pkg/protocol/gachaMachineb\x06proto3"
+	"\x1bUpdateGachaMachineTargetRTP\x12,.gachaMachine.UpdateGachaMachineTargetRTPReq\x1a-.gachaMachine.UpdateGachaMachineTargetRTPRespB9Z7github.com/1nterdigital/game/pkg/protocol/gachaMachineb\x06proto3"
 
 var (
 	file_gachaMachine_gachaMachine_proto_rawDescOnce sync.Once

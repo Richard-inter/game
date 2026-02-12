@@ -7,10 +7,10 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/Richard-inter/game/internal/config"
-	"github.com/Richard-inter/game/internal/db"
-	"github.com/Richard-inter/game/internal/repository"
-	"github.com/Richard-inter/game/pkg/logger"
+	"github.com/1nterdigital/game/internal/config"
+	"github.com/1nterdigital/game/internal/db"
+	"github.com/1nterdigital/game/internal/repository"
+	"github.com/1nterdigital/game/pkg/logger"
 )
 
 func main() {

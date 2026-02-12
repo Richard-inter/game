@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package clawMachine;
 
-option go_package = "github.com/Richard-inter/game/pkg/protocol/";
+option go_package = "github.com/1nterdigital/game/pkg/protocol/";
 
 import "player/player.proto";
 

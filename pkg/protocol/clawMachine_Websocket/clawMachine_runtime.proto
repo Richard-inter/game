@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package clawMachine.runtime;
 
-option go_package = "github.com/Richard-inter/game/pkg/protocol/clawMachine_Websocket";
+option go_package = "github.com/1nterdigital/game/pkg/protocol/clawMachine_Websocket";
 
 message RuntimeRequest {
     bytes payload = 1;

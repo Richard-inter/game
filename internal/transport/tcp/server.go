@@ -7,7 +7,7 @@ import (
 	"net"
 	"time"
 
-	"github.com/Richard-inter/game/internal/config"
+	"github.com/1nterdigital/game/internal/config"
 	"go.uber.org/zap"
 )
 

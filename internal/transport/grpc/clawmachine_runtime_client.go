@@ -7,7 +7,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 
-	runtimepb "github.com/Richard-inter/game/pkg/protocol/clawMachine_Websocket"
+	runtimepb "github.com/1nterdigital/game/pkg/protocol/clawMachine_Websocket"
 )
 
 type ClawMachineRuntimeClient struct {

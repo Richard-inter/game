@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/Richard-inter/game/internal/discovery"
+	"github.com/1nterdigital/game/internal/discovery"
 	"go.uber.org/zap"
 )
 

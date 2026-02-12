@@ -7,7 +7,7 @@
 package clawMachine
 
 import (
-	player "github.com/Richard-inter/game/pkg/protocol/player"
+	player "github.com/1nterdigital/game/pkg/protocol/player"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -2299,7 +2299,7 @@ const file_clawMachine_clawMachine_proto_rawDesc = "" +
 	"\x14AddTouchedItemRecord\x12$.clawMachine.AddTouchedItemRecordReq\x1a%.clawMachine.AddTouchedItemRecordResp\x12T\n" +
 	"\x0fCreateClawItems\x12\x1f.clawMachine.CreateClawItemsReq\x1a .clawMachine.CreateClawItemsResp\x12T\n" +
 	"\x0fDeleteClawItems\x12\x1f.clawMachine.DeleteClawItemsReq\x1a .clawMachine.DeleteClawItemsResp\x12u\n" +
-	"\x1aUpdateClawMachineTargetRTP\x12*.clawMachine.UpdateClawMachineTargetRTPReq\x1a+.clawMachine.UpdateClawMachineTargetRTPRespB8Z6github.com/Richard-inter/game/pkg/protocol/clawMachineb\x06proto3"
+	"\x1aUpdateClawMachineTargetRTP\x12*.clawMachine.UpdateClawMachineTargetRTPReq\x1a+.clawMachine.UpdateClawMachineTargetRTPRespB8Z6github.com/1nterdigital/game/pkg/protocol/clawMachineb\x06proto3"
 
 var (
 	file_clawMachine_clawMachine_proto_rawDescOnce sync.Once

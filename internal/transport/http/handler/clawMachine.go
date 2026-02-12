@@ -7,11 +7,11 @@ import (
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 
-	"github.com/Richard-inter/game/internal/transport/grpc"
-	dto "github.com/Richard-inter/game/internal/transport/http/DTO"
-	"github.com/Richard-inter/game/pkg/common"
-	"github.com/Richard-inter/game/pkg/protocol/clawMachine"
-	"github.com/Richard-inter/game/pkg/protocol/player"
+	"github.com/1nterdigital/game/internal/transport/grpc"
+	dto "github.com/1nterdigital/game/internal/transport/http/DTO"
+	"github.com/1nterdigital/game/pkg/common"
+	"github.com/1nterdigital/game/pkg/protocol/clawMachine"
+	"github.com/1nterdigital/game/pkg/protocol/player"
 )
 
 type ClawMachineHandler struct {

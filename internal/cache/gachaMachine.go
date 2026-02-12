@@ -7,7 +7,7 @@ import (
 
 	"github.com/redis/go-redis/v9"
 
-	"github.com/Richard-inter/game/internal/domain"
+	"github.com/1nterdigital/game/internal/domain"
 )
 
 func (r *RedisClient) SetGachaPityStateToRedis(ctx context.Context, machineID, playerID int64, pityState *domain.GachaPityState) error {
