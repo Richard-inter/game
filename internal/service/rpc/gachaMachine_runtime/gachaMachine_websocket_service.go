@@ -117,16 +117,14 @@ func (s *GachaMachineWebsocketService) GetPullResultWs(ctx context.Context, req 
 
 	builder := flatbuffers.NewBuilder(1024)
 
-	itemIDsOffsets := make([]flatbuffers.UOffsetT, len(itemIDs))
-	for i, id := range itemIDs {
-		itemIDsOffsets[i] = fbs.GetPullResultWsRespStartItemIdsVector(builder, int(id))
-	}
+	// 1️⃣ Build scalar vector FIRST
 	fbs.GetPullResultWsRespStartItemIdsVector(builder, len(itemIDs))
-	for i := len(itemIDsOffsets) - 1; i >= 0; i-- {
-		builder.PrependUOffsetT(itemIDsOffsets[i])
+	for i := len(itemIDs) - 1; i >= 0; i-- {
+		builder.PrependInt64(itemIDs[i])
 	}
-	itemIDsVector := builder.EndVector(len(itemIDsOffsets))
+	itemIDsVector := builder.EndVector(len(itemIDs))
 
+	// 2️⃣ Build parent object
 	fbs.GetPullResultWsRespStart(builder)
 	fbs.GetPullResultWsRespAddItemIds(builder, itemIDsVector)
 	respOffset := fbs.GetPullResultWsRespEnd(builder)
