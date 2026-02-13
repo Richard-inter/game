@@ -14,24 +14,27 @@ import (
 	"github.com/1nterdigital/game/internal/domain"
 	"github.com/1nterdigital/game/internal/repository"
 	g "github.com/1nterdigital/game/internal/service/rpc/gachaMachine"
+	runtime "github.com/1nterdigital/game/internal/service/rpc/gachaMachine_runtime"
 	"github.com/1nterdigital/game/pkg/logger"
 )
 
 type GachaStreamConsumer struct {
-	repo    repository.GachaMachineRepository
-	redis   *cache.RedisClient
-	config  *config.StreamConsumerConfig
-	service *g.GachaMachineGRPCService // Add service reference
-	log     *zap.SugaredLogger
+	repo           repository.GachaMachineRepository
+	redis          *cache.RedisClient
+	config         *config.StreamConsumerConfig
+	service        *g.GachaMachineGRPCService // Add service reference
+	runtimeService *runtime.GachaMachineWebsocketService
+	log            *zap.SugaredLogger
 }
 
-func NewGachaStreamConsumer(repo repository.GachaMachineRepository, redis *cache.RedisClient, cfg *config.StreamConsumerConfig, service *g.GachaMachineGRPCService) *GachaStreamConsumer {
+func NewGachaStreamConsumer(repo repository.GachaMachineRepository, redis *cache.RedisClient, cfg *config.StreamConsumerConfig, service *g.GachaMachineGRPCService, runtimeService *runtime.GachaMachineWebsocketService) *GachaStreamConsumer {
 	return &GachaStreamConsumer{
-		repo:    repo,
-		redis:   redis,
-		config:  cfg,
-		service: service,
-		log:     logger.GetSugar(),
+		repo:           repo,
+		redis:          redis,
+		config:         cfg,
+		service:        service,
+		runtimeService: runtimeService,
+		log:            logger.GetSugar(),
 	}
 }
 
@@ -120,8 +123,17 @@ func (g *GachaStreamConsumer) parseHistoryMessage(ctx context.Context, message r
 		return nil, fmt.Errorf("history message missing required session and item data")
 	}
 
-	if err := g.service.AddGameToHistory(ctx, *session, itemIDs); err != nil {
-		return nil, fmt.Errorf("failed to add game to history for item %v: %w", itemIDs, err)
+	// Call the appropriate service based on which one is available
+	if g.runtimeService != nil {
+		if err := g.runtimeService.AddGameToHistory(ctx, *session, itemIDs); err != nil {
+			return nil, fmt.Errorf("failed to add game to history for item %v: %w", itemIDs, err)
+		}
+	}
+
+	if g.service != nil {
+		if err := g.service.AddGameToHistory(ctx, *session, itemIDs); err != nil {
+			return nil, fmt.Errorf("failed to add game to history for item %v: %w", itemIDs, err)
+		}
 	}
 
 	history := domain.GachaPullHistory{

@@ -80,7 +80,7 @@ func main() {
 	gachaMachine.RegisterGachaMachineServiceServer(s, gachaMachineService)
 
 	// Initialize and start stream consumer
-	streamConsumer := worker.NewGachaStreamConsumer(gachaMachineRepo, redisClient, &cfg.StreamConsumer, gachaMachineService)
+	streamConsumer := worker.NewGachaStreamConsumer(gachaMachineRepo, redisClient, &cfg.StreamConsumer, gachaMachineService, nil)
 	ctx := context.Background()
 	go streamConsumer.Start(ctx)
 	log.Infow("Gacha stream consumer started")

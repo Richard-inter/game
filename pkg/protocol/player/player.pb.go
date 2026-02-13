@@ -267,7 +267,7 @@ const file_player_player_proto_rawDesc = "" +
 	"\x06player\x18\x01 \x01(\v2\x0e.player.PlayerR\x06player2\x98\x01\n" +
 	"\rPlayerService\x12A\n" +
 	"\fCreatePlayer\x12\x17.player.CreatePlayerReq\x1a\x18.player.CreatePlayerResp\x12D\n" +
-	"\rGetPlayerInfo\x12\x18.player.GetPlayerInfoReq\x1a\x19.player.GetPlayerInfoRespB3Z1github.com/1nterdigital/game/pkg/protocol/playerb\x06proto3"
+	"\rGetPlayerInfo\x12\x18.player.GetPlayerInfoReq\x1a\x19.player.GetPlayerInfoRespB2Z0github.com/1nterdigital/game/pkg/protocol/playerb\x06proto3"
 
 var (
 	file_player_player_proto_rawDescOnce sync.Once

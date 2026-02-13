@@ -125,7 +125,7 @@ const file_clawMachine_Websocket_clawMachine_runtime_proto_rawDesc = "" +
 	"\x10GetMachineInfoWs\x12#.clawMachine.runtime.RuntimeRequest\x1a$.clawMachine.runtime.RuntimeResponse\x12X\n" +
 	"\vSpawnItemWs\x12#.clawMachine.runtime.RuntimeRequest\x1a$.clawMachine.runtime.RuntimeResponse\x12a\n" +
 	"\x14GetPlayerInventoryWs\x12#.clawMachine.runtime.RuntimeRequest\x1a$.clawMachine.runtime.RuntimeResponse\x12]\n" +
-	"\x10GetGameHistoryWs\x12#.clawMachine.runtime.RuntimeRequest\x1a$.clawMachine.runtime.RuntimeResponseBBZ@github.com/1nterdigital/game/pkg/protocol/clawMachine_Websocketb\x06proto3"
+	"\x10GetGameHistoryWs\x12#.clawMachine.runtime.RuntimeRequest\x1a$.clawMachine.runtime.RuntimeResponseBAZ?github.com/1nterdigital/game/pkg/protocol/clawMachine_Websocketb\x06proto3"
 
 var (
 	file_clawMachine_Websocket_clawMachine_runtime_proto_rawDescOnce sync.Once
