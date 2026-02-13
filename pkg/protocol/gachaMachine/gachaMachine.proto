@@ -31,6 +31,12 @@ message GachaPlayer {
     int64 diamond = 3;
 }
 
+message GachaPityState {
+    int64 machineID = 1;
+    int32 superRarePity = 2;
+    int32 ultraRarePity = 3;
+}
+
 message Items {
     int64 itemID =1;
 }
@@ -98,6 +104,7 @@ message GetGachaPlayerInfoReq{
 
 message GetGachaPlayerInfoResp {
     GachaPlayer player = 1;
+    repeated GachaPityState pityState = 2;
 }
 
 message GetGachaMachineInfoReq {

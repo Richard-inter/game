@@ -106,8 +106,26 @@ func (s *GachaMachineGRPCService) GetGachaPlayerInfo(ctx context.Context, req *p
 		Diamond: domainPlayer.Diamond,
 	}
 
+	// Get all pity states for the player
+	pityStates, err := s.repo.GetAllGachaPityStatesForPlayer(ctx, req.PlayerID)
+	if err != nil {
+		s.log.Errorf("Failed to get pity states for player %d: %v", req.PlayerID, err)
+		// Continue without pity states if there's an error
+		pityStates = []*domain.GachaPityState{}
+	}
+
+	pbPityStates := make([]*pb.GachaPityState, len(pityStates))
+	for i, pityState := range pityStates {
+		pbPityStates[i] = &pb.GachaPityState{
+			MachineID:     pityState.GachaMachineID,
+			SuperRarePity: pityState.SuperRarePityCount,
+			UltraRarePity: pityState.UltraRarePityCount,
+		}
+	}
+
 	return &pb.GetGachaPlayerInfoResp{
-		Player: gachaPlayer,
+		Player:    gachaPlayer,
+		PityState: pbPityStates,
 	}, nil
 }
 

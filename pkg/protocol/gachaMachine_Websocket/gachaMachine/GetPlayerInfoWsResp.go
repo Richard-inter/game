@@ -85,8 +85,28 @@ func (rcv *GetPlayerInfoWsResp) MutateDiamond(n int64) bool {
 	return rcv._tab.MutateInt64Slot(10, n)
 }
 
+func (rcv *GetPlayerInfoWsResp) PityState(obj *PityState, j int) bool {
+	o := flatbuffers.UOffsetT(rcv._tab.Offset(12))
+	if o != 0 {
+		x := rcv._tab.Vector(o)
+		x += flatbuffers.UOffsetT(j) * 4
+		x = rcv._tab.Indirect(x)
+		obj.Init(rcv._tab.Bytes, x)
+		return true
+	}
+	return false
+}
+
+func (rcv *GetPlayerInfoWsResp) PityStateLength() int {
+	o := flatbuffers.UOffsetT(rcv._tab.Offset(12))
+	if o != 0 {
+		return rcv._tab.VectorLen(o)
+	}
+	return 0
+}
+
 func GetPlayerInfoWsRespStart(builder *flatbuffers.Builder) {
-	builder.StartObject(4)
+	builder.StartObject(5)
 }
 func GetPlayerInfoWsRespAddPlayerId(builder *flatbuffers.Builder, playerId int64) {
 	builder.PrependInt64Slot(0, playerId, 0)
@@ -99,6 +119,12 @@ func GetPlayerInfoWsRespAddCoin(builder *flatbuffers.Builder, coin int64) {
 }
 func GetPlayerInfoWsRespAddDiamond(builder *flatbuffers.Builder, diamond int64) {
 	builder.PrependInt64Slot(3, diamond, 0)
+}
+func GetPlayerInfoWsRespAddPityState(builder *flatbuffers.Builder, pityState flatbuffers.UOffsetT) {
+	builder.PrependUOffsetTSlot(4, flatbuffers.UOffsetT(pityState), 0)
+}
+func GetPlayerInfoWsRespStartPityStateVector(builder *flatbuffers.Builder, numElems int) flatbuffers.UOffsetT {
+	return builder.StartVector(4, numElems, 4)
 }
 func GetPlayerInfoWsRespEnd(builder *flatbuffers.Builder) flatbuffers.UOffsetT {
 	return builder.EndObject()

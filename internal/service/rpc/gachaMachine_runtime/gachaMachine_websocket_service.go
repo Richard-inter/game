@@ -153,7 +153,31 @@ func (s *GachaMachineWebsocketService) GetPlayerInfoWs(
 		return s.createErrorResponse(err), nil
 	}
 
-	builder := flatbuffers.NewBuilder(256)
+	// Get all pity states for the player
+	pityStates, err := s.repo.GetAllGachaPityStatesForPlayer(ctx, playerID)
+	if err != nil {
+		s.log.Errorf("Failed to get pity states for player %d: %v", playerID, err)
+		// Continue without pity states if there's an error
+		pityStates = []*domain.GachaPityState{}
+	}
+
+	builder := flatbuffers.NewBuilder(1024)
+
+	// ---- Build PityState vector ----
+	pityStateOffsets := make([]flatbuffers.UOffsetT, len(pityStates))
+	for i, pityState := range pityStates {
+		fbs.PityStateStart(builder)
+		fbs.PityStateAddMachineId(builder, pityState.GachaMachineID)
+		fbs.PityStateAddSuperRarePity(builder, pityState.SuperRarePityCount)
+		fbs.PityStateAddUltraRarePity(builder, pityState.UltraRarePityCount)
+		pityStateOffsets[i] = fbs.PityStateEnd(builder)
+	}
+
+	fbs.GetPlayerInfoWsRespStartPityStateVector(builder, len(pityStateOffsets))
+	for i := len(pityStateOffsets) - 1; i >= 0; i-- {
+		builder.PrependUOffsetT(pityStateOffsets[i])
+	}
+	pityStateVector := builder.EndVector(len(pityStateOffsets))
 
 	// ---- Strings ----
 	usernameOffset := builder.CreateString(resp.Player.UserName)
@@ -164,6 +188,7 @@ func (s *GachaMachineWebsocketService) GetPlayerInfoWs(
 	fbs.GetPlayerInfoWsRespAddUsername(builder, usernameOffset)
 	fbs.GetPlayerInfoWsRespAddCoin(builder, resp.Coin)
 	fbs.GetPlayerInfoWsRespAddDiamond(builder, resp.Diamond)
+	fbs.GetPlayerInfoWsRespAddPityState(builder, pityStateVector)
 	respOffset := fbs.GetPlayerInfoWsRespEnd(builder)
 
 	builder.Finish(respOffset)

@@ -40,6 +40,7 @@ type GachaMachineRepository interface {
 
 	// pity state
 	GetGachaPityState(ctx context.Context, playerID int64, machineID int64) (*domain.GachaPityState, error)
+	GetAllGachaPityStatesForPlayer(ctx context.Context, playerID int64) ([]*domain.GachaPityState, error)
 	SetGachaPityState(ctx context.Context, pityState *domain.GachaPityState) error
 
 	// rtp
@@ -311,6 +312,18 @@ func (r *gachaMachineRepository) GetGachaPityState(
 	}
 
 	return &pityState, nil
+}
+
+func (r *gachaMachineRepository) GetAllGachaPityStatesForPlayer(ctx context.Context, playerID int64) ([]*domain.GachaPityState, error) {
+	var pityStates []*domain.GachaPityState
+	err := r.db.WithContext(ctx).
+		Where("player_id = ?", playerID).
+		Find(&pityStates).Error
+
+	if err != nil {
+		return nil, err
+	}
+	return pityStates, nil
 }
 
 func (r *gachaMachineRepository) GetGachaMachineRTPState(

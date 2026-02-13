@@ -51,6 +51,13 @@ table GetPlayerInfoWsResp {
   username:string;
   coin:long;
   diamond:long;
+  pity_state:[PityState];
+}
+
+table PityState {
+  machine_id:long;
+  super_rare_pity:int;
+  ultra_rare_pity:int;
 }
 
 table Items {
