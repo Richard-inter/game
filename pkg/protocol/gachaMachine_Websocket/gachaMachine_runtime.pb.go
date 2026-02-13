@@ -123,7 +123,7 @@ const file_gachaMachine_Websocket_gachaMachine_runtime_proto_rawDesc = "" +
 	"\x0fGetPlayerInfoWs\x12$.gachaMachine.runtime.RuntimeRequest\x1a%.gachaMachine.runtime.RuntimeResponse\x12_\n" +
 	"\x10GetMachineInfoWs\x12$.gachaMachine.runtime.RuntimeRequest\x1a%.gachaMachine.runtime.RuntimeResponse\x12c\n" +
 	"\x14GetPlayerInventoryWs\x12$.gachaMachine.runtime.RuntimeRequest\x1a%.gachaMachine.runtime.RuntimeResponse\x12e\n" +
-	"\x16GetPlayerPullHistoryWs\x12$.gachaMachine.runtime.RuntimeRequest\x1a%.gachaMachine.runtime.RuntimeResponseBCZAgithub.com/1nterdigital/game/pkg/protocol/gachaMachine_Websocketb\x06proto3"
+	"\x16GetPlayerPullHistoryWs\x12$.gachaMachine.runtime.RuntimeRequest\x1a%.gachaMachine.runtime.RuntimeResponseBBZ@github.com/1nterdigital/game/pkg/protocol/gachaMachine_Websocketb\x06proto3"
 
 var (
 	file_gachaMachine_Websocket_gachaMachine_runtime_proto_rawDescOnce sync.Once

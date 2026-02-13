@@ -120,7 +120,7 @@ const file_whackAMole_Websocket_whackAMole_runtime_proto_rawDesc = "" +
 	"\apayload\x18\x01 \x01(\fR\apayload2\xcf\x01\n" +
 	"\x18WhackAMoleRuntimeService\x12X\n" +
 	"\rGetMoleWeight\x12\".whackAMole.runtime.RuntimeRequest\x1a#.whackAMole.runtime.RuntimeResponse\x12Y\n" +
-	"\x0eGetLeaderboard\x12\".whackAMole.runtime.RuntimeRequest\x1a#.whackAMole.runtime.RuntimeResponseBAZ?github.com/1nterdigital/game/pkg/protocol/whackAMole_Websocketb\x06proto3"
+	"\x0eGetLeaderboard\x12\".whackAMole.runtime.RuntimeRequest\x1a#.whackAMole.runtime.RuntimeResponseB@Z>github.com/1nterdigital/game/pkg/protocol/whackAMole_Websocketb\x06proto3"
 
 var (
 	file_whackAMole_Websocket_whackAMole_runtime_proto_rawDescOnce sync.Once

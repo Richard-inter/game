@@ -364,3 +364,55 @@ func (s *GachaMachineWebsocketService) createErrorResponse(err error) *pb.Runtim
 
 	return s.buildEnvelopeResponse(fbs.MessageTypeErrorResp, respBytes)
 }
+
+func (s *GachaMachineWebsocketService) AddGameToHistory(ctx context.Context, session domain.GachaPullSession, itemIDs []int64) error {
+	createdSession, err := s.repo.CreateGachaPullSession(ctx, &session)
+	if err != nil {
+		s.log.Errorf("Failed to create gacha pull session: %v", err)
+		return err
+	}
+
+	// Get machine info to calculate item values for RTP
+	machineInfo, err := s.repo.GetGachaMachineInfo(ctx, session.GachaMachineID)
+	if err != nil {
+		s.log.Errorf("Failed to get machine info for RTP: %v", err)
+		// Continue with history creation even if RTP calculation fails
+	}
+
+	totalPayout := int64(0)
+	if machineInfo != nil {
+		for _, itemID := range itemIDs {
+			// Find the item to get its rarity and calculate value
+			for _, item := range machineInfo.Items {
+				if item.Item.ID == itemID {
+					itemValue := GetGachaRarityValue(item.Item.Rarity, machineInfo.Price)
+					totalPayout += itemValue
+					break
+				}
+			}
+		}
+	}
+
+	// Update RTP state for total payout of this session
+	if totalPayout > 0 && machineInfo != nil {
+		err = s.repo.UpdateGachaMachineRTP(ctx, session.GachaMachineID, 0, totalPayout)
+		if err != nil {
+			s.log.Errorf("Failed to update gacha machine RTP for payout: %v", err)
+			// Continue even if RTP update fails
+		}
+	}
+
+	for _, itemID := range itemIDs {
+		history := &domain.GachaPullHistory{
+			GachaPullSessionID: createdSession.ID,
+			ItemID:             itemID,
+		}
+
+		_, err = s.repo.CreateGachaPullHistories(ctx, &[]domain.GachaPullHistory{*history})
+		if err != nil {
+			s.log.Errorf("Failed to create gacha pull history: %v", err)
+			return err
+		}
+	}
+	return nil
+}

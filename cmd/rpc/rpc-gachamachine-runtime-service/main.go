@@ -80,7 +80,7 @@ func main() {
 	pb.RegisterGachaMachineRuntimeServiceServer(s, runtimeService)
 
 	// Initialize and start stream consumer (optional - only if you want runtime service to also consume)
-	streamConsumer := worker.NewGachaStreamConsumer(gachaMachineRepo, redisClient, &cfg.StreamConsumer, nil)
+	streamConsumer := worker.NewGachaStreamConsumer(gachaMachineRepo, redisClient, &cfg.StreamConsumer, nil, runtimeService)
 	ctx := context.Background()
 	go streamConsumer.Start(ctx)
 	log.Infow("Gacha stream consumer started")

@@ -915,7 +915,7 @@ const file_whackAMole_whackAMole_proto_rawDesc = "" +
 	"\vUpdateScore\x12\x1a.whackAMole.UpdateScoreReq\x1a\x1b.whackAMole.UpdateScoreResp\x12^\n" +
 	"\x13GetMoleWeightConfig\x12\".whackAMole.GetMoleWeightConfigReq\x1a#.whackAMole.GetMoleWeightConfigResp\x12g\n" +
 	"\x16CreateMoleWeightConfig\x12%.whackAMole.CreateMoleWeightConfigReq\x1a&.whackAMole.CreateMoleWeightConfigResp\x12g\n" +
-	"\x16UpdateMoleWeightConfig\x12%.whackAMole.UpdateMoleWeightConfigReq\x1a&.whackAMole.UpdateMoleWeightConfigRespB7Z5github.com/1nterdigital/game/pkg/protocol/whackAMoleb\x06proto3"
+	"\x16UpdateMoleWeightConfig\x12%.whackAMole.UpdateMoleWeightConfigReq\x1a&.whackAMole.UpdateMoleWeightConfigRespB6Z4github.com/1nterdigital/game/pkg/protocol/whackAMoleb\x06proto3"
 
 var (
 	file_whackAMole_whackAMole_proto_rawDescOnce sync.Once
