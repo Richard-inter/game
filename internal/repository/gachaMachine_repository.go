@@ -4,8 +4,9 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/1nterdigital/game/internal/domain"
 	"gorm.io/gorm"
+
+	"github.com/1nterdigital/game/internal/domain"
 )
 
 type gachaMachineRepository struct {
@@ -241,7 +242,10 @@ func (r *gachaMachineRepository) CreateGachaItems(ctx context.Context, items *[]
 	return items, nil
 }
 
-func (r *gachaMachineRepository) CreateGachaPullSession(ctx context.Context, session *domain.GachaPullSession) (*domain.GachaPullSession, error) {
+func (r *gachaMachineRepository) CreateGachaPullSession(
+	ctx context.Context,
+	session *domain.GachaPullSession,
+) (*domain.GachaPullSession, error) {
 	err := r.db.WithContext(ctx).Create(session).Error
 	if err != nil {
 		return nil, err
@@ -249,7 +253,10 @@ func (r *gachaMachineRepository) CreateGachaPullSession(ctx context.Context, ses
 	return session, nil
 }
 
-func (r *gachaMachineRepository) CreateGachaPullHistories(ctx context.Context, histories *[]domain.GachaPullHistory) (*[]domain.GachaPullHistory, error) {
+func (r *gachaMachineRepository) CreateGachaPullHistories(
+	ctx context.Context,
+	histories *[]domain.GachaPullHistory,
+) (*[]domain.GachaPullHistory, error) {
 	err := r.db.WithContext(ctx).Create(histories).Error
 	if err != nil {
 		return nil, err
@@ -279,7 +286,10 @@ func (r *gachaMachineRepository) GetPlayerPullHistory(ctx context.Context, playe
 	return sessions, nil
 }
 
-func (r *gachaMachineRepository) GetGachaPullHistoriesBySessionID(ctx context.Context, sessionID int64) ([]*domain.GachaPullHistory, error) {
+func (r *gachaMachineRepository) GetGachaPullHistoriesBySessionID(
+	ctx context.Context,
+	sessionID int64,
+) ([]*domain.GachaPullHistory, error) {
 	var histories []*domain.GachaPullHistory
 	err := activeQuery(r.db.WithContext(ctx)).
 		Preload("Item").
@@ -297,7 +307,6 @@ func (r *gachaMachineRepository) GetGachaPityState(
 	playerID int64,
 	machineID int64,
 ) (*domain.GachaPityState, error) {
-
 	pityState := domain.GachaPityState{
 		PlayerID:       playerID,
 		GachaMachineID: machineID,

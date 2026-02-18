@@ -121,7 +121,7 @@ func (h *WhackAMoleWebSocketHandler) handleGetLeaderboard(
 	return resp.Payload, nil
 }
 
-func (h *WhackAMoleWebSocketHandler) buildErrorResp(code int, message string) []byte {
+func (_ *WhackAMoleWebSocketHandler) buildErrorResp(code int, message string) []byte {
 	builder := flatbuffers.NewBuilder(0)
 	messageOffset := builder.CreateString(message)
 

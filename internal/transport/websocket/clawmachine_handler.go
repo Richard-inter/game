@@ -8,6 +8,7 @@ import (
 	"go.uber.org/zap"
 
 	"github.com/1nterdigital/game/internal/transport/grpc"
+	"github.com/1nterdigital/game/pkg/constant"
 	runtimepb "github.com/1nterdigital/game/pkg/protocol/clawMachine_Websocket"
 	fbs "github.com/1nterdigital/game/pkg/protocol/clawMachine_Websocket/clawMachine"
 )
@@ -100,12 +101,12 @@ func (h *ClawMachineWebSocketHandler) handleMessage(data []byte) ([]byte, error)
 	handler, ok := h.handlers[msgType]
 	if !ok {
 		h.logger.Errorw("Unknown message type", "type", msgType)
-		return h.buildErrorResp(400, "Unknown message type"), nil
+		return h.buildErrorResp(constant.ErrorCode400, "Unknown message type"), nil
 	}
 
 	if len(payload) == 0 {
 		h.logger.Errorw("Empty payload", "type", msgType)
-		return h.buildErrorResp(400, "Empty payload"), nil
+		return h.buildErrorResp(constant.ErrorCode400, "Empty payload"), nil
 	}
 
 	return handler(context.Background(), payload)
@@ -120,7 +121,7 @@ func (h *ClawMachineWebSocketHandler) handleStartClawGame(
 	})
 	if err != nil {
 		h.logger.Errorw("StartClawGameWs failed", "error", err)
-		return h.buildErrorResp(500, err.Error()), nil
+		return h.buildErrorResp(constant.ErrorCode500, err.Error()), nil
 	}
 
 	return resp.Payload, nil
@@ -135,7 +136,7 @@ func (h *ClawMachineWebSocketHandler) handleGetPlayerInfo(
 	})
 	if err != nil {
 		h.logger.Errorw("GetPlayerSnapshotWs failed", "error", err)
-		return h.buildErrorResp(500, err.Error()), nil
+		return h.buildErrorResp(constant.ErrorCode500, err.Error()), nil
 	}
 
 	return resp.Payload, nil
@@ -150,7 +151,7 @@ func (h *ClawMachineWebSocketHandler) handleAddTouchedItemRecord(
 	})
 	if err != nil {
 		h.logger.Errorw("AddTouchedItemRecordWs failed", "error", err)
-		return h.buildErrorResp(500, err.Error()), nil
+		return h.buildErrorResp(constant.ErrorCode500, err.Error()), nil
 	}
 
 	return resp.Payload, nil
@@ -165,7 +166,7 @@ func (h *ClawMachineWebSocketHandler) handleSpawnItem(
 	})
 	if err != nil {
 		h.logger.Errorw("SpawnItemWs failed", "error", err)
-		return h.buildErrorResp(500, err.Error()), nil
+		return h.buildErrorResp(constant.ErrorCode500, err.Error()), nil
 	}
 
 	return resp.Payload, nil
@@ -180,7 +181,7 @@ func (h *ClawMachineWebSocketHandler) handleGetPlayerInventory(
 	})
 	if err != nil {
 		h.logger.Errorw("GetPlayerInventoryWs failed", "error", err)
-		return h.buildErrorResp(500, err.Error()), nil
+		return h.buildErrorResp(constant.ErrorCode500, err.Error()), nil
 	}
 
 	return resp.Payload, nil
@@ -195,14 +196,14 @@ func (h *ClawMachineWebSocketHandler) handleGetGameHistory(
 	})
 	if err != nil {
 		h.logger.Errorw("GetGameHistoryWs failed", "error", err)
-		return h.buildErrorResp(500, err.Error()), nil
+		return h.buildErrorResp(constant.ErrorCode500, err.Error()), nil
 	}
 
 	return resp.Payload, nil
 }
 
-func (h *ClawMachineWebSocketHandler) buildErrorResp(code int32, message string) []byte {
-	builder := flatbuffers.NewBuilder(128)
+func (_ *ClawMachineWebSocketHandler) buildErrorResp(code int32, message string) []byte {
+	builder := flatbuffers.NewBuilder(constant.Byte128)
 
 	msgOffset := builder.CreateString(message)
 
@@ -215,7 +216,7 @@ func (h *ClawMachineWebSocketHandler) buildErrorResp(code int32, message string)
 	errorBytes := builder.FinishedBytes()
 
 	// Wrap error response in Envelope
-	envBuilder := flatbuffers.NewBuilder(256)
+	envBuilder := flatbuffers.NewBuilder(constant.Byte256)
 	payloadOffset := envBuilder.CreateByteVector(errorBytes)
 
 	fbs.EnvelopeStart(envBuilder)
@@ -228,7 +229,7 @@ func (h *ClawMachineWebSocketHandler) buildErrorResp(code int32, message string)
 }
 
 func (h *ClawMachineWebSocketHandler) sendError(conn *websocket.Conn, message string) {
-	response := h.buildErrorResp(500, message)
+	response := h.buildErrorResp(constant.ErrorCode500, message)
 
 	err := conn.WriteMessage(websocket.BinaryMessage, response)
 	if err != nil {

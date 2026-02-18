@@ -28,7 +28,7 @@ func (s *PlayerGRPCService) GetPlayerInfo(ctx context.Context, req *pb.GetPlayer
 		PlayerID: req.PlayerID,
 		UserName: "player" + fmt.Sprint(req.PlayerID),
 	}
-	resp, err := s.repo.GetPlayerinfo(req.PlayerID)
+	resp, err := s.repo.GetPlayerinfo(ctx, req.PlayerID)
 	if err != nil {
 		return nil, err
 	}
@@ -45,7 +45,7 @@ func (s *PlayerGRPCService) CreatePlayer(ctx context.Context, req *pb.CreatePlay
 	player := &domain.Player{
 		UserName: req.UserName,
 	}
-	resp, err := s.repo.CreatePlayer(player)
+	resp, err := s.repo.CreatePlayer(ctx, player)
 	if err != nil {
 		return nil, err
 	}

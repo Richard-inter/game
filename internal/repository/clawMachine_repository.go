@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	"gorm.io/gorm"
@@ -25,7 +26,7 @@ type ClawMachineRepository interface {
 	AddItemInventory(ctx context.Context, playerID int64, itemID int64, quantity int32) error
 
 	// game
-	AddGameHistory(ctx context.Context, playerID int64, gameRecord *domain.ClawMachineGameRecord) (int64, error)
+	AddGameHistory(ctx context.Context, gameRecord *domain.ClawMachineGameRecord) (int64, error)
 	AddTouchedItemRecord(ctx context.Context, gameID int64, itemID *int64, catched bool) (*domain.ClawMachineGameRecord, error)
 	GetGameHistory(ctx context.Context, playerID int64) ([]*domain.ClawMachineGameRecord, error)
 
@@ -159,7 +160,7 @@ func (r *clawMachineRepository) AddItemInventory(ctx context.Context, playerID i
 		Where("player_id = ? AND item_id = ?", playerID, itemID).
 		First(&inventory).Error
 	if err != nil {
-		if err == gorm.ErrRecordNotFound {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
 			inventory = domain.ClawPlayerInventory{
 				PlayerID: playerID,
 				ItemID:   itemID,
@@ -175,7 +176,7 @@ func (r *clawMachineRepository) AddItemInventory(ctx context.Context, playerID i
 	return r.db.WithContext(ctx).Save(&inventory).Error
 }
 
-func (r *clawMachineRepository) AddGameHistory(ctx context.Context, playerID int64, gameRecord *domain.ClawMachineGameRecord) (int64, error) {
+func (r *clawMachineRepository) AddGameHistory(ctx context.Context, gameRecord *domain.ClawMachineGameRecord) (int64, error) {
 	err := r.db.WithContext(ctx).Create(gameRecord).Error
 	if err != nil {
 		return 0, err
@@ -191,7 +192,12 @@ func (r *clawMachineRepository) AddGameHistory(ctx context.Context, playerID int
 	return createdRecord.ID, nil
 }
 
-func (r *clawMachineRepository) AddTouchedItemRecord(ctx context.Context, gameID int64, itemID *int64, catched bool) (*domain.ClawMachineGameRecord, error) {
+func (r *clawMachineRepository) AddTouchedItemRecord(
+	ctx context.Context,
+	gameID int64,
+	itemID *int64,
+	catched bool,
+) (*domain.ClawMachineGameRecord, error) {
 	err := r.db.WithContext(ctx).Model(&domain.ClawMachineGameRecord{}).
 		Where("id = ?", gameID).
 		Updates(map[string]any{
@@ -263,7 +269,11 @@ func (r *clawMachineRepository) CreateClawMachine(
 	return clawMachine, nil
 }
 
-func (r *clawMachineRepository) UpdateClawMachineItems(ctx context.Context, clawMachineID int64, items []domain.ClawMachineItem) (*domain.ClawMachine, error) {
+func (r *clawMachineRepository) UpdateClawMachineItems(
+	ctx context.Context,
+	clawMachineID int64,
+	items []domain.ClawMachineItem,
+) (*domain.ClawMachine, error) {
 	// Start a transaction
 	tx := activeQuery(r.db.WithContext(ctx)).Begin()
 

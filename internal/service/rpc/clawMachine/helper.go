@@ -231,7 +231,7 @@ func (s *ClawMachineGRPCServices) PlayMachine(
 		return fmt.Errorf("failed to get machine info: %w", err)
 	}
 
-	_, err = s.repo.AdjustPlayerCoin(ctx, playerID, int64(clawMachine.Price), "minus")
+	_, err = s.repo.AdjustPlayerCoin(ctx, playerID, clawMachine.Price, "minus")
 	if err != nil {
 		return fmt.Errorf("failed to adjust player coin: %w", err)
 	}

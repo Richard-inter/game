@@ -10,6 +10,7 @@ import (
 
 	"github.com/1nterdigital/game/internal/cache"
 	"github.com/1nterdigital/game/internal/repository"
+	"github.com/1nterdigital/game/pkg/constant"
 	"github.com/1nterdigital/game/pkg/logger"
 	pb "github.com/1nterdigital/game/pkg/protocol/whackAMole_Websocket"
 	fbs "github.com/1nterdigital/game/pkg/protocol/whackAMole_Websocket/whackAMole"
@@ -23,7 +24,11 @@ type WhackAMoleWebsocketService struct {
 	log       *zap.SugaredLogger
 }
 
-func NewWhackAMoleWebsocketService(repo repository.WhackAMoleRepository, redis *cache.RedisClient, streamKey string) *WhackAMoleWebsocketService {
+func NewWhackAMoleWebsocketService(
+	repo repository.WhackAMoleRepository,
+	redis *cache.RedisClient,
+	streamKey string,
+) *WhackAMoleWebsocketService {
 	return &WhackAMoleWebsocketService{
 		repo:      repo,
 		redis:     redis,
@@ -33,7 +38,7 @@ func NewWhackAMoleWebsocketService(repo repository.WhackAMoleRepository, redis *
 }
 
 func (_ *WhackAMoleWebsocketService) buildEnvelopeResponse(messageType fbs.MessageType, payloadBytes []byte) *pb.RuntimeResponse {
-	builder := flatbuffers.NewBuilder(len(payloadBytes) + 256)
+	builder := flatbuffers.NewBuilder(len(payloadBytes) + constant.Byte256)
 	payloadOffset := builder.CreateByteVector(payloadBytes)
 
 	fbs.EnvelopeStart(builder)
@@ -64,7 +69,7 @@ func (s *WhackAMoleWebsocketService) GetMoleWeight(ctx context.Context, req *pb.
 	}
 
 	// Build flatbuffers response
-	builder := flatbuffers.NewBuilder(1024)
+	builder := flatbuffers.NewBuilder(constant.Byte1024)
 
 	// Create mole weight vectors
 	var moleOffsets []flatbuffers.UOffsetT
@@ -120,7 +125,7 @@ func (s *WhackAMoleWebsocketService) GetLeaderboard(ctx context.Context, req *pb
 	}
 
 	// Build flatbuffers response
-	builder := flatbuffers.NewBuilder(1024)
+	builder := flatbuffers.NewBuilder(constant.Byte1024)
 
 	// Create leaderboard player vectors
 	var playerOffsets []flatbuffers.UOffsetT

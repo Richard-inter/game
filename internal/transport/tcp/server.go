@@ -7,8 +7,9 @@ import (
 	"net"
 	"time"
 
-	"github.com/1nterdigital/game/internal/config"
 	"go.uber.org/zap"
+
+	"github.com/1nterdigital/game/internal/config"
 )
 
 const (

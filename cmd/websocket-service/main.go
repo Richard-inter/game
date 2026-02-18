@@ -9,12 +9,13 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/gorilla/websocket"
+	"go.uber.org/zap"
+
 	"github.com/1nterdigital/game/internal/config"
 	"github.com/1nterdigital/game/internal/transport/grpc"
 	wshandler "github.com/1nterdigital/game/internal/transport/websocket"
 	"github.com/1nterdigital/game/pkg/logger"
-	"github.com/gorilla/websocket"
-	"go.uber.org/zap"
 )
 
 const (
@@ -133,7 +134,10 @@ func handleClawMachineWebSocket(upgrader websocket.Upgrader, w http.ResponseWrit
 		EtcdEndpoints:   []string{}, // Empty to disable etcd
 		PlayerAddr:      fmt.Sprintf("%s:%d", serviceConfigs["player"].Service.Host, serviceConfigs["player"].Service.Port),
 		ClawmachineAddr: fmt.Sprintf("%s:%d", serviceConfigs["clawmachine"].Service.Host, serviceConfigs["clawmachine"].Service.Port),
-		RuntimeAddr:     fmt.Sprintf("%s:%d", serviceConfigs["clawmachine_runtime"].Service.Host, serviceConfigs["clawmachine_runtime"].Service.Port),
+		RuntimeAddr: fmt.Sprintf("%s:%d",
+			serviceConfigs["clawmachine_runtime"].Service.Host,
+			serviceConfigs["clawmachine_runtime"].Service.Port,
+		),
 	}
 
 	log.Infow("Creating ClawMachine gRPC client manager with dynamic addresses",
@@ -179,7 +183,9 @@ func handleGachaMachineWebSocket(upgrader websocket.Upgrader, w http.ResponseWri
 	grpcConfig := &grpc.ClientManagerConfig{
 		EtcdEndpoints:    []string{}, // Empty to disable etcd
 		GachaMachineAddr: fmt.Sprintf("%s:%d", serviceConfigs["gachamachine"].Service.Host, serviceConfigs["gachamachine"].Service.Port),
-		GachaRuntimeAddr: fmt.Sprintf("%s:%d", serviceConfigs["gachamachine_runtime"].Service.Host, serviceConfigs["gachamachine_runtime"].Service.Port),
+		GachaRuntimeAddr: fmt.Sprintf("%s:%d",
+			serviceConfigs["gachamachine_runtime"].Service.Host,
+			serviceConfigs["gachamachine_runtime"].Service.Port),
 	}
 
 	log.Infow("Creating GachaMachine gRPC client manager with dynamic addresses",

@@ -22,7 +22,11 @@ type GachaMachineGRPCService struct {
 	log       *zap.SugaredLogger
 }
 
-func NewGachaMachineGRPCService(repo repository.GachaMachineRepository, redis *cache.RedisClient, streamKey string) *GachaMachineGRPCService {
+func NewGachaMachineGRPCService(
+	repo repository.GachaMachineRepository,
+	redis *cache.RedisClient,
+	streamKey string,
+) *GachaMachineGRPCService {
 	return &GachaMachineGRPCService{
 		repo:      repo,
 		redis:     redis,
@@ -90,7 +94,10 @@ func (s *GachaMachineGRPCService) CreateGachaPlayer(ctx context.Context, req *pb
 	}, nil
 }
 
-func (s *GachaMachineGRPCService) GetGachaPlayerInfo(ctx context.Context, req *pb.GetGachaPlayerInfoReq) (*pb.GetGachaPlayerInfoResp, error) {
+func (s *GachaMachineGRPCService) GetGachaPlayerInfo(
+	ctx context.Context,
+	req *pb.GetGachaPlayerInfoReq,
+) (*pb.GetGachaPlayerInfoResp, error) {
 	domainPlayer, err := s.repo.GetGachaPlayerInfo(ctx, req.PlayerID)
 	if err != nil {
 		s.log.Errorf("Failed to get gacha player info: %v", err)
@@ -129,7 +136,10 @@ func (s *GachaMachineGRPCService) GetGachaPlayerInfo(ctx context.Context, req *p
 	}, nil
 }
 
-func (s *GachaMachineGRPCService) GetPlayerInventory(ctx context.Context, req *pb.GetPlayerInventoryReq) (*pb.GetPlayerInventoryResp, error) {
+func (s *GachaMachineGRPCService) GetPlayerInventory(
+	ctx context.Context,
+	req *pb.GetPlayerInventoryReq,
+) (*pb.GetPlayerInventoryResp, error) {
 	inventory, err := s.repo.GetPlayerInventory(ctx, req.PlayerID)
 	if err != nil {
 		s.log.Errorf("Failed to get player inventory: %v", err)
@@ -150,7 +160,10 @@ func (s *GachaMachineGRPCService) GetPlayerInventory(ctx context.Context, req *p
 	}, nil
 }
 
-func (s *GachaMachineGRPCService) GetPlayerPullHistory(ctx context.Context, req *pb.GetPlayerPullHistoryReq) (*pb.GetPlayerPullHistoryResp, error) {
+func (s *GachaMachineGRPCService) GetPlayerPullHistory(
+	ctx context.Context,
+	req *pb.GetPlayerPullHistoryReq,
+) (*pb.GetPlayerPullHistoryResp, error) {
 	sessions, err := s.repo.GetPlayerPullHistory(ctx, req.PlayerID)
 	if err != nil {
 		s.log.Errorf("Failed to get player pull history: %v", err)
@@ -201,7 +214,10 @@ func (s *GachaMachineGRPCService) AdjustPlayerCoin(ctx context.Context, req *pb.
 	}, nil
 }
 
-func (s *GachaMachineGRPCService) AdjustPlayerDiamond(ctx context.Context, req *pb.AdjustPlayerDiamondReq) (*pb.AdjustPlayerDiamondResp, error) {
+func (s *GachaMachineGRPCService) AdjustPlayerDiamond(
+	ctx context.Context,
+	req *pb.AdjustPlayerDiamondReq,
+) (*pb.AdjustPlayerDiamondResp, error) {
 	updated, err := s.repo.AdjustPlayerDiamond(ctx, req.PlayerID, req.Amount, req.Type)
 	if err != nil {
 		s.log.Errorf("Failed to adjust player diamonds: %v", err)
@@ -214,7 +230,10 @@ func (s *GachaMachineGRPCService) AdjustPlayerDiamond(ctx context.Context, req *
 	}, nil
 }
 
-func (s *GachaMachineGRPCService) CreateGachaMachine(ctx context.Context, req *pb.CreateGachaMachineReq) (*pb.CreateGachaMachineResp, error) {
+func (s *GachaMachineGRPCService) CreateGachaMachine(
+	ctx context.Context,
+	req *pb.CreateGachaMachineReq,
+) (*pb.CreateGachaMachineResp, error) {
 	g := &domain.GachaMachine{
 		Name:          req.Name,
 		Price:         req.Price,
@@ -259,7 +278,10 @@ func (s *GachaMachineGRPCService) CreateGachaMachine(ctx context.Context, req *p
 	}, nil
 }
 
-func (s *GachaMachineGRPCService) GetGachaMachineInfo(ctx context.Context, req *pb.GetGachaMachineInfoReq) (*pb.GetGachaMachineInfoResp, error) {
+func (s *GachaMachineGRPCService) GetGachaMachineInfo(
+	ctx context.Context,
+	req *pb.GetGachaMachineInfoReq,
+) (*pb.GetGachaMachineInfoResp, error) {
 	var machines []*pb.GachaMachine
 	if req.MachineID == 0 {
 		machineDomainList, err := s.repo.GetAllGachaMachines(ctx)
@@ -320,7 +342,10 @@ func (s *GachaMachineGRPCService) GetGachaMachineInfo(ctx context.Context, req *
 	}, nil
 }
 
-func (s *GachaMachineGRPCService) GetPullResult(ctx context.Context, req *pb.GetPullResultReq) (*pb.GetPullResultResp, error) {
+func (s *GachaMachineGRPCService) GetPullResult(
+	ctx context.Context,
+	req *pb.GetPullResultReq,
+) (*pb.GetPullResultResp, error) {
 	err := s.PlayMachine(ctx, req.PlayerID, req.MachineID, req.PullCount)
 	if err != nil {
 		return nil, err
@@ -333,12 +358,14 @@ func (s *GachaMachineGRPCService) GetPullResult(ctx context.Context, req *pb.Get
 	}
 
 	if req.PullCount == 1 {
-		itemID, err := s.PullGachaSingle(ctx, req.MachineID, req.PlayerID)
+		var itemID int64
+		itemID, err = s.PullGachaSingle(ctx, req.MachineID, req.PlayerID)
 		if err != nil {
 			return nil, err
 		}
 
-		if err := s.redis.PublishGachaEvent(ctx, s.streamKey, session, itemID); err != nil {
+		err = s.redis.PublishGachaEvent(ctx, s.streamKey, session, itemID)
+		if err != nil {
 			s.log.Errorf("Failed to publish gacha pull history to stream: %v", err)
 			// Continue even if stream publish fails
 		}
@@ -364,7 +391,11 @@ func (s *GachaMachineGRPCService) GetPullResult(ctx context.Context, req *pb.Get
 	}, nil
 }
 
-func (s *GachaMachineGRPCService) AddGameToHistory(ctx context.Context, session domain.GachaPullSession, itemIDs []int64) error {
+func (s *GachaMachineGRPCService) AddGameToHistory(
+	ctx context.Context,
+	session domain.GachaPullSession,
+	itemIDs []int64,
+) error {
 	createdSession, err := s.repo.CreateGachaPullSession(ctx, &session)
 	if err != nil {
 		s.log.Errorf("Failed to create gacha pull session: %v", err)

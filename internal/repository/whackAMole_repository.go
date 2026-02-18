@@ -35,7 +35,10 @@ func NewWhackAMoleRepository(db *gorm.DB) WhackAMoleRepository {
 	}
 }
 
-func (r *whackAMoleRepository) CreateWhackAMolePlayer(ctx context.Context, player *domain.WhackAMolePlayer) (*domain.WhackAMolePlayer, error) {
+func (r *whackAMoleRepository) CreateWhackAMolePlayer(
+	ctx context.Context,
+	player *domain.WhackAMolePlayer,
+) (*domain.WhackAMolePlayer, error) {
 	err := r.db.WithContext(ctx).Create(player).Error
 	if err != nil {
 		return nil, err
@@ -132,7 +135,6 @@ func (r *whackAMoleRepository) GetMoleWeightConfig(
 	ctx context.Context,
 	id int64,
 ) ([]domain.MoleWeightConfig, error) {
-
 	var configs []domain.MoleWeightConfig
 
 	query := r.db.WithContext(ctx)
@@ -152,7 +154,10 @@ func (r *whackAMoleRepository) GetMoleWeightConfig(
 	return configs, nil
 }
 
-func (r *whackAMoleRepository) CreateMoleWeightConfig(ctx context.Context, config *domain.MoleWeightConfig) (*domain.MoleWeightConfig, error) {
+func (r *whackAMoleRepository) CreateMoleWeightConfig(
+	ctx context.Context,
+	config *domain.MoleWeightConfig,
+) (*domain.MoleWeightConfig, error) {
 	err := r.db.WithContext(ctx).Create(config).Error
 	if err != nil {
 		return nil, err
@@ -160,7 +165,10 @@ func (r *whackAMoleRepository) CreateMoleWeightConfig(ctx context.Context, confi
 	return config, nil
 }
 
-func (r *whackAMoleRepository) UpdateMoleWeightConfig(ctx context.Context, config *domain.MoleWeightConfig) (*domain.MoleWeightConfig, error) {
+func (r *whackAMoleRepository) UpdateMoleWeightConfig(
+	ctx context.Context,
+	config *domain.MoleWeightConfig,
+) (*domain.MoleWeightConfig, error) {
 	err := r.db.WithContext(ctx).Model(&domain.MoleWeightConfig{}).
 		Where("id = ?", config.ID).
 		Updates(map[string]interface{}{
@@ -175,7 +183,6 @@ func (r *whackAMoleRepository) UpdateMoleWeightConfig(ctx context.Context, confi
 
 func (r *whackAMoleRepository) RecalculateLeaderboard(ctx context.Context) error {
 	return r.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
-
 		// 1. Reset all ranks first
 		if err := tx.Exec(`UPDATE whackAMole_leaderboard SET ` + "`rank`" + ` = 0`).Error; err != nil {
 			return err

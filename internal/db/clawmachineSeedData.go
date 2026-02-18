@@ -21,7 +21,6 @@ func SeedClawMachineData(db *gorm.DB) error {
 	createdBy := "seed"
 
 	return db.Transaction(func(tx *gorm.DB) error {
-
 		// 1️⃣ Player (NO manual ID)
 		player := domain.ClawPlayer{
 			Player: domain.Player{

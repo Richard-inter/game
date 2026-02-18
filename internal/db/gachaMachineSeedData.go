@@ -21,7 +21,6 @@ func SeedGachaMachineData(db *gorm.DB) error {
 	createdBy := "seed"
 
 	return db.Transaction(func(tx *gorm.DB) error {
-
 		// 1️⃣ Player (NO manual ID)
 		player := domain.GachaPlayer{
 			Player: domain.Player{

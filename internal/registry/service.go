@@ -4,8 +4,9 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/1nterdigital/game/internal/discovery"
 	"go.uber.org/zap"
+
+	"github.com/1nterdigital/game/internal/discovery"
 )
 
 type ServiceRegistry struct {

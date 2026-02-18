@@ -7,15 +7,14 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 	"go.uber.org/zap"
 
+	_ "github.com/1nterdigital/game/docs"
 	"github.com/1nterdigital/game/internal/config"
 	"github.com/1nterdigital/game/internal/transport/grpc"
 	"github.com/1nterdigital/game/internal/transport/http/handler"
-
-	_ "github.com/1nterdigital/game/docs"
-	swaggerFiles "github.com/swaggo/files"
-	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 // @title Game Service API

@@ -3,6 +3,7 @@ package cache
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"time"
 
@@ -28,7 +29,7 @@ func (r *RedisClient) GetGameResults(ctx context.Context, gameID int64, dest any
 
 	data, err := r.client.Get(ctx, key).Result()
 	if err != nil {
-		if err == redis.Nil {
+		if errors.Is(err, redis.Nil) {
 			return fmt.Errorf("game results not found for game ID: %d", gameID)
 		}
 		return fmt.Errorf("failed to get game results: %w", err)

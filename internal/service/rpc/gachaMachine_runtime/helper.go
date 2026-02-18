@@ -130,7 +130,7 @@ func (s *GachaMachineWebsocketService) PullGachaByMachineID(
 	return s.pullFromAll(resp, rtpState)
 }
 
-func (s *GachaMachineWebsocketService) pullByRarity(
+func (_ *GachaMachineWebsocketService) pullByRarity(
 	resp *domain.GachaMachine,
 	rarity string,
 	rtpState *domain.GachaMachineRTPState,
@@ -151,7 +151,7 @@ func (s *GachaMachineWebsocketService) pullByRarity(
 	return PullGachaByEntries(entries)
 }
 
-func (s *GachaMachineWebsocketService) pullFromAll(
+func (_ *GachaMachineWebsocketService) pullFromAll(
 	resp *domain.GachaMachine,
 	rtpState *domain.GachaMachineRTPState,
 ) int64 {
@@ -187,7 +187,8 @@ func (s *GachaMachineWebsocketService) PullGachaSingle(
 
 	s.updatePityAfterPull(pityState, itemID, resp)
 
-	if err := s.repo.SetGachaPityState(ctx, pityState); err != nil {
+	err = s.repo.SetGachaPityState(ctx, pityState)
+	if err != nil {
 		return 0, err
 	}
 
@@ -217,7 +218,7 @@ func (s *GachaMachineWebsocketService) PullGachaByMachineIDMulti(
 		return nil, err
 	}
 
-	for i := 0; i < count; i++ {
+	for range count {
 		itemID := s.PullGachaByMachineID(ctx, pityState, resp)
 		returnResults = append(returnResults, itemID)
 		resultMap[itemID]++
@@ -240,7 +241,7 @@ func (s *GachaMachineWebsocketService) PullGachaByMachineIDMulti(
 	return returnResults, nil
 }
 
-func (s *GachaMachineWebsocketService) updatePityAfterPull(
+func (_ *GachaMachineWebsocketService) updatePityAfterPull(
 	pity *domain.GachaPityState,
 	itemID int64,
 	resp *domain.GachaMachine,
@@ -278,7 +279,7 @@ func (s *GachaMachineWebsocketService) PlayMachine(ctx context.Context, playerID
 	}
 
 	if pullCount == 1 {
-		_, err = s.repo.AdjustPlayerCoin(ctx, playerID, int64(resp.Price), "minus")
+		_, err = s.repo.AdjustPlayerCoin(ctx, playerID, resp.Price, "minus")
 		if err != nil {
 			return err
 		}
@@ -291,7 +292,7 @@ func (s *GachaMachineWebsocketService) PlayMachine(ctx context.Context, playerID
 	}
 
 	if pullCount == 10 {
-		_, err = s.repo.AdjustPlayerCoin(ctx, playerID, int64(resp.PriceTimesTen), "minus")
+		_, err = s.repo.AdjustPlayerCoin(ctx, playerID, resp.PriceTimesTen, "minus")
 		if err != nil {
 			return err
 		}
