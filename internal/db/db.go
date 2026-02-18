@@ -16,7 +16,7 @@ func InitDB(cfg *config.ServiceConfig) (*gorm.DB, error) {
 	dsn := cfg.GetDSN()
 
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
-		Logger: logger.Default.LogMode(logger.Info),
+		Logger: logger.Default.LogMode(logger.Error),
 	})
 	if err != nil {
 		return nil, fmt.Errorf("failed to connect to database: %w", err)
@@ -36,7 +36,7 @@ func InitPlayerDB(cfg *config.ServiceConfig) (*gorm.DB, error) {
 	dsn := cfg.GetPlayerDSN()
 
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
-		Logger: logger.Default.LogMode(logger.Info),
+		Logger: logger.Default.LogMode(logger.Error),
 	})
 	if err != nil {
 		return nil, fmt.Errorf("failed to connect to player database: %w", err)
@@ -56,7 +56,7 @@ func InitClawmachineDB(cfg *config.ServiceConfig) (*gorm.DB, error) {
 	dsn := cfg.GetClawmachineDSN()
 
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
-		Logger: logger.Default.LogMode(logger.Info),
+		Logger: logger.Default.LogMode(logger.Error),
 	})
 	if err != nil {
 		return nil, fmt.Errorf("failed to connect to clawmachine database: %w", err)
@@ -84,7 +84,7 @@ func InitGachaMachineDB(cfg *config.ServiceConfig) (*gorm.DB, error) {
 	dsn := cfg.GetGachaMachineDSN()
 
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
-		Logger: logger.Default.LogMode(logger.Info),
+		Logger: logger.Default.LogMode(logger.Error),
 	})
 	if err != nil {
 		return nil, fmt.Errorf("failed to connect to gacha machine database: %w", err)
@@ -113,7 +113,7 @@ func InitWhackAMoleDB(cfg *config.ServiceConfig) (*gorm.DB, error) {
 	dsn := cfg.GetWhackAMoleDSN()
 
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
-		Logger: logger.Default.LogMode(logger.Info),
+		Logger: logger.Default.LogMode(logger.Error),
 	})
 	if err != nil {
 		return nil, fmt.Errorf("failed to connect to whack a mole database: %w", err)
