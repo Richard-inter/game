@@ -76,7 +76,7 @@ func SeedClawMachineData(db *gorm.DB) error {
 		var items []domain.ClawItem
 
 		for _, r := range rarityDistribution {
-			for i := 0; i < r.Count; i++ {
+			for i := range r.Count {
 				item := domain.ClawItem{
 					Name:            fmt.Sprintf("%s Item %d", r.Rarity, i+1),
 					Rarity:          r.Rarity,

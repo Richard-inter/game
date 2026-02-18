@@ -77,7 +77,7 @@ func (s *WhackAMoleGRPCService) GetPlayerInfo(
 }
 
 func (s *WhackAMoleGRPCService) GetLeaderboard(
-	ctx context.Context, 
+	ctx context.Context,
 	req *whackAMole.GetLeaderboardReq,
 ) (*whackAMole.GetLeaderboardResp, error) {
 	leaderboard, err := s.repo.GetLeaderboard(ctx, req.Limit)

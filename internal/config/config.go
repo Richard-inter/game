@@ -141,9 +141,8 @@ func LoadConfig() (*Config, error) {
 	if err := viper.ReadInConfig(); err != nil {
 		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
 			return nil, fmt.Errorf("config file not found and no defaults provided")
-		} else {
-			return nil, fmt.Errorf("error reading config file: %w", err)
 		}
+		return nil, fmt.Errorf("error reading config file: %w", err)
 	}
 
 	var config Config
@@ -159,38 +158,69 @@ func LoadConfig() (*Config, error) {
 	return &config, nil
 }
 
-func validateConfig(config *Config) error {
-	// Validate server configuration
-	if config.Server.Port < minServerPort || config.Server.Port > maxServerPort {
+func validateServerConfig(config *ServerConfig) error {
+	if config.Port < minServerPort || config.Port > maxServerPort {
 		return fmt.Errorf("server port must be between %d and %d", minServerPort, maxServerPort)
 	}
+	return nil
+}
 
-	// Validate database configuration
-	if config.Database.Port < minDatabasePort || config.Database.Port > maxDatabasePort {
+func validateDatabaseConfig(config *DatabaseConfig) error {
+	if config.Port < minDatabasePort || config.Port > maxDatabasePort {
 		return fmt.Errorf("database port must be between %d and %d", minDatabasePort, maxDatabasePort)
 	}
+	return nil
+}
 
-	// Validate Redis configuration
-	if config.Redis.Port < minRedisPort || config.Redis.Port > maxRedisPort {
+func validateRedisConfig(config *RedisConfig) error {
+	if config.Port < minRedisPort || config.Port > maxRedisPort {
 		return fmt.Errorf("redis port must be between %d and %d", minRedisPort, maxRedisPort)
 	}
+	return nil
+}
 
-	// Validate gRPC configuration
-	if config.GRPC.Port < minGRPCPort || config.GRPC.Port > maxGRPCPort {
+func validateGRPCConfig(config *GRPCConfig) error {
+	if config.Port < minGRPCPort || config.Port > maxGRPCPort {
 		return fmt.Errorf("grpc port must be between %d and %d", minGRPCPort, maxGRPCPort)
 	}
+	return nil
+}
 
-	// Validate WebSocket configuration
-	if config.WebSocket.Port < minWebSocketPort || config.WebSocket.Port > maxWebSocketPort {
+func validateWebSocketConfig(config *WebSocketConfig) error {
+	if config.Port < minWebSocketPort || config.Port > maxWebSocketPort {
 		return fmt.Errorf("websocket port must be between %d and %d", minWebSocketPort, maxWebSocketPort)
 	}
 
-	if config.WebSocket.ReadBufferSize < minBufferSize || config.WebSocket.ReadBufferSize > maxBufferSize {
+	if config.ReadBufferSize < minBufferSize || config.ReadBufferSize > maxBufferSize {
 		return fmt.Errorf("websocket read buffer size must be between %d and %d", minBufferSize, maxBufferSize)
 	}
 
-	if config.WebSocket.WriteBufferSize < minBufferSize || config.WebSocket.WriteBufferSize > maxBufferSize {
+	if config.WriteBufferSize < minBufferSize || config.WriteBufferSize > maxBufferSize {
 		return fmt.Errorf("websocket write buffer size must be between %d and %d", minBufferSize, maxBufferSize)
+	}
+
+	return nil
+}
+
+func validateConfig(config *Config) error {
+	if err := validateServerConfig(&config.Server); err != nil {
+		return err
+	}
+
+	if err := validateDatabaseConfig(&config.Database); err != nil {
+		return err
+	}
+
+	if err := validateRedisConfig(&config.Redis); err != nil {
+		return err
+	}
+
+	if err := validateGRPCConfig(&config.GRPC); err != nil {
+		return err
+	}
+
+	if err := validateWebSocketConfig(&config.WebSocket); err != nil {
+		return err
 	}
 
 	// Validate TCP configuration

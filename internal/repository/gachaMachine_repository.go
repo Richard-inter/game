@@ -10,6 +10,11 @@ import (
 	"github.com/1nterdigital/game/internal/domain"
 )
 
+const (
+	AdjustmentTypePlus  = "plus"
+	AdjustmentTypeMinus = "minus"
+)
+
 type gachaMachineRepository struct {
 	db         *gorm.DB
 	defaultRTP float64
@@ -80,11 +85,11 @@ func (r *gachaMachineRepository) adjustPlayerBalance(
 	ctx context.Context,
 	playerID, amount int64,
 	adjustmentType, field string) (*domain.GachaPlayer, error) {
-	if adjustmentType != "plus" && adjustmentType != "minus" {
+	if adjustmentType != AdjustmentTypePlus && adjustmentType != AdjustmentTypeMinus {
 		return nil, fmt.Errorf("invalid adjustment type: %s", adjustmentType)
 	}
 
-	if adjustmentType == "minus" {
+	if adjustmentType == AdjustmentTypeMinus {
 		amount = -amount
 	}
 

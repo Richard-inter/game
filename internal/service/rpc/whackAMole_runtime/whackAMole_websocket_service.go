@@ -93,19 +93,9 @@ func (s *WhackAMoleWebsocketService) GetMoleWeight(ctx context.Context, req *pb.
 	// Create response
 	fbs.GetMoleWeightRespStart(builder)
 	fbs.GetMoleWeightRespAddMole(builder, moleVector)
-	respOffset := fbs.GetMoleWeightRespEnd(builder)
 
 	// Create envelope
-	payloadOffset := respOffset
-	fbs.EnvelopeStart(builder)
-	fbs.EnvelopeAddType(builder, fbs.MessageTypeGetMoleWeightResp)
-	fbs.EnvelopeAddPayload(builder, payloadOffset)
-	envOffset := fbs.EnvelopeEnd(builder)
-	builder.Finish(envOffset)
-
-	return &pb.RuntimeResponse{
-		Payload: builder.FinishedBytes(),
-	}, nil
+	return s.buildEnvelopeResponse(fbs.MessageTypeGetMoleWeightResp, builder.FinishedBytes()), nil
 }
 
 func (s *WhackAMoleWebsocketService) GetLeaderboard(ctx context.Context, req *pb.RuntimeRequest) (*pb.RuntimeResponse, error) {
