@@ -596,7 +596,7 @@ func (h *ClawMachineHandler) HandleUpdateClawMachineTargetRTP(c *gin.Context) {
 	resp, err := h.clawMachineClient.UpdateClawMachineTargetRTP(c, grpcReq)
 	if err != nil {
 		h.logger.Errorw("Failed to update claw machine target RTP", "error", err)
-		common.SendError(c, 500, err.Error())
+		common.SendError(c, constant.ErrorCode500, err.Error())
 		return
 	}
 
@@ -620,7 +620,7 @@ func (h *ClawMachineHandler) HandleGetPlayerInventory(c *gin.Context) {
 	playerID, err := strconv.ParseInt(playerIDStr, 10, 64)
 	if err != nil {
 		h.logger.Errorw("Invalid player ID", "error", err)
-		common.SendError(c, 400, "Invalid player ID")
+		common.SendError(c, constant.ErrorCode400, "Invalid player ID")
 		return
 	}
 
@@ -631,7 +631,7 @@ func (h *ClawMachineHandler) HandleGetPlayerInventory(c *gin.Context) {
 	resp, err := h.clawMachineClient.GetPlayerInventory(c, grpcReq)
 	if err != nil {
 		h.logger.Errorw("Failed to get player inventory", "error", err)
-		common.SendError(c, 500, err.Error())
+		common.SendError(c, constant.ErrorCode500, err.Error())
 		return
 	}
 

@@ -28,10 +28,16 @@ type GachaStreamConsumer struct {
 	log            *zap.SugaredLogger
 }
 
-func NewGachaStreamConsumer(repo repository.GachaMachineRepository, redis *cache.RedisClient, cfg *config.StreamConsumerConfig, service *gm.GachaMachineGRPCService, runtimeService *runtime.GachaMachineWebsocketService) *GachaStreamConsumer {
+func NewGachaStreamConsumer(
+	repo repository.GachaMachineRepository,
+	redisClient *cache.RedisClient,
+	cfg *config.StreamConsumerConfig,
+	service *gm.GachaMachineGRPCService,
+	runtimeService *runtime.GachaMachineWebsocketService,
+) *GachaStreamConsumer {
 	return &GachaStreamConsumer{
 		repo:           repo,
-		redis:          redis,
+		redis:          redisClient,
 		config:         cfg,
 		service:        service,
 		runtimeService: runtimeService,
@@ -126,13 +132,13 @@ func (g *GachaStreamConsumer) parseHistoryMessage(ctx context.Context, message r
 
 	// Call the appropriate service based on which one is available
 	if g.runtimeService != nil {
-		if err := g.runtimeService.AddGameToHistory(ctx, *session, itemIDs); err != nil {
+		if err := g.runtimeService.AddGameToHistory(ctx, session, itemIDs); err != nil {
 			return nil, fmt.Errorf("failed to add game to history for item %v: %w", itemIDs, err)
 		}
 	}
 
 	if g.service != nil {
-		if err := g.service.AddGameToHistory(ctx, *session, itemIDs); err != nil {
+		if err := g.service.AddGameToHistory(ctx, session, itemIDs); err != nil {
 			return nil, fmt.Errorf("failed to add game to history for item %v: %w", itemIDs, err)
 		}
 	}

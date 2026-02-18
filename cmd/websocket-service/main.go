@@ -65,12 +65,12 @@ func main() {
 
 	// ClawMachine WebSocket endpoint
 	mux.HandleFunc("/clawmachine", func(w http.ResponseWriter, r *http.Request) {
-		handleClawMachineWebSocket(upgrader, w, r, log)
+		handleClawMachineWebSocket(&upgrader, w, r, log)
 	})
 
 	// GachaMachine WebSocket endpoint
 	mux.HandleFunc("/gachamachine", func(w http.ResponseWriter, r *http.Request) {
-		handleGachaMachineWebSocket(upgrader, w, r, log)
+		handleGachaMachineWebSocket(&upgrader, w, r, log)
 	})
 
 	// Add health check
@@ -114,7 +114,7 @@ func main() {
 	log.Infow("WebSocket Service stopped")
 }
 
-func handleClawMachineWebSocket(upgrader websocket.Upgrader, w http.ResponseWriter, r *http.Request, log *zap.SugaredLogger) {
+func handleClawMachineWebSocket(upgrader *websocket.Upgrader, w http.ResponseWriter, r *http.Request, log *zap.SugaredLogger) {
 	// Upgrade HTTP connection to WebSocket
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
@@ -164,7 +164,7 @@ func handleClawMachineWebSocket(upgrader websocket.Upgrader, w http.ResponseWrit
 	handler.HandleConnection(conn)
 }
 
-func handleGachaMachineWebSocket(upgrader websocket.Upgrader, w http.ResponseWriter, r *http.Request, log *zap.SugaredLogger) {
+func handleGachaMachineWebSocket(upgrader *websocket.Upgrader, w http.ResponseWriter, r *http.Request, log *zap.SugaredLogger) {
 	// Upgrade HTTP connection to WebSocket
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {

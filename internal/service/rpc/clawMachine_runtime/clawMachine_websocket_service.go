@@ -274,7 +274,8 @@ func (s *ClawMachineWebsocketService) GetPlayerInventoryWs(ctx context.Context, 
 
 	// Build PlayerInventoryItem vector
 	itemOffsets := make([]flatbuffers.UOffsetT, len(inventory))
-	for i, item := range inventory {
+	for i := range inventory {
+		item := &inventory[i]
 		fbs.PlayerInventoryItemStart(builder)
 		fbs.PlayerInventoryItemAddItemId(builder, item.ItemID)
 		fbs.PlayerInventoryItemAddQuantity(builder, item.Quantity)

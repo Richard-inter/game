@@ -10,6 +10,19 @@ import (
 	pb "github.com/1nterdigital/game/pkg/protocol/clawMachine"
 )
 
+const (
+	// RTP adjustment factors
+	RTPPenaltyFactor = 0.5 // Reduce spawn weight by up to 50% when RTP is too high
+	RTPBoostFactor   = 0.3 // Increase spawn weight by up to 30% when RTP is too low
+
+	// Probability constants
+	MaxProbability = 100
+
+	// RTP adjustment constants
+	CatchPenaltyFactor = 0.02 // 2% adjustment per percentage point
+	CatchBoostFactor   = 0.01 // 1% boost per percentage point
+)
+
 // Rarity value multipliers
 var BaseRarityMultiplier = map[string]float64{
 	"common":    0.05,
@@ -54,10 +67,10 @@ func Roll(percent int) bool {
 	if percent <= 0 {
 		return false
 	}
-	if percent >= 100 {
+	if percent >= MaxProbability {
 		return true
 	}
-	return rand.IntN(100) < percent
+	return rand.IntN(MaxProbability) < percent
 }
 func SpawnWithControls(items []SpawnItem, config SpawnConfig, rtpState *domain.ClawMachineRTPState) []SpawnItem {
 	result := make([]SpawnItem, 0, config.MaxOutput)
@@ -114,7 +127,8 @@ func (s *ClawMachineGRPCServices) GetMachineItems(
 	}
 
 	items := make([]*pb.Item, 0, len(clawMachine.Items))
-	for _, item := range clawMachine.Items {
+	for i := range clawMachine.Items {
+		item := &clawMachine.Items[i]
 		items = append(items, &pb.Item{
 			ItemID:          item.Item.ID,
 			Name:            item.Item.Name,
@@ -141,7 +155,8 @@ func (s *ClawMachineGRPCServices) SpawnMachineItems(
 	}
 
 	spawnItems := make([]SpawnItem, 0, len(clawMachine.Items))
-	for _, item := range clawMachine.Items {
+	for i := range clawMachine.Items {
+		item := &clawMachine.Items[i]
 		spawnItems = append(spawnItems, SpawnItem{
 			ID:           item.Item.ID,
 			SpawnPercent: int(item.Item.SpawnPercentage),
@@ -191,7 +206,8 @@ func (s *ClawMachineGRPCServices) PreDetermineCatchResults(
 
 	rtpDelta := CalculateRTPDelta(rtpState)
 
-	for _, item := range clawMachine.Items {
+	for i := range clawMachine.Items {
+		item := &clawMachine.Items[i]
 		catchWeight := item.Item.CatchPercentage
 		if catchWeight == 0 {
 			return nil, fmt.Errorf("database error: item %s (ID: %d) has zero catch percentage", item.Item.Name, item.Item.ID)
@@ -250,15 +266,15 @@ func adjustCatchProbability(baseProbability int, rtpDelta float64) int {
 	if rtpDelta > 0 {
 		// When RTP is too high, reduce catch probability
 		// Use a conservative adjustment factor
-		penalty := int(float64(baseProbability) * rtpDelta * 0.02) // 2% adjustment per percentage point
+		penalty := int(float64(baseProbability) * rtpDelta * CatchPenaltyFactor) // 2% adjustment per percentage point
 		return max(1, baseProbability-penalty)
 	}
 
 	if rtpDelta < 0 {
 		// When RTP is too low, increase catch probability
 		// Use a conservative boost factor
-		boost := int(float64(baseProbability) * -rtpDelta * 0.01) // 1% boost per percentage point
-		return min(100, baseProbability+boost)
+		boost := int(float64(baseProbability) * -rtpDelta * CatchBoostFactor) // 1% boost per percentage point
+		return min(MaxProbability, baseProbability+boost)
 	}
 
 	return baseProbability
@@ -272,14 +288,14 @@ func AdjustSpawnWeight(
 	if rtpDelta > 0 && itemValue > 0 {
 		// When RTP is too high, reduce spawn probability
 		// Use a more moderate penalty factor (0.5 instead of 1.0)
-		penalty := int(float64(base) * rtpDelta * 0.5)
+		penalty := int(float64(base) * rtpDelta * RTPPenaltyFactor)
 		return max(1, base-penalty)
 	}
 
 	if rtpDelta < 0 {
 		// When RTP is too low, increase spawn probability
 		// Use a moderate boost factor (0.3 instead of 0.5)
-		boost := int(float64(base) * -rtpDelta * 0.3)
+		boost := int(float64(base) * -rtpDelta * RTPBoostFactor)
 		return base + boost
 	}
 

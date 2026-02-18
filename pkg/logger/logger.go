@@ -59,7 +59,7 @@ func SetLevel(level string) {
 	}
 
 	if Logger != nil {
-		Logger.Core().Sync()
+		_ = Logger.Sync()
 	}
 
 	config := zap.NewProductionConfig()

@@ -93,7 +93,10 @@ func (r *clawMachineRepository) GetClawPlayerInfo(ctx context.Context, playerID 
 	return &clawPlayer, nil
 }
 
-func (r *clawMachineRepository) adjustPlayerBalance(ctx context.Context, playerID int64, amount int64, adjustmentType, field string) (*domain.ClawPlayer, error) {
+func (r *clawMachineRepository) adjustPlayerBalance(
+	ctx context.Context,
+	playerID, amount int64,
+	adjustmentType, field string) (*domain.ClawPlayer, error) {
 	if adjustmentType != "plus" && adjustmentType != "minus" {
 		return nil, fmt.Errorf("invalid adjustment type: %s", adjustmentType)
 	}
@@ -135,11 +138,19 @@ func (r *clawMachineRepository) adjustPlayerBalance(ctx context.Context, playerI
 	return &updatedPlayer, nil
 }
 
-func (r *clawMachineRepository) AdjustPlayerCoin(ctx context.Context, playerID int64, amount int64, adjustmentType string) (*domain.ClawPlayer, error) {
+func (r *clawMachineRepository) AdjustPlayerCoin(
+	ctx context.Context,
+	playerID, amount int64,
+	adjustmentType string,
+) (*domain.ClawPlayer, error) {
 	return r.adjustPlayerBalance(ctx, playerID, amount, adjustmentType, "coin")
 }
 
-func (r *clawMachineRepository) AdjustPlayerDiamond(ctx context.Context, playerID int64, amount int64, adjustmentType string) (*domain.ClawPlayer, error) {
+func (r *clawMachineRepository) AdjustPlayerDiamond(
+	ctx context.Context,
+	playerID, amount int64,
+	adjustmentType string,
+) (*domain.ClawPlayer, error) {
 	return r.adjustPlayerBalance(ctx, playerID, amount, adjustmentType, "diamond")
 }
 
@@ -154,7 +165,7 @@ func (r *clawMachineRepository) GetPlayerInventory(ctx context.Context, playerID
 	return inventory, nil
 }
 
-func (r *clawMachineRepository) AddItemInventory(ctx context.Context, playerID int64, itemID int64, quantity int32) error {
+func (r *clawMachineRepository) AddItemInventory(ctx context.Context, playerID, itemID int64, quantity int32) error {
 	var inventory domain.ClawPlayerInventory
 	err := activeQuery(r.db.WithContext(ctx)).
 		Where("player_id = ? AND item_id = ?", playerID, itemID).
@@ -285,9 +296,10 @@ func (r *clawMachineRepository) UpdateClawMachineItems(
 	}
 
 	// Insert new items
-	for _, item := range items {
+	for i := range items {
+		item := &items[i]
 		item.ClawMachineID = clawMachineID
-		if err := tx.Create(&item).Error; err != nil {
+		if err := tx.Create(item).Error; err != nil {
 			tx.Rollback()
 			return nil, err
 		}

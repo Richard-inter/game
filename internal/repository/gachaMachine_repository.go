@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	"gorm.io/gorm"
@@ -18,10 +19,10 @@ type GachaMachineRepository interface {
 	// player
 	CreateGachaPlayer(ctx context.Context, gachaPlayer *domain.GachaPlayer) (*domain.GachaPlayer, error)
 	GetGachaPlayerInfo(ctx context.Context, playerID int64) (*domain.GachaPlayer, error)
-	AdjustPlayerCoin(ctx context.Context, playerID int64, amount int64, adjustmentType string) (*domain.GachaPlayer, error)
-	AdjustPlayerDiamond(ctx context.Context, playerID int64, amount int64, adjustmentType string) (*domain.GachaPlayer, error)
+	AdjustPlayerCoin(ctx context.Context, playerID, amount int64, adjustmentType string) (*domain.GachaPlayer, error)
+	AdjustPlayerDiamond(ctx context.Context, playerID, amount int64, adjustmentType string) (*domain.GachaPlayer, error)
 	GetPlayerInventory(ctx context.Context, playerID int64) ([]domain.GachaPlayerInventory, error)
-	AddItemInventory(ctx context.Context, playerID int64, itemID int64, quantity int32) error
+	AddItemInventory(ctx context.Context, playerID, itemID int64, quantity int32) error
 
 	// machine
 	CreateGachaMachine(ctx context.Context, gachaMachine *domain.GachaMachine) (*domain.GachaMachine, error)
@@ -75,7 +76,10 @@ func (r *gachaMachineRepository) GetGachaPlayerInfo(ctx context.Context, playerI
 	return &gachaPlayer, nil
 }
 
-func (r *gachaMachineRepository) adjustPlayerBalance(ctx context.Context, playerID int64, amount int64, adjustmentType, field string) (*domain.GachaPlayer, error) {
+func (r *gachaMachineRepository) adjustPlayerBalance(
+	ctx context.Context,
+	playerID, amount int64,
+	adjustmentType, field string) (*domain.GachaPlayer, error) {
 	if adjustmentType != "plus" && adjustmentType != "minus" {
 		return nil, fmt.Errorf("invalid adjustment type: %s", adjustmentType)
 	}
@@ -117,11 +121,19 @@ func (r *gachaMachineRepository) adjustPlayerBalance(ctx context.Context, player
 	return &updatedPlayer, nil
 }
 
-func (r *gachaMachineRepository) AdjustPlayerCoin(ctx context.Context, playerID int64, amount int64, adjustmentType string) (*domain.GachaPlayer, error) {
+func (r *gachaMachineRepository) AdjustPlayerCoin(
+	ctx context.Context,
+	playerID, amount int64,
+	adjustmentType string,
+) (*domain.GachaPlayer, error) {
 	return r.adjustPlayerBalance(ctx, playerID, amount, adjustmentType, "coin")
 }
 
-func (r *gachaMachineRepository) AdjustPlayerDiamond(ctx context.Context, playerID int64, amount int64, adjustmentType string) (*domain.GachaPlayer, error) {
+func (r *gachaMachineRepository) AdjustPlayerDiamond(
+	ctx context.Context,
+	playerID, amount int64,
+	adjustmentType string,
+) (*domain.GachaPlayer, error) {
 	return r.adjustPlayerBalance(ctx, playerID, amount, adjustmentType, "diamond")
 }
 
@@ -136,13 +148,13 @@ func (r *gachaMachineRepository) GetPlayerInventory(ctx context.Context, playerI
 	return inventory, nil
 }
 
-func (r *gachaMachineRepository) AddItemInventory(ctx context.Context, playerID int64, itemID int64, quantity int32) error {
+func (r *gachaMachineRepository) AddItemInventory(ctx context.Context, playerID, itemID int64, quantity int32) error {
 	var inventory domain.GachaPlayerInventory
 	err := activeQuery(r.db.WithContext(ctx)).
 		Where("player_id = ? AND item_id = ?", playerID, itemID).
 		First(&inventory).Error
 	if err != nil {
-		if err == gorm.ErrRecordNotFound {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
 			inventory = domain.GachaPlayerInventory{
 				PlayerID: playerID,
 				ItemID:   itemID,
@@ -168,8 +180,6 @@ func (r *gachaMachineRepository) CreateGachaMachine(
 		return nil, err
 	}
 
-	fmt.Println(gachaMachine.ID)
-	fmt.Println(gachaMachine.Items)
 	for i := range gachaMachine.Items {
 		gachaMachine.Items[i].ID = 0
 		gachaMachine.Items[i].GachaMachineID = gachaMachine.ID
@@ -204,9 +214,10 @@ func (r *gachaMachineRepository) UpdateGachaMachineItems(ctx context.Context, ga
 	}
 
 	// Insert new items
-	for _, item := range items {
+	for i := range items {
+		item := &items[i]
 		item.GachaMachineID = gachaMachineID
-		if err := tx.Create(&item).Error; err != nil {
+		if err := tx.Create(item).Error; err != nil {
 			tx.Rollback()
 			return err
 		}

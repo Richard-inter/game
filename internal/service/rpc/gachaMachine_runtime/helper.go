@@ -10,6 +10,19 @@ import (
 	"github.com/1nterdigital/game/internal/domain"
 )
 
+const (
+	// RTP adjustment factors
+	RTPPenaltyFactor = 0.5 // Reduce pull weight by up to 50% when RTP is too high
+	RTPBoostFactor   = 0.3 // Increase pull weight by up to 30% when RTP is too low
+
+	// Pull count
+	PullCountSingle = 1
+	PullCountTen    = 10
+
+	// Rarity value
+	DefaultRarityValue = 0.10
+)
+
 var (
 	globalRand *rand.Rand
 	randInit   sync.Once
@@ -42,7 +55,7 @@ func GetGachaRarityValue(rarity string, price int64) int64 {
 	}
 
 	// default to normal
-	return int64(0.10 * float64(price))
+	return int64(DefaultRarityValue * float64(price))
 }
 
 func CalculateGachaRTPDelta(state *domain.GachaMachineRTPState) float64 {
@@ -58,7 +71,7 @@ func AdjustGachaPullWeight(base int32, itemValue int64, rtpDelta float64) int32 
 	if rtpDelta > 0 && itemValue > 0 {
 		// When RTP is too high, reduce pull probability
 		// Use a more moderate penalty factor (0.5 instead of 1.0)
-		penalty := int32(float64(base) * rtpDelta * 0.5)
+		penalty := int32(float64(base) * rtpDelta * RTPPenaltyFactor)
 		if base-penalty < 1 {
 			return 1
 		}
@@ -68,7 +81,7 @@ func AdjustGachaPullWeight(base int32, itemValue int64, rtpDelta float64) int32 
 	if rtpDelta < 0 {
 		// When RTP is too low, increase pull probability
 		// Use a moderate boost factor (0.3 instead of 0.5)
-		boost := int32(float64(base) * -rtpDelta * 0.3)
+		boost := int32(float64(base) * -rtpDelta * RTPBoostFactor)
 		return base + boost
 	}
 
@@ -138,10 +151,17 @@ func (_ *GachaMachineWebsocketService) pullByRarity(
 	entries := make([]Entry, 0)
 	rtpDelta := CalculateGachaRTPDelta(rtpState)
 
-	for _, item := range resp.Items {
+	for i := range resp.Items {
+		item := &resp.Items[i]
+
 		if item.Item.Rarity == rarity {
 			itemValue := GetGachaRarityValue(item.Item.Rarity, resp.Price)
-			adjustedWeight := AdjustGachaPullWeight(item.Item.PullWeight, itemValue, rtpDelta)
+			adjustedWeight := AdjustGachaPullWeight(
+				item.Item.PullWeight,
+				itemValue,
+				rtpDelta,
+			)
+
 			entries = append(entries, Entry{
 				ID:     item.Item.ID,
 				Weight: adjustedWeight,
@@ -158,7 +178,8 @@ func (_ *GachaMachineWebsocketService) pullFromAll(
 	entries := make([]Entry, 0, len(resp.Items))
 	rtpDelta := CalculateGachaRTPDelta(rtpState)
 
-	for _, item := range resp.Items {
+	for i := range resp.Items {
+		item := &resp.Items[i]
 		itemValue := GetGachaRarityValue(item.Item.Rarity, resp.Price)
 		adjustedWeight := AdjustGachaPullWeight(item.Item.PullWeight, itemValue, rtpDelta)
 		entries = append(entries, Entry{
@@ -264,7 +285,8 @@ func (_ *GachaMachineWebsocketService) updatePityAfterPull(
 }
 
 func getItemRarity(itemID int64, resp *domain.GachaMachine) string {
-	for _, item := range resp.Items {
+	for i := range resp.Items {
+		item := &resp.Items[i]
 		if item.Item.ID == itemID {
 			return item.Item.Rarity
 		}
@@ -278,7 +300,7 @@ func (s *GachaMachineWebsocketService) PlayMachine(ctx context.Context, playerID
 		return err
 	}
 
-	if pullCount == 1 {
+	if pullCount == PullCountSingle {
 		_, err = s.repo.AdjustPlayerCoin(ctx, playerID, resp.Price, "minus")
 		if err != nil {
 			return err
@@ -291,7 +313,7 @@ func (s *GachaMachineWebsocketService) PlayMachine(ctx context.Context, playerID
 		}
 	}
 
-	if pullCount == 10 {
+	if pullCount == PullCountTen {
 		_, err = s.repo.AdjustPlayerCoin(ctx, playerID, resp.PriceTimesTen, "minus")
 		if err != nil {
 			return err

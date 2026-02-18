@@ -8,6 +8,11 @@ import (
 	clientv3 "go.etcd.io/etcd/client/v3"
 )
 
+const (
+	EtcdRequestTimeout = 5 * time.Second
+	EtcdLeaseTTL       = 30
+)
+
 type EtcdDiscovery struct {
 	client   *clientv3.Client
 	services map[string]string
@@ -66,11 +71,11 @@ func (d *EtcdDiscovery) GetService(serviceName string) (string, error) {
 }
 
 func (d *EtcdDiscovery) RegisterService(serviceName, address string) error {
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), EtcdRequestTimeout)
 	defer cancel()
 
 	// Register with TTL (30 seconds)
-	lease, err := d.client.Grant(ctx, 30)
+	lease, err := d.client.Grant(ctx, EtcdLeaseTTL)
 	if err != nil {
 		return fmt.Errorf("failed to create lease: %w", err)
 	}

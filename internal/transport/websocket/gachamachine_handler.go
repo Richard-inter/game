@@ -197,7 +197,7 @@ func (_ *GachaMachineWebSocketHandler) buildErrorResp(code int32, message string
 }
 
 func (h *GachaMachineWebSocketHandler) sendError(conn *websocket.Conn, message string) {
-	response := h.buildErrorResp(500, message)
+	response := h.buildErrorResp(constant.ErrorCode500, message)
 
 	err := conn.WriteMessage(websocket.BinaryMessage, response)
 	if err != nil {

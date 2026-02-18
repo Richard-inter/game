@@ -8,6 +8,7 @@ import (
 	"go.uber.org/zap"
 
 	"github.com/1nterdigital/game/internal/transport/grpc"
+	"github.com/1nterdigital/game/pkg/constant"
 	runtimepb "github.com/1nterdigital/game/pkg/protocol/whackAMole_Websocket"
 	fbs "github.com/1nterdigital/game/pkg/protocol/whackAMole_Websocket/whackAMole"
 )
@@ -80,12 +81,12 @@ func (h *WhackAMoleWebSocketHandler) handleMessage(data []byte) ([]byte, error) 
 	handler, ok := h.handlers[msgType]
 	if !ok {
 		h.logger.Errorw("Unknown message type", "type", msgType)
-		return h.buildErrorResp(400, "Unknown message type"), nil
+		return h.buildErrorResp(constant.ErrorCode400, "Unknown message type"), nil
 	}
 
 	if len(payload) == 0 {
 		h.logger.Errorw("Empty payload", "type", msgType)
-		return h.buildErrorResp(400, "Empty payload"), nil
+		return h.buildErrorResp(constant.ErrorCode400, "Empty payload"), nil
 	}
 
 	return handler(context.Background(), payload)
@@ -100,7 +101,7 @@ func (h *WhackAMoleWebSocketHandler) handleGetMoleWeight(
 	})
 	if err != nil {
 		h.logger.Errorw("GetMoleWeight failed", "error", err)
-		return h.buildErrorResp(500, err.Error()), nil
+		return h.buildErrorResp(constant.ErrorCode500, err.Error()), nil
 	}
 
 	return resp.Payload, nil
@@ -115,7 +116,7 @@ func (h *WhackAMoleWebSocketHandler) handleGetLeaderboard(
 	})
 	if err != nil {
 		h.logger.Errorw("GetLeaderboard failed", "error", err)
-		return h.buildErrorResp(500, err.Error()), nil
+		return h.buildErrorResp(constant.ErrorCode500, err.Error()), nil
 	}
 
 	return resp.Payload, nil
@@ -141,7 +142,7 @@ func (_ *WhackAMoleWebSocketHandler) buildErrorResp(code int, message string) []
 }
 
 func (h *WhackAMoleWebSocketHandler) sendError(conn *websocket.Conn, message string) {
-	errorResp := h.buildErrorResp(500, message)
+	errorResp := h.buildErrorResp(constant.ErrorCode500, message)
 	if err := conn.WriteMessage(websocket.BinaryMessage, errorResp); err != nil {
 		h.logger.Errorw("Error sending error response", "error", err)
 	}

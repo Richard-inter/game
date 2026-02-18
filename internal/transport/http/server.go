@@ -85,12 +85,17 @@ func (s *Server) setupMiddleware() {
 
 	// Logger middleware
 	s.engine.Use(gin.LoggerWithFormatter(func(param gin.LogFormatterParams) string {
-		return fmt.Sprintf("%s - [%s] \"%s %s %s %d %s \"%s\" %s\"\n",
-			param.ClientIP,
-			param.TimeStamp.Format(time.RFC1123),
+		requestLine := fmt.Sprintf(
+			"%s %s %s",
 			param.Method,
 			param.Path,
 			param.Request.Proto,
+		)
+
+		return fmt.Sprintf("%s - [%s] %q %d %s %q %s\n",
+			param.ClientIP,
+			param.TimeStamp.Format(time.RFC1123),
+			requestLine,
 			param.StatusCode,
 			param.Latency,
 			param.Request.UserAgent(),
@@ -145,78 +150,72 @@ func (s *Server) setupRoutes() {
 	v1 := s.engine.Group("/api/v1")
 	{
 		player := v1.Group("/player")
-		{
-			player.POST("/create", playerHandler.HandleCreatePlayer)
-			player.GET("/info/:id", playerHandler.HandleGetPlayerInfo)
-		}
+
+		player.POST("/create", playerHandler.HandleCreatePlayer)
+		player.GET("/info/:id", playerHandler.HandleGetPlayerInfo)
 
 		clawMachine := v1.Group("/clawMachine")
-		{
-			// items
-			clawMachine.POST("/createClawItems", clawMachineHandler.HandleCreateClawItems)
-			clawMachine.POST("/deleteClawItems", clawMachineHandler.HandleDeleteClawItems)
 
-			// machine
-			clawMachine.POST("/createClawMachine", clawMachineHandler.HandleCreateClawMachine)
-			clawMachine.GET("/getClawMachineInfo/:machineID", clawMachineHandler.HandleGetClawMachineInfo)
-			clawMachine.POST("/updateClawMachineItems", clawMachineHandler.HandleUpdateClawMachineItems)
-			clawMachine.POST("/deleteClawMachine", clawMachineHandler.HandleDeleteClawMachine)
+		// items
+		clawMachine.POST("/createClawItems", clawMachineHandler.HandleCreateClawItems)
+		clawMachine.POST("/deleteClawItems", clawMachineHandler.HandleDeleteClawItems)
 
-			// player
-			clawMachine.GET("/getClawPlayerInfo/:playerID", clawMachineHandler.HandleGetClawPlayerInfo)
-			clawMachine.POST("/createClawPlayer", clawMachineHandler.HandleCreateClawPlayer)
-			clawMachine.POST("/deleteClawPlayer", clawMachineHandler.HandleDeleteClawPlayer)
-			clawMachine.POST("/adjustPlayerCoin", clawMachineHandler.HandleAdjustPlayerCoin)
-			clawMachine.POST("/adjustPlayerDiamond", clawMachineHandler.HandleAdjustPlayerDiamond)
-			clawMachine.GET("/getPlayerInventory/:playerID", clawMachineHandler.HandleGetPlayerInventory)
+		// machine
+		clawMachine.POST("/createClawMachine", clawMachineHandler.HandleCreateClawMachine)
+		clawMachine.GET("/getClawMachineInfo/:machineID", clawMachineHandler.HandleGetClawMachineInfo)
+		clawMachine.POST("/updateClawMachineItems", clawMachineHandler.HandleUpdateClawMachineItems)
+		clawMachine.POST("/deleteClawMachine", clawMachineHandler.HandleDeleteClawMachine)
 
-			// game
-			clawMachine.POST("/startClawGame", clawMachineHandler.HandleStartClawGame)
-			clawMachine.POST("/addTouchedItemRecord", clawMachineHandler.HandleAddTouchedItemRecord)
-			clawMachine.GET("/getGameHistory/:playerID", clawMachineHandler.HandleGetGameHistory)
+		// player
+		clawMachine.GET("/getClawPlayerInfo/:playerID", clawMachineHandler.HandleGetClawPlayerInfo)
+		clawMachine.POST("/createClawPlayer", clawMachineHandler.HandleCreateClawPlayer)
+		clawMachine.POST("/deleteClawPlayer", clawMachineHandler.HandleDeleteClawPlayer)
+		clawMachine.POST("/adjustPlayerCoin", clawMachineHandler.HandleAdjustPlayerCoin)
+		clawMachine.POST("/adjustPlayerDiamond", clawMachineHandler.HandleAdjustPlayerDiamond)
+		clawMachine.GET("/getPlayerInventory/:playerID", clawMachineHandler.HandleGetPlayerInventory)
 
-			// RTP
-			clawMachine.POST("/updateClawMachineTargetRTP", clawMachineHandler.HandleUpdateClawMachineTargetRTP)
-		}
+		// game
+		clawMachine.POST("/startClawGame", clawMachineHandler.HandleStartClawGame)
+		clawMachine.POST("/addTouchedItemRecord", clawMachineHandler.HandleAddTouchedItemRecord)
+		clawMachine.GET("/getGameHistory/:playerID", clawMachineHandler.HandleGetGameHistory)
+
+		// RTP
+		clawMachine.POST("/updateClawMachineTargetRTP", clawMachineHandler.HandleUpdateClawMachineTargetRTP)
 
 		gachaMachine := v1.Group("/gachaMachine")
-		{
-			// items
-			gachaMachine.POST("/createGachaItems", gachaMachineHandler.HandleCreateGachaItems)
+		// items
+		gachaMachine.POST("/createGachaItems", gachaMachineHandler.HandleCreateGachaItems)
 
-			// machine
-			gachaMachine.POST("/createGachaMachine", gachaMachineHandler.HandleCreateGachaMachine)
-			gachaMachine.GET("/getGachaMachineInfo/:machineID", gachaMachineHandler.HandleGetGachaMachineInfo)
+		// machine
+		gachaMachine.POST("/createGachaMachine", gachaMachineHandler.HandleCreateGachaMachine)
+		gachaMachine.GET("/getGachaMachineInfo/:machineID", gachaMachineHandler.HandleGetGachaMachineInfo)
 
-			// player
-			gachaMachine.GET("/getGachaPlayerInfo/:playerID", gachaMachineHandler.HandleGetGachaPlayerInfo)
-			gachaMachine.POST("/createGachaPlayer", gachaMachineHandler.HandleCreateGachaPlayer)
-			gachaMachine.POST("/adjustPlayerCoin", gachaMachineHandler.HandleAdjustPlayerCoin)
-			gachaMachine.POST("/adjustPlayerDiamond", gachaMachineHandler.HandleAdjustPlayerDiamond)
-			gachaMachine.GET("/getPlayerInventory/:playerID", gachaMachineHandler.HandleGetPlayerInventory)
-			gachaMachine.GET("/getPlayerPullHistory/:playerID", gachaMachineHandler.HandleGetPlayerPullHistory)
+		// player
+		gachaMachine.GET("/getGachaPlayerInfo/:playerID", gachaMachineHandler.HandleGetGachaPlayerInfo)
+		gachaMachine.POST("/createGachaPlayer", gachaMachineHandler.HandleCreateGachaPlayer)
+		gachaMachine.POST("/adjustPlayerCoin", gachaMachineHandler.HandleAdjustPlayerCoin)
+		gachaMachine.POST("/adjustPlayerDiamond", gachaMachineHandler.HandleAdjustPlayerDiamond)
+		gachaMachine.GET("/getPlayerInventory/:playerID", gachaMachineHandler.HandleGetPlayerInventory)
+		gachaMachine.GET("/getPlayerPullHistory/:playerID", gachaMachineHandler.HandleGetPlayerPullHistory)
 
-			// game
-			gachaMachine.POST("/getPullResult", gachaMachineHandler.HandleGetPullResult)
+		// game
+		gachaMachine.POST("/getPullResult", gachaMachineHandler.HandleGetPullResult)
 
-			// RTP
-			gachaMachine.POST("/updateGachaMachineTargetRTP", gachaMachineHandler.HandleUpdateGachaMachineTargetRTP)
-		}
+		// RTP
+		gachaMachine.POST("/updateGachaMachineTargetRTP", gachaMachineHandler.HandleUpdateGachaMachineTargetRTP)
 
 		whackAMole := v1.Group("/whackAMole")
-		{
-			// player
-			whackAMole.POST("/createWhackAMolePlayer", whackAMoleHandler.HandleCreateWhackAMolePlayer)
-			whackAMole.GET("/getWhackAMolePlayer/:id", whackAMoleHandler.HandleGetPlayerInfo)
+		// player
+		whackAMole.POST("/createWhackAMolePlayer", whackAMoleHandler.HandleCreateWhackAMolePlayer)
+		whackAMole.GET("/getWhackAMolePlayer/:id", whackAMoleHandler.HandleGetPlayerInfo)
 
-			// leaderboard
-			whackAMole.GET("/leaderboard/:limit", whackAMoleHandler.HandleGetLeaderboard)
-			whackAMole.POST("/updateScore", whackAMoleHandler.HandleUpdateScore)
+		// leaderboard
+		whackAMole.GET("/leaderboard/:limit", whackAMoleHandler.HandleGetLeaderboard)
+		whackAMole.POST("/updateScore", whackAMoleHandler.HandleUpdateScore)
 
-			// mole weight configs
-			whackAMole.POST("/createMoleWeightConfig", whackAMoleHandler.HandleCreateMoleWeightConfig)
-			whackAMole.GET("/getMoleWeightConfig/:id", whackAMoleHandler.HandleGetMoleWeightConfig)
-			whackAMole.POST("/updateMoleWeightConfig", whackAMoleHandler.HandleUpdateMoleWeightConfig)
-		}
+		// mole weight configs
+		whackAMole.POST("/createMoleWeightConfig", whackAMoleHandler.HandleCreateMoleWeightConfig)
+		whackAMole.GET("/getMoleWeightConfig/:id", whackAMoleHandler.HandleGetMoleWeightConfig)
+		whackAMole.POST("/updateMoleWeightConfig", whackAMoleHandler.HandleUpdateMoleWeightConfig)
 	}
 }

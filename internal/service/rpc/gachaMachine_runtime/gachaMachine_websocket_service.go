@@ -227,7 +227,8 @@ func (s *GachaMachineWebsocketService) GetMachineInfoWs(
 
 	// ---- Build Items vector ----
 	itemOffsets := make([]flatbuffers.UOffsetT, len(resp.Items))
-	for i, item := range resp.Items {
+	for i := range resp.Items {
+		item := &resp.Items[i]
 		nameOffset := builder.CreateString(item.Item.Name)
 		rarityOffset := builder.CreateString(item.Item.Rarity)
 
@@ -286,7 +287,9 @@ func (s *GachaMachineWebsocketService) GetPlayerInventoryWs(ctx context.Context,
 
 	// Build PlayerInventoryItem vector
 	itemOffsets := make([]flatbuffers.UOffsetT, len(inventory))
-	for i, item := range inventory {
+	for i := range inventory {
+		item := &inventory[i]
+
 		fbs.PlayerInventoryItemStart(builder)
 		fbs.PlayerInventoryItemAddItemId(builder, item.ItemID)
 		fbs.PlayerInventoryItemAddQuantity(builder, item.Quantity)
@@ -394,8 +397,8 @@ func (s *GachaMachineWebsocketService) createErrorResponse(err error) *pb.Runtim
 	return s.buildEnvelopeResponse(fbs.MessageTypeErrorResp, respBytes)
 }
 
-func (s *GachaMachineWebsocketService) AddGameToHistory(ctx context.Context, session domain.GachaPullSession, itemIDs []int64) error {
-	createdSession, err := s.repo.CreateGachaPullSession(ctx, &session)
+func (s *GachaMachineWebsocketService) AddGameToHistory(ctx context.Context, session *domain.GachaPullSession, itemIDs []int64) error {
+	createdSession, err := s.repo.CreateGachaPullSession(ctx, session)
 	if err != nil {
 		s.log.Errorf("Failed to create gacha pull session: %v", err)
 		return err
@@ -412,7 +415,9 @@ func (s *GachaMachineWebsocketService) AddGameToHistory(ctx context.Context, ses
 	if machineInfo != nil {
 		for _, itemID := range itemIDs {
 			// Find the item to get its rarity and calculate value
-			for _, item := range machineInfo.Items {
+			for i := range machineInfo.Items {
+				item := &machineInfo.Items[i]
+
 				if item.Item.ID == itemID {
 					itemValue := GetGachaRarityValue(item.Item.Rarity, machineInfo.Price)
 					totalPayout += itemValue

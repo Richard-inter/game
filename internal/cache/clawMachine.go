@@ -10,6 +10,10 @@ import (
 	"github.com/redis/go-redis/v9"
 )
 
+const (
+	GameResultsExpiration = 5 * time.Minute
+)
+
 // StoreGameResults stores the game results in Redis with expiration
 func (r *RedisClient) StoreGameResults(ctx context.Context, gameID int64, results any) error {
 	key := fmt.Sprintf("%s:%d", GameResultsKeyPrefix, gameID)
@@ -20,7 +24,7 @@ func (r *RedisClient) StoreGameResults(ctx context.Context, gameID int64, result
 	}
 
 	// Store with 5 minutes expiration
-	return r.client.Set(ctx, key, data, time.Minute*5).Err()
+	return r.client.Set(ctx, key, data, GameResultsExpiration).Err()
 }
 
 // GetGameResults retrieves the game results from Redis

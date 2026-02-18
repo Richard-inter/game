@@ -50,7 +50,8 @@ func (s *GachaMachineGRPCService) CreateGachaItems(ctx context.Context, req *pb.
 		return nil, err
 	}
 	createdItems := make([]*pb.Item, 0, len(*resp))
-	for _, it := range *resp {
+	for i := range *resp {
+		it := &(*resp)[i]
 		createdItems = append(createdItems, &pb.Item{
 			ItemID:     it.ID,
 			Name:       it.Name,
@@ -147,7 +148,8 @@ func (s *GachaMachineGRPCService) GetPlayerInventory(
 	}
 
 	pbInventory := make([]*pb.GachaPlayerInventory, len(inventory))
-	for i, item := range inventory {
+	for i := range inventory {
+		item := &inventory[i]
 		pbInventory[i] = &pb.GachaPlayerInventory{
 			ItemID:   item.ItemID,
 			Quantity: item.Quantity,
@@ -256,7 +258,8 @@ func (s *GachaMachineGRPCService) CreateGachaMachine(
 
 	fmt.Println(created.Items)
 	items := make([]*pb.Item, 0, len(created.Items))
-	for _, it := range created.Items {
+	for i := range created.Items {
+		it := &created.Items[i]
 		items = append(items, &pb.Item{
 			ItemID:     it.Item.ID,
 			Name:       it.Item.Name,
@@ -291,7 +294,9 @@ func (s *GachaMachineGRPCService) GetGachaMachineInfo(
 
 		for _, resp := range machineDomainList {
 			items := make([]*pb.Item, 0, len(resp.Items))
-			for _, it := range resp.Items {
+			for i := range resp.Items {
+				it := &resp.Items[i]
+
 				items = append(items, &pb.Item{
 					ItemID:     it.Item.ID,
 					Name:       it.Item.Name,
@@ -317,7 +322,8 @@ func (s *GachaMachineGRPCService) GetGachaMachineInfo(
 		}
 
 		items := make([]*pb.Item, 0, len(resp.Items))
-		for _, it := range resp.Items {
+		for i := range resp.Items {
+			it := &resp.Items[i]
 			items = append(items, &pb.Item{
 				ItemID:     it.Item.ID,
 				Name:       it.Item.Name,
@@ -393,10 +399,10 @@ func (s *GachaMachineGRPCService) GetPullResult(
 
 func (s *GachaMachineGRPCService) AddGameToHistory(
 	ctx context.Context,
-	session domain.GachaPullSession,
+	session *domain.GachaPullSession,
 	itemIDs []int64,
 ) error {
-	createdSession, err := s.repo.CreateGachaPullSession(ctx, &session)
+	createdSession, err := s.repo.CreateGachaPullSession(ctx, session)
 	if err != nil {
 		s.log.Errorf("Failed to create gacha pull session: %v", err)
 		return err
@@ -413,7 +419,8 @@ func (s *GachaMachineGRPCService) AddGameToHistory(
 	if machineInfo != nil {
 		for _, itemID := range itemIDs {
 			// Find the item to get its rarity and calculate value
-			for _, item := range machineInfo.Items {
+			for i := range machineInfo.Items {
+				item := &machineInfo.Items[i]
 				if item.Item.ID == itemID {
 					itemValue := GetGachaRarityValue(item.Item.Rarity, machineInfo.Price)
 					totalPayout += itemValue

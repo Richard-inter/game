@@ -98,7 +98,8 @@ func SeedGachaMachineData(db *gorm.DB) error {
 		}
 
 		// 4️⃣ Machine ↔ Items mapping (use FirstOrCreate to prevent duplicates)
-		for _, item := range items {
+		for i := range items {
+			item := &items[i]
 			machineItem := domain.GachaMachineItem{
 				GachaMachineID: machine.ID,
 				ItemID:         item.ID,

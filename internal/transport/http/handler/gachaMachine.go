@@ -12,6 +12,7 @@ import (
 
 	// dto "github.com/1nterdigital/game/internal/transport/http/DTO"
 	"github.com/1nterdigital/game/pkg/common"
+	"github.com/1nterdigital/game/pkg/constant"
 	"github.com/1nterdigital/game/pkg/protocol/gachaMachine"
 	"github.com/1nterdigital/game/pkg/protocol/player"
 )
@@ -51,7 +52,7 @@ func (h *GachaMachineHandler) HandleCreateGachaPlayer(c *gin.Context) {
 	var req dto.CreateGachaPlayerReq
 	if err := c.ShouldBindJSON(&req); err != nil {
 		h.logger.Errorw("Failed to bind JSON", "error", err)
-		common.SendError(c, 400, "Invalid request payload")
+		common.SendError(c, constant.ErrorCode400, "Invalid request payload")
 		return
 	}
 
@@ -69,7 +70,7 @@ func (h *GachaMachineHandler) HandleCreateGachaPlayer(c *gin.Context) {
 	resp, err := h.gachaMachineClient.CreateGachaPlayer(c, grpcReq)
 	if err != nil {
 		h.logger.Errorw("Failed to create gacha player", "error", err)
-		common.SendError(c, 500, err.Error())
+		common.SendError(c, constant.ErrorCode500, err.Error())
 		return
 	}
 
@@ -94,7 +95,7 @@ func (h *GachaMachineHandler) HandleGetGachaPlayerInfo(c *gin.Context) {
 	_, err := fmt.Sscan(playerIDParam, &playerID)
 	if err != nil {
 		h.logger.Errorw("Invalid player ID", "error", err)
-		common.SendError(c, 400, "Invalid player ID")
+		common.SendError(c, constant.ErrorCode400, "Invalid player ID")
 		return
 	}
 
@@ -105,7 +106,7 @@ func (h *GachaMachineHandler) HandleGetGachaPlayerInfo(c *gin.Context) {
 	resp, err := h.gachaMachineClient.GetGachaPlayerInfo(c, grpcReq)
 	if err != nil {
 		h.logger.Errorw("Failed to get gacha player info", "error", err)
-		common.SendError(c, 500, err.Error())
+		common.SendError(c, constant.ErrorCode500, err.Error())
 		return
 	}
 
@@ -128,7 +129,7 @@ func (h *GachaMachineHandler) HandleAdjustPlayerCoin(c *gin.Context) {
 	var req dto.AdjustGachaPlayerCoinRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		h.logger.Errorw("Invalid request body", "error", err)
-		common.SendError(c, 400, "Invalid request body")
+		common.SendError(c, constant.ErrorCode400, "Invalid request body")
 		return
 	}
 
@@ -141,7 +142,7 @@ func (h *GachaMachineHandler) HandleAdjustPlayerCoin(c *gin.Context) {
 	resp, err := h.gachaMachineClient.AdjustPlayerCoin(c, grpcReq)
 	if err != nil {
 		h.logger.Errorw("Failed to adjust player coin", "error", err)
-		common.SendError(c, 500, err.Error())
+		common.SendError(c, constant.ErrorCode500, err.Error())
 		return
 	}
 
@@ -164,7 +165,7 @@ func (h *GachaMachineHandler) HandleAdjustPlayerDiamond(c *gin.Context) {
 	var req dto.AdjustGachaPlayerDiamondRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		h.logger.Errorw("Invalid request body", "error", err)
-		common.SendError(c, 400, "Invalid request body")
+		common.SendError(c, constant.ErrorCode400, "Invalid request body")
 		return
 	}
 
@@ -177,7 +178,7 @@ func (h *GachaMachineHandler) HandleAdjustPlayerDiamond(c *gin.Context) {
 	resp, err := h.gachaMachineClient.AdjustPlayerDiamond(c, grpcReq)
 	if err != nil {
 		h.logger.Errorw("Failed to adjust player diamond", "error", err)
-		common.SendError(c, 500, err.Error())
+		common.SendError(c, constant.ErrorCode500, err.Error())
 		return
 	}
 
@@ -200,7 +201,7 @@ func (h *GachaMachineHandler) HandleCreateGachaItems(c *gin.Context) {
 	var req dto.CreateGachaItemsRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		h.logger.Errorw("Invalid request body", "error", err)
-		common.SendError(c, 400, "Invalid request body")
+		common.SendError(c, constant.ErrorCode400, "Invalid request body")
 		return
 	}
 
@@ -219,7 +220,7 @@ func (h *GachaMachineHandler) HandleCreateGachaItems(c *gin.Context) {
 	resp, err := h.gachaMachineClient.CreateGachaItems(c, grpcReq)
 	if err != nil {
 		h.logger.Errorw("Failed to create gacha items", "error", err)
-		common.SendError(c, 500, err.Error())
+		common.SendError(c, constant.ErrorCode500, err.Error())
 		return
 	}
 
@@ -242,7 +243,7 @@ func (h *GachaMachineHandler) HandleCreateGachaMachine(c *gin.Context) {
 	var req dto.CreateGachaMachineRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		h.logger.Errorw("Invalid request body", "error", err)
-		common.SendError(c, 400, "Invalid request body")
+		common.SendError(c, constant.ErrorCode400, "Invalid request body")
 		return
 	}
 
@@ -263,7 +264,7 @@ func (h *GachaMachineHandler) HandleCreateGachaMachine(c *gin.Context) {
 	resp, err := h.gachaMachineClient.CreateGachaMachine(c, grpcReq)
 	if err != nil {
 		h.logger.Errorw("Failed to create gacha machine", "error", err)
-		common.SendError(c, 500, err.Error())
+		common.SendError(c, constant.ErrorCode500, err.Error())
 		return
 	}
 
@@ -288,7 +289,7 @@ func (h *GachaMachineHandler) HandleGetGachaMachineInfo(c *gin.Context) {
 	_, err := fmt.Sscan(machineIDParam, &machineID)
 	if err != nil {
 		h.logger.Errorw("Invalid machine ID", "error", err)
-		common.SendError(c, 400, "Invalid machine ID")
+		common.SendError(c, constant.ErrorCode400, "Invalid machine ID")
 		return
 	}
 
@@ -299,7 +300,7 @@ func (h *GachaMachineHandler) HandleGetGachaMachineInfo(c *gin.Context) {
 	resp, err := h.gachaMachineClient.GetGachaMachineInfo(c, grpcReq)
 	if err != nil {
 		h.logger.Errorw("Failed to get gacha machine info", "error", err)
-		common.SendError(c, 500, err.Error())
+		common.SendError(c, constant.ErrorCode500, err.Error())
 		return
 	}
 
@@ -322,7 +323,7 @@ func (h *GachaMachineHandler) HandleGetPullResult(c *gin.Context) {
 	var req dto.GetPullResultRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		h.logger.Errorw("Invalid request body", "error", err)
-		common.SendError(c, 400, "Invalid request body")
+		common.SendError(c, constant.ErrorCode400, "Invalid request body")
 		return
 	}
 
@@ -335,7 +336,7 @@ func (h *GachaMachineHandler) HandleGetPullResult(c *gin.Context) {
 	resp, err := h.gachaMachineClient.GetPullResult(c, grpcReq)
 	if err != nil {
 		h.logger.Errorw("Failed to get pull result", "error", err)
-		common.SendError(c, 500, err.Error())
+		common.SendError(c, constant.ErrorCode500, err.Error())
 		return
 	}
 
@@ -358,7 +359,7 @@ func (h *GachaMachineHandler) HandleUpdateGachaMachineTargetRTP(c *gin.Context) 
 	var req dto.UpdateGachaMachineTargetRTPRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		h.logger.Errorw("Invalid request body", "error", err)
-		common.SendError(c, 400, "Invalid request body")
+		common.SendError(c, constant.ErrorCode400, "Invalid request body")
 		return
 	}
 
@@ -370,7 +371,7 @@ func (h *GachaMachineHandler) HandleUpdateGachaMachineTargetRTP(c *gin.Context) 
 	resp, err := h.gachaMachineClient.UpdateGachaMachineTargetRTP(c, grpcReq)
 	if err != nil {
 		h.logger.Errorw("Failed to update gacha machine target RTP", "error", err)
-		common.SendError(c, 500, err.Error())
+		common.SendError(c, constant.ErrorCode500, err.Error())
 		return
 	}
 
@@ -394,7 +395,7 @@ func (h *GachaMachineHandler) HandleGetPlayerInventory(c *gin.Context) {
 	playerID, err := strconv.ParseInt(playerIDStr, 10, 64)
 	if err != nil {
 		h.logger.Errorw("Invalid player ID", "error", err)
-		common.SendError(c, 400, "Invalid player ID")
+		common.SendError(c, constant.ErrorCode400, "Invalid player ID")
 		return
 	}
 
@@ -405,7 +406,7 @@ func (h *GachaMachineHandler) HandleGetPlayerInventory(c *gin.Context) {
 	resp, err := h.gachaMachineClient.GetPlayerInventory(c, grpcReq)
 	if err != nil {
 		h.logger.Errorw("Failed to get player inventory", "error", err)
-		common.SendError(c, 500, err.Error())
+		common.SendError(c, constant.ErrorCode500, err.Error())
 		return
 	}
 
@@ -443,7 +444,7 @@ func (h *GachaMachineHandler) HandleGetPlayerPullHistory(c *gin.Context) {
 	playerID, err := strconv.ParseInt(playerIDStr, 10, 64)
 	if err != nil {
 		h.logger.Errorw("Invalid player ID", "error", err)
-		common.SendError(c, 400, "Invalid player ID")
+		common.SendError(c, constant.ErrorCode400, "Invalid player ID")
 		return
 	}
 
@@ -454,7 +455,7 @@ func (h *GachaMachineHandler) HandleGetPlayerPullHistory(c *gin.Context) {
 	resp, err := h.gachaMachineClient.GetPlayerPullHistory(c, grpcReq)
 	if err != nil {
 		h.logger.Errorw("Failed to get player pull history", "error", err)
-		common.SendError(c, 500, err.Error())
+		common.SendError(c, constant.ErrorCode500, err.Error())
 		return
 	}
 

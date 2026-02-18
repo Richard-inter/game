@@ -16,6 +16,10 @@ import (
 	fbs "github.com/1nterdigital/game/pkg/protocol/whackAMole_Websocket/whackAMole"
 )
 
+const (
+	getLeaderboardNumPlayers = 10
+)
+
 type WhackAMoleWebsocketService struct {
 	pb.UnimplementedWhackAMoleRuntimeServiceServer
 	repo      repository.WhackAMoleRepository
@@ -118,7 +122,7 @@ func (s *WhackAMoleWebsocketService) GetLeaderboard(ctx context.Context, req *pb
 		}
 	}
 
-	leaderboard, err := s.repo.GetLeaderboard(ctx, 10)
+	leaderboard, err := s.repo.GetLeaderboard(ctx, getLeaderboardNumPlayers)
 	if err != nil {
 		s.log.Errorw("Failed to get leaderboard", "error", err)
 		return nil, fmt.Errorf("failed to get leaderboard: %w", err)
