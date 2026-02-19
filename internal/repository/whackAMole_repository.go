@@ -132,7 +132,7 @@ func (r *whackAMoleRepository) GetPlayerRank(ctx context.Context, playerID int64
 		return nil, err
 	}
 
-	leaderboard.Rank = int32(rank + 1)
+	leaderboard.Rank = int32(rank + 1) //nolint:gosec // Rank limit until 100 players
 	return &leaderboard, nil
 }
 

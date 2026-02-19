@@ -109,6 +109,8 @@ func LoadMultipleServiceConfigs(serviceNames []string) (map[string]*ServiceConfi
 }
 
 // LoadServiceConfigFromPath loads config from a specific file path
+//
+//nolint:gocyclo // loading and validation
 func LoadServiceConfigFromPath(configFile string) (*ServiceConfig, error) {
 	// Check if config file exists
 	if _, err := os.Stat(configFile); os.IsNotExist(err) {
@@ -314,6 +316,8 @@ type EtcdConfig struct {
 }
 
 // validateServiceConfig validates the service configuration
+//
+//nolint:gocyclo // validation
 func validateServiceConfig(config *ServiceConfig) error {
 	// Validate service configuration
 	if config.Service.Port < 1024 || config.Service.Port > 65535 {

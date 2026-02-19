@@ -235,14 +235,14 @@ func (s *ClawMachineWebsocketService) SpawnItemWs(
 
 	items := make([]uint64, len(result))
 	for i, v := range result {
-		items[i] = uint64(v)
+		items[i] = uint64(v) //nolint:gosec // ItemID is not expected to exceed uint64
 	}
 
 	builder := flatbuffers.NewBuilder(constant.Byte256)
 
 	fbs.SpawnItemRespStartItemsVector(builder, len(result))
 	for i := len(result) - 1; i >= 0; i-- {
-		builder.PrependUint64(uint64(result[i]))
+		builder.PrependUint64(uint64(result[i])) //nolint:gosec // ItemID is not expected to exceed uint64
 	}
 	itemsVector := builder.EndVector(len(result))
 

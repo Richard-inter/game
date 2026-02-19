@@ -118,6 +118,7 @@ func (s *Server) setupMiddleware() {
 	})
 }
 
+//nolint:funlen // route setup
 func (s *Server) setupRoutes() {
 	// Create player handler
 	playerHandler, err := handler.NewPlayerHandler(s.logger, s.grpcClient)

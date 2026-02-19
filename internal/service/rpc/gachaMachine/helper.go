@@ -2,10 +2,9 @@ package gachaMachine
 
 import (
 	"context"
+	crypto_rand "crypto/rand"
 	"fmt"
-	"math/rand"
-	"sync"
-	"time"
+	"math/big"
 
 	"github.com/1nterdigital/game/internal/domain"
 )
@@ -23,16 +22,13 @@ const (
 	DefaultRarityValue = 0.10
 )
 
-var (
-	globalRand *rand.Rand
-	randInit   sync.Once
-)
-
-func getGlobalRand() *rand.Rand {
-	randInit.Do(func() {
-		globalRand = rand.New(rand.NewSource(time.Now().UnixNano()))
-	})
-	return globalRand
+func cryptoInt32n(n int32) int32 {
+	result, _ := crypto_rand.Int(crypto_rand.Reader, big.NewInt(int64(n)))
+	v := result.Int64()
+	if v > int64(^int32(0)) {
+		v = int64(^int32(0))
+	}
+	return int32(v) //nolint:gosec // value is bounded by n which is int32
 }
 
 type Entry struct {
@@ -107,7 +103,7 @@ func PullGachaByEntries(entries []Entry) int64 {
 		return 0
 	}
 
-	r := getGlobalRand().Int31n(total)
+	r := cryptoInt32n(total)
 	var sum int32
 
 	for _, e := range safeEntries {

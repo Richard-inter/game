@@ -2,8 +2,9 @@ package clawmachine_runtime
 
 import (
 	"context"
+	crypto_rand "crypto/rand"
 	"fmt"
-	"math/rand/v2"
+	"math/big"
 
 	"github.com/1nterdigital/game/internal/domain"
 )
@@ -67,7 +68,8 @@ func Roll(percent int) bool {
 	if percent >= MaxProbability {
 		return true
 	}
-	return rand.IntN(MaxProbability) < percent
+	n, _ := crypto_rand.Int(crypto_rand.Reader, big.NewInt(int64(MaxProbability)))
+	return int(n.Int64()) < percent
 }
 func SpawnWithControls(items []SpawnItem, config SpawnConfig, rtpState *domain.ClawMachineRTPState) []SpawnItem {
 	result := make([]SpawnItem, 0, config.MaxOutput)
@@ -97,7 +99,8 @@ func SpawnWithControls(items []SpawnItem, config SpawnConfig, rtpState *domain.C
 			break
 		}
 
-		selection := rand.IntN(totalWeight)
+		randVal, _ := crypto_rand.Int(crypto_rand.Reader, big.NewInt(int64(totalWeight)))
+		selection := int(randVal.Int64())
 		currentWeight := 0
 
 		for idx, weight := range weights {
