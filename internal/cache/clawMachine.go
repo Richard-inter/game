@@ -3,10 +3,15 @@ package cache
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"time"
 
 	"github.com/redis/go-redis/v9"
+)
+
+const (
+	GameResultsExpiration = 5 * time.Minute
 )
 
 // StoreGameResults stores the game results in Redis with expiration
@@ -19,7 +24,7 @@ func (r *RedisClient) StoreGameResults(ctx context.Context, gameID int64, result
 	}
 
 	// Store with 5 minutes expiration
-	return r.client.Set(ctx, key, data, time.Minute*5).Err()
+	return r.client.Set(ctx, key, data, GameResultsExpiration).Err()
 }
 
 // GetGameResults retrieves the game results from Redis
@@ -28,7 +33,7 @@ func (r *RedisClient) GetGameResults(ctx context.Context, gameID int64, dest any
 
 	data, err := r.client.Get(ctx, key).Result()
 	if err != nil {
-		if err == redis.Nil {
+		if errors.Is(err, redis.Nil) {
 			return fmt.Errorf("game results not found for game ID: %d", gameID)
 		}
 		return fmt.Errorf("failed to get game results: %w", err)

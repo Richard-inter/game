@@ -65,7 +65,7 @@ func (s *ClawMachineGRPCServices) StartClawGame(ctx context.Context, req *pb.Sta
 		return nil, fmt.Errorf("failed to charge player: %w", err)
 	}
 
-	gameID, err := s.repo.AddGameHistory(ctx, req.PlayerID, &domain.ClawMachineGameRecord{
+	gameID, err := s.repo.AddGameHistory(ctx, &domain.ClawMachineGameRecord{
 		PlayerID:      req.PlayerID,
 		ClawMachineID: req.MachineID,
 		CreatedBy:     fmt.Sprintf("%d", req.PlayerID),
@@ -111,7 +111,8 @@ func (s *ClawMachineGRPCServices) GetClawMachineInfo(
 
 		for _, resp := range machineDomainList {
 			items := make([]*pb.Item, 0, len(resp.Items))
-			for _, it := range resp.Items {
+			for i := range resp.Items {
+				it := &resp.Items[i]
 				items = append(items, &pb.Item{
 					ItemID:          it.Item.ID,
 					Name:            it.Item.Name,
@@ -137,7 +138,8 @@ func (s *ClawMachineGRPCServices) GetClawMachineInfo(
 		}
 
 		items := make([]*pb.Item, 0, len(resp.Items))
-		for _, it := range resp.Items {
+		for i := range resp.Items {
+			it := &resp.Items[i]
 			items = append(items, &pb.Item{
 				ItemID:          it.Item.ID,
 				Name:            it.Item.Name,
@@ -182,7 +184,8 @@ func (s *ClawMachineGRPCServices) CreateClawMachine(ctx context.Context, req *pb
 	}
 
 	items := make([]*pb.Item, 0, len(created.Items))
-	for _, it := range created.Items {
+	for i := range created.Items {
+		it := &created.Items[i]
 		items = append(items, &pb.Item{
 			ItemID:          it.Item.ID,
 			Name:            it.Item.Name,
@@ -221,7 +224,9 @@ func (s *ClawMachineGRPCServices) CreateClawItems(ctx context.Context, req *pb.C
 		return nil, err
 	}
 	createdItems := make([]*pb.Item, 0, len(*resp))
-	for _, it := range *resp {
+	for i := range *resp {
+		it := &(*resp)[i]
+
 		createdItems = append(createdItems, &pb.Item{
 			ItemID:          it.ID,
 			Name:            it.Name,
@@ -278,7 +283,10 @@ func (s *ClawMachineGRPCServices) AdjustPlayerCoin(ctx context.Context, req *pb.
 	}, nil
 }
 
-func (s *ClawMachineGRPCServices) AdjustPlayerDiamond(ctx context.Context, req *pb.AdjustPlayerDiamondReq) (*pb.AdjustPlayerDiamondResp, error) {
+func (s *ClawMachineGRPCServices) AdjustPlayerDiamond(
+	ctx context.Context,
+	req *pb.AdjustPlayerDiamondReq,
+) (*pb.AdjustPlayerDiamondResp, error) {
 	updated, err := s.repo.AdjustPlayerDiamond(ctx, req.PlayerID, req.Amount, req.Type)
 	if err != nil {
 		return nil, err
@@ -394,7 +402,10 @@ func (s *ClawMachineGRPCServices) GetGameHistory(ctx context.Context, req *pb.Ge
 	}, nil
 }
 
-func (s *ClawMachineGRPCServices) UpdateClawMachineItems(ctx context.Context, req *pb.UpdateClawMachineItemsReq) (*pb.UpdateClawMachineItemsResp, error) {
+func (s *ClawMachineGRPCServices) UpdateClawMachineItems(
+	ctx context.Context,
+	req *pb.UpdateClawMachineItemsReq,
+) (*pb.UpdateClawMachineItemsResp, error) {
 	items := make([]domain.ClawMachineItem, 0, len(req.Items))
 	for _, item := range req.Items {
 		items = append(items, domain.ClawMachineItem{
@@ -442,7 +453,10 @@ func (s *ClawMachineGRPCServices) DeleteClawItems(ctx context.Context, req *pb.D
 	}, nil
 }
 
-func (s *ClawMachineGRPCServices) UpdateClawMachineTargetRTP(ctx context.Context, req *pb.UpdateClawMachineTargetRTPReq) (*pb.UpdateClawMachineTargetRTPResp, error) {
+func (s *ClawMachineGRPCServices) UpdateClawMachineTargetRTP(
+	ctx context.Context,
+	req *pb.UpdateClawMachineTargetRTPReq,
+) (*pb.UpdateClawMachineTargetRTPResp, error) {
 	err := s.repo.UpdateClawMachineTargetRTP(ctx, req.MachineID, req.TargetRTP)
 	if err != nil {
 		return nil, err
@@ -454,7 +468,10 @@ func (s *ClawMachineGRPCServices) UpdateClawMachineTargetRTP(ctx context.Context
 	}, nil
 }
 
-func (s *ClawMachineGRPCServices) GetPlayerInventory(ctx context.Context, req *pb.GetPlayerInventoryReq) (*pb.GetPlayerInventoryResp, error) {
+func (s *ClawMachineGRPCServices) GetPlayerInventory(
+	ctx context.Context,
+	req *pb.GetPlayerInventoryReq,
+) (*pb.GetPlayerInventoryResp, error) {
 	inventory, err := s.repo.GetPlayerInventory(ctx, req.PlayerID)
 	if err != nil {
 		logger.GetSugar().Errorf("Failed to get player inventory: %v", err)
@@ -462,7 +479,8 @@ func (s *ClawMachineGRPCServices) GetPlayerInventory(ctx context.Context, req *p
 	}
 
 	pbInventory := make([]*pb.ClawPlayerInventory, len(inventory))
-	for i, item := range inventory {
+	for i := range inventory {
+		item := &inventory[i]
 		pbInventory[i] = &pb.ClawPlayerInventory{
 			ItemID:   item.ItemID,
 			Quantity: item.Quantity,

@@ -4,8 +4,9 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/1nterdigital/game/internal/discovery"
 	"go.uber.org/zap"
+
+	"github.com/1nterdigital/game/internal/discovery"
 )
 
 type ServiceRegistry struct {
@@ -13,9 +14,9 @@ type ServiceRegistry struct {
 	logger    *zap.SugaredLogger
 }
 
-func NewServiceRegistry(discovery discovery.ServiceDiscovery, logger *zap.SugaredLogger) *ServiceRegistry {
+func NewServiceRegistry(discoveryService discovery.ServiceDiscovery, logger *zap.SugaredLogger) *ServiceRegistry {
 	return &ServiceRegistry{
-		discovery: discovery,
+		discovery: discoveryService,
 		logger:    logger,
 	}
 }
@@ -48,8 +49,8 @@ func (r *ServiceRegistry) GetService(serviceName string) (string, error) {
 }
 
 // Helper function to get service address from environment
-func GetServiceAddress(serviceName string) (string, int, error) {
-	host := os.Getenv(fmt.Sprintf("%s_HOST", serviceName))
+func GetServiceAddress(serviceName string) (host string, port int, err error) {
+	host = os.Getenv(fmt.Sprintf("%s_HOST", serviceName))
 	portStr := os.Getenv(fmt.Sprintf("%s_PORT", serviceName))
 
 	if host == "" {

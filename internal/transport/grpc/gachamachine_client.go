@@ -27,47 +27,80 @@ func NewGachaMachineClient(address string) (*GachaMachineClient, error) {
 	}, nil
 }
 
-func (c *GachaMachineClient) CreateGachaMachine(ctx context.Context, req *gachamachinepb.CreateGachaMachineReq) (*gachamachinepb.CreateGachaMachineResp, error) {
+func (c *GachaMachineClient) CreateGachaMachine(
+	ctx context.Context,
+	req *gachamachinepb.CreateGachaMachineReq,
+) (*gachamachinepb.CreateGachaMachineResp, error) {
 	return c.client.CreateGachaMachine(ctx, req)
 }
 
-func (c *GachaMachineClient) GetGachaMachineInfo(ctx context.Context, req *gachamachinepb.GetGachaMachineInfoReq) (*gachamachinepb.GetGachaMachineInfoResp, error) {
+func (c *GachaMachineClient) GetGachaMachineInfo(
+	ctx context.Context,
+	req *gachamachinepb.GetGachaMachineInfoReq,
+) (*gachamachinepb.GetGachaMachineInfoResp, error) {
 	return c.client.GetGachaMachineInfo(ctx, req)
 }
 
-func (c *GachaMachineClient) CreateGachaItems(ctx context.Context, req *gachamachinepb.CreateGachaItemsReq) (*gachamachinepb.CreateGachaItemsResp, error) {
+func (c *GachaMachineClient) CreateGachaItems(
+	ctx context.Context,
+	req *gachamachinepb.CreateGachaItemsReq,
+) (*gachamachinepb.CreateGachaItemsResp, error) {
 	return c.client.CreateGachaItems(ctx, req)
 }
 
-func (c *GachaMachineClient) CreateGachaPlayer(ctx context.Context, req *gachamachinepb.CreateGachaPlayerReq) (*gachamachinepb.CreateGachaPlayerResp, error) {
+func (c *GachaMachineClient) CreateGachaPlayer(
+	ctx context.Context,
+	req *gachamachinepb.CreateGachaPlayerReq,
+) (*gachamachinepb.CreateGachaPlayerResp, error) {
 	return c.client.CreateGachaPlayer(ctx, req)
 }
 
-func (c *GachaMachineClient) GetGachaPlayerInfo(ctx context.Context, req *gachamachinepb.GetGachaPlayerInfoReq) (*gachamachinepb.GetGachaPlayerInfoResp, error) {
+func (c *GachaMachineClient) GetGachaPlayerInfo(
+	ctx context.Context,
+	req *gachamachinepb.GetGachaPlayerInfoReq,
+) (*gachamachinepb.GetGachaPlayerInfoResp, error) {
 	return c.client.GetGachaPlayerInfo(ctx, req)
 }
 
-func (c *GachaMachineClient) GetPlayerInventory(ctx context.Context, req *gachamachinepb.GetPlayerInventoryReq) (*gachamachinepb.GetPlayerInventoryResp, error) {
+func (c *GachaMachineClient) GetPlayerInventory(
+	ctx context.Context,
+	req *gachamachinepb.GetPlayerInventoryReq,
+) (*gachamachinepb.GetPlayerInventoryResp, error) {
 	return c.client.GetPlayerInventory(ctx, req)
 }
 
-func (c *GachaMachineClient) GetPlayerPullHistory(ctx context.Context, req *gachamachinepb.GetPlayerPullHistoryReq) (*gachamachinepb.GetPlayerPullHistoryResp, error) {
+func (c *GachaMachineClient) GetPlayerPullHistory(
+	ctx context.Context,
+	req *gachamachinepb.GetPlayerPullHistoryReq,
+) (*gachamachinepb.GetPlayerPullHistoryResp, error) {
 	return c.client.GetPlayerPullHistory(ctx, req)
 }
 
-func (c *GachaMachineClient) AdjustPlayerCoin(ctx context.Context, req *gachamachinepb.AdjustPlayerCoinReq) (*gachamachinepb.AdjustPlayerCoinResp, error) {
+func (c *GachaMachineClient) AdjustPlayerCoin(
+	ctx context.Context,
+	req *gachamachinepb.AdjustPlayerCoinReq,
+) (*gachamachinepb.AdjustPlayerCoinResp, error) {
 	return c.client.AdjustPlayerCoin(ctx, req)
 }
 
-func (c *GachaMachineClient) AdjustPlayerDiamond(ctx context.Context, req *gachamachinepb.AdjustPlayerDiamondReq) (*gachamachinepb.AdjustPlayerDiamondResp, error) {
+func (c *GachaMachineClient) AdjustPlayerDiamond(
+	ctx context.Context,
+	req *gachamachinepb.AdjustPlayerDiamondReq,
+) (*gachamachinepb.AdjustPlayerDiamondResp, error) {
 	return c.client.AdjustPlayerDiamond(ctx, req)
 }
 
-func (c *GachaMachineClient) GetPullResult(ctx context.Context, req *gachamachinepb.GetPullResultReq) (*gachamachinepb.GetPullResultResp, error) {
+func (c *GachaMachineClient) GetPullResult(
+	ctx context.Context,
+	req *gachamachinepb.GetPullResultReq,
+) (*gachamachinepb.GetPullResultResp, error) {
 	return c.client.GetPullResult(ctx, req)
 }
 
-func (c *GachaMachineClient) UpdateGachaMachineTargetRTP(ctx context.Context, req *gachamachinepb.UpdateGachaMachineTargetRTPReq) (*gachamachinepb.UpdateGachaMachineTargetRTPResp, error) {
+func (c *GachaMachineClient) UpdateGachaMachineTargetRTP(
+	ctx context.Context,
+	req *gachamachinepb.UpdateGachaMachineTargetRTPReq,
+) (*gachamachinepb.UpdateGachaMachineTargetRTPResp, error) {
 	return c.client.UpdateGachaMachineTargetRTP(ctx, req)
 }
 

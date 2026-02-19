@@ -10,9 +10,10 @@ import (
 	"syscall"
 	"time"
 
+	"go.uber.org/zap"
+
 	"github.com/1nterdigital/game/internal/config"
 	"github.com/1nterdigital/game/pkg/logger"
-	"go.uber.org/zap"
 )
 
 var (

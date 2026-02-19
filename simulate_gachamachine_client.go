@@ -1,4 +1,6 @@
+//go:build ignore
 package main
+//nolint:all
 
 import (
 	"fmt"
@@ -56,9 +58,9 @@ func main() {
 	}()
 
 	// Send request
-	// msg := createGetPullResultWsRequest(1, 1, 1)
-	// msg := createGetPlayerInfoWsRequest(1)
-	msg := createGetMachineInfoWsRequest(1)
+	// msg := createGetPullResultWsRequest(1, 1, 10)
+	msg := createGetPlayerInfoWsRequest(1)
+	//msg := createGetMachineInfoWsRequest(1)
 	if err := conn.WriteMessage(websocket.BinaryMessage, msg); err != nil {
 		log.Fatal("write error:", err)
 	}
@@ -169,6 +171,17 @@ func handleGetPlayerInfoWsResp(env *fbs.Envelope) {
 	fmt.Printf("Username: %s\n", string(resp.Username()))
 	fmt.Printf("Coin: %d\n", resp.Coin())
 	fmt.Printf("Diamond: %d\n", resp.Diamond())
+
+	fmt.Println("Pity States:")
+	for i := 0; i < resp.PityStateLength(); i++ {
+		var pityState fbs.PityState
+		if resp.PityState(&pityState, i) {
+			fmt.Printf("  Machine %d: SuperRare=%d, UltraRare=%d\n",
+				pityState.MachineId(),
+				pityState.SuperRarePity(),
+				pityState.UltraRarePity())
+		}
+	}
 	fmt.Println("============================")
 }
 

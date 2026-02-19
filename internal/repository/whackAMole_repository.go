@@ -4,8 +4,13 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/1nterdigital/game/internal/domain"
 	"gorm.io/gorm"
+
+	"github.com/1nterdigital/game/internal/domain"
+)
+
+const (
+	MaxLeaderboardLimit = 100
 )
 
 type whackAMoleRepository struct {
@@ -35,7 +40,10 @@ func NewWhackAMoleRepository(db *gorm.DB) WhackAMoleRepository {
 	}
 }
 
-func (r *whackAMoleRepository) CreateWhackAMolePlayer(ctx context.Context, player *domain.WhackAMolePlayer) (*domain.WhackAMolePlayer, error) {
+func (r *whackAMoleRepository) CreateWhackAMolePlayer(
+	ctx context.Context,
+	player *domain.WhackAMolePlayer,
+) (*domain.WhackAMolePlayer, error) {
 	err := r.db.WithContext(ctx).Create(player).Error
 	if err != nil {
 		return nil, err
@@ -59,8 +67,8 @@ func (r *whackAMoleRepository) GetLeaderboard(
 	if limit <= 0 {
 		return nil, fmt.Errorf("limit must be greater than zero")
 	}
-	if limit > 100 {
-		limit = 100
+	if limit > MaxLeaderboardLimit {
+		limit = MaxLeaderboardLimit
 	}
 
 	var leaderboard []*domain.LeaderBoard
@@ -77,7 +85,7 @@ func (r *whackAMoleRepository) GetLeaderboard(
 	return leaderboard, nil
 }
 
-func (r *whackAMoleRepository) UpdatePlayerScore(ctx context.Context, playerID int64, score int64) error {
+func (r *whackAMoleRepository) UpdatePlayerScore(ctx context.Context, playerID, score int64) error {
 	// First try to update existing player
 	result := r.db.WithContext(ctx).Model(&domain.LeaderBoard{}).
 		Where("player_id = ?", playerID).
@@ -124,7 +132,7 @@ func (r *whackAMoleRepository) GetPlayerRank(ctx context.Context, playerID int64
 		return nil, err
 	}
 
-	leaderboard.Rank = int32(rank + 1)
+	leaderboard.Rank = int32(rank + 1) //nolint:gosec // Rank limit until 100 players
 	return &leaderboard, nil
 }
 
@@ -132,7 +140,6 @@ func (r *whackAMoleRepository) GetMoleWeightConfig(
 	ctx context.Context,
 	id int64,
 ) ([]domain.MoleWeightConfig, error) {
-
 	var configs []domain.MoleWeightConfig
 
 	query := r.db.WithContext(ctx)
@@ -152,7 +159,10 @@ func (r *whackAMoleRepository) GetMoleWeightConfig(
 	return configs, nil
 }
 
-func (r *whackAMoleRepository) CreateMoleWeightConfig(ctx context.Context, config *domain.MoleWeightConfig) (*domain.MoleWeightConfig, error) {
+func (r *whackAMoleRepository) CreateMoleWeightConfig(
+	ctx context.Context,
+	config *domain.MoleWeightConfig,
+) (*domain.MoleWeightConfig, error) {
 	err := r.db.WithContext(ctx).Create(config).Error
 	if err != nil {
 		return nil, err
@@ -160,7 +170,10 @@ func (r *whackAMoleRepository) CreateMoleWeightConfig(ctx context.Context, confi
 	return config, nil
 }
 
-func (r *whackAMoleRepository) UpdateMoleWeightConfig(ctx context.Context, config *domain.MoleWeightConfig) (*domain.MoleWeightConfig, error) {
+func (r *whackAMoleRepository) UpdateMoleWeightConfig(
+	ctx context.Context,
+	config *domain.MoleWeightConfig,
+) (*domain.MoleWeightConfig, error) {
 	err := r.db.WithContext(ctx).Model(&domain.MoleWeightConfig{}).
 		Where("id = ?", config.ID).
 		Updates(map[string]interface{}{
@@ -175,7 +188,6 @@ func (r *whackAMoleRepository) UpdateMoleWeightConfig(ctx context.Context, confi
 
 func (r *whackAMoleRepository) RecalculateLeaderboard(ctx context.Context) error {
 	return r.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
-
 		// 1. Reset all ranks first
 		if err := tx.Exec(`UPDATE whackAMole_leaderboard SET ` + "`rank`" + ` = 0`).Error; err != nil {
 			return err
@@ -190,7 +202,7 @@ func (r *whackAMoleRepository) RecalculateLeaderboard(ctx context.Context) error
 				FROM whackAMole_leaderboard
 			) ranked ON lb.player_id = ranked.player_id
 			SET lb.` + "`rank`" + ` = ranked.new_rank
-			WHERE ranked.new_rank <= 100
+			WHERE ranked.new_rank <= MaxLeaderboardLimit
 		`).Error; err != nil {
 			return err
 		}

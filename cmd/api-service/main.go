@@ -53,7 +53,8 @@ func main() {
 		log.Infow("Service discovery disabled, loading service configurations")
 		etcdEndpoints = []string{} // Empty to disable service discovery
 
-		serviceConfigs, err := config.LoadMultipleServiceConfigs([]string{"player", "clawmachine", "gachamachine"})
+		var serviceConfigs map[string]*config.ServiceConfig
+		serviceConfigs, err = config.LoadMultipleServiceConfigs([]string{"player", "clawmachine", "gachamachine"})
 		if err != nil {
 			log.Fatalw("Failed to load service configs", "error", err)
 		}
