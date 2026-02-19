@@ -13,6 +13,10 @@ import (
 	"github.com/1nterdigital/game/pkg/logger"
 )
 
+const (
+	LeaderboardRecalculationInterval = 60 * time.Second
+)
+
 func main() {
 	// Initialize logger
 	logger.InitLogger()
@@ -47,7 +51,7 @@ func main() {
 	signal.Notify(sigChan, syscall.SIGINT, syscall.SIGTERM)
 
 	// Create ticker for scheduling (1 second interval)
-	ticker := time.NewTicker(60 * time.Second)
+	ticker := time.NewTicker(LeaderboardRecalculationInterval)
 	defer ticker.Stop()
 
 	log.Info("Starting leaderboard recalculation scheduler (every 1 second)...")

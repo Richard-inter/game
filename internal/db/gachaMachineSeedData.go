@@ -21,7 +21,6 @@ func SeedGachaMachineData(db *gorm.DB) error {
 	createdBy := "seed"
 
 	return db.Transaction(func(tx *gorm.DB) error {
-
 		// 1️⃣ Player (NO manual ID)
 		player := domain.GachaPlayer{
 			Player: domain.Player{
@@ -77,7 +76,7 @@ func SeedGachaMachineData(db *gorm.DB) error {
 		var items []domain.GachaItem
 
 		for _, r := range rarityDistribution {
-			for i := 0; i < r.Count; i++ {
+			for i := range r.Count {
 				item := domain.GachaItem{
 					Name:       fmt.Sprintf("%s Item %d", r.Rarity, i+1),
 					Rarity:     r.Rarity,
@@ -99,7 +98,8 @@ func SeedGachaMachineData(db *gorm.DB) error {
 		}
 
 		// 4️⃣ Machine ↔ Items mapping (use FirstOrCreate to prevent duplicates)
-		for _, item := range items {
+		for i := range items {
+			item := &items[i]
 			machineItem := domain.GachaMachineItem{
 				GachaMachineID: machine.ID,
 				ItemID:         item.ID,

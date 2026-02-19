@@ -27,67 +27,115 @@ func NewClawMachineClient(address string) (*ClawMachineClient, error) {
 	}, nil
 }
 
-func (c *ClawMachineClient) GetClawPlayerInfo(ctx context.Context, req *clawmachinepb.GetClawPlayerInfoReq) (*clawmachinepb.GetClawPlayerInfoResp, error) {
+func (c *ClawMachineClient) GetClawPlayerInfo(
+	ctx context.Context,
+	req *clawmachinepb.GetClawPlayerInfoReq,
+) (*clawmachinepb.GetClawPlayerInfoResp, error) {
 	return c.client.GetClawPlayerInfo(ctx, req)
 }
 
-func (c *ClawMachineClient) StartClawGame(ctx context.Context, req *clawmachinepb.StartClawGameReq) (*clawmachinepb.StartClawGameResp, error) {
+func (c *ClawMachineClient) StartClawGame(
+	ctx context.Context,
+	req *clawmachinepb.StartClawGameReq,
+) (*clawmachinepb.StartClawGameResp, error) {
 	return c.client.StartClawGame(ctx, req)
 }
 
-func (c *ClawMachineClient) GetClawMachineInfo(ctx context.Context, req *clawmachinepb.GetClawMachineInfoReq) (*clawmachinepb.GetClawMachineInfoResp, error) {
+func (c *ClawMachineClient) GetClawMachineInfo(
+	ctx context.Context,
+	req *clawmachinepb.GetClawMachineInfoReq,
+) (*clawmachinepb.GetClawMachineInfoResp, error) {
 	return c.client.GetClawMachineInfo(ctx, req)
 }
 
-func (c *ClawMachineClient) CreateClawMachine(ctx context.Context, req *clawmachinepb.CreateClawMachineReq) (*clawmachinepb.CreateClawMachineResp, error) {
+func (c *ClawMachineClient) CreateClawMachine(
+	ctx context.Context,
+	req *clawmachinepb.CreateClawMachineReq,
+) (*clawmachinepb.CreateClawMachineResp, error) {
 	return c.client.CreateClawMachine(ctx, req)
 }
 
-func (c *ClawMachineClient) CreateClawItems(ctx context.Context, req *clawmachinepb.CreateClawItemsReq) (*clawmachinepb.CreateClawItemsResp, error) {
+func (c *ClawMachineClient) CreateClawItems(
+	ctx context.Context,
+	req *clawmachinepb.CreateClawItemsReq,
+) (*clawmachinepb.CreateClawItemsResp, error) {
 	return c.client.CreateClawItems(ctx, req)
 }
 
-func (c *ClawMachineClient) CreateClawPlayer(ctx context.Context, req *clawmachinepb.CreateClawPlayerReq) (*clawmachinepb.CreateClawPlayerResp, error) {
+func (c *ClawMachineClient) CreateClawPlayer(
+	ctx context.Context,
+	req *clawmachinepb.CreateClawPlayerReq,
+) (*clawmachinepb.CreateClawPlayerResp, error) {
 	return c.client.CreateClawPlayer(ctx, req)
 }
 
-func (c *ClawMachineClient) AdjustPlayerCoin(ctx context.Context, req *clawmachinepb.AdjustPlayerCoinReq) (*clawmachinepb.AdjustPlayerCoinResp, error) {
+func (c *ClawMachineClient) AdjustPlayerCoin(
+	ctx context.Context,
+	req *clawmachinepb.AdjustPlayerCoinReq,
+) (*clawmachinepb.AdjustPlayerCoinResp, error) {
 	return c.client.AdjustPlayerCoin(ctx, req)
 }
 
-func (c *ClawMachineClient) AdjustPlayerDiamond(ctx context.Context, req *clawmachinepb.AdjustPlayerDiamondReq) (*clawmachinepb.AdjustPlayerDiamondResp, error) {
+func (c *ClawMachineClient) AdjustPlayerDiamond(
+	ctx context.Context,
+	req *clawmachinepb.AdjustPlayerDiamondReq,
+) (*clawmachinepb.AdjustPlayerDiamondResp, error) {
 	return c.client.AdjustPlayerDiamond(ctx, req)
 }
 
-func (c *ClawMachineClient) AddTouchedItemRecord(ctx context.Context, req *clawmachinepb.AddTouchedItemRecordReq) (*clawmachinepb.AddTouchedItemRecordResp, error) {
+func (c *ClawMachineClient) AddTouchedItemRecord(
+	ctx context.Context,
+	req *clawmachinepb.AddTouchedItemRecordReq,
+) (*clawmachinepb.AddTouchedItemRecordResp, error) {
 	return c.client.AddTouchedItemRecord(ctx, req)
 }
 
-func (c *ClawMachineClient) DeleteClawPlayer(ctx context.Context, req *clawmachinepb.DeleteClawPlayerReq) (*clawmachinepb.DeleteClawPlayerResp, error) {
+func (c *ClawMachineClient) DeleteClawPlayer(
+	ctx context.Context,
+	req *clawmachinepb.DeleteClawPlayerReq,
+) (*clawmachinepb.DeleteClawPlayerResp, error) {
 	return c.client.DeleteClawPlayer(ctx, req)
 }
 
-func (c *ClawMachineClient) GetGameHistory(ctx context.Context, req *clawmachinepb.GetGameHistoryReq) (*clawmachinepb.GetGameHistoryResp, error) {
+func (c *ClawMachineClient) GetGameHistory(
+	ctx context.Context,
+	req *clawmachinepb.GetGameHistoryReq,
+) (*clawmachinepb.GetGameHistoryResp, error) {
 	return c.client.GetGameHistory(ctx, req)
 }
 
-func (c *ClawMachineClient) UpdateClawMachineItems(ctx context.Context, req *clawmachinepb.UpdateClawMachineItemsReq) (*clawmachinepb.UpdateClawMachineItemsResp, error) {
+func (c *ClawMachineClient) UpdateClawMachineItems(
+	ctx context.Context,
+	req *clawmachinepb.UpdateClawMachineItemsReq,
+) (*clawmachinepb.UpdateClawMachineItemsResp, error) {
 	return c.client.UpdateClawMachineItems(ctx, req)
 }
 
-func (c *ClawMachineClient) DeleteClawMachine(ctx context.Context, req *clawmachinepb.DeleteClawMachineReq) (*clawmachinepb.DeleteClawMachineResp, error) {
+func (c *ClawMachineClient) DeleteClawMachine(
+	ctx context.Context,
+	req *clawmachinepb.DeleteClawMachineReq,
+) (*clawmachinepb.DeleteClawMachineResp, error) {
 	return c.client.DeleteClawMachine(ctx, req)
 }
 
-func (c *ClawMachineClient) DeleteClawItems(ctx context.Context, req *clawmachinepb.DeleteClawItemsReq) (*clawmachinepb.DeleteClawItemsResp, error) {
+func (c *ClawMachineClient) DeleteClawItems(
+	ctx context.Context,
+	req *clawmachinepb.DeleteClawItemsReq,
+) (*clawmachinepb.DeleteClawItemsResp, error) {
 	return c.client.DeleteClawItems(ctx, req)
 }
 
-func (c *ClawMachineClient) UpdateClawMachineTargetRTP(ctx context.Context, req *clawmachinepb.UpdateClawMachineTargetRTPReq) (*clawmachinepb.UpdateClawMachineTargetRTPResp, error) {
+func (c *ClawMachineClient) UpdateClawMachineTargetRTP(
+	ctx context.Context,
+	req *clawmachinepb.UpdateClawMachineTargetRTPReq,
+) (*clawmachinepb.UpdateClawMachineTargetRTPResp, error) {
 	return c.client.UpdateClawMachineTargetRTP(ctx, req)
 }
 
-func (c *ClawMachineClient) GetPlayerInventory(ctx context.Context, req *clawmachinepb.GetPlayerInventoryReq) (*clawmachinepb.GetPlayerInventoryResp, error) {
+func (c *ClawMachineClient) GetPlayerInventory(
+	ctx context.Context,
+	req *clawmachinepb.GetPlayerInventoryReq,
+) (*clawmachinepb.GetPlayerInventoryResp, error) {
 	return c.client.GetPlayerInventory(ctx, req)
 }
 

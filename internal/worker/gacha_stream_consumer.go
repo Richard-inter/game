@@ -3,6 +3,7 @@ package worker
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"time"
 
@@ -13,7 +14,7 @@ import (
 	"github.com/1nterdigital/game/internal/config"
 	"github.com/1nterdigital/game/internal/domain"
 	"github.com/1nterdigital/game/internal/repository"
-	g "github.com/1nterdigital/game/internal/service/rpc/gachaMachine"
+	gm "github.com/1nterdigital/game/internal/service/rpc/gachaMachine"
 	runtime "github.com/1nterdigital/game/internal/service/rpc/gachaMachine_runtime"
 	"github.com/1nterdigital/game/pkg/logger"
 )
@@ -22,15 +23,21 @@ type GachaStreamConsumer struct {
 	repo           repository.GachaMachineRepository
 	redis          *cache.RedisClient
 	config         *config.StreamConsumerConfig
-	service        *g.GachaMachineGRPCService // Add service reference
+	service        *gm.GachaMachineGRPCService // Add service reference
 	runtimeService *runtime.GachaMachineWebsocketService
 	log            *zap.SugaredLogger
 }
 
-func NewGachaStreamConsumer(repo repository.GachaMachineRepository, redis *cache.RedisClient, cfg *config.StreamConsumerConfig, service *g.GachaMachineGRPCService, runtimeService *runtime.GachaMachineWebsocketService) *GachaStreamConsumer {
+func NewGachaStreamConsumer(
+	repo repository.GachaMachineRepository,
+	redisClient *cache.RedisClient,
+	cfg *config.StreamConsumerConfig,
+	service *gm.GachaMachineGRPCService,
+	runtimeService *runtime.GachaMachineWebsocketService,
+) *GachaStreamConsumer {
 	return &GachaStreamConsumer{
 		repo:           repo,
-		redis:          redis,
+		redis:          redisClient,
 		config:         cfg,
 		service:        service,
 		runtimeService: runtimeService,
@@ -74,7 +81,7 @@ func (g *GachaStreamConsumer) StartEventConsumer(ctx context.Context) error {
 				Block:    blockTimeout,
 			}).Result()
 
-			if err != nil && err != redis.Nil {
+			if err != nil && !errors.Is(err, redis.Nil) {
 				g.log.Errorf("Failed to read from stream: %v", err)
 				time.Sleep(time.Second)
 				continue
@@ -125,13 +132,13 @@ func (g *GachaStreamConsumer) parseHistoryMessage(ctx context.Context, message r
 
 	// Call the appropriate service based on which one is available
 	if g.runtimeService != nil {
-		if err := g.runtimeService.AddGameToHistory(ctx, *session, itemIDs); err != nil {
+		if err := g.runtimeService.AddGameToHistory(ctx, session, itemIDs); err != nil {
 			return nil, fmt.Errorf("failed to add game to history for item %v: %w", itemIDs, err)
 		}
 	}
 
 	if g.service != nil {
-		if err := g.service.AddGameToHistory(ctx, *session, itemIDs); err != nil {
+		if err := g.service.AddGameToHistory(ctx, session, itemIDs); err != nil {
 			return nil, fmt.Errorf("failed to add game to history for item %v: %w", itemIDs, err)
 		}
 	}

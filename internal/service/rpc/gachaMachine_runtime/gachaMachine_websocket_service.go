@@ -11,6 +11,7 @@ import (
 	"github.com/1nterdigital/game/internal/cache"
 	"github.com/1nterdigital/game/internal/domain"
 	"github.com/1nterdigital/game/internal/repository"
+	"github.com/1nterdigital/game/pkg/constant"
 	"github.com/1nterdigital/game/pkg/logger"
 	pb "github.com/1nterdigital/game/pkg/protocol/gachaMachine_Websocket"
 	fbs "github.com/1nterdigital/game/pkg/protocol/gachaMachine_Websocket/gachaMachine"
@@ -24,7 +25,11 @@ type GachaMachineWebsocketService struct {
 	log       *zap.SugaredLogger
 }
 
-func NewGachaMachineWebsocketService(repo repository.GachaMachineRepository, redis *cache.RedisClient, streamKey string) *GachaMachineWebsocketService {
+func NewGachaMachineWebsocketService(
+	repo repository.GachaMachineRepository,
+	redis *cache.RedisClient,
+	streamKey string,
+) *GachaMachineWebsocketService {
 	return &GachaMachineWebsocketService{
 		repo:      repo,
 		redis:     redis,
@@ -34,7 +39,7 @@ func NewGachaMachineWebsocketService(repo repository.GachaMachineRepository, red
 }
 
 func (_ *GachaMachineWebsocketService) buildEnvelopeResponse(messageType fbs.MessageType, payloadBytes []byte) *pb.RuntimeResponse {
-	builder := flatbuffers.NewBuilder(len(payloadBytes) + 256)
+	builder := flatbuffers.NewBuilder(len(payloadBytes) + constant.Byte256)
 	payloadOffset := builder.CreateByteVector(payloadBytes)
 
 	fbs.EnvelopeStart(builder)
@@ -71,19 +76,21 @@ func (s *GachaMachineWebsocketService) GetPullResultWs(ctx context.Context, req 
 	}
 
 	if pullCount == 1 {
-		itemID, err := s.PullGachaSingle(ctx, machineID, playerID)
+		var itemID int64
+		itemID, err = s.PullGachaSingle(ctx, machineID, playerID)
 		if err != nil {
 			return nil, err
 		}
 
-		if err := s.redis.PublishGachaEvent(ctx, s.streamKey, session, itemID); err != nil {
+		err = s.redis.PublishGachaEvent(ctx, s.streamKey, session, itemID)
+		if err != nil {
 			fmt.Println("error publish")
 			s.log.Errorf("Failed to publish gacha pull history to stream: %v", err)
 			// Continue even if stream publish fails
 		}
 
 		// Create the FlatBuffers response
-		builder := flatbuffers.NewBuilder(256)
+		builder := flatbuffers.NewBuilder(constant.Byte256)
 
 		// ---- Build item_ids vector (length = 1) ----
 		fbs.GetPullResultWsRespStartItemIdsVector(builder, 1)
@@ -115,7 +122,7 @@ func (s *GachaMachineWebsocketService) GetPullResultWs(ctx context.Context, req 
 		// Continue even if stream publish fails
 	}
 
-	builder := flatbuffers.NewBuilder(1024)
+	builder := flatbuffers.NewBuilder(constant.Byte1024)
 
 	// 1️⃣ Build scalar vector FIRST
 	fbs.GetPullResultWsRespStartItemIdsVector(builder, len(itemIDs))
@@ -139,7 +146,6 @@ func (s *GachaMachineWebsocketService) GetPlayerInfoWs(
 	ctx context.Context,
 	req *pb.RuntimeRequest,
 ) (*pb.RuntimeResponse, error) {
-
 	getPlayerInfoReq := fbs.GetRootAsGetPlayerInfoWsReq(req.Payload, 0)
 	playerID := getPlayerInfoReq.PlayerId()
 
@@ -161,7 +167,7 @@ func (s *GachaMachineWebsocketService) GetPlayerInfoWs(
 		pityStates = []*domain.GachaPityState{}
 	}
 
-	builder := flatbuffers.NewBuilder(1024)
+	builder := flatbuffers.NewBuilder(constant.Byte1024)
 
 	// ---- Build PityState vector ----
 	pityStateOffsets := make([]flatbuffers.UOffsetT, len(pityStates))
@@ -217,11 +223,12 @@ func (s *GachaMachineWebsocketService) GetMachineInfoWs(
 		return s.createErrorResponse(err), nil
 	}
 
-	builder := flatbuffers.NewBuilder(2048)
+	builder := flatbuffers.NewBuilder(constant.Byte2048)
 
 	// ---- Build Items vector ----
 	itemOffsets := make([]flatbuffers.UOffsetT, len(resp.Items))
-	for i, item := range resp.Items {
+	for i := range resp.Items {
+		item := &resp.Items[i]
 		nameOffset := builder.CreateString(item.Item.Name)
 		rarityOffset := builder.CreateString(item.Item.Rarity)
 
@@ -276,11 +283,13 @@ func (s *GachaMachineWebsocketService) GetPlayerInventoryWs(ctx context.Context,
 		return s.createErrorResponse(err), nil
 	}
 
-	builder := flatbuffers.NewBuilder(2048)
+	builder := flatbuffers.NewBuilder(constant.Byte2048)
 
 	// Build PlayerInventoryItem vector
 	itemOffsets := make([]flatbuffers.UOffsetT, len(inventory))
-	for i, item := range inventory {
+	for i := range inventory {
+		item := &inventory[i]
+
 		fbs.PlayerInventoryItemStart(builder)
 		fbs.PlayerInventoryItemAddItemId(builder, item.ItemID)
 		fbs.PlayerInventoryItemAddQuantity(builder, item.Quantity)
@@ -318,7 +327,7 @@ func (s *GachaMachineWebsocketService) GetPlayerPullHistoryWs(ctx context.Contex
 		return s.createErrorResponse(err), nil
 	}
 
-	builder := flatbuffers.NewBuilder(2048)
+	builder := flatbuffers.NewBuilder(constant.Byte2048)
 
 	// Build PullSession vector
 	sessionOffsets := make([]flatbuffers.UOffsetT, len(sessions))
@@ -371,7 +380,7 @@ func (s *GachaMachineWebsocketService) GetPlayerPullHistoryWs(ctx context.Contex
 }
 
 func (s *GachaMachineWebsocketService) createErrorResponse(err error) *pb.RuntimeResponse {
-	builder := flatbuffers.NewBuilder(256)
+	builder := flatbuffers.NewBuilder(constant.Byte256)
 
 	// Create error message string
 	errorMsgOffset := builder.CreateString(err.Error())
@@ -388,8 +397,8 @@ func (s *GachaMachineWebsocketService) createErrorResponse(err error) *pb.Runtim
 	return s.buildEnvelopeResponse(fbs.MessageTypeErrorResp, respBytes)
 }
 
-func (s *GachaMachineWebsocketService) AddGameToHistory(ctx context.Context, session domain.GachaPullSession, itemIDs []int64) error {
-	createdSession, err := s.repo.CreateGachaPullSession(ctx, &session)
+func (s *GachaMachineWebsocketService) AddGameToHistory(ctx context.Context, session *domain.GachaPullSession, itemIDs []int64) error {
+	createdSession, err := s.repo.CreateGachaPullSession(ctx, session)
 	if err != nil {
 		s.log.Errorf("Failed to create gacha pull session: %v", err)
 		return err
@@ -406,7 +415,9 @@ func (s *GachaMachineWebsocketService) AddGameToHistory(ctx context.Context, ses
 	if machineInfo != nil {
 		for _, itemID := range itemIDs {
 			// Find the item to get its rarity and calculate value
-			for _, item := range machineInfo.Items {
+			for i := range machineInfo.Items {
+				item := &machineInfo.Items[i]
+
 				if item.Item.ID == itemID {
 					itemValue := GetGachaRarityValue(item.Item.Rarity, machineInfo.Price)
 					totalPayout += itemValue

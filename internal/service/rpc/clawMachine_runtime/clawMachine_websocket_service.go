@@ -9,6 +9,7 @@ import (
 	"github.com/1nterdigital/game/internal/cache"
 	"github.com/1nterdigital/game/internal/domain"
 	"github.com/1nterdigital/game/internal/repository"
+	"github.com/1nterdigital/game/pkg/constant"
 	"github.com/1nterdigital/game/pkg/logger"
 	pb "github.com/1nterdigital/game/pkg/protocol/clawMachine_Websocket"
 	fbs "github.com/1nterdigital/game/pkg/protocol/clawMachine_Websocket/clawMachine"
@@ -28,7 +29,7 @@ func NewClawMachineWebsocketService(repo repository.ClawMachineRepository, redis
 }
 
 func (_ *ClawMachineWebsocketService) buildEnvelopeResponse(messageType fbs.MessageType, payloadBytes []byte) *pb.RuntimeResponse {
-	builder := flatbuffers.NewBuilder(len(payloadBytes) + 256)
+	builder := flatbuffers.NewBuilder(len(payloadBytes) + constant.Byte256)
 	payloadOffset := builder.CreateByteVector(payloadBytes)
 
 	fbs.EnvelopeStart(builder)
@@ -58,19 +59,19 @@ func (s *ClawMachineWebsocketService) StartClawGameWs(
 		return nil, fmt.Errorf("invalid player ID or machine ID")
 	}
 
-	results, err := s.PreDetermineCatchResults(ctx, int64(machineID))
+	results, err := s.PreDetermineCatchResults(ctx, machineID)
 	if err != nil {
 		return nil, fmt.Errorf("failed to pre-determine catch results: %w", err)
 	}
 
-	err = s.PlayMachine(ctx, int64(playerID), int64(machineID))
+	err = s.PlayMachine(ctx, playerID, machineID)
 	if err != nil {
 		return nil, fmt.Errorf("failed to charge player: %w", err)
 	}
 
-	gameID, err := s.repo.AddGameHistory(ctx, int64(playerID), &domain.ClawMachineGameRecord{
-		PlayerID:      int64(playerID),
-		ClawMachineID: int64(machineID),
+	gameID, err := s.repo.AddGameHistory(ctx, &domain.ClawMachineGameRecord{
+		PlayerID:      playerID,
+		ClawMachineID: machineID,
 		TouchedItemID: nil,
 		CreatedBy:     fmt.Sprintf("%d", playerID),
 		UpdatedBy:     fmt.Sprintf("%d", playerID),
@@ -85,7 +86,7 @@ func (s *ClawMachineWebsocketService) StartClawGameWs(
 		logger.GetSugar().Warnf("failed to store game results in Redis: %v", err)
 	}
 
-	builder := flatbuffers.NewBuilder(1024)
+	builder := flatbuffers.NewBuilder(constant.Byte1024)
 	resultOffsets := make([]flatbuffers.UOffsetT, len(results))
 	for i := len(results) - 1; i >= 0; i-- {
 		fbs.ClawResultStart(builder)
@@ -118,12 +119,12 @@ func (s *ClawMachineWebsocketService) GetPlayerInfoWs(
 	startReq := fbs.GetRootAsGetPlayerInfoWsReq(req.Payload, 0)
 	playerID := startReq.PlayerId()
 
-	domainPlayer, err := s.repo.GetClawPlayerInfo(ctx, int64(playerID))
+	domainPlayer, err := s.repo.GetClawPlayerInfo(ctx, playerID)
 	if err != nil {
 		return nil, err
 	}
 
-	builder := flatbuffers.NewBuilder(1024)
+	builder := flatbuffers.NewBuilder(constant.Byte1024)
 	usernameOffset := builder.CreateString(domainPlayer.Player.UserName)
 
 	fbs.GetPlayerInfoWsRespStart(builder)
@@ -150,7 +151,7 @@ func (s *ClawMachineWebsocketService) AddTouchedItemRecordWs(
 	catched := startReq.Catched()
 
 	var storedResults []CatchResult
-	if err := s.redis.GetGameResults(ctx, int64(gameID), &storedResults); err != nil {
+	if err := s.redis.GetGameResults(ctx, gameID, &storedResults); err != nil {
 		return nil, fmt.Errorf("failed to load game results: %w", err)
 	}
 
@@ -158,7 +159,7 @@ func (s *ClawMachineWebsocketService) AddTouchedItemRecordWs(
 	if itemID != 0 {
 		var serverResult *CatchResult
 		for i := range storedResults {
-			if storedResults[i].ItemID == int64(itemID) {
+			if storedResults[i].ItemID == itemID {
 				serverResult = &storedResults[i]
 				break
 			}
@@ -185,7 +186,7 @@ func (s *ClawMachineWebsocketService) AddTouchedItemRecordWs(
 		serverCatched = false
 	}
 
-	game, err := s.repo.AddTouchedItemRecord(ctx, int64(gameID), itemIDPtr, serverCatched)
+	game, err := s.repo.AddTouchedItemRecord(ctx, gameID, itemIDPtr, serverCatched)
 	if err != nil {
 		return nil, fmt.Errorf("failed to persist record: %w", err)
 	}
@@ -205,9 +206,9 @@ func (s *ClawMachineWebsocketService) AddTouchedItemRecordWs(
 		return nil, fmt.Errorf("failed to update claw machine RTP: %w", err)
 	}
 
-	_ = s.redis.DeleteGameResults(ctx, int64(gameID))
+	_ = s.redis.DeleteGameResults(ctx, gameID)
 
-	builder := flatbuffers.NewBuilder(256)
+	builder := flatbuffers.NewBuilder(constant.Byte256)
 
 	fbs.AddTouchedItemRecordRespStart(builder)
 	fbs.AddTouchedItemRecordRespAddGameId(builder, gameID)
@@ -227,21 +228,21 @@ func (s *ClawMachineWebsocketService) SpawnItemWs(
 	startReq := fbs.GetRootAsSpawnItemReq(req.Payload, 0)
 	machineID := startReq.MachineId()
 
-	result, err := s.SpawnMachineItems(ctx, int64(machineID))
+	result, err := s.SpawnMachineItems(ctx, machineID)
 	if err != nil {
 		return nil, fmt.Errorf("failed to spawn item: %w", err)
 	}
 
 	items := make([]uint64, len(result))
 	for i, v := range result {
-		items[i] = uint64(v)
+		items[i] = uint64(v) //nolint:gosec // ItemID is not expected to exceed uint64
 	}
 
-	builder := flatbuffers.NewBuilder(256)
+	builder := flatbuffers.NewBuilder(constant.Byte256)
 
 	fbs.SpawnItemRespStartItemsVector(builder, len(result))
 	for i := len(result) - 1; i >= 0; i-- {
-		builder.PrependUint64(uint64(result[i]))
+		builder.PrependUint64(uint64(result[i])) //nolint:gosec // ItemID is not expected to exceed uint64
 	}
 	itemsVector := builder.EndVector(len(result))
 
@@ -269,11 +270,12 @@ func (s *ClawMachineWebsocketService) GetPlayerInventoryWs(ctx context.Context, 
 		return s.createErrorResponse(err), nil
 	}
 
-	builder := flatbuffers.NewBuilder(2048)
+	builder := flatbuffers.NewBuilder(constant.Byte2048)
 
 	// Build PlayerInventoryItem vector
 	itemOffsets := make([]flatbuffers.UOffsetT, len(inventory))
-	for i, item := range inventory {
+	for i := range inventory {
+		item := &inventory[i]
 		fbs.PlayerInventoryItemStart(builder)
 		fbs.PlayerInventoryItemAddItemId(builder, item.ItemID)
 		fbs.PlayerInventoryItemAddQuantity(builder, item.Quantity)
@@ -311,7 +313,7 @@ func (s *ClawMachineWebsocketService) GetGameHistoryWs(ctx context.Context, req 
 		return s.createErrorResponse(err), nil
 	}
 
-	builder := flatbuffers.NewBuilder(2048)
+	builder := flatbuffers.NewBuilder(constant.Byte2048)
 
 	// Build GameRecord vector
 	recordOffsets := make([]flatbuffers.UOffsetT, len(gameRecords))
@@ -356,7 +358,7 @@ func (s *ClawMachineWebsocketService) GetGameHistoryWs(ctx context.Context, req 
 }
 
 func (s *ClawMachineWebsocketService) createErrorResponse(err error) *pb.RuntimeResponse {
-	builder := flatbuffers.NewBuilder(256)
+	builder := flatbuffers.NewBuilder(constant.Byte256)
 
 	// Create error message string
 	errorMsgOffset := builder.CreateString(err.Error())

@@ -10,9 +10,14 @@ import (
 
 	"github.com/1nterdigital/game/internal/cache"
 	"github.com/1nterdigital/game/internal/repository"
+	"github.com/1nterdigital/game/pkg/constant"
 	"github.com/1nterdigital/game/pkg/logger"
 	pb "github.com/1nterdigital/game/pkg/protocol/whackAMole_Websocket"
 	fbs "github.com/1nterdigital/game/pkg/protocol/whackAMole_Websocket/whackAMole"
+)
+
+const (
+	getLeaderboardNumPlayers = 10
 )
 
 type WhackAMoleWebsocketService struct {
@@ -23,7 +28,11 @@ type WhackAMoleWebsocketService struct {
 	log       *zap.SugaredLogger
 }
 
-func NewWhackAMoleWebsocketService(repo repository.WhackAMoleRepository, redis *cache.RedisClient, streamKey string) *WhackAMoleWebsocketService {
+func NewWhackAMoleWebsocketService(
+	repo repository.WhackAMoleRepository,
+	redis *cache.RedisClient,
+	streamKey string,
+) *WhackAMoleWebsocketService {
 	return &WhackAMoleWebsocketService{
 		repo:      repo,
 		redis:     redis,
@@ -33,7 +42,7 @@ func NewWhackAMoleWebsocketService(repo repository.WhackAMoleRepository, redis *
 }
 
 func (_ *WhackAMoleWebsocketService) buildEnvelopeResponse(messageType fbs.MessageType, payloadBytes []byte) *pb.RuntimeResponse {
-	builder := flatbuffers.NewBuilder(len(payloadBytes) + 256)
+	builder := flatbuffers.NewBuilder(len(payloadBytes) + constant.Byte256)
 	payloadOffset := builder.CreateByteVector(payloadBytes)
 
 	fbs.EnvelopeStart(builder)
@@ -64,7 +73,7 @@ func (s *WhackAMoleWebsocketService) GetMoleWeight(ctx context.Context, req *pb.
 	}
 
 	// Build flatbuffers response
-	builder := flatbuffers.NewBuilder(1024)
+	builder := flatbuffers.NewBuilder(constant.Byte1024)
 
 	// Create mole weight vectors
 	var moleOffsets []flatbuffers.UOffsetT
@@ -84,19 +93,9 @@ func (s *WhackAMoleWebsocketService) GetMoleWeight(ctx context.Context, req *pb.
 	// Create response
 	fbs.GetMoleWeightRespStart(builder)
 	fbs.GetMoleWeightRespAddMole(builder, moleVector)
-	respOffset := fbs.GetMoleWeightRespEnd(builder)
 
 	// Create envelope
-	payloadOffset := respOffset
-	fbs.EnvelopeStart(builder)
-	fbs.EnvelopeAddType(builder, fbs.MessageTypeGetMoleWeightResp)
-	fbs.EnvelopeAddPayload(builder, payloadOffset)
-	envOffset := fbs.EnvelopeEnd(builder)
-	builder.Finish(envOffset)
-
-	return &pb.RuntimeResponse{
-		Payload: builder.FinishedBytes(),
-	}, nil
+	return s.buildEnvelopeResponse(fbs.MessageTypeGetMoleWeightResp, builder.FinishedBytes()), nil
 }
 
 func (s *WhackAMoleWebsocketService) GetLeaderboard(ctx context.Context, req *pb.RuntimeRequest) (*pb.RuntimeResponse, error) {
@@ -113,14 +112,14 @@ func (s *WhackAMoleWebsocketService) GetLeaderboard(ctx context.Context, req *pb
 		}
 	}
 
-	leaderboard, err := s.repo.GetLeaderboard(ctx, 10)
+	leaderboard, err := s.repo.GetLeaderboard(ctx, getLeaderboardNumPlayers)
 	if err != nil {
 		s.log.Errorw("Failed to get leaderboard", "error", err)
 		return nil, fmt.Errorf("failed to get leaderboard: %w", err)
 	}
 
 	// Build flatbuffers response
-	builder := flatbuffers.NewBuilder(1024)
+	builder := flatbuffers.NewBuilder(constant.Byte1024)
 
 	// Create leaderboard player vectors
 	var playerOffsets []flatbuffers.UOffsetT

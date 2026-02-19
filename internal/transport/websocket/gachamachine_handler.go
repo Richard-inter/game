@@ -8,6 +8,7 @@ import (
 	"go.uber.org/zap"
 
 	"github.com/1nterdigital/game/internal/transport/grpc"
+	"github.com/1nterdigital/game/pkg/constant"
 	runtimepb "github.com/1nterdigital/game/pkg/protocol/gachaMachine_Websocket"
 	fbs "github.com/1nterdigital/game/pkg/protocol/gachaMachine_Websocket/gachaMachine"
 )
@@ -83,12 +84,12 @@ func (h *GachaMachineWebSocketHandler) handleMessage(data []byte) ([]byte, error
 	handler, ok := h.handlers[msgType]
 	if !ok {
 		h.logger.Errorw("Unknown GachaMachine message type", "type", msgType)
-		return h.buildErrorResp(400, "Unknown message type"), nil
+		return h.buildErrorResp(constant.ErrorCode400, "Unknown message type"), nil
 	}
 
 	if len(payload) == 0 {
 		h.logger.Errorw("Empty payload for GachaMachine", "type", msgType)
-		return h.buildErrorResp(400, "Empty payload"), nil
+		return h.buildErrorResp(constant.ErrorCode400, "Empty payload"), nil
 	}
 
 	return handler(context.Background(), payload)
@@ -103,7 +104,7 @@ func (h *GachaMachineWebSocketHandler) handleGetPullResult(
 	})
 	if err != nil {
 		h.logger.Errorw("GetPullResultWs failed", "error", err)
-		return h.buildErrorResp(500, err.Error()), nil
+		return h.buildErrorResp(constant.ErrorCode500, err.Error()), nil
 	}
 
 	return resp.Payload, nil
@@ -118,7 +119,7 @@ func (h *GachaMachineWebSocketHandler) handleGetPlayerInfo(
 	})
 	if err != nil {
 		h.logger.Errorw("GetPlayerInfoWs failed", "error", err)
-		return h.buildErrorResp(500, err.Error()), nil
+		return h.buildErrorResp(constant.ErrorCode500, err.Error()), nil
 	}
 
 	return resp.Payload, nil
@@ -133,7 +134,7 @@ func (h *GachaMachineWebSocketHandler) handleGetMachineInfo(
 	})
 	if err != nil {
 		h.logger.Errorw("GetMachineInfoWs failed", "error", err)
-		return h.buildErrorResp(500, err.Error()), nil
+		return h.buildErrorResp(constant.ErrorCode500, err.Error()), nil
 	}
 
 	return resp.Payload, nil
@@ -148,7 +149,7 @@ func (h *GachaMachineWebSocketHandler) handleGetPlayerInventory(
 	})
 	if err != nil {
 		h.logger.Errorw("GetPlayerInventoryWs failed", "error", err)
-		return h.buildErrorResp(500, err.Error()), nil
+		return h.buildErrorResp(constant.ErrorCode500, err.Error()), nil
 	}
 
 	return resp.Payload, nil
@@ -163,14 +164,14 @@ func (h *GachaMachineWebSocketHandler) handleGetPlayerPullHistory(
 	})
 	if err != nil {
 		h.logger.Errorw("GetPlayerPullHistoryWs failed", "error", err)
-		return h.buildErrorResp(500, err.Error()), nil
+		return h.buildErrorResp(constant.ErrorCode500, err.Error()), nil
 	}
 
 	return resp.Payload, nil
 }
 
-func (h *GachaMachineWebSocketHandler) buildErrorResp(code int32, message string) []byte {
-	builder := flatbuffers.NewBuilder(128)
+func (_ *GachaMachineWebSocketHandler) buildErrorResp(code int32, message string) []byte {
+	builder := flatbuffers.NewBuilder(constant.Byte128)
 
 	msgOffset := builder.CreateString(message)
 
@@ -183,7 +184,7 @@ func (h *GachaMachineWebSocketHandler) buildErrorResp(code int32, message string
 	errorBytes := builder.FinishedBytes()
 
 	// Wrap error response in Envelope
-	envBuilder := flatbuffers.NewBuilder(256)
+	envBuilder := flatbuffers.NewBuilder(constant.Byte256)
 	payloadOffset := envBuilder.CreateByteVector(errorBytes)
 
 	fbs.EnvelopeStart(envBuilder)
@@ -196,7 +197,7 @@ func (h *GachaMachineWebSocketHandler) buildErrorResp(code int32, message string
 }
 
 func (h *GachaMachineWebSocketHandler) sendError(conn *websocket.Conn, message string) {
-	response := h.buildErrorResp(500, message)
+	response := h.buildErrorResp(constant.ErrorCode500, message)
 
 	err := conn.WriteMessage(websocket.BinaryMessage, response)
 	if err != nil {

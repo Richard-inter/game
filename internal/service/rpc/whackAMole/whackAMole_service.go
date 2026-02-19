@@ -25,7 +25,10 @@ func NewWhackAMoleGRPCService(repo repository.WhackAMoleRepository) *WhackAMoleG
 	}
 }
 
-func (s *WhackAMoleGRPCService) CreateWhackAMolePlayer(ctx context.Context, req *whackAMole.CreateWhackAMolePlayerReq) (*whackAMole.CreateWhackAMolePlayerResp, error) {
+func (s *WhackAMoleGRPCService) CreateWhackAMolePlayer(
+	ctx context.Context,
+	req *whackAMole.CreateWhackAMolePlayerReq,
+) (*whackAMole.CreateWhackAMolePlayerResp, error) {
 	if req.PlayerId <= 0 || req.Username == "" {
 		return nil, errors.New("invalid player ID or username")
 	}
@@ -51,7 +54,10 @@ func (s *WhackAMoleGRPCService) CreateWhackAMolePlayer(ctx context.Context, req 
 	}, nil
 }
 
-func (s *WhackAMoleGRPCService) GetPlayerInfo(ctx context.Context, req *whackAMole.GetPlayerInfoReq) (*whackAMole.GetPlayerInfoResp, error) {
+func (s *WhackAMoleGRPCService) GetPlayerInfo(
+	ctx context.Context,
+	req *whackAMole.GetPlayerInfoReq,
+) (*whackAMole.GetPlayerInfoResp, error) {
 	if req.PlayerId <= 0 {
 		return nil, errors.New("invalid player ID")
 	}
@@ -70,7 +76,10 @@ func (s *WhackAMoleGRPCService) GetPlayerInfo(ctx context.Context, req *whackAMo
 	}, nil
 }
 
-func (s *WhackAMoleGRPCService) GetLeaderboard(ctx context.Context, req *whackAMole.GetLeaderboardReq) (*whackAMole.GetLeaderboardResp, error) {
+func (s *WhackAMoleGRPCService) GetLeaderboard(
+	ctx context.Context,
+	req *whackAMole.GetLeaderboardReq,
+) (*whackAMole.GetLeaderboardResp, error) {
 	leaderboard, err := s.repo.GetLeaderboard(ctx, req.Limit)
 	if err != nil {
 		s.log.Errorw("Failed to get leaderboard", "limit", req.Limit, "error", err)
@@ -92,7 +101,10 @@ func (s *WhackAMoleGRPCService) GetLeaderboard(ctx context.Context, req *whackAM
 	}, nil
 }
 
-func (s *WhackAMoleGRPCService) GetMoleWeightConfig(ctx context.Context, req *whackAMole.GetMoleWeightConfigReq) (*whackAMole.GetMoleWeightConfigResp, error) {
+func (s *WhackAMoleGRPCService) GetMoleWeightConfig(
+	ctx context.Context,
+	req *whackAMole.GetMoleWeightConfigReq,
+) (*whackAMole.GetMoleWeightConfigResp, error) {
 	if req.Id < 0 {
 		return nil, errors.New("invalid mole ID")
 	}
@@ -117,7 +129,10 @@ func (s *WhackAMoleGRPCService) GetMoleWeightConfig(ctx context.Context, req *wh
 	}, nil
 }
 
-func (s *WhackAMoleGRPCService) UpdateScore(ctx context.Context, req *whackAMole.UpdateScoreReq) (*whackAMole.UpdateScoreResp, error) {
+func (s *WhackAMoleGRPCService) UpdateScore(
+	ctx context.Context,
+	req *whackAMole.UpdateScoreReq,
+) (*whackAMole.UpdateScoreResp, error) {
 	// Get current score first
 	currentRank, err := s.repo.GetPlayerRank(ctx, req.PlayerId)
 	if err != nil {
@@ -140,7 +155,10 @@ func (s *WhackAMoleGRPCService) UpdateScore(ctx context.Context, req *whackAMole
 	}, nil
 }
 
-func (s *WhackAMoleGRPCService) CreateMoleWeightConfig(ctx context.Context, req *whackAMole.CreateMoleWeightConfigReq) (*whackAMole.CreateMoleWeightConfigResp, error) {
+func (s *WhackAMoleGRPCService) CreateMoleWeightConfig(
+	ctx context.Context,
+	req *whackAMole.CreateMoleWeightConfigReq,
+) (*whackAMole.CreateMoleWeightConfigResp, error) {
 	config := &domain.MoleWeightConfig{
 		MoleType: req.MoleType,
 		Weight:   req.Weight,
@@ -161,7 +179,10 @@ func (s *WhackAMoleGRPCService) CreateMoleWeightConfig(ctx context.Context, req 
 	}, nil
 }
 
-func (s *WhackAMoleGRPCService) UpdateMoleWeightConfig(ctx context.Context, req *whackAMole.UpdateMoleWeightConfigReq) (*whackAMole.UpdateMoleWeightConfigResp, error) {
+func (s *WhackAMoleGRPCService) UpdateMoleWeightConfig(
+	ctx context.Context,
+	req *whackAMole.UpdateMoleWeightConfigReq,
+) (*whackAMole.UpdateMoleWeightConfigResp, error) {
 	config := &domain.MoleWeightConfig{
 		ID:       req.Id,
 		MoleType: req.MoleType,

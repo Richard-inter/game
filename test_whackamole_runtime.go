@@ -1,4 +1,6 @@
+//go:build ignore
 package main
+//nolint all
 
 import (
 	"context"

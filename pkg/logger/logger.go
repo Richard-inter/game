@@ -5,6 +5,16 @@ import (
 	"go.uber.org/zap/zapcore"
 )
 
+const (
+	TimeKey    = "timestamp"
+	JSONFormat = "json"
+	DebugLevel = "debug"
+	InfoLevel  = "info"
+	WarnLevel  = "warn"
+	ErrorLevel = "error"
+	FatalLevel = "fatal"
+)
+
 var (
 	Logger *zap.Logger
 	Sugar  *zap.SugaredLogger
@@ -14,7 +24,7 @@ func InitLogger() {
 	config := zap.NewProductionConfig()
 	config.OutputPaths = []string{"stdout"}
 	config.ErrorOutputPaths = []string{"stderr"}
-	config.EncoderConfig.TimeKey = "timestamp"
+	config.EncoderConfig.TimeKey = TimeKey
 	config.EncoderConfig.EncodeTime = zapcore.ISO8601TimeEncoder
 	config.Level = zap.NewAtomicLevelAt(zap.InfoLevel)
 
@@ -44,28 +54,28 @@ func GetSugar() *zap.SugaredLogger {
 func SetLevel(level string) {
 	var lvl zapcore.Level
 	switch level {
-	case "debug":
+	case DebugLevel:
 		lvl = zap.DebugLevel
-	case "info":
+	case InfoLevel:
 		lvl = zap.InfoLevel
-	case "warn":
+	case WarnLevel:
 		lvl = zap.WarnLevel
-	case "error":
+	case ErrorLevel:
 		lvl = zap.ErrorLevel
-	case "fatal":
+	case FatalLevel:
 		lvl = zap.FatalLevel
 	default:
 		lvl = zap.InfoLevel
 	}
 
 	if Logger != nil {
-		Logger.Core().Sync()
+		_ = Logger.Sync()
 	}
 
 	config := zap.NewProductionConfig()
 	config.OutputPaths = []string{"stdout"}
 	config.ErrorOutputPaths = []string{"stderr"}
-	config.EncoderConfig.TimeKey = "timestamp"
+	config.EncoderConfig.TimeKey = TimeKey
 	config.EncoderConfig.EncodeTime = zapcore.ISO8601TimeEncoder
 	config.Level = zap.NewAtomicLevelAt(lvl)
 
@@ -82,17 +92,17 @@ func SetFormatter(format string) {
 	config := zap.NewProductionConfig()
 	config.OutputPaths = []string{"stdout"}
 	config.ErrorOutputPaths = []string{"stderr"}
-	config.EncoderConfig.TimeKey = "timestamp"
+	config.EncoderConfig.TimeKey = TimeKey
 	config.EncoderConfig.EncodeTime = zapcore.ISO8601TimeEncoder
 
 	switch format {
-	case "json":
-		config.Encoding = "json"
+	case JSONFormat:
+		config.Encoding = JSONFormat
 	case "text":
 		config.Encoding = "console"
 		config.EncoderConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder
 	default:
-		config.Encoding = "json"
+		config.Encoding = JSONFormat
 	}
 
 	var err error

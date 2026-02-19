@@ -3,6 +3,7 @@ package cache
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 
 	"github.com/redis/go-redis/v9"
@@ -29,7 +30,7 @@ func (r *RedisClient) GetGachaPityStateFromRedis(ctx context.Context, machineID,
 
 	result, err := r.client.HGetAll(ctx, key).Result()
 	if err != nil {
-		if err == redis.Nil {
+		if errors.Is(err, redis.Nil) {
 			return nil, nil
 		}
 		return nil, err

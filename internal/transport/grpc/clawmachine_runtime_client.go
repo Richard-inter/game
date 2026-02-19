@@ -27,30 +27,51 @@ func NewClawMachineRuntimeClient(address string) (*ClawMachineRuntimeClient, err
 	}, nil
 }
 
-func (c *ClawMachineRuntimeClient) StartClawGameWs(ctx context.Context, req *runtimepb.RuntimeRequest) (*runtimepb.RuntimeResponse, error) {
+func (c *ClawMachineRuntimeClient) StartClawGameWs(
+	ctx context.Context,
+	req *runtimepb.RuntimeRequest,
+) (*runtimepb.RuntimeResponse, error) {
 	return c.client.StartClawGameWs(ctx, req)
 }
 
-func (c *ClawMachineRuntimeClient) AddTouchedItemRecordWs(ctx context.Context, req *runtimepb.RuntimeRequest) (*runtimepb.RuntimeResponse, error) {
+func (c *ClawMachineRuntimeClient) AddTouchedItemRecordWs(
+	ctx context.Context,
+	req *runtimepb.RuntimeRequest,
+) (*runtimepb.RuntimeResponse, error) {
 	return c.client.AddTouchedItemRecordWs(ctx, req)
 }
 
-func (c *ClawMachineRuntimeClient) GetPlayerSnapshotWs(ctx context.Context, req *runtimepb.RuntimeRequest) (*runtimepb.RuntimeResponse, error) {
+func (c *ClawMachineRuntimeClient) GetPlayerSnapshotWs(
+	ctx context.Context,
+	req *runtimepb.RuntimeRequest,
+) (*runtimepb.RuntimeResponse, error) {
 	return c.client.GetPlayerInfoWs(ctx, req)
 }
 
-func (c *ClawMachineRuntimeClient) GetMachineSnapshotWs(ctx context.Context, req *runtimepb.RuntimeRequest) (*runtimepb.RuntimeResponse, error) {
+func (c *ClawMachineRuntimeClient) GetMachineSnapshotWs(
+	ctx context.Context,
+	req *runtimepb.RuntimeRequest,
+) (*runtimepb.RuntimeResponse, error) {
 	return c.client.GetMachineInfoWs(ctx, req)
 }
 
-func (c *ClawMachineRuntimeClient) SpawnItemWs(ctx context.Context, req *runtimepb.RuntimeRequest) (*runtimepb.RuntimeResponse, error) {
+func (c *ClawMachineRuntimeClient) SpawnItemWs(
+	ctx context.Context,
+	req *runtimepb.RuntimeRequest,
+) (*runtimepb.RuntimeResponse, error) {
 	return c.client.SpawnItemWs(ctx, req)
 }
 
-func (c *ClawMachineRuntimeClient) GetPlayerInventoryWs(ctx context.Context, req *runtimepb.RuntimeRequest) (*runtimepb.RuntimeResponse, error) {
+func (c *ClawMachineRuntimeClient) GetPlayerInventoryWs(
+	ctx context.Context,
+	req *runtimepb.RuntimeRequest,
+) (*runtimepb.RuntimeResponse, error) {
 	return c.client.GetPlayerInventoryWs(ctx, req)
 }
 
-func (c *ClawMachineRuntimeClient) GetGameHistoryWs(ctx context.Context, req *runtimepb.RuntimeRequest) (*runtimepb.RuntimeResponse, error) {
+func (c *ClawMachineRuntimeClient) GetGameHistoryWs(
+	ctx context.Context,
+	req *runtimepb.RuntimeRequest,
+) (*runtimepb.RuntimeResponse, error) {
 	return c.client.GetGameHistoryWs(ctx, req)
 }

@@ -7,8 +7,9 @@ import (
 	"net"
 	"time"
 
-	"github.com/1nterdigital/game/internal/config"
 	"go.uber.org/zap"
+
+	"github.com/1nterdigital/game/internal/config"
 )
 
 const (
@@ -138,7 +139,10 @@ func (s *Server) handleClient(conn net.Conn) {
 
 		// Reset read deadline
 		if s.config.TCP.ReadTimeout > 0 {
-			conn.SetReadDeadline(time.Now().Add(time.Duration(s.config.TCP.ReadTimeout) * time.Second))
+			err := conn.SetReadDeadline(time.Now().Add(time.Duration(s.config.TCP.ReadTimeout) * time.Second))
+			if err != nil {
+				s.logger.Errorw("Failed to reset read deadline", "error", err)
+			}
 		}
 	}
 
