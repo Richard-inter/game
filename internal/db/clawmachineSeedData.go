@@ -135,6 +135,8 @@ func SeedClawMachineData(db *gorm.DB) error {
 		// 4️⃣ Machine ↔ Items mapping (use FirstOrCreate to prevent duplicates)
 		for i := range items {
 			item := &items[i]
+		for i := range items {
+			item := &items[i]
 			machineItem := domain.ClawMachineItem{
 				ClawMachineID: machine.ID,
 				ItemID:        item.ID,
