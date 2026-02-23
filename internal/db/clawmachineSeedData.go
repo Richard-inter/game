@@ -59,8 +59,6 @@ func SeedClawMachineData(db *gorm.DB) error {
 			return err
 		}
 
-		// 3️⃣ Claw Items (NO manual IDs) - create each individually with FirstOrCreate
-		// 3️⃣ Claw Items (fixed dataset, idempotent)
 		seedItems := []domain.ClawItem{
 			{
 				Name:            "Gecko",
@@ -133,8 +131,6 @@ func SeedClawMachineData(db *gorm.DB) error {
 		}
 
 		// 4️⃣ Machine ↔ Items mapping (use FirstOrCreate to prevent duplicates)
-		for i := range items {
-			item := &items[i]
 		for i := range items {
 			item := &items[i]
 			machineItem := domain.ClawMachineItem{
