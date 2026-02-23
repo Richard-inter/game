@@ -60,43 +60,76 @@ func SeedClawMachineData(db *gorm.DB) error {
 		}
 
 		// 3️⃣ Claw Items (NO manual IDs) - create each individually with FirstOrCreate
-		rarityDistribution := []struct {
-			Rarity string
-			Count  int
-			Spawn  float64
-			Catch  float64
-		}{
-			{"common", 4, 30, 60},
-			{"uncommon", 2, 20, 45},
-			{"rare", 2, 15, 30},
-			{"very rare", 1, 8, 18},
-			{"epic", 1, 5, 10},
+		// 3️⃣ Claw Items (fixed dataset, idempotent)
+		seedItems := []domain.ClawItem{
+			{
+				Name:            "Gecko",
+				Rarity:          "Common",
+				SpawnPercentage: 80,
+				CatchPercentage: 90,
+				MaxItemSpawned:  3,
+			},
+			{
+				Name:            "Herring",
+				Rarity:          "Common",
+				SpawnPercentage: 80,
+				CatchPercentage: 90,
+				MaxItemSpawned:  3,
+			},
+			{
+				Name:            "Monkey",
+				Rarity:          "Uncommon",
+				SpawnPercentage: 60,
+				CatchPercentage: 70,
+				MaxItemSpawned:  3,
+			},
+			{
+				Name:            "Muskrat",
+				Rarity:          "Rare",
+				SpawnPercentage: 40,
+				CatchPercentage: 50,
+				MaxItemSpawned:  3,
+			},
+			{
+				Name:            "Pudu",
+				Rarity:          "VeryRare",
+				SpawnPercentage: 30,
+				CatchPercentage: 30,
+				MaxItemSpawned:  2,
+			},
+			{
+				Name:            "Sparrow",
+				Rarity:          "Epic",
+				SpawnPercentage: 20,
+				CatchPercentage: 10,
+				MaxItemSpawned:  2,
+			},
+			{
+				Name:            "Squid",
+				Rarity:          "Legend",
+				SpawnPercentage: 10,
+				CatchPercentage: 5,
+				MaxItemSpawned:  1,
+			},
 		}
 
 		var items []domain.ClawItem
 
-		for _, r := range rarityDistribution {
-			for i := range r.Count {
-				item := domain.ClawItem{
-					Name:            fmt.Sprintf("%s Item %d", r.Rarity, i+1),
-					Rarity:          r.Rarity,
-					SpawnPercentage: r.Spawn,
-					CatchPercentage: r.Catch,
-					MaxItemSpawned:  100,
-					IsActive:        true,
-					CreatedAt:       now,
-					CreatedBy:       createdBy,
-					UpdatedAt:       now,
-					UpdatedBy:       createdBy,
-				}
+		for _, item := range seedItems {
+			item.CreatedAt = now
+			item.CreatedBy = createdBy
+			item.UpdatedAt = now
+			item.UpdatedBy = createdBy
+			item.IsActive = true
 
-				// Create item with FirstOrCreate to prevent duplicates
-				if err := tx.Where("name = ?", item.Name).FirstOrCreate(&item).Error; err != nil {
-					return err
-				}
-
-				items = append(items, item)
+			// Idempotent insert
+			if err := tx.
+				Where("name = ?", item.Name).
+				FirstOrCreate(&item).Error; err != nil {
+				return err
 			}
+
+			items = append(items, item)
 		}
 
 		// 4️⃣ Machine ↔ Items mapping (use FirstOrCreate to prevent duplicates)
